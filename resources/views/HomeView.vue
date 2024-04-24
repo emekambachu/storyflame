@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
@@ -39,7 +38,7 @@ function login() {
 }
 
 function register() {
-    axios.post('/api/v1/auth/register', {
+    auth.register({
         name: 'Nazar',
         email: 'nazar@mutado.dev',
         password: 'moonpass',
@@ -47,13 +46,13 @@ function register() {
 }
 
 function user() {
-    axios.get('/api/v1/auth/user').then(response => {
+    auth.getUser().then(response => {
         console.log(response.data)
     })
 }
 
 function logout() {
-    axios.post('/api/v1/auth/logout').then(response => {
+    auth.logout().then(response => {
         console.log(response.data)
     })
 }
