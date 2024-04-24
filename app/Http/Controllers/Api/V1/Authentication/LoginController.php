@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Authentication;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,9 +19,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return response()->json([
-                'message' => 'Authenticated',
-            ]);
+            return $this->successResponse('Authenticated', Auth::user());
         }
 
         return $this->errorResponse('Invalid credentials', 401);
@@ -34,15 +31,12 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'message' => 'Logged out',
-        ]);
+        return $this->successResponse('Logged out');
     }
 
     public function user(Request $request): JsonResponse
     {
-        return response()->json([
-            'user' => $request->user(),
-        ]);
+        abort(401);
+        return $this->successResponse('User', Auth::user());
     }
 }
