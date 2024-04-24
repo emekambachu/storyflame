@@ -22,12 +22,14 @@ axios.interceptors.response.use((response) => {
     return response
 }, (error) => {
     if (isAxiosError(error)) {
-        console.log('interceptor', error.response.status)
+        console.log('🚔 interceptor', error.response.status)
         if (error.response.status === 419 || error.response.status === 401) {
             if (error.response.status === 419) {
                 console.log('Session expired')
             }
             const authStore = useAuthStore()
+            // invalidate the user right now
+            authStore.user = null
             if (authStore.isLoggedIn) {
                 authStore.logout().then(r => {
                     void router.push({ name: 'login' })

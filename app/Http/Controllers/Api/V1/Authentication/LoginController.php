@@ -36,7 +36,6 @@ class LoginController extends Controller
 
     public function user(Request $request): JsonResponse
     {
-        abort(401);
         return $this->successResponse('User', Auth::user());
     }
 }
