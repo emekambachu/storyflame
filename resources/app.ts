@@ -5,6 +5,7 @@ import axios, { isAxiosError } from 'axios'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import { useAuthStore } from './stores/auth'
+import './assets/app.css'
 
 // Enable CSRF token
 axios.defaults.withCredentials = true
