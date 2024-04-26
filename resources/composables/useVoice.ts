@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export default function useVoice() {
     const hasPermission = usePermission('microphone')
-    const stopRecording = ref<() => void | undefined>(undefined)
+    const stopRecording = ref<(() => void) | undefined>(undefined)
     const isRecording = ref(false)
     const stream = ref<MediaStream | undefined>(undefined)
     const track = ref<MediaStreamTrack | undefined>(undefined)
@@ -49,7 +49,7 @@ export default function useVoice() {
 
         stopRecording.value = stop
         stream.value = await start()
-        track.value = stream.value.getAudioTracks()[0]
+        track.value = stream.value?.getAudioTracks()[0]
         isRecording.value = true
         return stream
     }

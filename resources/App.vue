@@ -1,15 +1,9 @@
 <template>
-    <nav>
-        nav
-    </nav>
-    <main>
-        <router-view></router-view>
-    </main>
-    <footer>
-        footer
-    </footer>
+  <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav>
+  <main class="bg-white grow flex flex-col">
+    <router-view></router-view>
+  </main>
+  <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer>
 </template>
 
-<script lang="ts" setup>
-
-</script>
+<script lang="ts" setup></script>

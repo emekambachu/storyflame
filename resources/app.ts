@@ -5,7 +5,7 @@ import axios, { isAxiosError } from 'axios'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import { useAuthStore } from './stores/auth'
-import './assets/app.css'
+import '@/assets/app.css'
 
 // Enable CSRF token
 axios.defaults.withCredentials = true
@@ -23,8 +23,8 @@ axios.interceptors.response.use((response) => {
     return response
 }, (error) => {
     if (isAxiosError(error)) {
-        console.log('🚔 interceptor', error.response.status)
-        if (error.response.status === 419 || error.response.status === 401) {
+        console.log('🚔 interceptor', error.response?.status)
+        if (error.response?.status === 419 || error.response?.status === 401) {
             if (error.response.status === 419) {
                 console.log('Session expired')
             }

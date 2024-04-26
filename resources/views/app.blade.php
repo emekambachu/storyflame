@@ -8,7 +8,7 @@
         {{ config('app.name', 'Laravel') }}
     </title>
 </head>
-<body class="font-sans antialiased dark:bg-black dark:text-white/50">
+<body>
 @vite('resources/app.ts')
 </body>
 </html>
