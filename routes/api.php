@@ -20,6 +20,8 @@ Route::group([
                 Route::post('logout', 'LoginController@logout');
             });
         });
+
+        Route::post('transcribe', 'TranscriptionController@transcribe');
     });
 });
 
