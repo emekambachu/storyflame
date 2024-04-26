@@ -51,6 +51,9 @@ async function toggleRecording() {
         })
     } else {
         listen().then((stream) => {
+            if (!stream.value) {
+                return
+            }
             record(stream.value)
             const context = new AudioContext()
             const analyzer = context.createAnalyser()
