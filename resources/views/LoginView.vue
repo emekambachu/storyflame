@@ -25,7 +25,7 @@
             type="email"
             id="email"
             v-model="email"
-            class="mt-1 font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+            class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
             placeholder="Enter your email"
             required
           />
@@ -41,7 +41,7 @@
             type="password"
             id="password"
             v-model="password"
-            class="mt-1 font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+            class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
             placeholder="Enter your password"
             required
           />
