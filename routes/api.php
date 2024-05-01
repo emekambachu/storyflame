@@ -21,6 +21,8 @@ Route::group([
             });
         });
 
+        Route::get('onboarding', 'OnboardingController@index');
+        Route::post('onboarding', 'OnboardingController@store');
         Route::post('transcribe', 'TranscriptionController@transcribe');
     });
 });

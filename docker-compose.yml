@@ -68,6 +68,7 @@ services:
         tty: true
         volumes:
             - '.:/var/www/html'
+            - '${HOME}/.cache:/root/.cache'
         working_dir: '/var/www/html'
         command: sh -c "pip install -r ./requirements.txt && uvicorn processing.main:app --host=\"0.0.0.0\" --port=3000 --reload"
         ports:

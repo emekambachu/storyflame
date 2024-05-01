@@ -36,6 +36,8 @@
 
 <script lang="ts" setup>
 import { useAuthStore } from '../stores/auth'
+import { onMounted } from 'vue'
+import axios from 'axios'
 
 const auth = useAuthStore()
 
@@ -65,4 +67,12 @@ function logout() {
     console.log(response.data)
   })
 }
+
+onMounted(()=>{
+    // axios.get('/sanctum/csrf-cookie').then(response => {
+        axios.post('/api/v1/onboarding', {
+            message: 'test',
+        })
+    // })
+})
 </script>

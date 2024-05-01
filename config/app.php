@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'processing_url' => env('APP_PROCESSING_URL', 'http://python:3000'),
 
     /*
     |--------------------------------------------------------------------------
