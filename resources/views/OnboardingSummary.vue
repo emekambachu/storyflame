@@ -52,6 +52,16 @@
           v-if="activeTab == 0"
           :user="user"
         />
+
+        <stories-tab
+          v-if="activeTab == 1"
+          :user="user"
+        />
+
+        <achievements-tab
+          v-if="activeTab == 2"
+          :achievements="user.achievements"
+        />
       </div>
     </template>
   </div>
@@ -61,6 +71,8 @@
 import { ref } from 'vue'
 import LoadingTab from '@/components/LoadingTab.vue'
 import ProfileTab from '@/components/ProfileTab.vue'
+import StoriesTab from '@/components/StoriesTab.vue'
+import AchievementsTab from '@/components/AchievementsTab.vue'
 
 import DotIcon from '@/components/icons/DotIcon.vue'
 import UserIcon from '@/components/icons/UserIcon.vue'
@@ -96,6 +108,62 @@ const user = {
     'Thomas Shelby',
     'Dean Winchester',
   ],
+  stories: {
+    finished: [
+      {
+        image: { path: 'https://picsum.photos/930' },
+        title: 'The Horizon Line',
+      },
+      {
+        image: { path: 'https://picsum.photos/960' },
+        title: 'Whispers in the Void',
+      },
+      {
+        image: { path: 'https://picsum.photos/990' },
+        title: 'Beneath the Neon Sky',
+      },
+    ],
+
+    in_progress: [
+      {
+        image: { path: 'https://picsum.photos/900' },
+        title: 'The Horizon Line',
+        percent: 10,
+      },
+      {
+        image: { path: 'https://picsum.photos/920' },
+        title: 'The Horizon Line',
+        percent: 30,
+      },
+      {
+        image: { path: 'https://picsum.photos/940' },
+        title: 'The Horizon Line',
+        percent: 90,
+      },
+    ],
+  },
+  achievements: {
+    earned: [
+      {
+        image: {
+          path: 'https://picsum.photos/940',
+        },
+        title: 'Ice Breaker',
+        percent: 100,
+        achievement_date: '25 Apr',
+      },
+    ],
+    in_progress: [
+      {
+        image: {
+          path: 'https://picsum.photos/940',
+        },
+        title: 'First Story',
+        percent: 60,
+        achievement_date: null,
+      },
+    ],
+  },
 }
 
 const activeTab = ref(0)

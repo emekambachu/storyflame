@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <div class="bg-purple-50 rounded-lg w-full h-2 relative">
-      <div
-        :style="[`width: ${percent}%`]"
-        class="absolute h-2 left-0 top-0 bg-red-600 rounded-lg"
-      />
-    </div>
+  <div class="bg-slate-200 rounded-lg w-full h-2 relative">
+    <div
+      :style="[`width: ${percent}%`]"
+      class="absolute h-full left-0 top-0 bg-red-600 rounded-lg"
+    />
   </div>
 </template>
 

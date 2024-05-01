@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-8">
     <div class="flex flex-col gap-3 text-left items-start w-full">
-      <h5 class="text-sm text-neutral-700 font-bold">About</h5>
+      <h4 class="text-sm text-neutral-700 font-bold">About</h4>
       <p class="text-neutral-950 text-sm font-normal">{{ user.about }}</p>
     </div>
 
     <div class="flex flex-col gap-3 text-left items-start w-full">
-      <h5 class="text-sm text-neutral-700 font-bold">Writing goals</h5>
+      <h4 class="text-sm text-neutral-700 font-bold">Writing goals</h4>
       <ul>
         <li
           v-for="(goal, goalID) in user.goals"
@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex flex-col gap-3 text-left items-start w-full">
-      <h5 class="text-sm text-neutral-700 font-bold">Inspired by</h5>
+      <h4 class="text-sm text-neutral-700 font-bold">Inspired by</h4>
       <div class="flex item-start gap-3">
         <image-component
           v-for="(poster, posterID) in user.inspiration"
@@ -33,7 +33,7 @@
     </div>
 
     <div class="flex flex-col gap-3 text-left items-start w-full">
-      <h5 class="text-sm text-neutral-700 font-bold">Favorite characters</h5>
+      <h4 class="text-sm text-neutral-700 font-bold">Favorite characters</h4>
       <div class="flex gap-2 items-center flex-wrap">
         <p
           v-for="(character, characterID) in user.favorite_characters"
