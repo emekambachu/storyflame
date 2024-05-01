@@ -1,19 +1,12 @@
-import getpass
-import json
-import os
-from re import template
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from faster_whisper import WhisperModel
 import langchain
 from langchain_openai import ChatOpenAI
-from pydantic import BaseModel, create_model
-from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from pydantic import BaseModel
+from langchain_core.prompts import PromptTemplate
 from langchain_core.pydantic_v1 import Field, BaseModel as LangChainBaseModel
-from langchain.output_parsers import ResponseSchema
-from langchain_core.output_parsers import JsonOutputParser, PydanticOutputParser
 from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnablePassthrough
 from openai import OpenAI
