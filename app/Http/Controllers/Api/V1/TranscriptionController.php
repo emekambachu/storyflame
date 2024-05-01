@@ -18,7 +18,7 @@ class TranscriptionController extends Controller
 
         $path = $audio->store('tmp');
 
-        $response = Http::post('python:3000/transcribe', [
+        $response = Http::post(config('app.processing_url') . '/transcribe', [
             'path' => storage_path('app/' . $path),
         ]);
 
