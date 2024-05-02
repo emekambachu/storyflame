@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import XmarkIcon from '../components/icons/XmarkIcon.vue'
+import XmarkIcon from '@/components/icons/XmarkIcon.vue'
 
 const emit = defineEmits(['close'])
 
