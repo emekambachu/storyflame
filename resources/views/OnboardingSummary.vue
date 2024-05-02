@@ -1,57 +1,8 @@
 <template>
-    <div class="w-full min-h-screen flex flex-col items-center pt-10 pb-8 px-4">
-        <template v-if="loading">
-            <div class="flex flex-col items-center mb-[-129px]">
-                <svg
-                    fill="none"
-                    height="61"
-                    viewBox="0 0 61 61"
-                    width="61"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <circle
-                        cx="30.5"
-                        cy="30.228"
-                        fill="url(#paint0_linear_203_749)"
-                        r="30.228"
-                    />
-                    <path
-                        clip-rule="evenodd"
-                        d="M40.927 22.8836C43.0823 27.1195 44.8269 32.0616 44.1214 36.7816C43.0665 43.8188 37.3354 48.2294 30.8457 48.3942C19.8878 48.6725 14.5825 39.3798 17.5185 29.5357C18.2987 26.7108 20.1565 24.0371 22.1623 21.8445C23.0905 20.8416 23.6106 20.0599 23.7227 22.2899C23.7519 23.3627 24.1422 24.39 24.4714 25.0191C24.7264 25.5152 24.773 25.4062 25.1375 25.0191C27.9121 21.9928 29.2528 17.6639 30.1139 13.7451C30.5492 11.7638 30.5219 11.712 32.1197 12.6301C35.5156 14.5814 39.2087 19.5144 40.927 22.8836Z"
-                        fill="white"
-                        fill-rule="evenodd"
-                    />
-                    <defs>
-                        <linearGradient
-                            id="paint0_linear_203_749"
-                            gradientUnits="userSpaceOnUse"
-                            x1="0.271973"
-                            x2="30.5"
-                            y1="0"
-                            y2="60.4561"
-                        >
-                            <stop stop-color="#FF9202" />
-                            <stop
-                                offset="1"
-                                stop-color="#FD2D24"
-                            />
-                        </linearGradient>
-                    </defs>
-                </svg>
-
-                <h1 class="text-black text-2xl font-bold">
-                    Story
-                    <span class="text-orange-500 -ml-1">Flame</span>
-                </h1>
-            </div>
-
-            <div class="mx-auto my-auto flex flex-col items-center gap-2">
-                <AppLoader />
-                <span class="text-black text-sm font-normal text-center">
-          Processing your data..
-        </span>
-            </div>
-        </template>
+  <div class="w-full min-h-screen flex flex-col items-center pt-10 pb-8 px-4">
+    <template v-if="loading">
+      <loading-tab class="w-full min-h-screen" />
+    </template>
 
         <template v-else>
             <button class="text-orange-500 mr-0 ml-auto">Edit</button>
@@ -74,77 +25,65 @@
                         </svg>
                     </div>
 
-                    <div class="flex flex-col items-center text-center gap-2">
-                        <h2 class="text-2xl text-neutral-700 font-bold">{{ user.name }}</h2>
-                        <p class="text-sm text-neutral-500 font-normal">
-                            {{ user.level }}
-                        </p>
-                        <p
-                            class="text-sm text-neutral-500 font-normal flex items-center gap-1"
-                        >
-                            {{ user.genre_focus.join(' • ')}}
-                        </p>
-                    </div>
-                </div>
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col items-center">
+          <div
+            class="w-24 h-24 bg-gray-200 shrink-0 rounded-full flex items-center justify-center"
+          >
+            <user-icon class="text-neutral-400" />
+          </div>
 
                 <div class="flex flex-col gap-3 text-left items-start w-full">
                     <h5 class="text-sm text-neutral-700 font-bold">About</h5>
                     <p class="text-neutral-950 text-sm font-normal">{{ user.bio }}</p>
                 </div>
 
-                <div class="flex flex-col gap-3 text-left items-start w-full">
-                    <h5 class="text-sm text-neutral-700 font-bold">Writing goals</h5>
-                    <ul>
-                        {{user.motivation}}
-<!--                        <li-->
-<!--                            v-for="(goal, goalID) in user."-->
-<!--                            :key="goalID"-->
-<!--                            class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"-->
-<!--                        >-->
-<!--                            <dot-icon />-->
-<!--                            {{ goal }}-->
-<!--                        </li>-->
-                    </ul>
-                </div>
+        <div
+          class="flex items-center gap-2 justify-between max-w-full overscroll-auto"
+        >
+          <button
+            v-for="(tab, tabID) in tabs"
+            :key="tabID"
+            :class="
+              activeTab == tabID
+                ? 'bg-neutral-800 text-pure-white'
+                : 'bg-gray-200 text-neutral-400'
+            "
+            class="rounded-full text-sm font-semibold whitespace-nowrap select-none py-1 px-3"
+            @click="activeTab = tabID"
+          >
+            {{ tab }}
+          </button>
+        </div>
 
-                <div class="flex flex-col gap-3 text-left items-start w-full">
-                    <h5 class="text-sm text-neutral-700 font-bold">Inspired by</h5>
-                    <div class="flex item-start gap-3">
-                        <image-component
-                            v-for="(poster, posterID) in user.media"
-                            :key="posterID"
-                            :src="poster.image?.path"
-                            alt="poster"
-                            class="rounded-lg object-cover w-24 h-36 shrink-0"
-                        />
-                    </div>
-                </div>
+        <profile-tab
+          v-if="activeTab == 0"
+          :user="user"
+        />
 
-                <div class="flex flex-col gap-3 text-left items-start w-full">
-                    <h5 class="text-sm text-neutral-700 font-bold">
-                        Favorite characters
-                    </h5>
-                    <div class="flex gap-2 items-center flex-wrap">
-                        <p
-                            v-for="(character, characterID) in user.characters"
-                            :key="characterID"
-                            class="text-slate-600 text-xs font-normal px-3 py-2 rounded-full"
-                            style="background-color: rgba(96, 159, 255, 0.1)"
-                        >
-                            {{ character }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </template>
-    </div>
+        <stories-tab
+          v-if="activeTab == 1"
+          :user="user"
+        />
+
+        <achievements-tab
+          v-if="activeTab == 2"
+          :achievements="user.achievements"
+        />
+      </div>
+    </template>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import AppLoader from '@/components/AppLoader.vue'
+import LoadingTab from '@/components/LoadingTab.vue'
+import ProfileTab from '@/components/ProfileTab.vue'
+import StoriesTab from '@/components/StoriesTab.vue'
+import AchievementsTab from '@/components/AchievementsTab.vue'
+
 import DotIcon from '@/components/icons/DotIcon.vue'
-import ImageComponent from '@/components/ImageComponent.vue'
+import UserIcon from '@/components/icons/UserIcon.vue'
 
 const loading = ref(false)
 
@@ -179,6 +118,71 @@ const loading = ref(false)
 //   ],
 // }
 
-const user = ref(JSON.parse(localStorage.getItem('onboarding.user') || 'null') || {})
+  favorite_characters: [
+    'Daenerys Targaryen',
+    'Sherlock Holmes',
+    'Thomas Shelby',
+    'Dean Winchester',
+  ],
+  stories: {
+    finished: [
+      {
+        image: { path: 'https://picsum.photos/930' },
+        title: 'The Horizon Line',
+      },
+      {
+        image: { path: 'https://picsum.photos/960' },
+        title: 'Whispers in the Void',
+      },
+      {
+        image: { path: 'https://picsum.photos/990' },
+        title: 'Beneath the Neon Sky',
+      },
+    ],
+
+    in_progress: [
+      {
+        image: { path: 'https://picsum.photos/900' },
+        title: 'The Horizon Line',
+        percent: 10,
+      },
+      {
+        image: { path: 'https://picsum.photos/920' },
+        title: 'The Horizon Line',
+        percent: 30,
+      },
+      {
+        image: { path: 'https://picsum.photos/940' },
+        title: 'The Horizon Line',
+        percent: 90,
+      },
+    ],
+  },
+  achievements: {
+    earned: [
+      {
+        image: {
+          path: 'https://picsum.photos/940',
+        },
+        title: 'Ice Breaker',
+        percent: 100,
+        achievement_date: '25 Apr',
+      },
+    ],
+    in_progress: [
+      {
+        image: {
+          path: 'https://picsum.photos/940',
+        },
+        title: 'First Story',
+        percent: 60,
+        achievement_date: null,
+      },
+    ],
+  },
+}
+
+const activeTab = ref(0)
+const tabs = ['My profile', 'My stories', 'My achievements']
 </script>
 <style scoped></style>
