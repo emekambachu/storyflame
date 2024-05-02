@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full min-h-screen flex flex-col items-center pt-10 pb-20 px-4">
+  <div class="w-full min-h-screen flex flex-col items-center pt-10 pb-24 px-4">
     <template v-if="loading">
       <loading-tab class="w-full min-h-screen" />
     </template>
@@ -8,11 +8,13 @@
       <button class="text-orange-500 mr-0 ml-auto">Edit</button>
 
       <div class="flex flex-col gap-8">
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center gap-3">
           <div
-            class="w-24 h-24 bg-gray-200 shrink-0 rounded-full flex items-center justify-center"
+            class="w-28 h-28 bg-gray-200 shrink-0 rounded-full flex items-center justify-center relative"
           >
             <user-icon class="text-neutral-400" />
+
+            <verified-icon class="absolute -bottom-2 text-blue-700" />
           </div>
 
           <div class="flex flex-col items-center text-center gap-2">
@@ -54,12 +56,12 @@
         />
 
         <stories-tab
-          v-if="activeTab == 1"
+          v-if="activeTab == 1 || activeTab == 0"
           :user="user"
         />
 
         <achievements-tab
-          v-if="activeTab == 2"
+          v-if="activeTab == 2 || activeTab == 0"
           :achievements="user.achievements"
         />
 
@@ -82,8 +84,9 @@ import ProfileTab from '@/components/ProfileTab.vue'
 import StoriesTab from '@/components/StoriesTab.vue'
 import AchievementsTab from '@/components/AchievementsTab.vue'
 
-import PointIcon from '@/components/icons/PointIcon.vue'
 import UserIcon from '@/components/icons/UserIcon.vue'
+import PointIcon from '@/components/icons/PointIcon.vue'
+import VerifiedIcon from '@/components/icons/VerifiedIcon.vue'
 
 const loading = ref(false)
 
