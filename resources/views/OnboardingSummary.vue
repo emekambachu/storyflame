@@ -124,14 +124,26 @@ const user = {
       {
         image: { path: 'https://picsum.photos/930' },
         title: 'The Horizon Line',
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
       {
         image: { path: 'https://picsum.photos/960' },
         title: 'Whispers in the Void',
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
       {
         image: { path: 'https://picsum.photos/990' },
         title: 'Beneath the Neon Sky',
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
     ],
 
@@ -139,17 +151,26 @@ const user = {
       {
         image: { path: 'https://picsum.photos/900' },
         title: 'The Horizon Line',
-        percent: 10,
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
       {
         image: { path: 'https://picsum.photos/920' },
         title: 'The Horizon Line',
-        percent: 30,
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
       {
         image: { path: 'https://picsum.photos/940' },
         title: 'The Horizon Line',
-        percent: 90,
+        type: 'TV series',
+        genres: ['Comedy', 'Fantasy', 'Thriller'],
+        description:
+          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
       },
     ],
   },

@@ -39,40 +39,18 @@
       </h4>
 
       <div class="flex flex-col gap-4 w-full">
-        <div
+        <StoryCard
           v-for="(story, storyID) in user.stories.in_progress"
           :key="storyID"
-          class="flex gap-3 items-center w-full"
-        >
-          <image-component
-            :src="story?.image?.path"
-            alt="story"
-            class="rounded-lg object-cover w-20 h-20"
-          />
-
-          <div class="flex flex-col justify-between gap-6 w-full">
-            <h4 class="text-black text-sm font-semibold">
-              {{ truncateTitle(story.title, 18) }}
-            </h4>
-
-            <div class="flex flex-col gap-2">
-              <span class="text-black text-xs font-normal opacity-50">
-                {{ story?.percent }}% complete
-              </span>
-              <progress-bar
-                :percent="story.percent"
-                class="w-full"
-              />
-            </div>
-          </div>
-        </div>
+          :story="story"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ProgressBar from '@/components/ProgressBar.vue'
+import StoryCard from '@/components/StoryCard.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
 
 const props = defineProps({
