@@ -46,4 +46,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+    /**
+     * Get the stories for the user.
+     */
+    public function stories()
+    {
+        return $this->hasMany(Story::class);
+    }
 }

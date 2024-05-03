@@ -6,7 +6,7 @@ import { resolve } from 'path'
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/assets/app.css', 'resources/app.js'],
+            input: ['resources/assets/app.css', 'resources/app.ts'],
             refresh: true,
         }),
         vue({

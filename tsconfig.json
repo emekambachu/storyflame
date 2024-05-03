@@ -15,11 +15,12 @@
         "sourceMap": true,
         "lib": [
             "ESNext",
-            "DOM"
+            "DOM",
+            "WebWorker"
         ],
         "paths": {
             "@/*": [
-                "/resources/*"
+                "./resources/*"
             ]
         },
         "types": [
