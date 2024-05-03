@@ -9,12 +9,14 @@
 			<span class="w-2 h-4 bg-pure-white rounded-sm" />
 		</template>
 		<template v-else>
-			<span class="w-4 h-4 bg-pure-white rounded-sm" />
+			<play-icon class="text-white h-4 w-4"/>
 		</template>
 	</button>
 </template>
 
 <script lang="ts" setup>
+import PlayIcon from '@/components/icons/PlayIcon.vue'
+
 const emit = defineEmits(['play', 'pause'])
 
 defineProps({
