@@ -56,9 +56,7 @@
         <template v-if="activeTab == 0">
           <div class="flex flex-col gap-3 text-left items-start w-full">
             <div class="flex items-center justify-between w-full">
-              <h4 class="text-sm text-neutral-700 font-bold">
-                Your recent stories
-              </h4>
+              <h4 class="text-sm text-neutral-700 font-bold">Your stories</h4>
 
               <button
                 class="text-sm text-black font-normal opacity-50"
@@ -67,12 +65,32 @@
                 See all
               </button>
             </div>
-            <div class="flex flex-col gap-4 w-full">
+            <div
+              v-if="user.stories?.length"
+              class="flex flex-col gap-4 w-full"
+            >
               <StoryCard
-                v-for="(story, storyID) in user.stories.in_progress"
+                v-for="(story, storyID) in user.stories"
                 :key="storyID"
                 :story="story"
               />
+            </div>
+            <div
+              v-else
+              class="w-full p-1 bg-zinc-200 rounded-lg"
+            >
+              <div
+                class="flex flex-col items-center gap-2 rounded-lg w-full p-4 border border-dashed border-gray-400"
+              >
+                <div
+                  class="rounded-full w-10 h-10 shrink-0 flex items-center justify-center bg-gray-400"
+                >
+                  <plus-icon class="text-white" />
+                </div>
+                <span class="text-sm text-gray-400 font-noraml">
+                  Start building your first story
+                </span>
+              </div>
             </div>
           </div>
 
@@ -132,6 +150,7 @@ import StoriesTab from '@/components/StoriesTab.vue'
 import AchievementsTab from '@/components/AchievementsTab.vue'
 
 import UserIcon from '@/components/icons/UserIcon.vue'
+import PlusIcon from '@/components/icons/PlusIcon.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 import VerifiedIcon from '@/components/icons/VerifiedIcon.vue'
 
@@ -166,61 +185,32 @@ const user = {
     'Thomas Shelby',
     'Dean Winchester',
   ],
-  stories: {
-    finished: [
-      {
-        image: { path: 'https://picsum.photos/930' },
-        title: 'The Horizon Line',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-      {
-        image: { path: 'https://picsum.photos/960' },
-        title: 'Whispers in the Void',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-      {
-        image: { path: 'https://picsum.photos/990' },
-        title: 'Beneath the Neon Sky',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-    ],
-
-    in_progress: [
-      {
-        image: { path: 'https://picsum.photos/900' },
-        title: 'The Horizon Line',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-      {
-        image: { path: 'https://picsum.photos/920' },
-        title: 'The Horizon Line',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-      {
-        image: { path: 'https://picsum.photos/940' },
-        title: 'The Horizon Line',
-        type: 'TV series',
-        genres: ['Comedy', 'Fantasy', 'Thriller'],
-        description:
-          'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-      },
-    ],
-  },
+  stories: [
+    {
+      image: { path: 'https://picsum.photos/900' },
+      title: 'The Horizon Line',
+      type: 'TV series',
+      genres: ['Comedy', 'Fantasy', 'Thriller'],
+      description:
+        'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
+    },
+    {
+      image: { path: 'https://picsum.photos/920' },
+      title: 'The Horizon Line',
+      type: 'TV series',
+      genres: ['Comedy', 'Fantasy', 'Thriller'],
+      description:
+        'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
+    },
+    {
+      image: { path: 'https://picsum.photos/940' },
+      title: 'The Horizon Line',
+      type: 'TV series',
+      genres: ['Comedy', 'Fantasy', 'Thriller'],
+      description:
+        'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
+    },
+  ],
   achievements: {
     earned: [
       {
