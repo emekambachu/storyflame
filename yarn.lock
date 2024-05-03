@@ -2047,6 +2047,11 @@ vue-eslint-parser@^9.3.1, vue-eslint-parser@^9.4.2:
     lodash "^4.17.21"
     semver "^7.3.6"
 
+vue-logger-plugin@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/vue-logger-plugin/-/vue-logger-plugin-2.2.3.tgz#ed6ba748af8d46622f7ff2f80dbe4e3a30543fc8"
+  integrity sha512-PGGwFarWpReyJc8XONuNBb86mpfLqYO6+MWjkFnCDWcagjM2BLY7rskLTgn3eT3skq0qu+2K2roiIAgiXJDXSQ==
+
 vue-router@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.3.2.tgz#08096c7765dacc6832f58e35f7a081a8b34116a7"

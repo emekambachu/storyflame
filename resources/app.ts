@@ -6,18 +6,24 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 import { useAuthStore } from './stores/auth'
 import '@/assets/app.css'
+import { createLogger } from 'vue-logger-plugin'
 
 // Enable CSRF token
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
 
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedState)
-const app = createApp(App)
+const pinia = createPinia().use(piniaPluginPersistedState)
 
-app.use(router)
-app.use(pinia)
+const logger = createLogger({
+    enabled: true,
+    level: import.meta.env.MODE === 'development' ? 'debug' : 'error',
+})
+
+const app = createApp(App)
+    .use(router)
+    .use(pinia)
+    .use(logger)
 
 axios.interceptors.response.use((response) => {
     return response
