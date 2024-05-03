@@ -32,18 +32,17 @@
           </div>
         </div>
 
-        <div
-          class="flex items-center gap-2 justify-between max-w-full overscroll-auto"
-        >
+        <div class="flex items-center max-w-full overscroll-auto">
           <button
             v-for="(tab, tabID) in tabs"
             :key="tabID"
-            :class="
+            :class="[
               activeTab == tabID
-                ? 'bg-neutral-800 text-pure-white'
-                : 'bg-gray-200 text-neutral-400'
-            "
-            class="rounded-full text-sm font-semibold whitespace-nowrap select-none py-1 px-3"
+                ? 'text-red-600 border-red-600'
+                : 'text-neutral-500 border-neutral-300',
+              tabID == 0 ? 'pr-5' : tabID == tabs.length - 1 ? 'pl-5' : 'px-5',
+            ]"
+            class="text-sm font-semibold whitespace-nowrap select-none py-1 border-b"
             @click="activeTab = tabID"
           >
             {{ tab }}
