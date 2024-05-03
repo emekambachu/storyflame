@@ -1,5 +1,5 @@
 <template>
-  <ModalPopup @close="emit('close')">
+  <modal-popup @close="emit('close')">
     <template #content>
       <div class="w-full h-fit flex flex-col items-center">
         <img
@@ -22,7 +22,7 @@
         </button>
       </div>
     </template>
-  </ModalPopup>
+  </modal-popup>
 </template>
 
 <script setup lang="ts">
