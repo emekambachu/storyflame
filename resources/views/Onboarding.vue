@@ -65,15 +65,15 @@
           class="w-full my-6 flex flex-col items-start gap-4"
         >
           <ListOption class="w-full">
-            <template #text>📝 Develop a story</template>
+            <template #text>Develop a story</template>
           </ListOption>
 
           <ListOption class="w-full">
-            <template #text>🎬 Get feedback on a script</template>
+            <template #text>Get feedback on a script</template>
           </ListOption>
 
           <ListOption class="w-full">
-            <template #text>🦄 Other</template>
+            <template #text>Other</template>
           </ListOption>
         </div>
         <template v-else>
