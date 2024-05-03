@@ -2,19 +2,15 @@
   <div
     class="flex flex-col items-center text-center w-full max-w-[90px] shrink-0"
   >
-    <div
-      class="rounded-full bg-slate-200 h-[90px] w-[90px] flex items-center justify-center mb-2"
-    >
-      <img
-        v-if="item?.image?.path"
-        :src="item.image.path"
-        alt="icon"
-        :class="{
-          brightness: !item.achievement_date && item.percent !== 100,
-        }"
-        class="h-12 w-12 shrink-0"
-      />
-    </div>
+    <img
+      v-if="item?.image?.path"
+      :src="item.image.path"
+      alt="icon"
+      :class="{
+        brightness: !item.achievement_date && item.percent !== 100,
+      }"
+      class="h-[89px] w-[82px] object-contain shrink-0"
+    />
 
     <h6 class="text-black text-sm font-bold">{{ item.title }}</h6>
     <p

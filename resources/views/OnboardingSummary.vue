@@ -53,14 +53,59 @@
           v-if="activeTab == 0"
           :user="user"
         />
+        <template v-if="activeTab == 0">
+          <div class="flex flex-col gap-3 text-left items-start w-full">
+            <div class="flex items-center justify-between w-full">
+              <h4 class="text-sm text-neutral-700 font-bold">
+                Your recent stories
+              </h4>
+
+              <button
+                class="text-sm text-black font-normal opacity-50"
+                @click="activeTab = 1"
+              >
+                See all
+              </button>
+            </div>
+            <div class="flex flex-col gap-4 w-full">
+              <StoryCard
+                v-for="(story, storyID) in user.stories.in_progress"
+                :key="storyID"
+                :story="story"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 text-left items-start w-full">
+            <div class="flex items-center justify-between w-full">
+              <h4 class="text-sm text-neutral-700 font-bold">
+                Earned achievements
+              </h4>
+
+              <button
+                class="text-sm text-black font-normal opacity-50"
+                @click="activeTab = 2"
+              >
+                See all
+              </button>
+            </div>
+            <div class="flex gap-8 items-start max-w-full overflow-auto">
+              <AchievementCard
+                v-for="(achievement, achievementID) in user.achievements.earned"
+                :key="achievementID"
+                :item="achievement"
+              />
+            </div>
+          </div>
+        </template>
 
         <stories-tab
-          v-if="activeTab == 1 || activeTab == 0"
+          v-if="activeTab == 1"
           :user="user"
         />
 
         <achievements-tab
-          v-if="activeTab == 2 || activeTab == 0"
+          v-if="activeTab == 2"
           :achievements="user.achievements"
         />
 
@@ -78,6 +123,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import StoryCard from '@/components/StoryCard.vue'
+import AchievementCard from '@/components/AchievementCard.vue'
+
 import LoadingTab from '@/components/LoadingTab.vue'
 import ProfileTab from '@/components/ProfileTab.vue'
 import StoriesTab from '@/components/StoriesTab.vue'
