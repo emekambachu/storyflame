@@ -97,6 +97,7 @@ import axios from 'axios'
 import PausePlayButton from '@/components/PausePlayButton.vue'
 import RestartIcon from '@/components/icons/RestartIcon.vue'
 import AppLoader from '@/components/AppLoader.vue'
+import { SuccessResponse } from '@/types/responses'
 
 const emit = defineEmits(['transcribed'])
 
@@ -139,13 +140,14 @@ async function toggleRecording() {
 			formData.append('audio', blob)
 			loading.value = true
 			axios
-				.post('/api/v1/transcribe', formData, {
+				.post<SuccessResponse<any>>('/api/v1/transcribe', formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
 				})
 				.then((response) => {
-					transcribedText.value = response.data.transcription
+					transcribedText.value = response.data.data.transcription
+					console.log(transcribedText.value)
 					emit('transcribed', transcribedText.value)
 				})
 		} else {
