@@ -145,7 +145,7 @@ async function toggleRecording() {
 					},
 				})
 				.then((response) => {
-					transcribedText.value = response.data.text
+					transcribedText.value = response.data.transcription
 					emit('transcribed', transcribedText.value)
 				})
 		} else {
