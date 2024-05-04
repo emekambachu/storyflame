@@ -12,39 +12,39 @@ import { createLogger } from 'vue-logger-plugin'
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true
 
-
 const pinia = createPinia().use(piniaPluginPersistedState)
 
 const logger = createLogger({
-    enabled: true,
-    level: import.meta.env.MODE === 'development' ? 'debug' : 'error',
+	enabled: true,
+	level: import.meta.env.MODE === 'development' ? 'debug' : 'error',
 })
 
-const app = createApp(App)
-    .use(router)
-    .use(pinia)
-    .use(logger)
+const app = createApp(App).use(router).use(pinia).use(logger)
 
-axios.interceptors.response.use((response) => {
-    return response
-}, (error) => {
-    if (isAxiosError(error)) {
-        console.log('🚔 interceptor', error.response?.status)
-        if (error.response?.status === 419 || error.response?.status === 401) {
-            if (error.response.status === 419) {
-                console.log('Session expired')
-            }
-            const authStore = useAuthStore()
-            // invalidate the user right now
-            authStore.user = null
-            if (authStore.isLoggedIn) {
-                authStore.logout().then(r => {
-                    void router.push({ name: 'login' })
-                })
-            }
-        }
-    }
-    return Promise.reject(error)
-})
+axios.interceptors.response.use(
+	(response) => {
+		return response
+	},
+	(error) => {
+		if (isAxiosError(error)) {
+			console.log('🚔 interceptor', error.response?.status)
+			if (error.response?.status === 419 || error.response?.status === 401) {
+				if (error.response.status === 419) {
+					console.log('Session expired')
+				}
+				const authStore = useAuthStore()
+				// invalidate the user right now
+				if (authStore.isLoggedIn) {
+					authStore.logout().then((r) => {
+						void router.push({ name: 'login' })
+					})
+				}
+				authStore.user = null
+				void router.push({ name: 'login' })
+			}
+		}
+		return Promise.reject(error)
+	}
+)
 
 app.mount('body')

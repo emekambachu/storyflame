@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
 
             $table->foreignUuid('chat_id')->constrained('chats');
-            $table->foreignUuid('user_id')->constrained('users');
+            $table->foreignUuid('user_id')->nullable()->constrained('users');
             $table->text('content')->nullable();
 
             $table->softDeletes();

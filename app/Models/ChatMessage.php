@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSchemalessAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,21 +12,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ChatMessage extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+	use SoftDeletes, HasUuids, HasFactory, HasSchemalessAttributes;
 
-    protected $fillable = [
-        'user_id',
-        'chat_id',
-        'content',
-    ];
+	protected $fillable = [
+		'type',
+		'user_id',
+		'chat_id',
+		'content',
+		'extra_attributes',
+	];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+	public function scopeNotSystem($query)
+	{
+		return $query->where('type', '!=', 'system');
+	}
 
-    public function voiceMessage(): HasOne
-    {
-        return $this->hasOne(ChatVoiceMessage::class);
-    }
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
+
+	public function voiceMessage(): HasOne
+	{
+		return $this->hasOne(ChatVoiceMessage::class);
+	}
 }

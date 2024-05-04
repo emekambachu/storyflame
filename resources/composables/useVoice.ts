@@ -50,6 +50,7 @@ export default function useVoice() {
 	const logger = useLogger()
 	const hasPermission = usePermission('microphone')
 	const stopListening = ref<(() => void) | undefined>(undefined)
+	const isInitalizing = ref(false)
 	const isRecording = ref(false)
 	const isPaused = ref(false)
 	const recorder = ref<MediaRecorder | undefined>(undefined)
@@ -67,6 +68,7 @@ export default function useVoice() {
 
 	const listen = async (): Promise<MediaStream> => {
 		logger.debug('Starting to listen...')
+		isInitalizing.value = true
 
 		const constraints = {
 			audio: {
@@ -110,7 +112,9 @@ export default function useVoice() {
 		if (!stream) {
 			throw new Error('No stream found')
 		}
+		duration.value = 0
 		isRecording.value = true
+		isInitalizing.value = false
 		return stream
 	}
 
@@ -228,6 +232,9 @@ export default function useVoice() {
 	}
 
 	const stop = () => {
+		if (!isRecording.value || !recorder.value || isInitalizing.value) {
+			return
+		}
 		recorder.value?.stop()
 		return new Blob(chunks.value, {
 			type: supportedMimeType,
@@ -241,6 +248,7 @@ export default function useVoice() {
 
 	return {
 		hasPermission,
+		isInitalizing,
 		isRecording,
 		isPaused,
 		duration,
@@ -249,19 +257,22 @@ export default function useVoice() {
 		record,
 		connectWaveform,
 		start: async (waveformCallback: (level: number) => void) => {
+			if (isRecording.value || isInitalizing.value) {
+				return
+			}
 			const stream = await listen()
 			connectWaveform(stream, waveformCallback)
 			record(stream)
 		},
 		stop,
 		pause: () => {
-			if (!isRecording.value || isPaused.value) {
+			if (!isRecording.value || isPaused.value || isInitalizing.value) {
 				return
 			}
 			recorder.value?.pause()
 		},
 		resume: () => {
-			if (!isRecording.value || !isPaused.value) {
+			if (!isRecording.value || !isPaused.value || isInitalizing.value) {
 				return
 			}
 			recorder.value?.resume()

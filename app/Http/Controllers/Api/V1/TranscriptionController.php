@@ -18,7 +18,6 @@ class TranscriptionController extends Controller
         $audio = $request->file('audio');
 
         $path = $audio->store('tmp');
-        return $this->errorResponse('error', 500, 'error', ['path' => $path]);
 
         $response = Http::post(config('app.processing_url') . '/transcribe', [
             'path' => storage_path('app/' . $path),

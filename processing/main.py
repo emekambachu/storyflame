@@ -5,7 +5,7 @@ from fastapi import FastAPI
 import langchain
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_core.pydantic_v1 import Field, BaseModel as LangChainBaseModel
 from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnablePassthrough
@@ -146,8 +146,8 @@ def extract(params: ExtractRequest):
         "All properties should be extracted from the user response. "
         "If you can't extract the property, set it to null."
         "\n#Properties to extract: {properties}."
-        "\n#Question: {question}."
-        "\n#Answer: {message}."
+        "\n#What user been asked: {question}."
+        "\n#User answer: {message}."
         "\n#Output Format: Property name: Value\nMulti value property name: [Value1, Value2]",
         input_variables=["properties", "question", "message"],
     )
@@ -174,57 +174,16 @@ def extract(params: ExtractRequest):
 
     return response
 
-    # output_format_model = create_model(
-    #     'output_format_model', **{
-    #         key: (Optional[str], Field(
-    #             default=None,
-    #               title=value['name'],
-    #               description=f"{value['description']}."
-    #               #   + (
-    #               #       f" Examples: {
-    #               #           ', '.join(value['examples'])}" if 'examples' in value else ""
-    #               #   )
-    #               ))
-    #         for (key, value) in params.available_properties.items()
-    #     },
-    #     __base__=OutputFormatModel
-    # )
-    # output_format_model = output_format_model
-    # parser = PydanticOutputParser(pydantic_object=output_format_model)
 
-    # # prompt = PromptTemplate(
-    # #     template="You are an expert extraction algorithm. "
-    # #     "Only extract relevant information from the message based on the question asked."
-    # #     "You need to extract all properties in list below that you think is relevant from user response to a question."
-    # #     "If you can't extract the property, set it to null."
-    # #     "#User information: {data}."
-    # #     "#Properties to extract: {properties}."
-    # #     "#Question: {question}."
-    # #     "#Answer: {message}."
-    # #     "{format_instructions}",
-    # #     input_variables=["data", "properties", "question", "message"],
-    # #     partial_variables={
-    # #         "format_instructions": parser.get_format_instructions()}
-    # # )
-
-    # runnable = prompt | llm | parser
-
-    # response = runnable.invoke({
-    #     "question": params.question,
-    #     "message": params.message,
-    #     "data": params.data,
-    #     "properties": params.available_properties.keys()
-    # })
-
-    # print(response)
-
-    # return response
+class ChatHistoryMessage(BaseModel):
+    agent: str
+    text: str
 
 
 class OnboardingRequest(BaseModel):
-    user: dict
+    type: str
+    history: List[ChatHistoryMessage]
     data: List[dict]
-    previous_question: Optional[str]
 
 
 class OnboardingResponse(BaseModel):
@@ -233,30 +192,68 @@ class OnboardingResponse(BaseModel):
     )
 
 
+class OnboardingResponseMultipleChoise(OnboardingResponse):
+    options: List[str] = Field(
+        title="Options", description="The options to provide to the user."
+    )
+
+
 @app.post("/onboarding/question")
 def onboarding(params: OnboardingRequest):
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.2)
 
-    prompt = PromptTemplate(
-        template="You are an expert in onboarding new users."
-        "You need to ask the user open ended question based on data we need to extract from them."
-        "Group the data into one open ended question, keep it short and simple."
-        "While you will be looking to craft a question that will get the user to provide the information we need, "
-        "do not ask them directly for the list of data we need."
-        "Try to ask them a creative question that will get them to provide the information we need."
-        "Do not ask them same question as before."
-        "#Previous question: {previous_question}."
-        "#User information: {user}."
-        "#Data to extract: {data}.",
-        input_variables=["user", "data"]
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "You are an expert in onboarding new users." +
+                (
+                    (
+                        "You need to ask the user a question based on data we need to extract from them"
+                        "and provide them with 4 options to choose from."
+                        "Make sure you provide them options that are relevant to the user."
+                        "Important that you dont use repetitive options or options like 'I don't know', 'Other', 'None of the above'."
+                    )
+                    if params.type == "multiple_choice"
+                    else ("You need to ask the user open ended question based on data we need to extract from them."
+                          "Group the data into one open ended question, keep it short and simple."
+                          "While you will be looking to craft a question that will get the user to provide the information we need, "
+                          "do not ask them directly for the list of data we need."
+                          "Try to ask them a creative question that will get them to provide the information we need.")
+                ) +
+                "Do not ask them same question as before."
+                "Use chat history to make creative and relevant questions."
+                "#Data to extract: {data}."
+            ),
+            *[
+                (
+                    history.agent,
+                    history.text
+                )
+                for history in params.history[-10:]
+            ]
+        ]
     )
 
-    runnable = prompt | llm.with_structured_output(schema=OnboardingResponse)
+    # prompt = PromptTemplate(
+    #     template="You are an expert in onboarding new users."
+    #     "You need to ask the user open ended question based on data we need to extract from them."
+    #     "Group the data into one open ended question, keep it short and simple."
+    #     "While you will be looking to craft a question that will get the user to provide the information we need, "
+    #     "do not ask them directly for the list of data we need."
+    #     "Try to ask them a creative question that will get them to provide the information we need."
+    #     "Do not ask them same question as before."
+    #     "#Previous question: {previous_question}."
+    #     "#User information: {user}."
+    #     "#Data to extract: {data}.",
+    #     input_variables=["user", "data"]
+    # )
+
+    runnable = prompt | llm.with_structured_output(
+        schema=OnboardingResponseMultipleChoise if params.type == "multiple_choice" else OnboardingResponse)
 
     response = runnable.invoke({
-        "previous_question": params.previous_question,
-        "user": params.user,
         "data": params.data
     })
 
-    return response.question
+    return response

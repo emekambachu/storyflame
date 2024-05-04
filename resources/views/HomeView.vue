@@ -69,10 +69,5 @@ function logout() {
 }
 
 onMounted(()=>{
-    // axios.get('/sanctum/csrf-cookie').then(response => {
-        axios.post('/api/v1/onboarding', {
-            message: 'test',
-        })
-    // })
 })
 </script>
