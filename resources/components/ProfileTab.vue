@@ -13,7 +13,7 @@
           :key="goalID"
           class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"
         >
-          <dot-icon />
+          <point-icon />
           {{ goal }}
         </li>
       </ul>
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import PointIcon from '@/components/icons/PointIcon.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
 
 const props = defineProps({

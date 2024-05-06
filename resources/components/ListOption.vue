@@ -1,25 +1,35 @@
 <template>
-	<div
-		:class="[
-			selected ? 'border-red-300 bg-red-200' : 'border-gray-200 bg-white',
-			textClass,
-		]"
-		class="p-6 rounded-full flex items-center gap-2 border-2 hover:border-red-300 border-gray-200 hover:bg-red-300 transition-colors duration-75 select-none"
-	>
-		<slot name="text" />
-	</div>
+  <div
+    class="px-6 py-5 rounded-full flex items-center gap-2 outline outline-neutral-200"
+    :class="[
+      textClass,
+      status ? 'bg-red-200 text-red-600' : 'bg-white text-neutral-700',
+    ]"
+  >
+    <checkbox-item
+      v-if="multiple"
+      :status="status"
+    />
+    <slot name="text" />
+  </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import CheckboxItem from '@/components/CheckboxItem.vue'
+
 const props = defineProps({
-	textClass: {
-		type: String,
-		default: 'font-semibold text-xl text-neutral-700 hover:text-red-600',
-	},
-	selected: {
-		type: Boolean,
-		default: false,
-	},
+  textClass: {
+    type: String,
+    default: 'font-normal text-xl',
+  },
+  status: {
+    type: Boolean,
+    default: false,
+  },
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
