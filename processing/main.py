@@ -3,8 +3,9 @@ from typing import Dict, List, Optional
 from dotenv import load_dotenv
 from fastapi import FastAPI
 import langchain
+from langchain_core.output_parsers import PydanticOutputParser
 from langchain_openai import ChatOpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_core.pydantic_v1 import Field, BaseModel as LangChainBaseModel
 from langchain_core.messages import AIMessage
@@ -14,8 +15,6 @@ from openai import OpenAI
 app = FastAPI()
 
 load_dotenv()
-
-# os.environ["OPENAI_API_KEY"] = getpass.getpass()
 
 
 @app.get("/")
@@ -56,6 +55,128 @@ def transcribe(params: TranscribeRequest):
     # ]
 
 
+class OutputFormatModel(LangChainBaseModel):
+    pass
+    # error: Optional[str] = Field(
+    #     default=None, title="Error", description="If you cant extract the property, create a question to ask the user to provide the information.")
+
+
+def evaluate_answers(
+    properties: dict, question: str, answer: str
+) -> List[str]:
+    """
+    Function to evaluate the user's answers to the question
+    and provide the confidence level of the user providing the information
+    on the scale [unlikely, unsure, likely, most likely].
+    """
+    dict_prop_name_to_key = {
+        value['name']: key for key, value in properties.items()}
+
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+
+    prompt = PromptTemplate(
+        template="You are an expert analysis algorithm. "
+                 "From the user response to a question, tell us how likely the user provided the information we need. "
+                 "For each property in the list below, provide the confidence level of the user providing the "
+                 "information on the scale [unlikely, unsure, likely, most likely]."
+                 "\n#List of properties: {properties}."
+                 "\n#Question to user: {question}."
+                 "\n#User answer: {message}."
+                 "\n#Example: If the user mentioned the property 'name' with high confidence, set 'name' to most "
+                 "likely. If the user did not mention the property 'name', set 'name' to unlikely. If the user "
+                 "mentioned the property 'name' but you are not sure, set 'name' to unsure."
+                 "\n#Output Format: Property name: Confidence level\nOther property name: Confidence level",
+        input_variables=["properties", "message"]
+    )
+
+    chain = prompt | llm
+
+    print(
+        "Evaluating response",
+        question,
+        answer,
+    )
+
+    response = chain.invoke({
+        # give the list of property names only
+        "properties": [value['name'] for key, value in properties.items()],
+        "question": question,
+        "message": answer,
+    })
+
+    # if content is not string, return empty dict
+    if not isinstance(response.content, str):
+        print("Ai gave invalid response", response.content)
+        return []
+
+    if response.content == "":
+        print("Ai gave empty response")
+        return []
+
+    print("Ai response", response.content)
+
+    # parse the response
+    return [
+        dict_prop_name_to_key[prop[0]]
+        for prop in (prop.split(":") for prop in response.content.split("\n") if prop.strip() != "" and ":" in prop)
+        if prop[0].strip() in dict_prop_name_to_key and
+           prop[1].strip().lower() in ["likely", "most likely"]
+    ]
+
+
+def extract_properties(
+    evaluated_properties: List[str], question: str, answer: str, properties_config: dict
+) -> Dict[str, List[str] or str]:
+    """
+    Function to extract the properties from the user response to question
+    """
+    if len(evaluated_properties) == 0:
+        print("No properties found to extract.")
+        return {}
+
+    evaluated_properties_config = {
+        key: value for key, value in properties_config.items() if key in evaluated_properties
+    }
+    print("Evaluated properties", evaluated_properties_config)
+
+    # create new pydantic model for the output parsing
+    output_parsing_model = create_model(
+        "ExtractionOutput",
+        **{
+            key: (Optional[List[str]] if value['type'] == "array" else Optional[str],
+                  Field(title=value['name'], description=value['description']))
+            for key, value in evaluated_properties_config.items()
+        }
+    )
+
+    parser = PydanticOutputParser(pydantic_object=output_parsing_model)
+
+    extraction_prompt = PromptTemplate(
+        template="You are an expert extraction algorithm. "
+                 "You need to extract following properties from user response on a writing platform to a question. "
+                 "All properties should be extracted from the user response. "
+                 "If you can't extract the property, set it to null."
+                 "\n#Properties to extract: {properties}."
+                 "\n#What user been asked: {question}."
+                 "\n#User answer to question: {message}."
+                 "\n{format_instructions}",
+        input_variables=["properties", "question", "message"],
+        partial_variables={
+            "format_instructions": parser.get_format_instructions()
+        }
+    )
+
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+
+    runnable = extraction_prompt | llm | parser
+
+    return runnable.invoke({
+        "properties": [value['name'] for key, value in evaluated_properties_config.items()],
+        "question": question,
+        "message": answer,
+    })
+
+
 class ExtractRequest(BaseModel):
     question: str
     message: str
@@ -63,116 +184,20 @@ class ExtractRequest(BaseModel):
     available_properties: dict
 
 
-class OutputFormatModel(LangChainBaseModel):
-    pass
-    # error: Optional[str] = Field(
-    #     default=None, title="Error", description="If you cant extract the property, create a question to ask the user to provide the information.")
-
-
 @app.post("/onboarding/extract")
 def extract(params: ExtractRequest):
-    langchain.debug = True
-    llm = ChatOpenAI(model="gpt-3.5-turbo")
-
-    print(params.message)
-
-    dict_prop_name_to_key = {
-        value['name']: key for key, value in params.available_properties.items()}
-
-    prompt = PromptTemplate(
-        template="You are an expert analysis algorithm. "
-        "From the user response to a question, tell us how likely the user provided the information we need. "
-        "For each property in the list below, provide the confidence level of the user providing the information on the scale [unlikely, unsure, likely, most likely]."
-        "\n#List of properties: {properties}."
-        "\n#Question: {question}."
-        "\n#User answer: {message}."
-        "\n#Example: If the user mentioned the property 'name' with high confidence, set 'name' to most likely. If the user did not mention the property 'name', set 'name' to unlikely. If the user mentioned the property 'name' but you are not sure, set 'name' to unsure."
-        "\n#Output Format: Property name: Confidence level\nOther property name: Confidence level",
-        input_variables=["properties", "message"]
+    evaluated = evaluate_answers(
+        params.available_properties,
+        params.question,
+        params.message
     )
 
-    def parse(ai_message: AIMessage):
-        properties = ai_message.content.split("\n")
-        # Use generator expression instead of list comprehension
-        properties = (prop.split(":") for prop in properties)
-        properties = {
-            dict_prop_name_to_key[prop[0]]: prop[1].strip()
-            for prop in properties
-        }
-        return properties
-
-    def top_k(properties: Dict[str, str]):
-        return [
-            {
-                "name": params.available_properties[key]['name'],
-                "examples": params.available_properties[key]['examples'] if 'examples' in params.available_properties[key] else [],
-                "description": params.available_properties[key]['description'],
-            }
-            for key, value in properties.items()
-            if value.lower() == 'most likely' or value.lower() == 'likely'
-        ]
-
-    def check_number_of_properties(properties: Dict[str, str]):
-        if len(properties) == 0:
-            # llm found no properties to extract
-            raise ValueError("No properties found to extract.")
-        return properties
-
-    rating_chain = prompt | llm | parse | top_k | check_number_of_properties
-
-    # response = rating_chain.invoke({
-    #     "properties": [value['name'] for key, value in params.available_properties.items()],
-    #     "question": params.question,
-    #     "message": params.message,
-    # })
-
-    def extract_parse(ai_message: AIMessage):
-        properties = ai_message.content.split("\n")
-        # Use generator expression instead of list comprehension
-        properties = (prop.split(":") for prop in properties)
-        properties = {
-            dict_prop_name_to_key[prop[0]]: prop[1].strip().replace("'", "")
-            if not prop[1].strip().startswith("[")
-            else [
-                val.strip() for val in prop[1].strip().replace("[", "").replace("]", "").split(",")
-            ]
-            for prop in properties
-        }
-        return properties
-
-    extraction_prompt = PromptTemplate(
-        template="You are an expert extraction algorithm. "
-        "You need to extract following properties from user response on a writing platform to a question. "
-        "All properties should be extracted from the user response. "
-        "If you can't extract the property, set it to null."
-        "\n#Properties to extract: {properties}."
-        "\n#What user been asked: {question}."
-        "\n#User answer: {message}."
-        "\n#Output Format: Property name: Value\nMulti value property name: [Value1, Value2]",
-        input_variables=["properties", "question", "message"],
+    return extract_properties(
+        evaluated,
+        params.question,
+        params.message,
+        params.available_properties
     )
-
-    full_chain = RunnablePassthrough.assign(
-        properties=rating_chain) | extraction_prompt | llm | extract_parse
-
-    # extraction_response = extraction_chain.invoke({
-    #     "properties": [
-    #         params.available_properties[key]['name']
-    #         for key, value in response.items() if value >= 5],
-    #     "question": params.question,
-    #     "message": params.message,
-    # })
-
-    try:
-        response = full_chain.invoke({
-            "properties": [value['name'] for key, value in params.available_properties.items()],
-            "question": params.question,
-            "message": params.message,
-        })
-    except ValueError as e:
-        response = {}
-
-    return response
 
 
 class ChatHistoryMessage(BaseModel):
@@ -187,12 +212,16 @@ class OnboardingRequest(BaseModel):
 
 
 class OnboardingResponse(BaseModel):
+    encouragement: str = Field(
+        title="Encouragement",
+        description="Encouragement message to provide to the user after they provide the information."
+    )
     question: str = Field(
         title="Question", description="The question to ask the user to extract the data."
     )
 
 
-class OnboardingResponseMultipleChoise(OnboardingResponse):
+class OnboardingResponseMultipleChoice(OnboardingResponse):
     options: List[str] = Field(
         title="Options", description="The options to provide to the user."
     )
@@ -200,60 +229,62 @@ class OnboardingResponseMultipleChoise(OnboardingResponse):
 
 @app.post("/onboarding/question")
 def onboarding(params: OnboardingRequest):
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.2)
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
+    langchain.debug = True
+
+    print(params.history[-10:])
+    print("Type of question", params.type)
+    print("Generating question for data", params.data)
 
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                "You are an expert in onboarding new users." +
-                (
-                    (
-                        "You need to ask the user a question based on data we need to extract from them"
-                        "and provide them with 4 options to choose from."
-                        "Make sure you provide them options that are relevant to the user."
-                        "Important that you dont use repetitive options or options like 'I don't know', 'Other', 'None of the above'."
-                    )
-                    if params.type == "multiple_choice"
-                    else ("You need to ask the user open ended question based on data we need to extract from them."
-                          "Group the data into one open ended question, keep it short and simple."
-                          "While you will be looking to craft a question that will get the user to provide the information we need, "
-                          "do not ask them directly for the list of data we need."
-                          "Try to ask them a creative question that will get them to provide the information we need.")
-                ) +
-                "Do not ask them same question as before."
-                "Use chat history to make creative and relevant questions."
-                "#Data to extract: {data}."
+                "You are onboarding chat-bot for a writing platform "
+                "that keeps an engaging dialog with the user to get the information we need."
+                "Great examples of encouragement are: 'That's awesome! I also like that', 'Interesting choice!', etc."
+                "Good examples of questions are: 'What type of characters do you like to write about?', 'What's your "
+                "favorite genre?', etc."
+                "You never ask the same question twice."
+                "You need to create creative and engaging responses to the user's message."
+                "Keep dialog with the user engaging and interesting."
             ),
             *[
                 (
                     history.agent,
                     history.text
                 )
-                for history in params.history[-10:]
-            ]
+                for history in params.history[-6:]
+            ],
+            (
+                "system",
+                "For the next question you need to ask for this data: {data}."
+                "Only ask about the data we need to extract from the user."
+                "{question_instructions}"
+            )
         ]
     )
 
-    # prompt = PromptTemplate(
-    #     template="You are an expert in onboarding new users."
-    #     "You need to ask the user open ended question based on data we need to extract from them."
-    #     "Group the data into one open ended question, keep it short and simple."
-    #     "While you will be looking to craft a question that will get the user to provide the information we need, "
-    #     "do not ask them directly for the list of data we need."
-    #     "Try to ask them a creative question that will get them to provide the information we need."
-    #     "Do not ask them same question as before."
-    #     "#Previous question: {previous_question}."
-    #     "#User information: {user}."
-    #     "#Data to extract: {data}.",
-    #     input_variables=["user", "data"]
-    # )
-
     runnable = prompt | llm.with_structured_output(
-        schema=OnboardingResponseMultipleChoise if params.type == "multiple_choice" else OnboardingResponse)
+        schema=OnboardingResponseMultipleChoice if params.type == "multiple_choice" else OnboardingResponse)
 
     response = runnable.invoke({
-        "data": params.data
+        "data": params.data,
+        "question_instructions": "You need to ask the user a question based on data we need to extract from them"
+                                 "and provide them with 4 options to choose from."
+                                 "Make sure you provide them options that are relevant to the user."
+                                 "Important that you dont use repetitive options or options "
+                                 "like 'I don't know', 'Other', "
+                                 "'None of the above'."
+        if params.type == "multiple_choice"
+        else "You need to ask the user open ended question based on data we need to extract from them."
+             "Group the data into one open ended question, keep it short and simple."
+             "While you will be looking to craft a question that will get the user to provide the "
+             "information we need,"
+             "do not ask them directly for the list of data we need."
+             "Try to ask them a creative question that will get them to provide the information we need."
     })
+
+    print(response)
 
     return response

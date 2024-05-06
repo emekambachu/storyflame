@@ -78,8 +78,6 @@
                 A passcode has been sent to your email.
             </p>
         </form>
-        <pre>{{ credentials }}</pre>
-        <pre>{{ config }}</pre>
     </div>
 </template>
 

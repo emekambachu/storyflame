@@ -24,7 +24,7 @@ class ChatService
         return $msg;
     }
 
-    public function create(Chat $chat, User $sender, array $data)
+    public function create(Chat $chat, User $sender, array $data, array $extra = null)
     {
         if (isset($data['audio'])) {
             return $this->createVoiceMessage($data['audio'], $chat, $sender);
@@ -32,6 +32,7 @@ class ChatService
             return $chat->chatMessages()->create([
                 'user_id' => $sender->id,
                 'content' => $data['content'],
+                'extra_attributes' => $extra ?? null,
             ]);
         } else {
             throw new \InvalidArgumentException('Invalid message data');
