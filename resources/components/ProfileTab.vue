@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-8">
     <div class="flex flex-col gap-3 text-left items-start w-full">
       <h4 class="text-sm text-neutral-700 font-bold">About</h4>
-      <p class="text-neutral-950 text-sm font-normal">{{ user.about }}</p>
+      <p class="text-neutral-950 text-sm font-normal">{{ user.bio }}</p>
     </div>
 
     <div class="flex flex-col gap-3 text-left items-start w-full">
@@ -23,7 +23,7 @@
       <h4 class="text-sm text-neutral-700 font-bold">Inspired by</h4>
       <div class="flex item-start gap-3">
         <image-component
-          v-for="(poster, posterID) in user.inspiration"
+          v-for="(poster, posterID) in user.media"
           :key="posterID"
           :src="poster.image?.path"
           alt="poster"
@@ -36,7 +36,7 @@
       <h4 class="text-sm text-neutral-700 font-bold">Favorite characters</h4>
       <div class="flex gap-2 items-center flex-wrap">
         <p
-          v-for="(character, characterID) in user.favorite_characters"
+          v-for="(character, characterID) in user.characters"
           :key="characterID"
           class="text-slate-600 text-xs font-normal px-3 py-2 rounded-full"
           style="background-color: rgba(96, 159, 255, 0.1)"

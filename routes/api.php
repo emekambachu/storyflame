@@ -15,6 +15,7 @@ Route::group([
 		], function () {
 			Route::post('register', 'RegisterController@register');
 			Route::post('login', 'LoginController@authenticate');
+			Route::post('federate', 'LoginController@federate');
 			Route::middleware('auth:sanctum')->group(function () {
 				Route::get('user', 'LoginController@user');
 				Route::post('logout', 'LoginController@logout');
@@ -24,7 +25,14 @@ Route::group([
 		Route::middleware('auth:sanctum')->group(function () {
 			Route::get('onboarding', 'OnboardingController@index');
 			Route::post('onboarding', 'OnboardingController@store');
+			Route::get('summary', 'OnboardingController@summary');
 			Route::post('transcribe', 'TranscriptionController@transcribe');
+
+			Route::group([
+				'prefix' => 'achievements',
+			], function () {
+				Route::resource('achievements', 'AchievementController');
+			});
 		});
 	});
 });

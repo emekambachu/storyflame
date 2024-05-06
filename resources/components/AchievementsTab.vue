@@ -5,7 +5,7 @@
 
       <div class="flex gap-8 items-start max-w-full overflow-auto">
         <AchievementCard
-          v-for="(achievement, achievementID) in achievements.earned"
+          v-for="(achievement, achievementID) in achievements"
           :key="achievementID"
           :item="achievement"
         />

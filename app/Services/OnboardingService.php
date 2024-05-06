@@ -230,6 +230,11 @@ class OnboardingService
 		]
 	];
 
+	public static function getSummary()
+	{
+		return auth()->user()->extra_attributes->onboarding ?? [];
+	}
+
 
 	public function getQuestionCount(): int
 	{
@@ -459,7 +464,10 @@ class OnboardingService
 	{
 		$chat = $this->getChat();
 
-		$questions = $chat->chatMessages()->notSystem()->latest()->whereNull('user_id')->get();
+		$questions = $chat->chatMessages()->notSystem()->orWhere(
+			fn($query) => $query->where('type', 'system')->where('content', 'finish')
+		)
+			->latest()->whereNull('user_id')->get();
 		if ($questions->count() === 0) {
 			return $this->generateNextQuestion($chat);
 		}

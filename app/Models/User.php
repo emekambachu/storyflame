@@ -4,13 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasSchemalessAttributes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
 
 class User extends Authenticatable
 {
@@ -62,5 +60,10 @@ class User extends Authenticatable
 	public function stories()
 	{
 		return $this->hasMany(Story::class);
+	}
+
+	public function verificationCodes()
+	{
+		return $this->hasMany(VerificationCode::class);
 	}
 }

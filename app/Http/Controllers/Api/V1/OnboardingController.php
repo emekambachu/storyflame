@@ -35,4 +35,11 @@ class OnboardingController extends Controller
 			'progress' => $onboardingService->getProgress()
 		]);
 	}
+
+	public function summary()
+	{
+		return $this->successResponse('success', [
+			'summary' => OnboardingService::getSummary()
+		]);
+	}
 }
