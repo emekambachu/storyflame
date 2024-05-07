@@ -1,13 +1,37 @@
 import { defineStore } from 'pinia'
 import User from '../types/user'
-import { computed, ref } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import axios from 'axios'
 import { SuccessResponse } from '../types/responses'
+import AchievementPopup from '@/components/modals/AchievementPopup.vue'
+import { useEcho } from '@/types/useEcho'
 
 export const useAuthStore = defineStore(
     'auth',
     () => {
+        const { echo } = useEcho()
+        const { show } = inject('modal')
+
         const user = ref<User | null>(null)
+
+        watch(user, () => {
+            console.log('user', user.value)
+            if (user.value) {
+                echo.private(`App.Models.User.${user.value.id}`).listen(
+                    '.achievement.unlocked',
+                    (e) => {
+                        console.log(e)
+                        show(AchievementPopup, {
+                            title: e.title,
+                            description: e.description,
+                            icon: e.icon,
+                        })
+                    }
+                )
+            } else {
+                echo.leaveAllChannels()
+            }
+        })
 
         const isLoggedIn = computed(() => !!user.value)
 
