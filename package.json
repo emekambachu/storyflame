@@ -29,10 +29,14 @@
     },
     "dependencies": {
         "@vueuse/core": "^10.9.0",
+        "laravel-echo": "^1.16.1",
+        "motion": "^10.17.0",
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^3.2.1",
+        "pusher-js": "^8.4.0-rc2",
         "vue": "^3.4.24",
         "vue-logger-plugin": "^2.2.3",
+        "vue-mountable": "^0.1.5",
         "vue-router": "^4.3.2"
     }
 }

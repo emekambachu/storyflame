@@ -2,7 +2,9 @@
 
 interface ImportMetaEnv {
     readonly VITE_APP_TITLE: string
-    // more env variables...
+    readonly VITE_APP_NAME: string
+    readonly VITE_APP_PUSHER_APP_KEY: string
+    readonly VITE_APP_PUSHER_APP_CLUSTER: string
 }
 
 interface ImportMeta {

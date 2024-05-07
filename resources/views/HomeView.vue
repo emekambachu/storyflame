@@ -8,7 +8,7 @@
                 {{ appName }}
             </span>
         </h1>
-        <div class="flex gap-2">
+        <div class="flex flex-col gap-2">
             <router-link
                 is="btn"
                 :to="{ name: 'login' }"
@@ -16,10 +16,21 @@
             >
                 Get Started
             </router-link>
+            <button
+                v-if="isLoggedIn"
+                class="text-gray-500 px-3 py-1 rounded-full"
+                @click="logout"
+            >
+                logout
+            </button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+import { useAuthStore } from '@/stores/auth'
+
 const appName = import.meta.env.VITE_APP_NAME
+
+const { logout, isLoggedIn } = useAuthStore()
 </script>

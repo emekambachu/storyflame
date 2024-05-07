@@ -6,6 +6,8 @@ namespace App\Models;
 use App\Models\Concerns\HasSchemalessAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -49,7 +51,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function chats()
+    public function chats(): HasMany
     {
         return $this->hasMany(Chat::class, 'sender_id');
     }
@@ -57,17 +59,17 @@ class User extends Authenticatable
     /**
      * Get the stories for the user.
      */
-    public function stories()
+    public function stories(): HasMany
     {
         return $this->hasMany(Story::class);
     }
 
-    public function verificationCodes()
+    public function verificationCodes(): HasMany
     {
         return $this->hasMany(VerificationCode::class);
     }
 
-    public function favoriteMovies()
+    public function favoriteMovies(): MorphToMany
     {
         return $this->morphToMany(
             Media::class,
@@ -78,5 +80,10 @@ class User extends Authenticatable
             'id',
             'id'
         );
+    }
+
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(Achievement::class);
     }
 }

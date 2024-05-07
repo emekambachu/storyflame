@@ -15,44 +15,10 @@ class OnboardingService
         private readonly ChatService          $chatService,
         private readonly TranscriptionService $transcriptionService,
         private readonly MediaService         $mediaService,
+        private readonly AchievementService   $achievementService,
     )
     {
     }
-
-    // TODO: move this to achievement service
-    const ACHIEVEMENTS = [
-        'icebreaker' => [
-            'name',
-            'level',
-            'genre_focus',
-            'writing_medium',
-        ],
-        'recommendation_ready' => [
-            'media',
-            'characters',
-            'audience',
-            'themes',
-        ],
-        'process' => [
-            'productivity',
-            'writing_process',
-            'stage_preference',
-            'revision_style',
-        ],
-        'collaborator' => [
-            'collaboration_style',
-            'adaptability',
-        ],
-        'sculptor' => [
-            'world_engagement',
-            'narrative_focus',
-        ],
-        'growth_guru' => [
-            'motivation',
-            'education',
-            'stage',
-        ],
-    ];
 
     const QUESTION_GROUPS = [
         # get to know user
@@ -244,7 +210,7 @@ class OnboardingService
                     break;
                 case 'media':
                     foreach ($value as $media) {
-                        $user->favoriteMovies()->save(
+                        $user->favoriteMovies()->syncWithoutDetaching(
                             $this->mediaService->getMovieByTitle($media)
                         );
                     }
@@ -265,6 +231,7 @@ class OnboardingService
         $user = auth()->user();
         if (!$user->extra_attributes->onboarded ?? false) {
             $this->saveUserData($user);
+            $this->achievementService->updateProgress($user);
         }
         return $user;
     }
@@ -378,6 +345,8 @@ class OnboardingService
 
         $user->extra_attributes->onboarding = array_merge($user_data, $extracted);
         $user->save();
+
+        $this->achievementService->updateProgress($user);
 
         return $user->extra_attributes->onboarding;
     }
