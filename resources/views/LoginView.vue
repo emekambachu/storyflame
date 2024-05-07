@@ -74,6 +74,15 @@
             >
                 Sign In
             </button>
+            <p class="inline text-neutral-950 text-sm font-normal">
+                Don't have an account?
+                <router-link
+                    :to="{ name: 'register' }"
+                    class="text-red-600"
+                >
+                    Register
+                </router-link>
+            </p>
             <p v-if="federated === credentials.email && config?.otp_sent">
                 A passcode has been sent to your email.
             </p>
