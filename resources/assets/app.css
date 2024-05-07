@@ -11,3 +11,9 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.text-gradient {
+    background: linear-gradient(90deg, #f12711, #f5af19);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

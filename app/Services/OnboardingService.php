@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Nette\NotImplementedException;
@@ -13,6 +14,7 @@ class OnboardingService
     public function __construct(
         private readonly ChatService          $chatService,
         private readonly TranscriptionService $transcriptionService,
+        private readonly MediaService         $mediaService,
     )
     {
     }
@@ -230,9 +232,41 @@ class OnboardingService
         ]
     ];
 
-    public static function getSummary()
+    private function saveUserData(User $user): void
     {
-        return auth()->user()->extra_attributes->onboarding ?? [];
+        if (!$user->extra_attributes->data ?? false) {
+            $user->extra_attributes->data = [];
+        }
+        foreach ($user->extra_attributes->onboarding as $key => $value) {
+            switch ($key) {
+                case 'name':
+                    $user->name = $value;
+                    break;
+                case 'media':
+                    foreach ($value as $media) {
+                        $user->favoriteMovies()->save(
+                            $this->mediaService->getMovieByTitle($media)
+                        );
+                    }
+                    break;
+                default:
+                    $data = $user->extra_attributes->data ?? [];
+                    $data[$key] = $value;
+                    $user->extra_attributes->data = $data;
+            }
+        }
+        $user->extra_attributes['onboarded'] = true;
+
+        $user->save();
+    }
+
+    public function getSummary(): User
+    {
+        $user = auth()->user();
+        if (!$user->extra_attributes->onboarded ?? false) {
+            $this->saveUserData($user);
+        }
+        return $user;
     }
 
 
@@ -299,23 +333,6 @@ class OnboardingService
         ]);
     }
 
-    private function saveUserData(array $extracted): void
-    {
-        $user = auth()->user();
-
-        foreach ($extracted as $key => $value) {
-            switch ($key) {
-                case 'name':
-                    $user->name = $value;
-                    break;
-                default:
-                    $user->extra_attributes[$key] = $value;
-            }
-        }
-
-        $user->save();
-    }
-
     public function extractData(): array
     {
         $user = auth()->user();
@@ -347,9 +364,11 @@ class OnboardingService
 
             $request->throw();
 
+            $replaceNull = fn($value) => $value === null || $value === '' || $value === 'null' || $value === 'N/A' ? null : $value;
+
             # filter out null values
             $extracted = array_filter(array_map(
-                fn($value) => $value === null || $value === '' || $value === 'null' || $value === 'N/A' ? null : $value,
+                fn($value) => is_array($value) ? array_map($replaceNull, $value) : $replaceNull($value),
                 $request->json()
             ), fn($value) => $value !== null && $value !== '');
         }
@@ -357,7 +376,6 @@ class OnboardingService
         $answer->extra_attributes->extracted = $extracted;
         $answer->save();
 
-        $this->saveUserData($extracted);
         $user->extra_attributes->onboarding = array_merge($user_data, $extracted);
         $user->save();
 

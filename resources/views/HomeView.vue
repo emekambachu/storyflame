@@ -1,73 +1,25 @@
 <template>
-  <div class="w-full h-[84vh] text-black px-4 flex flex-col gap-4">
-    <h1 class="font-bold text-2xl text-black">Home</h1>
     <div
-      v-if="!auth.isLoggedIn"
-      class="flex items-center gap-3"
+        class="w-full min-h-dvh flex flex-col items-center justify-center gap-5"
     >
-      <a
-        class="rounded-full bg-red-600 text-white px-6 py-2 hover:bg-red-700"
-        href="/auth/register"
-      >
-        register
-      </a>
-      <a
-        class="rounded-full bg-red-600 text-white px-6 py-2 hover:bg-red-700"
-        href="/auth/login"
-      >
-        login
-      </a>
+        <h1 class="text-2xl">
+            Welcome to
+            <span class="text-gradient font-bold">
+                {{ appName }}
+            </span>
+        </h1>
+        <div class="flex gap-2">
+            <router-link
+                is="btn"
+                :to="{ name: 'login' }"
+                class="bg-red-500 text-white px-3 py-1 rounded-full"
+            >
+                Get Started
+            </router-link>
+        </div>
     </div>
-    <div
-      v-else
-      class="flex items-center gap-3"
-    >
-      <button @click="user">me</button>
-      <button @click="logout">logout</button>
-    </div>
-
-    <pre>
-              {{ auth.isLoggedIn }}
-              {{ auth.user }}
-      </pre
-    >
-  </div>
 </template>
 
 <script lang="ts" setup>
-import { useAuthStore } from '../stores/auth'
-import { onMounted } from 'vue'
-import axios from 'axios'
-
-const auth = useAuthStore()
-
-function login() {
-  auth.login({
-    email: 'nazar@mutado.dev',
-    password: 'moonpass',
-  })
-}
-
-function register() {
-  auth.register({
-    name: 'Nazar',
-    email: 'nazar@mutado.dev',
-    password: 'moonpass',
-  })
-}
-
-function user() {
-  auth.getUser().then((response) => {
-    console.log(response.data)
-  })
-}
-
-function logout() {
-  auth.logout().then((response) => {
-    console.log(response.data)
-  })
-}
-
-onMounted(()=>{
-})
+const appName = import.meta.env.VITE_APP_NAME
 </script>

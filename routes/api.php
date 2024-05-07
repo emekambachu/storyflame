@@ -3,45 +3,49 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-	'namespace' => 'App\Http\Controllers\Api',
+    'namespace' => 'App\Http\Controllers\Api',
 ], function () {
-	Route::group([
-		'prefix' => 'v1',
-		'namespace' => 'V1',
-	], function () {
-		Route::group([
-			'prefix' => 'auth',
-			'namespace' => 'Authentication',
-		], function () {
-			Route::post('register', 'RegisterController@register');
-			Route::post('login', 'LoginController@authenticate');
-			Route::post('federate', 'LoginController@federate');
-			Route::middleware('auth:sanctum')->group(function () {
-				Route::get('user', 'LoginController@user');
-				Route::post('logout', 'LoginController@logout');
-			});
-		});
+    Route::group([
+        'prefix' => 'v1',
+        'namespace' => 'V1',
+    ], function () {
+        Route::group([
+            'prefix' => 'auth',
+            'namespace' => 'Authentication',
+        ], function () {
+            Route::post('register', 'RegisterController@register');
+            Route::post('login', 'LoginController@authenticate');
+            Route::post('federate', 'LoginController@federate');
+            Route::middleware('auth:sanctum')->group(function () {
+                Route::get('user', 'LoginController@user');
+                Route::post('logout', 'LoginController@logout');
+            });
+        });
 
-		Route::middleware('auth:sanctum')->group(function () {
-			Route::get('onboarding', 'OnboardingController@index');
-			Route::post('onboarding', 'OnboardingController@store');
-			Route::get('summary', 'OnboardingController@summary');
-			Route::post('transcribe', 'TranscriptionController@transcribe');
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::group([
+                'prefix' => 'onboarding',
+            ], function () {
+                Route::get('/', 'OnboardingController@index');
+                Route::post('/', 'OnboardingController@store');
+                Route::get('summary', 'OnboardingController@summary');
+            });
+            Route::post('transcribe', 'TranscriptionController@transcribe');
 
-			Route::group([
-				'prefix' => 'achievements',
-			], function () {
-				Route::resource('achievements', 'AchievementController');
-			});
-		});
-	});
+            Route::group([
+                'prefix' => 'achievements',
+            ], function () {
+                Route::resource('achievements', 'AchievementController');
+            });
+        });
+    });
 });
 
 # fallback route
 Route::fallback(function () {
-	return response()->json([
-		'message' => 'Not Found',
-		'type' => 'error',
-		'details' => 'The requested resource was not found.'
-	], 404);
+    return response()->json([
+        'message' => 'Not Found',
+        'type' => 'error',
+        'details' => 'The requested resource was not found.'
+    ], 404);
 });

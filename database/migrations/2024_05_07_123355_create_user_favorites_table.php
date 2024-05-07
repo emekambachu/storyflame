@@ -7,19 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('verification_codes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-
+        Schema::create('user_favorites', function (Blueprint $table) {
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->string('otp');
-            $table->timestamp('expire_at');
-
+            $table->uuidMorphs('favorite');
             $table->timestamps();
+
+            $table->primary(['user_id', 'favorite_id', 'favorite_type']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('verification_codes');
+        Schema::dropIfExists('user_favorites');
     }
 };
