@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full max-w-80 grid grid-cols-[48px,auto,48px] grid-rows-1 gap-16 items-center"
+        class="w-full max-w-80 grid grid-cols-[48px,auto,48px] grid-rows-1 gap-16 items-center relative"
     >
         <transition
             enter-active-class="transition-opacity duration-200"
@@ -14,7 +14,7 @@
                 v-if="isRecording"
                 key="restart-button"
                 class="grid grid-rows-[1fr,auto,1fr] group gap-1"
-                @click="stop"
+                @click="stop(true)"
             >
                 <span
                     class="row-start-2 w-12 h-12 shrink-0 bg-black rounded-full flex items-center justify-center gap-1 select-none group-active:scale-95 transition-transform duration-75"
@@ -27,6 +27,18 @@
             </button>
         </transition>
 
+        <tooltip-message
+            v-if="!loading && (!isRecording || showRemainingWarning)"
+            class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2"
+        >
+            {{
+                !isRecording
+                    ? 'Press to start'
+                    : showRemainingWarning
+                      ? 'Less than 30 seconds left'
+                      : null
+            }}
+        </tooltip-message>
         <div
             key="start-stop-button"
             :class="{
@@ -103,16 +115,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
 import useVoice from '@/composables/useVoice'
-import axios from 'axios'
 import PausePlayButton from '@/components/PausePlayButton.vue'
 import RestartIcon from '@/components/icons/RestartIcon.vue'
 import AppLoader from '@/components/AppLoader.vue'
-import { SuccessResponse } from '@/types/responses'
+import TooltipMessage from '@/components/TooltipMessage.vue'
+import ErrorPopup from '@/components/modals/ErrorPopup.vue'
 
-const emit = defineEmits(['transcribed'])
+const emit = defineEmits(['recorded'])
 
 const props = defineProps({
     limit: {
@@ -137,9 +149,7 @@ const {
     duration,
 } = useVoice()
 
-onSilentError(() => {
-    console.log('Silent error')
-})
+const { show } = inject('modal')
 
 const audioLevel = ref<number>(0)
 const pulse = computed(() => {
@@ -151,24 +161,23 @@ const transcribedText = ref<string>('')
 async function toggleRecording() {
     try {
         if (isRecording.value) {
-            const blob = stop()
-            const formData = new FormData()
-            formData.append('audio', blob)
-            axios
-                .post<SuccessResponse<any>>('/api/v1/transcribe', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                .then((response) => {
-                    transcribedText.value = response.data.data.transcription
-                    console.log(transcribedText.value)
-                    emit('transcribed', transcribedText.value)
-                })
+            stop()
         } else {
-            void start((level: number) => {
+            start((level: number) => {
                 audioLevel.value = level
-            })
+            }, props.limit)
+                .then((result) => {
+                    if (result) {
+                        if (duration.value < 1000) {
+                            console.log('too short')
+                            return
+                        }
+                        emit('recorded', result)
+                    }
+                })
+                .catch(() => {
+                    show(ErrorPopup)
+                })
         }
     } catch (e) {
         console.error(e)

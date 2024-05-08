@@ -1,7 +1,7 @@
 <template>
     <modal-popup
         primary="Continue"
-        secondary="Close"
+        @primary="emit('close')"
     >
         <div class="flex flex-col items-center text-center gap-2">
             <img
@@ -17,6 +17,8 @@
 
 <script lang="ts" setup>
 import ModalPopup from '@/components/modals/ModalPopup.vue'
+
+const emit = defineEmits(['close'])
 
 const props = defineProps({
     title: {

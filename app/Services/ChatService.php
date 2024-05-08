@@ -9,12 +9,21 @@ use Illuminate\Http\UploadedFile;
 
 class ChatService
 {
+    public function __construct(
+        public readonly TranscriptionService $transcriptionService
+    )
+    {
+    }
+
     public function createVoiceMessage(UploadedFile $audio, Chat $chat, User $sender)
     {
+        $path = $audio->store('tmp');
+        $transcription = $this->transcriptionService->transcribe($path);
+
         /** @var ChatMessage $msg */
         $msg = $chat->chatMessages()->createQuietly([
             'user_id' => $sender->id,
-            'content' => null,
+            'content' => $transcription,
         ]);
 
         $msg->voiceMessage()->create([

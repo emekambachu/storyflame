@@ -9,24 +9,29 @@
         >
             <button
                 class="py-2 w-full flex justify-center"
-                @touchend.passive="onDragEnd"
-                @touchmove.passive="onDrag"
-                @touchstart.passive="onDragStart"
+                @touchstart.passive="onTouchDragStart"
+                @touchend.passive="onTouchDragEnd"
+                @touchmove.passive="onTouchDrag"
+                @mousedown.passive="onClickDragStart"
+                @mouseup.passive="onClickDragEnd"
+                @mousemove.passive="onClickDrag"
             >
                 <span class="bg-gray-300 rounded-full h-1.5 w-1/6"></span>
             </button>
-            <div class="px-6 flex flex-col gap-10">
+            <div class="px-6 flex flex-col gap-10 grow">
                 <slot />
-                <div class="flex flex-col">
+                <div class="flex flex-col mt-auto">
                     <button
                         v-if="primary"
                         class="bg-red-600 rounded-3xl text-white py-3 font-medium text-base w-full"
+                        @click="emit('primary')"
                     >
                         {{ primary }}
                     </button>
                     <button
                         v-if="secondary"
                         class="text-gray-400/50 py-3 text-base font-medium w-full"
+                        @click="emit('secondary')"
                     >
                         {{ secondary }}
                     </button>
@@ -37,10 +42,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import { animate } from 'motion'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'primary', 'secondary'])
 
 const props = defineProps({
     primary: {
@@ -53,12 +58,22 @@ const props = defineProps({
     },
 })
 
+const close = inject('close-current-modal') as () => void
+
 const offset = ref(0)
 const touchStart = ref(0)
 const container = ref<HTMLDivElement | null>(null)
 
-function onDragStart(e: TouchEvent) {
-    touchStart.value = e.touches[0].clientY
+function onDragStart(y: number) {
+    touchStart.value = y
+}
+
+function onTouchDragStart(e: TouchEvent) {
+    onDragStart(e.touches[0].clientY)
+}
+
+function onClickDragStart(e: MouseEvent) {
+    onDragStart(e.clientY)
 }
 
 function onDrag(e: TouchEvent) {
@@ -71,7 +86,7 @@ function onDrag(e: TouchEvent) {
 
 function onDragEnd(e: TouchEvent) {
     if (offset.value > 50) {
-        emit('close')
+        close()
     } else {
         if (!container.value) return
         animate(

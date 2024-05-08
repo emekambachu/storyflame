@@ -33,28 +33,8 @@
                 ]"
             />
 
-            <!--            <animated-text-->
-            <!--                is="h3"-->
-            <!--                key="subtitle"-->
-            <!--                :model-value="question?.subtitle"-->
-            <!--                class="text-neutral-950 opacity-60 text-sm font-normal mb-2"-->
-            <!--            />-->
-            <!--            <animated-text-->
-            <!--                is="h1"-->
-            <!--                key="content"-->
-            <!--                :model-value="question?.content"-->
-            <!--                class="text-neutral-700 text-3xl font-bold"-->
-            <!--            />-->
-
             <template v-if="isSpeakingMode || loading">
                 <div class="w-full mb-8 mt-auto flex flex-col gap-4">
-                    <!--        <tooltip-message-->
-                    <!--          v-if="showTooltip"-->
-                    <!--          class="w-fit mx-auto text-pure-white"-->
-                    <!--        >-->
-                    <!--          <template #text><p class="text-red-600">Press to start</p></template>-->
-                    <!--        </tooltip-message>-->
-
                     <!--        <tooltip-message-->
                     <!--          v-if="!showTooltip"-->
                     <!--          class="text-red-200 w-fit mx-auto mb-6"-->
@@ -71,7 +51,7 @@
                         :loading="loading"
                         class="mx-auto"
                         @click="showTooltip = !showTooltip"
-                        @transcribed="extractData"
+                        @recorded="extractData"
                     />
                 </div>
             </template>

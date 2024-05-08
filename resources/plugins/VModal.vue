@@ -2,9 +2,9 @@
     <transition
         class="bg-black/50 transform-gpu"
         enter-active-class="transition ease-in-out duration-300"
-        enter-from-class="bg-black/0"
+        enter-from-class="opacity-0"
         leave-active-class="transition ease-in-out duration-300"
-        leave-to-class="bg-black/0"
+        leave-to-class="opacity-0"
         @enter="componentOpen = true"
         @after-leave="emit('close')"
     >
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 
 const emit = defineEmits(['close', 'closing'])
 
@@ -56,6 +56,8 @@ defineProps({
         default: 0,
     },
 })
+
+provide('close-current-modal', close)
 
 const backdropOpen = ref(false)
 const componentOpen = ref(false)
