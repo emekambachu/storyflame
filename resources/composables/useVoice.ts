@@ -7,7 +7,7 @@ import {
 import { ref } from 'vue'
 import { useLogger } from 'vue-logger-plugin'
 
-const SILENCE_THRESHOLD = 1
+const SILENCE_THRESHOLD = 100
 const SILENCE_CHECK_DURATION = 5000
 
 const audioTypes = ['webm', 'mp4', 'wav']

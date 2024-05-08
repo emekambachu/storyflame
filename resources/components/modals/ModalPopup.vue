@@ -10,11 +10,10 @@
             <button
                 class="py-2 w-full flex justify-center"
                 @touchstart.passive="onTouchDragStart"
-                @touchend.passive="onTouchDragEnd"
+                @touchend.passive="onDragEnd"
                 @touchmove.passive="onTouchDrag"
                 @mousedown.passive="onClickDragStart"
-                @mouseup.passive="onClickDragEnd"
-                @mousemove.passive="onClickDrag"
+                @mouseup.passive="onDragEnd"
             >
                 <span class="bg-gray-300 rounded-full h-1.5 w-1/6"></span>
             </button>
@@ -61,7 +60,7 @@ const props = defineProps({
 const close = inject('close-current-modal') as () => void
 
 const offset = ref(0)
-const touchStart = ref(0)
+const touchStart = ref<number | undefined>(0)
 const container = ref<HTMLDivElement | null>(null)
 
 function onDragStart(y: number) {
@@ -74,17 +73,27 @@ function onTouchDragStart(e: TouchEvent) {
 
 function onClickDragStart(e: MouseEvent) {
     onDragStart(e.clientY)
+    document.addEventListener('mousemove', onClickDrag)
 }
 
-function onDrag(e: TouchEvent) {
-    const touchEnd = e.touches[0].clientY
-    const diff = touchEnd - touchStart.value
+function onDrag(y: number) {
+    if (touchStart.value === undefined) return
+    const diff = y - touchStart.value
     // apply a function to the diff to make the modal move slower
     offset.value = Math.abs(diff) - Math.abs(diff) / 2
     offset.value *= diff > 0 ? 1 : -1
 }
 
-function onDragEnd(e: TouchEvent) {
+function onTouchDrag(e: TouchEvent) {
+    onDrag(e.touches[0].clientY)
+}
+
+function onClickDrag(e: MouseEvent) {
+    if (e.buttons !== 1) return
+    onDrag(e.clientY)
+}
+
+function onDragEnd() {
     if (offset.value > 50) {
         close()
     } else {
@@ -99,6 +108,8 @@ function onDragEnd(e: TouchEvent) {
             offset.value = 0
         })
     }
+    touchStart.value = undefined
+    document.removeEventListener('mousemove', onClickDrag)
 }
 </script>
 
