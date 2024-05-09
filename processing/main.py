@@ -12,6 +12,8 @@ from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnablePassthrough
 from openai import OpenAI
 
+from processing.parser.convert import convert
+
 app = FastAPI()
 
 load_dotenv()
@@ -288,3 +290,12 @@ def onboarding(params: OnboardingRequest):
     print(response)
 
     return response
+
+
+@app.post("/script/parse")
+def parse_script(request: dict):
+    try:
+        with open(request['path'], 'rb') as file:
+            return convert(file, 0)
+    except Exception as e:
+        return {"error": str(e)}

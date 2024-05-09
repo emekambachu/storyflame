@@ -4,8 +4,8 @@
     >
         <a href="/">
             <img
-                src="@/assets/logo.svg"
                 class="w-[393px]"
+                src="@/assets/logo.svg"
             />
         </a>
 
@@ -34,13 +34,19 @@
                     type="email"
                 />
             </label>
+            <p
+                v-if="errorMessage"
+                class="text-red-600 text-sm font-normal"
+            >
+                {{ errorMessage }}
+            </p>
         </div>
 
         <div class="mt-auto mb-0 flex flex-col gap-5">
             <button
-                @click="register"
                 class="w-full flex justify-center py-4 px-4 rounded-full text-base font-semibold text-white bg-orange-600 hover:bg-orange-600"
                 type="submit"
+                @click="register"
             >
                 Register
             </button>
@@ -67,15 +73,14 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import Chevron from '../components/icons/ChevronIcon.vue'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
 const router = useRouter()
 
 function register() {
@@ -83,9 +88,14 @@ function register() {
         name: name.value,
         email: email.value,
         password: password.value,
-    }).then(() => {
-        router.push({ name: 'onboarding' })
     })
+        .then(() => {
+            router.push({ name: 'onboarding' })
+        })
+        .catch((error) => {
+            console.log(error.response.data.message)
+            errorMessage.value = error.response.data.message
+        })
 }
 </script>
 

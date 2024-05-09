@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatMessageResource;
 use App\Http\Resources\UserResource;
+use App\Services\AchievementService;
 use App\Services\OnboardingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -47,8 +48,9 @@ class OnboardingController extends Controller
      * Clear the onboarding session and save the data to the user's profile
      * @return JsonResponse
      */
-    public function summary(OnboardingService $onboardingService)
+    public function summary(OnboardingService $onboardingService, AchievementService $achievementService)
     {
+        $achievementService->updateProgress(auth()->user());
         return $this->successResponse('success', [
             'summary' => UserResource::make($onboardingService->getSummary())
         ]);

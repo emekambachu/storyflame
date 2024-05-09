@@ -71,14 +71,10 @@ class User extends Authenticatable
 
     public function favoriteMovies(): MorphToMany
     {
-        return $this->morphToMany(
+        return $this->morphedByMany(
             Media::class,
             'favorite',
             'user_favorites',
-            'user_id',
-            'favorite_id',
-            'id',
-            'id'
         );
     }
 

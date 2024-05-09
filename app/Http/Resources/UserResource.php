@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\User */
+/** @mixin User */
 class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -14,9 +15,10 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'achievements' => AchievementResource::collection($this->achievements),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,
             'data' => $this->when($this->extra_attributes['onboarded'], [
-                'media' => $this->favoriteMovies,
+                'media' => MediaResource::collection($this->favoriteMovies),
                 ...$this->extra_attributes['data']
             ])
         ];

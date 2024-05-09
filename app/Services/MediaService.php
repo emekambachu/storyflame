@@ -12,8 +12,6 @@ class MediaService
             return $media;
         }
 
-        // TODO: schedule a job to fetch the movie from an API
-
         return Media::create([
             'title' => $title,
         ]);

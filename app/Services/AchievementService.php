@@ -20,7 +20,7 @@ class AchievementService
         'recommendation_ready' => [
             'title' => 'Recommendation Ready',
             'description' => 'You’re ready to get recommendations!',
-            'icon' => 'marketability.png',
+            'icon' => 'recommendation.png',
             'user_data' => [
                 'media',
                 'characters',
@@ -42,7 +42,7 @@ class AchievementService
         'collaborator' => [
             'title' => 'Collaborator',
             'description' => 'You’re ready to collaborate!',
-            'icon' => 'process.png',
+            'icon' => 'collaborator.png',
             'user_data' => [
                 'collaboration_style',
                 'adaptability',
@@ -60,7 +60,7 @@ class AchievementService
         'growth_guru' => [
             'title' => 'Growth Guru',
             'description' => 'You’re ready to grow your story!',
-            'icon' => 'profession.png',
+            'icon' => 'growth.png',
             'user_data' => [
                 'motivation',
                 'education',
@@ -93,13 +93,11 @@ class AchievementService
     public function updateProgress(User $user): void
     {
         foreach ($this->checkProgress($user) as $achievement => $progress) {
-            if ($progress > 0) {
-                $user->achievements()->updateOrCreate([
-                    'name' => $achievement,
-                ], [
-                    'progress' => $progress,
-                ]);
-            }
+            $user->achievements()->updateOrCreate([
+                'name' => $achievement,
+            ], [
+                'progress' => $progress,
+            ]);
         }
     }
 }

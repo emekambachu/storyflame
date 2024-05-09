@@ -1,38 +1,42 @@
 <template>
-  <div class="flex flex-col gap-8">
-    <div class="flex flex-col gap-3">
-      <h4 class="text-sm text-neutral-700 font-bold">Earned achievements</h4>
+    <div class="flex flex-col gap-8 w-full">
+        <title-section title="Earned achievements">
+            <items-list
+                v-slot="{ item }"
+                :items="achievements.filter((item) => item.progress)"
+                class="gap-8"
+            >
+                <achievement-card
+                    :item="item"
+                    class="h-full"
+                />
+            </items-list>
+        </title-section>
 
-      <div class="flex gap-8 items-start max-w-full overflow-auto">
-        <AchievementCard
-          v-for="(achievement, achievementID) in achievements"
-          :key="achievementID"
-          :item="achievement"
-        />
-      </div>
+        <title-section title="In progress">
+            <items-list
+                v-slot="{ item }"
+                :items="achievements.filter((item) => !item.progress)"
+            >
+                <achievement-card
+                    :item="item"
+                    class="h-full"
+                />
+            </items-list>
+        </title-section>
     </div>
-
-    <div class="flex flex-col gap-3">
-      <h4 class="text-sm text-neutral-700 font-bold">In progress</h4>
-      <div class="flex gap-8 items-start max-w-full overflow-auto">
-        <AchievementCard
-          v-for="(achievement, achievementID) in achievements.in_progress"
-          :key="achievementID"
-          :item="achievement"
-        />
-      </div>
-    </div>
-  </div>
 </template>
 
-<script setup lang="ts">
-import AchievementCard from '@/components/AchievementCard.vue'
+<script lang="ts" setup>
+import AchievementCard from '@/components/cards/AchievementCard.vue'
+import TitleSection from '@/components/TitleSection.vue'
+import ItemsList from '@/components/ItemsList.vue'
 
 const props = defineProps({
-  achievements: {
-    type: Object,
-    required: true,
-  },
+    achievements: {
+        type: Object,
+        required: true,
+    },
 })
 </script>
 

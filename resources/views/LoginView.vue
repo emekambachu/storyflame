@@ -4,8 +4,8 @@
     >
         <a href="/">
             <img
-                src="@/assets/logo.svg"
                 class="w-[393px]"
+                src="@/assets/logo.svg"
             />
         </a>
 
@@ -40,10 +40,10 @@
                         <input
                             id="password"
                             v-model="credentials.password"
+                            :type="showPassword ? 'text' : 'password'"
                             class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
                             placeholder="Enter your password"
                             required
-                            :type="showPassword ? 'text' : 'password'"
                         />
 
                         <button
@@ -81,9 +81,9 @@
 
         <div class="flex flex-col items-center w-full">
             <button
-                @click="login"
                 class="w-full flex justify-center py-4 px-4 rounded-full text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700"
                 type="submit"
+                @click="login"
             >
                 Sign In
             </button>
@@ -100,34 +100,32 @@
                 A passcode has been sent to your email.
             </p>
 
-            <span class="text-neutral-700 text-xs font-normal text-center mt-2">
-                Or
-            </span>
+<!--            <span class="text-neutral-700 text-xs font-normal text-center mt-2">-->
+<!--                Or-->
+<!--            </span>-->
 
-            <div class="flex items-center gap-8 mt-4">
-                <img
-                    src="@/assets/images/google_logo.svg"
-                    class="w-6 h-6 shrink-0"
-                />
-                <img
-                    src="@/assets/images/facebook_logo.svg"
-                    class="w-6 h-6 shrink-0"
-                />
-                <img
-                    src="@/assets/images/apple_logo.svg"
-                    class="w-6 h-6 shrink-0"
-                />
-            </div>
+<!--            <div class="flex items-center gap-8 mt-4">-->
+<!--                <img-->
+<!--                    class="w-6 h-6 shrink-0"-->
+<!--                    src="@/assets/images/google_logo.svg"-->
+<!--                />-->
+<!--                <img-->
+<!--                    class="w-6 h-6 shrink-0"-->
+<!--                    src="@/assets/images/facebook_logo.svg"-->
+<!--                />-->
+<!--                <img-->
+<!--                    class="w-6 h-6 shrink-0"-->
+<!--                    src="@/assets/images/apple_logo.svg"-->
+<!--                />-->
+<!--            </div>-->
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import Chevron from '../components/icons/ChevronIcon.vue'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
 import CrossedEye from '../components/icons/CrossedEye.vue'
 
 const auth = useAuthStore()

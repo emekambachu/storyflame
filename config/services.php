@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'tmdb' => [
+        'token' => env('TMDB_TOKEN'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
