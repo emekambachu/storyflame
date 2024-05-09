@@ -21,7 +21,7 @@ class TMDBService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . config('services.tmdb.token'),
             'Accept' => 'application/json',
-        ])->get('https://api.themoviedb.org/3/search/movie', [
+        ])->get('https://api.themoviedb.org/3/search/multi', [
             'query' => $title,
             'include_adult' => $include_adult,
             'language' => $language,
