@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white p-4 h-full">
-    <router-view />
-  </div>
+    <div class="bg-white px-4 h-full">
+        <router-view />
+    </div>
 </template>
 
 <script setup lang="ts"></script>

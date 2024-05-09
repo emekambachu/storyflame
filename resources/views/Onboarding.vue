@@ -1,7 +1,16 @@
 <template>
     <div
-        class="flex flex-col items-center text-center px-4 relative pt-16 pb-10 min-h-screen"
+        class="flex flex-col items-center text-center px-4 relative pt-8 pb-10 min-h-screen"
     >
+        <a
+            href="/"
+            class="mb-8"
+        >
+            <img
+                src="@/assets/logo.svg"
+                class="w-[393px]"
+            />
+        </a>
         <aside class="flex flex-col w-full">
             <h2 class="text-neutral-950 opacity-60 text-base font-normal mb-2">
                 {{ question?.title }}
