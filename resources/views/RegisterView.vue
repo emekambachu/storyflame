@@ -1,82 +1,74 @@
 <template>
     <div
-        class="max-w-[540px] h-full mx-auto mt-1 font-normal bg-white text-black flex flex-col gap-4 items-center"
+        class="max-w-[540px] py-8 min-h-screen mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
     >
-        <div class="relative w-full">
-            <a
-                class="absolute text-neutral-950 top-auto bottom-auto left-0"
-                href="/"
-            >
-                <chevron />
-            </a>
-            <h2 class="text-base font-normal text-center text-neutral-950">
-                Register
-            </h2>
-        </div>
-        <form
-            class="w-full flex flex-col gap-3 h-full"
-            @submit.prevent="register"
-        >
-            <div>
-                <label
-                    class="text-slate-400 text-sm font-bold"
-                    for="email"
-                >
-                    email
-                    <input
-                        id="email"
-                        v-model="email"
-                        class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
-                        placeholder="Enter your email"
-                        required
-                        type="email"
-                    />
-                </label>
+        <a href="/">
+            <img
+                src="@/assets/logo.svg"
+                class="w-[393px]"
+            />
+        </a>
+
+        <div class="flex flex-col gap-8 w-full">
+            <div class="flex flex-col gap-4 items-center">
+                <h5 class="inline text-center text-black text-lg font-semibold">
+                    Develop your story.
+                    <br />
+                    Refine your story with fire 🔥
+                </h5>
+                <span class="text-zinc-400 text-sm font-normal">
+                    Please, enter your email to register
+                </span>
             </div>
 
-            <div class="mt-auto mb-0 flex flex-col gap-5">
-                <button
-                    class="w-full flex justify-center py-4 px-4 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-700"
-                    type="submit"
+            <label
+                class="text-black text-base font-bold"
+                for="email"
+            >
+                <input
+                    id="email"
+                    v-model="email"
+                    class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
+                    placeholder="Enter your email"
+                    required
+                    type="email"
+                />
+            </label>
+        </div>
+
+        <div class="mt-auto mb-0 flex flex-col gap-5">
+            <button
+                @click="register"
+                class="w-full flex justify-center py-4 px-4 rounded-full text-base font-semibold text-white bg-orange-600 hover:bg-orange-600"
+                type="submit"
+            >
+                Register
+            </button>
+            <p class="inline text-neutral-950 text-sm font-normal">
+                By continuing, you agree to our
+                <a
+                    class="text-red-600"
+                    href="/service-terms"
                 >
-                    Register
-                </button>
-                <p class="inline text-neutral-950 text-sm font-normal">
-                    Already have an account?
-                    <router-link
-                        :to="{ name: 'login' }"
-                        class="text-red-600"
-                    >
-                        Login
-                    </router-link>
-                </p>
-                <p class="inline text-neutral-950 text-sm font-normal">
-                    By continuing, you agree to our
-                    <a
-                        class="text-red-600"
-                        href="/service-terms"
-                    >
-                        Terms of Service
-                    </a>
-                    and
-                    <a
-                        class="text-red-600"
-                        href="/privacy-police"
-                    >
-                        Privacy Policy
-                    </a>
-                    .
-                </p>
-            </div>
-        </form>
+                    Terms of Service
+                </a>
+                and
+                <a
+                    class="text-red-600"
+                    href="/privacy-police"
+                >
+                    Privacy Policy
+                </a>
+                .
+            </p>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import Chevron from '../components/icons/Chevron.vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
 const name = ref('')

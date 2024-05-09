@@ -1,65 +1,74 @@
 <template>
     <div
-        class="max-w-[540px] h-full mx-auto mt-1 font-normal bg-white text-black flex flex-col gap-4 items-center"
+        class="max-w-[540px] py-8 min-h-screen mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
     >
-        <div class="relative w-full">
-            <a
-                class="absolute text-neutral-950 top-auto bottom-auto left-0"
-                href="/"
+        <a href="/">
+            <img
+                src="@/assets/logo.svg"
+                class="w-[393px]"
+            />
+        </a>
+
+        <div class="flex flex-col gap-6 w-full">
+            <label
+                class="text-black text-base font-bold w-full"
+                for="email"
             >
-                <chevron />
-            </a>
-            <h2 class="text-base font-normal text-center text-neutral-950">
-                Login
-            </h2>
-        </div>
-        <form
-            class="w-full flex flex-col gap-3 h-full"
-            @submit.prevent="login"
-        >
-            <div>
-                <label
-                    class="text-slate-400 text- font-bold"
-                    for="email"
-                >
-                    email
-                    <input
-                        id="email"
-                        v-model="credentials.email"
-                        autocomplete="email"
-                        class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
-                        placeholder="Enter your email"
-                        required
-                        type="email"
-                    />
-                </label>
-            </div>
-            <div v-if="federated === credentials.email">
+                Email
+                <input
+                    id="email"
+                    v-model="credentials.email"
+                    autocomplete="email"
+                    class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
+                    placeholder="Enter your email"
+                    required
+                    type="email"
+                />
+            </label>
+
+            <div
+                v-if="federated === credentials.email"
+                class="w-full"
+            >
                 <label
                     v-if="pwd"
-                    class="text-slate-400 text-sm font-bold"
+                    class="text-black text-base font-bold w-full"
                     for="password"
                 >
-                    password
-                    <input
-                        id="password"
-                        v-model="credentials.password"
-                        class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
-                        placeholder="Enter your password"
-                        required
-                        type="password"
-                    />
+                    Password
+                    <div class="relative">
+                        <input
+                            id="password"
+                            v-model="credentials.password"
+                            class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
+                            placeholder="Enter your password"
+                            required
+                            :type="showPassword ? 'text' : 'password'"
+                        />
+
+                        <button
+                            :class="
+                                !showPassword
+                                    ? 'text-neutral-700'
+                                    : 'text-orange-600'
+                            "
+                            class="absolute top-5 right-0"
+                            @click="showPassword = !showPassword"
+                        >
+                            <crossed-eye />
+                        </button>
+                    </div>
                 </label>
                 <label
                     v-else
-                    class="text-slate-400 text-sm font-bold"
+                    class="text-black text-base font-bold w-full"
                     for="otp"
                 >
-                    one-time passcode
+                    One-time passcode
                     <input
                         id="otp"
                         v-model="credentials.otp"
-                        class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
+                        class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
                         max="6"
                         min="6"
                         placeholder="Enter passcode sent to your email"
@@ -68,8 +77,12 @@
                     />
                 </label>
             </div>
+        </div>
+
+        <div class="flex flex-col items-center w-full">
             <button
-                class="mt-auto mb-0 w-full flex justify-center py-4 px-4 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-700"
+                @click="login"
+                class="w-full flex justify-center py-4 px-4 rounded-full text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700"
                 type="submit"
             >
                 Sign In
@@ -86,15 +99,34 @@
             <p v-if="federated === credentials.email && config?.otp_sent">
                 A passcode has been sent to your email.
             </p>
-        </form>
+
+            <span class="text-neutral-700 text-xs font-normal text-center mt-2">
+                Or
+            </span>
+
+            <div class="flex items-center gap-8 mt-4">
+                <img
+                    src="@/assets/images/google_logo.svg"
+                    class="w-6 h-6 shrink-0"
+                />
+                <img
+                    src="@/assets/images/facebook_logo.svg"
+                    class="w-6 h-6 shrink-0"
+                />
+                <img
+                    src="@/assets/images/apple_logo.svg"
+                    class="w-6 h-6 shrink-0"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import Chevron from '../components/icons/Chevron.vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import CrossedEye from '../components/icons/CrossedEye.vue'
 
 const auth = useAuthStore()
 const credentials = ref({ email: '', password: '', otp: '' })
@@ -102,6 +134,8 @@ const pwd = ref(false)
 const federated = ref<string | undefined>(undefined)
 const config = ref({})
 const router = useRouter()
+
+const showPassword = ref(false)
 
 function login() {
     // if not federated or federated email is different
