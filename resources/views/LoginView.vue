@@ -124,6 +124,8 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import Chevron from '../components/icons/ChevronIcon.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import CrossedEye from '../components/icons/CrossedEye.vue'
