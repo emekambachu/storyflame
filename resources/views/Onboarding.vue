@@ -80,6 +80,7 @@
                         v-for="option in question?.options"
                         :key="option"
                         :status="selectedOptions.includes(option)"
+                        multiple
                         class="w-full"
                         @click="
                             selectedOptions.includes(option)
