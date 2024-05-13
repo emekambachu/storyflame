@@ -1,6 +1,6 @@
 <template>
     <div
-        class="max-w-[540px] py-8 min-h-dvh mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
+        class="max-w-[540px] py-8 min-h-dvh mx-auto font-normal bg-white text-black flex flex-col gap-8 items-center justify-between"
     >
         <a href="/">
             <img
@@ -42,7 +42,7 @@
             </p>
         </div>
 
-        <div class="mt-auto mb-0 flex flex-col gap-5">
+        <div class="mt-auto mb-0 flex flex-col gap-2">
             <button
                 class="w-full flex justify-center py-4 px-4 rounded-full text-base font-semibold text-white bg-orange-600 hover:bg-orange-600"
                 type="submit"

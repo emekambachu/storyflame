@@ -1,6 +1,6 @@
 <template>
     <div
-        class="max-w-[540px] py-8 min-h-dvh mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
+        class="max-w-[540px] py-8 min-h-dvh mx-auto font-normal bg-white text-black flex flex-col gap-8 items-center"
     >
         <a href="/">
             <img
@@ -9,7 +9,7 @@
             />
         </a>
 
-        <div class="flex flex-col gap-6 w-full">
+        <div class="flex flex-col gap-6 w-full mb-auto mt-0">
             <label
                 class="text-black text-base font-bold w-full"
                 for="email"
@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-center w-full">
+        <div class="flex flex-col items-center w-full gap-2 mt-auto mb-0">
             <button
                 class="w-full flex justify-center py-4 px-4 rounded-full text-sm font-semibold text-white bg-orange-600 hover:bg-orange-700"
                 type="submit"
@@ -100,24 +100,24 @@
                 A passcode has been sent to your email.
             </p>
 
-<!--            <span class="text-neutral-700 text-xs font-normal text-center mt-2">-->
-<!--                Or-->
-<!--            </span>-->
+            <!--            <span class="text-neutral-700 text-xs font-normal text-center mt-2">-->
+            <!--                Or-->
+            <!--            </span>-->
 
-<!--            <div class="flex items-center gap-8 mt-4">-->
-<!--                <img-->
-<!--                    class="w-6 h-6 shrink-0"-->
-<!--                    src="@/assets/images/google_logo.svg"-->
-<!--                />-->
-<!--                <img-->
-<!--                    class="w-6 h-6 shrink-0"-->
-<!--                    src="@/assets/images/facebook_logo.svg"-->
-<!--                />-->
-<!--                <img-->
-<!--                    class="w-6 h-6 shrink-0"-->
-<!--                    src="@/assets/images/apple_logo.svg"-->
-<!--                />-->
-<!--            </div>-->
+            <!--            <div class="flex items-center gap-8 mt-4">-->
+            <!--                <img-->
+            <!--                    class="w-6 h-6 shrink-0"-->
+            <!--                    src="@/assets/images/google_logo.svg"-->
+            <!--                />-->
+            <!--                <img-->
+            <!--                    class="w-6 h-6 shrink-0"-->
+            <!--                    src="@/assets/images/facebook_logo.svg"-->
+            <!--                />-->
+            <!--                <img-->
+            <!--                    class="w-6 h-6 shrink-0"-->
+            <!--                    src="@/assets/images/apple_logo.svg"-->
+            <!--                />-->
+            <!--            </div>-->
         </div>
     </div>
 </template>
