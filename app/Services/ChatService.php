@@ -6,6 +6,7 @@ use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ChatService
 {
@@ -17,7 +18,9 @@ class ChatService
 
     public function createVoiceMessage(UploadedFile $audio, Chat $chat, User $sender)
     {
-        $path = $audio->store('tmp');
+        $filename = now()->format('Y-m-d') . '-' . uniqid() . '.' . $audio->getClientOriginalExtension();
+        Storage::disk('local')->put('audio/' . $filename, $audio->get());
+        $path = storage_path('app/audio/' . $filename);
         $transcription = $this->transcriptionService->transcribe($path);
 
         /** @var ChatMessage $msg */
