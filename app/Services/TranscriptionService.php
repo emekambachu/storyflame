@@ -11,7 +11,7 @@ class TranscriptionService
     public function transcribe(string|UploadedFile $path_or_file): string
     {
         if ($path_or_file instanceof UploadedFile) {
-            $filename = now()->format('Y-m-d') . '-' . uniqid() . '.' . $path_or_file->getClientOriginalExtension();
+            $filename = now()->format('Y-m-d') . '-' . uniqid() . '.' . $path_or_file->extension();
             Storage::disk('local')->put('audio/' . $filename, $path_or_file->get());
             $path_to_audio = storage_path('app/audio/' . $filename);
         } else {

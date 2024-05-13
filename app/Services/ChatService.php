@@ -18,7 +18,7 @@ class ChatService
 
     public function createVoiceMessage(UploadedFile $audio, Chat $chat, User $sender)
     {
-        $filename = now()->format('Y-m-d') . '-' . uniqid() . '.' . $audio->getClientOriginalExtension();
+        $filename = now()->format('Y-m-d') . '-' . uniqid() . '.' . $audio->extension();
         Storage::disk('local')->put('audio/' . $filename, $audio->get());
         $path = storage_path('app/audio/' . $filename);
         $transcription = $this->transcriptionService->transcribe($path);
