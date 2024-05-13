@@ -10,7 +10,6 @@
             :order="modals.filter((m) => m.open).length - i"
             v-bind="modal.props"
             @close="closeModal(modal.id, true)"
-            @closing="modals[i].open = false"
         />
     </teleport>
 </template>

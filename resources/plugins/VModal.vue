@@ -38,6 +38,10 @@ import { onMounted, provide, ref, watch } from 'vue'
 
 const emit = defineEmits(['close', 'closing'])
 
+defineOptions({
+    inheritAttrs: false,
+})
+
 const props = defineProps({
     open: {
         type: Boolean,
@@ -86,9 +90,7 @@ function onBackdropClick() {
 watch(
     () => props.open,
     (open) => {
-        if (open) {
-            componentOpen.value = true
-        } else {
+        if (!open) {
             close()
         }
     },
@@ -105,6 +107,11 @@ watch(
 .backdrop-enter-from,
 .backdrop-leave-to {
     opacity: 0;
+}
+
+.backdrop-enter-to,
+.backdrop-leave-from {
+    opacity: 1;
 }
 
 .none-enter-active,
