@@ -17,9 +17,9 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'achievements' => AchievementResource::collection($this->achievements),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,
-            'data' => $this->when($this->extra_attributes['onboarded'], [
+            'data' => $this->when($this->extra_attributes['onboarded'] ?? false, [
                 'media' => MediaResource::collection($this->favoriteMovies),
-                ...$this->extra_attributes['data']
+                ...$this->extra_attributes['data'] ?? []
             ])
         ];
     }

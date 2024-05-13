@@ -37,6 +37,8 @@ Route::group([
             ], function () {
                 Route::resource('achievements', 'AchievementController');
             });
+
+            Route::resource('stories', 'StoryController');
         });
     });
 });

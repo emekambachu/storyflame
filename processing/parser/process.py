@@ -1,50 +1,50 @@
 import operator
 import re
 
-from processing.parser.helpers.headings import isHeading
+from processing.parser.helpers.headings import is_heading
 
 
-def processInitialPages(script):
+def process_initial_pages(script):
     total = []
 
     for page in script:
-        existingY = {}
+        existing_y = {}
         for content in page["content"]:
-            if content["y"] not in existingY:
-                existingY[content["y"]] = True
+            if content["y"] not in existing_y:
+                existing_y[content["y"]] = True
 
-        total.append(len(existingY))
+        total.append(len(existing_y))
 
     avg = sum(total) / len(total)
-    firstPages = []
+    first_pages = []
     i = 0
     while i < len(total):
         if total[i] > avg - 10:
             break
-        firstPages.append({
+        first_pages.append({
             "page": i,
             "content": script[i]["content"]
         })
         i += 1
 
-    firstPages = cleanPage(firstPages, 0)
-    firstPages = [x for x in firstPages]
-    for page in firstPages:
+    first_pages = clean_page(first_pages, 0)
+    first_pages = [x for x in first_pages]
+    for page in first_pages:
         page["type"] = "FIRST_PAGES"
     return {
-        "firstPages": firstPages,
+        "firstPages": first_pages,
         "pageStart": i
     }
 
 
-def cleanPage(script, pageStart):
-    dialogueStitch = []
+def clean_page(script, page_start):
+    dialogue_stitch = []
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        dialogueStitch.append({"page": page["page"], "content": []})
+        dialogue_stitch.append({"page": page["page"], "content": []})
 
-        firstRound = []
+        first_round = []
         for content in page["content"]:
             text = re.sub("\s{2}", " ", content["text"].strip())
             if text == "" or text == "*" or text == "." or text == "\\." or text == "\\" or text == "'":
@@ -52,13 +52,13 @@ def cleanPage(script, pageStart):
             if content["x"] < 65 or content["x"] > 500 or content["y"] <= 50:
                 continue
             content["text"] = text
-            firstRound.append(content)
+            first_round.append(content)
 
-        for i, content in enumerate(firstRound):
+        for i, content in enumerate(first_round):
             text = content["text"]
             if "Okay, so how many trees are on tha" in text:
                 x = 0
-            if not isHeading(content) and content["y"] < 80 and content["x"] < 100:
+            if not is_heading(content) and content["y"] < 80 and content["x"] < 100:
                 if "TV Calling - For educational purposes only" in text:
                     continue
                 elif (re.search(' \d{1,3}[.]?', text) or re.search('\d{1,2}\/\d{1,2}\/\d{2,4}', text)) and (
@@ -73,55 +73,55 @@ def cleanPage(script, pageStart):
                 elif re.match('i{2,3}', text):
                     continue
 
-            dialogueStitch[-1]["content"].append(content)
-    removeDuplicates(dialogueStitch)
-    return dialogueStitch
+            dialogue_stitch[-1]["content"].append(content)
+    remove_duplicates(dialogue_stitch)
+    return dialogue_stitch
 
 
-def removeDuplicates(script):
+def remove_duplicates(script):
     for pageIndex, page in enumerate(script):
         for contentIndex, content in enumerate(page["content"]):
             if contentIndex + 1 < len(page["content"]) and content == page["content"][contentIndex + 1]:
                 script[pageIndex]["content"].pop(contentIndex + 1)
 
 
-def sortLines(script, pageStart):
-    newScript = []
+def sort_lines(script, page_start):
+    new_script = []
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        newScript.append({
+        new_script.append({
             "page": page["page"],
             "content": []
         })
 
-        newScript[-1]["content"] = page["content"]
+        new_script[-1]["content"] = page["content"]
 
-        newScript[-1]["content"].sort(
+        new_script[-1]["content"].sort(
             key=lambda curr: (curr["y"], curr["x"]))
 
         # TODO: how to determine this?
-        for i, content in enumerate(newScript[-1]["content"]):
-            if abs(content["y"] - newScript[-1]["content"][i - 1]["y"]) < 5:
-                newScript[-1]["content"][i - 1]["y"] = content["y"]
+        for i, content in enumerate(new_script[-1]["content"]):
+            if abs(content["y"] - new_script[-1]["content"][i - 1]["y"]) < 5:
+                new_script[-1]["content"][i - 1]["y"] = content["y"]
         # print(content)
         # print(newScript[-1]["content"][i-1])
 
-        newScript[-1]["content"].sort(
+        new_script[-1]["content"].sort(
             key=lambda curr: (curr["y"], curr["x"]))
 
-    return newScript
+    return new_script
 
 
-def getTopTrends(script):
+def get_top_trends(script):
     trends = {}
     for page in script:
         for section in page["content"]:
-            roundedX = round(section["segment"][0]["x"])
-            if roundedX not in trends:
-                trends[roundedX] = 1
+            rounded_x = round(section["segment"][0]["x"])
+            if rounded_x not in trends:
+                trends[rounded_x] = 1
             else:
-                trends[roundedX] += 1
+                trends[rounded_x] += 1
     trends = sorted(trends.items(), key=operator.itemgetter(0), reverse=False)
 
     while trends[0][1] < 10:
@@ -130,9 +130,9 @@ def getTopTrends(script):
     return trends
 
 
-def cleanScript(script, includePageNumber):
+def clean_script(script, include_page_number):
     for page in script:
-        if not includePageNumber:
+        if not include_page_number:
             del page["page"]
         for i, section in enumerate(page["content"]):
             for j, scene in enumerate(section["scene"]):

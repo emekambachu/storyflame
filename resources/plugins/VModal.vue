@@ -1,26 +1,21 @@
 <template>
     <transition
-        class="bg-black/50 transform-gpu"
-        enter-active-class="transition ease-in-out duration-300"
-        enter-from-class="opacity-0"
-        leave-active-class="transition ease-in-out duration-300"
-        leave-to-class="opacity-0"
+        :class="{
+            'bg-black/50': backdrop,
+        }"
+        :name="backdrop ? 'backdrop' : 'none'"
+        class="transform-gpu"
         @enter="componentOpen = true"
         @after-leave="emit('close')"
     >
         <div
             v-if="backdropOpen"
             class="fixed inset-0 flex items-end overscroll-contain z-50"
-            @click.self="close"
+            @click.self="onBackdropClick"
         >
             <transition
-                class="transform-gpu transition duration-300"
-                enter-active-class="ease-in-out"
-                enter-from-class="transform translate-y-full"
-                enter-to-class="transform translate-y-0"
-                leave-active-class="ease-in-out"
-                leave-from-class="transform translate-y-0"
-                leave-to-class="transform translate-y-full"
+                :name="props.type"
+                class="transform-gpu"
                 @leave="backdropOpen = false"
             >
                 <component
@@ -28,6 +23,7 @@
                     v-if="componentOpen"
                     :class="{
                         'scale-90 -translate-y-8': order > 1,
+                        'h-full w-full': type === 'full',
                     }"
                     v-bind="attrs"
                     @close="close"
@@ -38,11 +34,15 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 
 const emit = defineEmits(['close', 'closing'])
 
-defineProps({
+const props = defineProps({
+    open: {
+        type: Boolean,
+        required: true,
+    },
     component: {
         type: Object,
         required: true,
@@ -54,6 +54,14 @@ defineProps({
     order: {
         type: Number,
         default: 0,
+    },
+    type: {
+        type: String,
+        default: 'popup',
+    },
+    backdrop: {
+        type: Boolean,
+        default: true,
     },
 })
 
@@ -70,6 +78,71 @@ function close() {
     emit('closing')
     componentOpen.value = false
 }
+
+function onBackdropClick() {
+    if (props.backdrop) close()
+}
+
+watch(
+    () => props.open,
+    (open) => {
+        if (open) {
+            componentOpen.value = true
+        } else {
+            close()
+        }
+    },
+    { immediate: true }
+)
 </script>
 
-<style scoped></style>
+<style scoped>
+.backdrop-enter-active,
+.backdrop-leave-active {
+    transition: opacity 0.3s;
+}
+
+.backdrop-enter-from,
+.backdrop-leave-to {
+    opacity: 0;
+}
+
+.none-enter-active,
+.none-leave-active {
+    transition: 0.3s;
+}
+
+.popup-enter-from,
+.popup-leave-to {
+    transform: translateY(100%);
+}
+
+.popup-enter-to,
+.popup-leave-from {
+    transform: translateY(0);
+}
+
+.popup-enter-active,
+.popup-leave-active {
+    transition: transform 0.3s;
+}
+
+.full-enter-from,
+.full-leave-to {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+.full-enter-to,
+.full-leave-from {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.full-enter-active,
+.full-leave-active {
+    transition:
+        transform 0.3s,
+        opacity 0.3s;
+}
+</style>

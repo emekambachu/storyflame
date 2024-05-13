@@ -101,7 +101,10 @@ def evaluate_answers(
 
     response = chain.invoke({
         # give the list of property names only
-        "properties": [value['name'] for key, value in properties.items()],
+        "properties": [
+            value['name'] + (' (Examples: ' + ', '.join(value['examples']) + ')' if 'examples' in value else '')
+            for key, value
+            in properties.items()],
         "question": question,
         "message": answer,
     })
@@ -188,6 +191,8 @@ class ExtractRequest(BaseModel):
 
 @app.post("/onboarding/extract")
 def extract(params: ExtractRequest):
+    langchain.debug = True
+
     evaluated = evaluate_answers(
         params.available_properties,
         params.question,
@@ -214,12 +219,12 @@ class OnboardingRequest(BaseModel):
 
 
 class OnboardingResponse(BaseModel):
-    encouragement: str = Field(
-        title="Encouragement",
-        description="Encouragement message to provide to the user after they provide the information."
-    )
     question: str = Field(
         title="Question", description="The question to ask the user to extract the data."
+    )
+    message: str = Field(
+        title="Message",
+        description="Encouragement message to provide to the user after they provide the information."
     )
 
 
@@ -244,12 +249,13 @@ def onboarding(params: OnboardingRequest):
                 "system",
                 "You are onboarding chat-bot for a writing platform "
                 "that keeps an engaging dialog with the user to get the information we need."
-                "Great examples of encouragement are: 'That's awesome! I also like that', 'Interesting choice!', etc."
+                "Inside of message field, you need to provide user your understanding of their message."
+                "Great examples of message are: 'Nice, Star Wars. So, you like sci-fi.', 'I see, you like fantasy.', "
+                "'Interesting, you like to write about characters with superpowers.', etc."
                 "Good examples of questions are: 'What type of characters do you like to write about?', 'What's your "
                 "favorite genre?', etc."
                 "You never ask the same question twice."
                 "You need to create creative and engaging responses to the user's message."
-                "Keep dialog with the user engaging and interesting."
             ),
             *[
                 (
@@ -260,9 +266,10 @@ def onboarding(params: OnboardingRequest):
             ],
             (
                 "system",
-                "For the next question you need to ask for this data: {data}."
-                "Only ask about the data we need to extract from the user."
-                "{question_instructions}"
+                "Ask the user a question based on the data we need to extract from them."
+                "Data to ask for: {data}."
+                "Instructions: {question_instructions}."
+                "Output Format: {format_instructions}."
             )
         ]
     )
@@ -284,10 +291,61 @@ def onboarding(params: OnboardingRequest):
              "While you will be looking to craft a question that will get the user to provide the "
              "information we need,"
              "do not ask them directly for the list of data we need."
-             "Try to ask them a creative question that will get them to provide the information we need."
+             "Try to ask them a creative question that will get them to provide the information we need.",
+        "format_instructions": "{'question': string,"
+                               " 'message': string, "
+                               "'options': array of strings}"
+        if params.type == "multiple_choice"
+        else "{'question': string, "
+             "'message': string}"
     })
 
     print(response)
+
+    return response
+
+
+class GenerateDetailsRequest(BaseModel):
+    history: List[ChatHistoryMessage]
+
+
+class GenerateDetailsResponse(BaseModel):
+    details: str = Field(
+        title="Details", description="The generated details for the user."
+    )
+
+
+@app.post("/onboarding/generate/details")
+def generate_details(request: GenerateDetailsRequest):
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
+    langchain.debug = True
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            *[
+                (
+                    history.agent,
+                    history.text
+                )
+                for history in request.history[-6:]
+            ],
+            (
+                "system",
+                "Based on the conversation, between the writer and the chat-bot, "
+                "create a writer's bio for the writer's platform."
+                "Write from the perspective of the writer, in the first person."
+                "The bio should be 3-4 sentences long and be useful for producers to understand who the writer is."
+                "Do not make up any information, only use the information provided in the conversation."
+                "Do not embellish the information, only use the information provided."
+                "Do not discuss the quality of their writing."
+                "Output Format: {{'details': string}}"
+            )
+        ]
+    )
+
+    runnable = prompt | llm.with_structured_output(schema=GenerateDetailsResponse)
+
+    response = runnable.invoke({})
 
     return response
 

@@ -87,6 +87,10 @@ export const useAuthStore = defineStore(
             return data
         }
 
+        const updateUser = (data:User) => {
+            user.value = data
+        }
+
         return {
             user,
             isLoggedIn,
@@ -95,6 +99,7 @@ export const useAuthStore = defineStore(
             login,
             logout,
             getUser,
+            updateUser
         }
     },
     {

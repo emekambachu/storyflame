@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Story;
-use Illuminate\Auth\Access\Gate;
+use App\Services\StoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class StoryController extends Controller
 {
@@ -16,15 +17,21 @@ class StoryController extends Controller
         return auth()->user()->stories;
     }
 
-    public function store(Request $request)
+    public function store(Request $request, StoryService $storyService)
     {
         Gate::authorize('create', Story::class);
 
-        $data = $request->validate([
-            'name' => ['required'],
+        $validated = $request->validate([
+           'file' => ['required', 'file', 'mimes:pdf'],
         ]);
 
-        return auth()->user()->stories()->create($data);
+        return $storyService->process($validated['file']);
+
+//        $data = $request->validate([
+//            'name' => ['required'],
+//        ]);
+
+//        return auth()->user()->stories()->create($data);
     }
 
     public function show(Story $story)

@@ -51,8 +51,6 @@ class OnboardingController extends Controller
     public function summary(OnboardingService $onboardingService, AchievementService $achievementService)
     {
         $achievementService->updateProgress(auth()->user());
-        return $this->successResponse('success', [
-            'summary' => UserResource::make($onboardingService->getSummary())
-        ]);
+        return $this->successResponse('success', UserResource::make($onboardingService->getSummary()));
     }
 }

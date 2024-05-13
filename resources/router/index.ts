@@ -35,6 +35,34 @@ const checkGuest = (
     return next()
 }
 
+const checkNotOnboarded = (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+) => {
+    const logger = useLogger()
+    const auth = useAuthStore()
+    if (auth.isLoggedIn && !auth.user?.onboarded) {
+        logger.info('User is not onboarded')
+        return next()
+    }
+    return next({ name: 'profile' })
+}
+
+const checkOnboarded = (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+) => {
+    const logger = useLogger()
+    const auth = useAuthStore()
+    if (auth.isLoggedIn && auth.user?.onboarded) {
+        logger.info('User is onboarded')
+        return next()
+    }
+    return next({ name: 'onboarding' })
+}
+
 const router = createRouter({
 	history: createWebHistory(),
 	routes: [
@@ -51,14 +79,14 @@ const router = createRouter({
 		{
 			path: '/onboard',
 			name: 'onboarding',
-			beforeEnter: checkAuth,
+			beforeEnter: [checkAuth, checkNotOnboarded],
 			component: () => import('../views/Onboarding.vue'),
 		},
 		{
-			path: '/summary',
-			name: 'summary',
-			beforeEnter: checkAuth,
-			component: () => import('../views/OnboardingSummary.vue'),
+			path: '/profile',
+			name: 'profile',
+			beforeEnter: [checkAuth, checkOnboarded],
+			component: () => import('../views/UserProfile.vue'),
 		},
 		{
 			path: '/story',

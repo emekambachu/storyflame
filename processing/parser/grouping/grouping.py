@@ -1,131 +1,133 @@
 from copy import copy
 
-from processing.parser.helpers.character import isCharacter
+from processing.parser.helpers.character import is_character
 
 LATEST_PAGE = -1
 EPSILON = 3
 
 
-def groupDualDialogues(script, pageStart):
+def group_dual_dialogues(script, page_start):
     """detects and groups dual dialogues"""
 
-    newScript = []
+    new_script = []
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        newScript.append({"page": page["page"], "content": []})
+        new_script.append({"page": page["page"], "content": []})
 
         i = 0
-        isDualDialogue = 0
+        is_dual_dialogue = 0
 
         while i < len(page["content"]):
             content = page["content"][i]
-            currentY = round(content["y"])
-            segmentToAdd = [{
+            current_y = round(content["y"])
+            segment_to_add = [{
                 "x": content["x"],
                 "y": content["y"],
                 "text": content["text"]
             }]
 
-            nextContent = page["content"][i +
-                                          1] if i + 1 < len(page["content"]) else False
+            next_content = page["content"][i +
+                                           1] if i + 1 < len(page["content"]) else False
 
-            prevContent = page["content"][i - 1] if i - 1 >= 0 else False
+            prev_content = page["content"][i - 1] if i - 1 >= 0 else False
 
-            previousIsCharacter = prevContent and isCharacter(prevContent)
+            previous_is_character = prev_content and is_character(prev_content)
 
-            nextContentIsCharacter = nextContent and isCharacter(nextContent)
+            next_content_is_character = next_content and is_character(next_content)
 
-            # if current line and next line is character, and previous line is not character (3 characters in a row is impossible)
-            if not previousIsCharacter and isCharacter(content) and nextContentIsCharacter:
-                isDualDialogue = 1
+            # if current line and next line is character, and previous line is not character (3 characters in a row
+            # is impossible)
+            if not previous_is_character and is_character(content) and next_content_is_character:
+                is_dual_dialogue = 1
 
-            # if next content is the same line, and isDualDialogue > 0, then it's a dual dialogue
-            if nextContent and currentY == nextContent["y"] and isDualDialogue > 0:
-                character2ToAdd = {
-                    "x": nextContent["x"],
-                    "y": nextContent["y"],
-                    "text": nextContent["text"]
+            # if next content is the same line, and is_dual_dialogue > 0, then it's a dual dialogue
+            if next_content and current_y == next_content["y"] and is_dual_dialogue > 0:
+                character2_to_add = {
+                    "x": next_content["x"],
+                    "y": next_content["y"],
+                    "text": next_content["text"]
                 }
-                left = segmentToAdd[0]
-                right = character2ToAdd
-                if left["x"] > nextContent["x"]:
+                left = segment_to_add[0]
+                right = character2_to_add
+                if left["x"] > next_content["x"]:
                     right = left
                     left = copy(right)
 
-                if isDualDialogue <= 2:
-                    newScript[-1]["content"].append({
+                if is_dual_dialogue <= 2:
+                    new_script[-1]["content"].append({
                         "segment": [left],
                         "character2": [right]
                     })
                 else:
-                    newScript[-1]["content"][-1]["segment"].append(left)
-                    newScript[-1]["content"][-1]["character2"].append(right)
+                    new_script[-1]["content"][-1]["segment"].append(left)
+                    new_script[-1]["content"][-1]["character2"].append(right)
                 i += 1
-                isDualDialogue += 1
+                is_dual_dialogue += 1
 
-            # if content resides in a different y axis, we know it's not part of a dual dialogue
+            # if content resides in a different y-axis, we know it's not part of a dual dialogue
             else:
-                isDualDialogue = 0
-                # add content's y axis as key and the content array index position as value
-                newScript[-1]["content"].append({
-                    "segment": segmentToAdd
+                is_dual_dialogue = 0
+                # add content's y-axis as key and the content array index position as value
+                new_script[-1]["content"].append({
+                    "segment": segment_to_add
                 })
             i += 1
 
-    newScript = stitchLastDialogue(newScript, pageStart)
-    return newScript
+    new_script = stitch_last_dialogue(new_script, page_start)
+    return new_script
 
 
-def stitchLastDialogue(script, pageStart):
+def stitch_last_dialogue(script, page_start):
     """
     detect last line of a dual dialogue. This isn't detected by detectDualDialogue since
     a dialogue may be longer than the other, and therefore take up a different y value
     """
-    currScript = []
+    curr_script = []
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        currScript.append({"page": page["page"], "content": []})
+        curr_script.append({"page": page["page"], "content": []})
         margin = -1
         for i, content in enumerate(page["content"]):
             # if margin > 0, then content is potentially a dual dialogue
             if margin > 0:
-                currScriptLen = len(currScript[LATEST_PAGE]["content"]) - 1
+                curr_script_len = len(curr_script[LATEST_PAGE]["content"]) - 1
 
                 # content might be the last line of dual dialogue, or not
                 if "character2" not in content and i > 0:
                     # last line of a dual dialogue
                     if abs(content["segment"][0]["y"] - page["content"][i - 1]["segment"][LATEST_PAGE][
                         "y"]) <= margin + EPSILON:
-                        def getDiff(contentX, currX):
+                        def get_diff(content_x, curr_x):
                             return abs(
-                                contentX - currX)
+                                content_x - curr_x)
 
-                        diffBetweenContentAndSegment = getDiff(
+                        diff_between_content_and_segment = get_diff(
                             content["segment"][0]["x"],
-                            currScript[LATEST_PAGE]["content"][currScriptLen]["segment"][0]["x"])
-                        diffBetweenContentAndCharacter2 = getDiff(
+                            curr_script[LATEST_PAGE]["content"][curr_script_len]["segment"][0]["x"])
+                        diff_between_content_and_character2 = get_diff(
                             content["segment"][0]["x"],
-                            currScript[LATEST_PAGE]["content"][currScriptLen]["character2"][0]["x"]) if "character2" in \
-                                                                                                        currScript[
-                                                                                                            LATEST_PAGE][
-                                                                                                            "content"][
-                                                                                                            currScriptLen] else -1
+                            curr_script[LATEST_PAGE]["content"][curr_script_len]["character2"][0][
+                                "x"]) if "character2" in \
+                                         curr_script[
+                                             LATEST_PAGE][
+                                             "content"][
+                                             curr_script_len] else -1
 
-                        if diffBetweenContentAndSegment < diffBetweenContentAndCharacter2:
-                            currScript[LATEST_PAGE]["content"][currScriptLen]["segment"] += content["segment"]
+                        if diff_between_content_and_segment < diff_between_content_and_character2:
+                            curr_script[LATEST_PAGE]["content"][curr_script_len]["segment"] += content["segment"]
                         else:
-                            currScript[LATEST_PAGE]["content"][currScriptLen]["character2"] += content["segment"]
+                            curr_script[LATEST_PAGE]["content"][curr_script_len]["character2"] += content["segment"]
 
                     # not a dual dialogue. fuk outta here!
                     else:
-                        currScript[LATEST_PAGE]['content'].append(content)
+                        curr_script[LATEST_PAGE]['content'].append(content)
                         margin = 0
 
                 # still a dual dialogue
                 else:
-                    currScript[LATEST_PAGE]["content"].append(content)
+                    curr_script[LATEST_PAGE]["content"].append(content)
 
             # if no dual
             else:
@@ -133,50 +135,50 @@ def stitchLastDialogue(script, pageStart):
                     # margin between character head and FIRST line of dialogue
                     margin = abs(page["content"][i + 1]["segment"][0]["y"] -
                                  content["segment"][LATEST_PAGE]["y"])
-                    currScript[LATEST_PAGE]['content'].append(content)
+                    curr_script[LATEST_PAGE]['content'].append(content)
                 else:
-                    currScript[LATEST_PAGE]['content'].append(content)
+                    curr_script[LATEST_PAGE]['content'].append(content)
 
-    return currScript
+    return curr_script
 
 
-def stitchSeperateWordsIntoLines(script, pageStart):
-    dialogueStitch = []
+def stitch_separate_words_into_lines(script, page_start):
+    dialogue_stitch = []
 
-    def getJoinedText(textArr):
+    def get_joined_text(text_arr):
         return " ".join([x["text"]
-                         for x in textArr])
+                         for x in text_arr])
 
-    def segmentTextExists(x):
+    def segment_text_exists(x):
         return len(x) > 0 and len(
             x[-1]["text"]) > 0
 
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        dialogueStitch.append({"page": page["page"], "content": []})
+        dialogue_stitch.append({"page": page["page"], "content": []})
 
-        contentStitch = {
+        content_stitch = {
             "segment": []
         }
 
         for i, content in enumerate(page["content"]):
             if "character2" in content:
-                if segmentTextExists(contentStitch["segment"]):
-                    dialogueStitch[-1]["content"].append(copy(contentStitch))
-                contentStitch = {
+                if segment_text_exists(content_stitch["segment"]):
+                    dialogue_stitch[-1]["content"].append(copy(content_stitch))
+                content_stitch = {
                     "segment": []
                 }
-                dialogueStitch[-1]["content"].append(content)
+                dialogue_stitch[-1]["content"].append(content)
             elif i > 0 and content["segment"][0]["y"] == page["content"][i - 1]["segment"][0]["y"]:
-                contentStitch["segment"][-1]["text"] += " " + \
-                                                        getJoinedText(content["segment"])
+                content_stitch["segment"][-1]["text"] += " " + \
+                                                         get_joined_text(content["segment"])
             else:
-                if segmentTextExists(contentStitch["segment"]):
-                    dialogueStitch[-1]["content"].append(copy(contentStitch))
-                contentStitch = copy(content)
+                if segment_text_exists(content_stitch["segment"]):
+                    dialogue_stitch[-1]["content"].append(copy(content_stitch))
+                content_stitch = copy(content)
 
-        if len(contentStitch["segment"]) > 0:
-            dialogueStitch[-1]["content"].append(copy(contentStitch))
+        if len(content_stitch["segment"]) > 0:
+            dialogue_stitch[-1]["content"].append(copy(content_stitch))
 
-    return dialogueStitch
+    return dialogue_stitch

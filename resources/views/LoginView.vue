@@ -1,6 +1,6 @@
 <template>
     <div
-        class="max-w-[540px] py-8 min-h-screen mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
+        class="max-w-[540px] py-8 min-h-dvh mx-auto font-normal bg-white text-black flex flex-col gap-10 items-center justify-between"
     >
         <a href="/">
             <img

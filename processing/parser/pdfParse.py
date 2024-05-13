@@ -7,13 +7,13 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 
 
-def parsePdf(scriptFile):
-    newScript = {
+def parse_pdf(script_file):
+    new_script = {
         "pdf": []
     }
 
     # Create a PDF parser object associated with the file object.
-    parser = PDFParser(scriptFile)
+    parser = PDFParser(script_file)
 
     # Create a PDF document object that stores the document structure.
     document = PDFDocument(parser)
@@ -41,7 +41,7 @@ def parsePdf(scriptFile):
     i = 0
     # loop over all pages in the document
     for page in PDFPage.create_pages(document):
-        newScript["pdf"].append({
+        new_script["pdf"].append({
             "page": i,
             "content": []
         })
@@ -51,12 +51,12 @@ def parsePdf(scriptFile):
         layout = device.get_result()
 
         # extract text from this object
-        parseObj(newScript, layout._objs, page.mediabox[3])
+        parse_obj(new_script, layout._objs, page.mediabox[3])
         i += 1
-    return newScript
+    return new_script
 
 
-def parseObj(newScript, lt_objs, pageHeight):
+def parse_obj(new_script, lt_objs, page_height):
     # loop over the object list
     for obj in lt_objs:
 
@@ -67,11 +67,11 @@ def parseObj(newScript, lt_objs, pageHeight):
             #         if isinstance(c, pdfminer.layout.LTChar):
             #             print("fontname %s" % c)
 
-            newScript["pdf"][-1]["content"].append({
+            new_script["pdf"][-1]["content"].append({
                 "x": round(obj.bbox[0]),
-                "y": round(pageHeight - obj.bbox[1]),
+                "y": round(page_height - obj.bbox[1]),
                 "text": obj.get_text().replace('\n', '').strip()
             })
         # if it's a textbox, also recurse
         if isinstance(obj, LTTextBoxHorizontal):
-            parseObj(newScript, obj._objs, pageHeight)
+            parse_obj(new_script, obj._objs, page_height)

@@ -9,7 +9,9 @@ class AchievementObserver
 {
     private function notifyIfAchievementUnlocked(Achievement $achievement): void
     {
-        if ($achievement->progress === 100) {
+        if ($achievement->progress === 100 && $achievement->completed_at === null) {
+            $achievement->completed_at = now();
+            $achievement->saveQuietly();
             $achievement->user->notify(new AchievementUnlocked($achievement));
         }
     }

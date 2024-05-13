@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Mail\AuthCodeMail;
 use App\Models\User;
 use App\Models\VerificationCode;
@@ -55,7 +56,7 @@ class LoginController extends Controller
 
     public function user(Request $request): JsonResponse
     {
-        return $this->successResponse('User', Auth::user());
+        return $this->successResponse('User', UserResource::make(Auth::user()));
     }
 
     private function getVerificationCode(User $user): VerificationCode

@@ -17,7 +17,7 @@ class AchievementResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'progress' => $this->progress,
-            'created_at' => $this->created_at,
+            'completed_at' => $this->completed_at,
         ];
     }
 }

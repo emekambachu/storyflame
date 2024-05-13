@@ -1,55 +1,55 @@
 import re
 
-from processing.parser.helpers.character import isCharacter, extractCharacter
-from processing.parser.helpers.headings import isHeading, extractHeading
+from processing.parser.helpers.character import is_character, extract_character
+from processing.parser.helpers.headings import is_heading, extract_heading
 
 LAST_SCENE = -2
 
 
-def groupSections(topTrends, script, pageStart, includeSceneNumber):
+def group_sections(top_trends, script, page_start, include_scene_number):
     """group types into the same sections"""
-    newScript = categorizeSections(topTrends, script, pageStart, includeSceneNumber)
-    newScript = combineCategories(newScript, pageStart)
-    newScript = divideParentheticals(newScript)
-    return newScript
+    new_script = categorize_sections(top_trends, script, page_start, include_scene_number)
+    new_script = combine_categories(new_script, page_start)
+    new_script = divide_parentheticals(new_script)
+    return new_script
 
 
-def divideParentheticals(newScript):
-    """seperates parentheticals from dialogues"""
+def divide_parentheticals(new_script):
+    """separates parentheticals from dialogues"""
 
-    for page in newScript:
+    for page in new_script:
         for i, section in enumerate(page["content"]):
             for j, scene in enumerate(section["scene"]):
                 if scene["type"] == "CHARACTER":
-                    scene["content"]["dialogue"] = getParenthetical(
+                    scene["content"]["dialogue"] = get_parenthetical(
                         scene["content"]["dialogue"])
                 elif scene["type"] == "DUAL_DIALOGUE":
-                    scene["content"]["character1"]["dialogue"] = getParenthetical(
+                    scene["content"]["character1"]["dialogue"] = get_parenthetical(
                         scene["content"]["character1"]["dialogue"])
-                    scene["content"]["character2"]["dialogue"] = getParenthetical(
+                    scene["content"]["character2"]["dialogue"] = get_parenthetical(
                         scene["content"]["character2"]["dialogue"])
-    return newScript
+    return new_script
 
 
-def getParenthetical(text):
-    """splits dialogue string into list, seperating any containing parenthetical(s)"""
+def get_parenthetical(text):
+    """splits dialogue string into list, separating any containing parenthetical(s)"""
 
     return list(
         filter(lambda x: len(x.strip()) > 0, re.split(r'(\([^)]+\))', text))
     )
 
 
-def combineCategories(newScript, pageStart):
+def combine_categories(new_script, page_start):
     """combines consecutive sections with the same type"""
 
-    finalSections = []
-    for page in newScript:
-        if page["page"] < pageStart:
+    final_sections = []
+    for page in new_script:
+        if page["page"] < page_start:
             continue
-        finalSections.append({"page": page["page"], "content": []})
+        final_sections.append({"page": page["page"], "content": []})
 
         for i, content in enumerate(page["content"]):
-            finalSections[-1]["content"].append({
+            final_sections[-1]["content"].append({
                 # "scene_number": content["scene_number"],
                 "scene_info": content["scene_info"],
                 "scene": []
@@ -58,9 +58,9 @@ def combineCategories(newScript, pageStart):
             while j < len(content["scene"]):
                 scene = content["scene"][j]
 
-                sectionSameTypeAsPrevious = j > 0 and scene["type"] == content["scene"][j-1]["type"]
+                section_same_type_as_previous = j > 0 and scene["type"] == content["scene"][j - 1]["type"]
                 if scene["type"] == "CHARACTER":
-                    finalSections[-1]["content"][-1]["scene"].append({
+                    final_sections[-1]["content"][-1]["scene"].append({
                         "type": "CHARACTER",
                         "content": {
                             "character": scene["text"]["character"],
@@ -69,102 +69,108 @@ def combineCategories(newScript, pageStart):
                         }
                     })
                 elif scene["type"] == "DUAL_DIALOGUE":
-                    sectionIsCharacter = lambda currScene, character: len(currScene["content"][character]) == 1 and isCharacter(currScene["content"][character][0])
-                    if sectionIsCharacter(scene, "character1") and sectionIsCharacter(scene, "character2"):
-                        finalSections[-1]["content"][-1]["scene"].append({
+                    section_is_character = lambda curr_scene, character: len(
+                        curr_scene["content"][character]) == 1 and is_character(curr_scene["content"][character][0])
+                    if section_is_character(scene, "character1") and section_is_character(scene, "character2"):
+                        final_sections[-1]["content"][-1]["scene"].append({
                             "type": "DUAL_DIALOGUE",
                             "content": {
-                                "character1": extractCharacter(scene["content"]["character1"][0]),
-                                "character2":  extractCharacter(scene["content"]["character2"][0]),
+                                "character1": extract_character(scene["content"]["character1"][0]),
+                                "character2": extract_character(scene["content"]["character2"][0]),
                             }
                         })
                     else:
-                        finalSections[-1]["content"][-1]["scene"][-1]["content"]["character1"]["dialogue"] = getJoinedText(
+                        final_sections[-1]["content"][-1]["scene"][-1]["content"]["character1"][
+                            "dialogue"] = get_joined_text(
                             scene["content"]["character1"])
-                        finalSections[-1]["content"][-1]["scene"][-1]["content"]["character2"]["dialogue"] = getJoinedText(
+                        final_sections[-1]["content"][-1]["scene"][-1]["content"]["character2"][
+                            "dialogue"] = get_joined_text(
                             scene["content"]["character2"])
 
-                elif scene["type"] == "DIALOGUE" and content["scene"][j-1]["type"] == "CHARACTER":
-                    finalSections[-1]["content"][-1]["scene"][-1]["content"]["dialogue"] += scene["text"].strip()
-                elif sectionSameTypeAsPrevious and scene["type"] == "DIALOGUE":
-                    finalSections[-1]["content"][-1]["scene"][-1]["content"]["dialogue"] += " " + scene["text"].strip()
-                elif sectionSameTypeAsPrevious and scene["type"] == "ACTION":
+                elif scene["type"] == "DIALOGUE" and content["scene"][j - 1]["type"] == "CHARACTER":
+                    final_sections[-1]["content"][-1]["scene"][-1]["content"]["dialogue"] += scene["text"].strip()
+                elif section_same_type_as_previous and scene["type"] == "DIALOGUE":
+                    final_sections[-1]["content"][-1]["scene"][-1]["content"]["dialogue"] += " " + scene["text"].strip()
+                elif section_same_type_as_previous and scene["type"] == "ACTION":
                     # if part of same paragraph, concat text
-                    if (scene["content"][0]["y"] - finalSections[-1]["content"][-1]["scene"][-1]["content"][-1]["y"] <= 16):
-                        finalSections[-1]["content"][-1]["scene"][-1]["content"][-1]["text"] += " " + scene["content"][0]["text"]
-                        finalSections[-1]["content"][-1]["scene"][-1]["content"][-1]["y"] = scene["content"][0]["y"]
+                    if (scene["content"][0]["y"] - final_sections[-1]["content"][-1]["scene"][-1]["content"][-1][
+                        "y"] <= 16):
+                        final_sections[-1]["content"][-1]["scene"][-1]["content"][-1]["text"] += " " + \
+                                                                                                 scene["content"][0][
+                                                                                                     "text"]
+                        final_sections[-1]["content"][-1]["scene"][-1]["content"][-1]["y"] = scene["content"][0]["y"]
                     # else, just append entire text
                     else:
-                        finalSections[-1]["content"][-1]["scene"][-1]["content"].append(
+                        final_sections[-1]["content"][-1]["scene"][-1]["content"].append(
                             scene["content"][0])
                 else:
-                    finalSections[-1]["content"][-1]["scene"].append(scene)
+                    final_sections[-1]["content"][-1]["scene"].append(scene)
 
                 j += 1
-    return finalSections
+    return final_sections
 
 
-def getJoinedText(textArr):
+def get_joined_text(text_arr):
     return " ".join([arr["text"]
-                     for arr in textArr])
+                     for arr in text_arr])
 
 
-def categorizeSections(topTrends, script, pageStart, includeSceneNumber):
+def categorize_sections(top_trends, script, page_start, include_scene_number):
     """categorize lines into types"""
 
-    finalSections = []
-    sceneNumber = 0
+    final_sections = []
+    scene_number = 0
     for page in script:
-        if page["page"] < pageStart:
+        if page["page"] < page_start:
             continue
-        finalSections.append({"page": page["page"], "content": []})
+        final_sections.append({"page": page["page"], "content": []})
 
-        finalSections[-1]["content"].append({
-            # "scene_number": sceneNumber,
-            "scene_info": finalSections[LAST_SCENE]["content"][-1]["scene_info"] if len(finalSections) >= 2 else None,
+        final_sections[-1]["content"].append({
+            # "scene_number": scene_number,
+            "scene_info": final_sections[LAST_SCENE]["content"][-1]["scene_info"] if len(final_sections) >= 2 else None,
             "scene": []
         })
 
-        characterOccurred = False
+        character_occurred = False
         for i, content in enumerate(page["content"]):
             if "character2" in content:
-                finalSections[-1]["content"][-1]["scene"].append({
+                final_sections[-1]["content"][-1]["scene"].append({
                     "type": "DUAL_DIALOGUE",
                     "content": {
                         "character1": content["segment"],
                         "character2": content["character2"],
                     }
                 })
-                characterOccurred = False
+                character_occurred = False
                 continue
 
-            previousY = page["content"][i -
-                                        1]["segment"][-1]["y"] if i > 0 else 0
+            previous_y = page["content"][i - 1]["segment"][-1]["y"] if i > 0 else 0
             x = content["segment"][0]["x"]
             y = content["segment"][0]["y"]
             text = content["segment"][0]["text"]
 
             # booleans
-            isAction = abs(x - topTrends[0][0]) <= 15
-            isTransition = content["segment"][0]["x"] >= 420 or "FADE" in text or ("CUT" in text and not isAction) or "TO:" in text
+            is_action = abs(x - top_trends[0][0]) <= 15
+            is_transition = content["segment"][0]["x"] >= 420 or "FADE" in text or (
+                "CUT" in text and not is_action) or "TO:" in text
 
-            if isHeading(content["segment"][0]):
-                sceneNumber += 1
-                if len(finalSections[-1]["content"][-1]["scene"]) == 0:
-                    finalSections[-1]["content"][-1] = {
-                        # "scene_number": sceneNumber,
-                        "scene_info": extractHeading(content["segment"][0]["text"]),
+            if is_heading(content["segment"][0]):
+                scene_number += 1
+                if len(final_sections[-1]["content"][-1]["scene"]) == 0:
+                    final_sections[-1]["content"][-1] = {
+                        # "scene_number": scene_number,
+                        "scene_info": extract_heading(content["segment"][0]["text"]),
                         "scene": []
                     }
                 else:
-                    finalSections[-1]["content"].append({
-                        # "scene_number": sceneNumber,
-                        "scene_info": extractHeading(content["segment"][0]["text"]),
+                    final_sections[-1]["content"].append({
+                        # "scene_number": scene_number,
+                        "scene_info": extract_heading(content["segment"][0]["text"]),
                         "scene": []
                     })
-                characterOccurred = False
-            elif isTransition:
-                finalSections[-1]["content"][-1]["scene"].append({
+                character_occurred = False
+            elif is_transition:
+                final_sections[-1]["content"][-1]["scene"].append({
                     "type": "TRANSITION",
                     "content": {
                         "text": text,
@@ -174,40 +180,41 @@ def categorizeSections(topTrends, script, pageStart, includeSceneNumber):
                         }
                     }
                 })
-                characterOccurred = False
-            elif isAction:
+                character_occurred = False
+            elif is_action:
                 # if Heading is multi-line
-                if i > 0 and len(finalSections[-1]["content"][-1]["scene"]) == 0 and y - page["content"][i-1]["segment"][-1]["y"] < 24:
-                    finalSections[-1]["content"][-1]["scene_info"]["location"] += " " + text
+                if i > 0 and len(final_sections[-1]["content"][-1]["scene"]) == 0 and y - \
+                    page["content"][i - 1]["segment"][-1]["y"] < 24:
+                    final_sections[-1]["content"][-1]["scene_info"]["location"] += " " + text
                 else:
-                    finalSections[-1]["content"][-1]["scene"].append({
+                    final_sections[-1]["content"][-1]["scene"].append({
                         "type": "ACTION",
                         "content": [{"text": text, "x": x, "y": y}]
                     })
-                    characterOccurred = False
+                    character_occurred = False
 
-            elif isCharacter(content["segment"][0]):
-                finalSections[-1]["content"][-1]["scene"].append({
+            elif is_character(content["segment"][0]):
+                final_sections[-1]["content"][-1]["scene"].append({
                     "type": "CHARACTER",
-                    "text": extractCharacter(content["segment"][0]),
+                    "text": extract_character(content["segment"][0]),
                     "metadata": {
                         "x": x,
                         "y": y
                     }
                 })
-                characterOccurred = True
+                character_occurred = True
             else:
-                currentScene = finalSections[-1]["content"][-1]["scene"]
+                current_scene = final_sections[-1]["content"][-1]["scene"]
 
                 # first line of page is never a dialogue
-                if len(currentScene) == 0 or not characterOccurred:
-                    finalSections[-1]["content"][-1]["scene"].append({
+                if len(current_scene) == 0 or not character_occurred:
+                    final_sections[-1]["content"][-1]["scene"].append({
                         "type": "ACTION",
                         "content": [{"text": text, "x": x, "y": y}]
                     })
 
                 else:
-                    finalSections[-1]["content"][-1]["scene"].append({
+                    final_sections[-1]["content"][-1]["scene"].append({
                         "type": "DIALOGUE",
                         "text": text,
                         "metadata": {
@@ -216,4 +223,4 @@ def categorizeSections(topTrends, script, pageStart, includeSceneNumber):
                         }
                     })
 
-    return finalSections
+    return final_sections

@@ -3,7 +3,7 @@ import re
 headingEnum = ["EXT./INT.", "EXT./INT.", "INT./EXT.", "EXT/INT", "INT/EXT", "INT.", "EXT.", "INT --", "EXT --"]
 
 
-def isHeading(content):
+def is_heading(content):
     text = content["text"]
     for heading in headingEnum:
         if not text.endswith(heading) and heading in text:
@@ -11,8 +11,8 @@ def isHeading(content):
     return False
 
 
-def extractTime(text):
-    timeVocab = "|".join([
+def extract_time(text):
+    time_vocab = "|".join([
         "NIGHT",
         "AFTERNOON",
         "MORNING",
@@ -30,16 +30,16 @@ def extractTime(text):
         "LATER",
         "SUNSET",
     ])
-    regex = '[-,]?[ ]?(DAWN|DUSK|((LATE|EARLY) )?' + timeVocab + ')|\d{4}'
-    findTime = re.search(
+    regex = '[-,]?[ ]?(DAWN|DUSK|((LATE|EARLY) )?' + time_vocab + ')|\d{4}'
+    find_time = re.search(
         regex, text)
 
     time = list(filter(lambda x: len(x) > 0, [x.strip(
-        "-,. ") for x in text[findTime.start():].split()])) if findTime else None
+        "-,. ") for x in text[find_time.start():].split()])) if find_time else None
     return time
 
 
-def extractHeading(text):
+def extract_heading(text):
     """
         EXT.?/INT.?
         INT.?/EXT.?
@@ -50,8 +50,8 @@ def extractHeading(text):
         INT --
     """
     region = re.search(
-        '((?:.* )?(?:EXT[\\.]?\\/INT[\\.]?|INT[\\.]?\\/EXT[\\.]?|INT(?:\\.| --)|EXT(?:\\.| --)))', text).groups()[0]
-    time = extractTime(text)
+        '((?:.* )?(?:EXT[.]?/INT[.]?|INT[.]?/EXT[.]?|INT(?:\.| --)|EXT(?:\.| --)))', text).groups()[0]
+    time = extract_time(text)
 
     location = text.replace(region, "")
     if time and len(time) > 0:

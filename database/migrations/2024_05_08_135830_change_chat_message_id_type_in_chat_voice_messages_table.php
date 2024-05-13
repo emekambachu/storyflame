@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('chat_voice_messages', function (Blueprint $table) {
-            $table->dropForeign(['chat_message_id']);
+//            $table->dropForeign(['chat_message_id']);
             $table->dropColumn('chat_message_id');
         });
 

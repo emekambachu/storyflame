@@ -27,74 +27,88 @@
             </button>
         </transition>
 
-        <tooltip-message
-            v-if="!loading && (!isRecording || showRemainingWarning)"
-            class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2"
-        >
-            {{
-                !isRecording
-                    ? 'Press to start'
-                    : showRemainingWarning
-                      ? 'Less than 30 seconds left'
-                      : null
-            }}
-        </tooltip-message>
         <div
-            key="start-stop-button"
-            :class="{
-                'active:scale-95': !loading && !isInitalizing,
-            }"
-            class="relative w-24 h-24 transition-transform col-start-2 col-end-3"
+            class="grid grid-rows-[1fr,auto,1fr] gap-5 col-start-2 col-end-3 items-center"
         >
-            <button
-                :class="[loading ? 'bg-slate-300 animate-pulse' : 'bg-red-500']"
-                :disabled="loading || isInitalizing"
-                class="absolute inset-0 rounded-full transition-colors z-20 flex items-center justify-center select-none"
-                @click="toggleRecording"
+            <tooltip-message
+                v-if="!loading && (!isRecording || showRemainingWarning)"
+                class="absolute -top-4 left-1/2 -translate-x-1/2 row-start-1"
             >
-                <template v-if="!loading">
-                    <span
-                        v-if="isRecording"
-                        class="text-pure-white text-lg font-bold"
-                    >
-                        {{ formattedTime }}
-                    </span>
-                    <span v-else>
-                        <app-loader
-                            v-if="isInitalizing"
-                            class="light w-8"
-                        />
-                        <microphone-icon
-                            v-else
-                            class="text-white w-10 h-10"
-                        />
-                    </span>
-                </template>
-            </button>
+                {{
+                    !isRecording
+                        ? 'Press to start'
+                        : showRemainingWarning
+                          ? 'Less than 30 seconds left'
+                          : null
+                }}
+            </tooltip-message>
             <div
-                v-if="!loading"
-                class="z-10 origin-[50%_51%] spin-inverse opacity-50 absolute inset-0"
+                key="start-stop-button"
+                :class="{
+                    'active:scale-95': !loading && !isInitalizing,
+                }"
+                class="relative row-start-2 row-end-3 w-24 h-24 transition-transform"
             >
+                <button
+                    :class="[
+                        loading ? 'bg-slate-300 animate-pulse' : 'bg-red-500',
+                    ]"
+                    :disabled="loading || isInitalizing"
+                    class="absolute inset-0 rounded-full transition-colors z-20 flex items-center justify-center select-none"
+                    @click="toggleRecording"
+                >
+                    <template v-if="!loading">
+                        <span
+                            v-if="isRecording"
+                            class="text-pure-white text-lg font-bold"
+                        >
+                            Done
+                        </span>
+                        <span v-else>
+                            <app-loader
+                                v-if="isInitalizing"
+                                class="light w-8"
+                            />
+                            <microphone-icon
+                                v-else
+                                class="text-white w-10 h-10"
+                            />
+                        </span>
+                    </template>
+                </button>
                 <div
-                    :style="{
-                        transform: `scale(${isRecording && !isPaused ? (140 + pulse) / 100 : 1})`,
-                    }"
-                    class="duration-75 bg-red-500 h-full rounded-full"
-                />
-            </div>
-            <div
-                v-if="!loading"
-                class="z-10 origin-[51%_50%] spin opacity-60 absolute inset-0"
-            >
+                    v-if="!loading"
+                    class="z-10 origin-[50%_51%] spin-inverse opacity-50 absolute inset-0"
+                >
+                    <div
+                        :style="{
+                            transform: `scale(${isRecording && !isPaused ? (140 + pulse) / 100 : 1})`,
+                        }"
+                        class="duration-75 bg-red-500 h-full rounded-full"
+                    />
+                </div>
                 <div
-                    :style="{
-                        transform: `scale(${isRecording && !isPaused ? (120 + pulse / 2) / 100 : 0})`,
-                    }"
-                    class="duration-75 bg-red-500 h-full rounded-full"
-                />
+                    v-if="!loading"
+                    class="z-10 origin-[51%_50%] spin opacity-60 absolute inset-0"
+                >
+                    <div
+                        :style="{
+                            transform: `scale(${isRecording && !isPaused ? (120 + pulse / 2) / 100 : 0})`,
+                        }"
+                        class="duration-75 bg-red-500 h-full rounded-full"
+                    />
+                </div>
             </div>
-        </div>
 
+            <span
+                :class="{
+                    'opacity-0': !isRecording,
+                }"
+                class="text-black row-start-3 text-xs font-bold text-center"
+            >
+                {{ formattedTime }}
+            </span>
+        </div>
         <transition
             enter-active-class="transition-opacity duration-200"
             enter-from-class="opacity-0"
@@ -155,8 +169,6 @@ const audioLevel = ref<number>(0)
 const pulse = computed(() => {
     return isRecording.value ? audioLevel.value : 10
 })
-
-const transcribedText = ref<string>('')
 
 async function toggleRecording() {
     try {

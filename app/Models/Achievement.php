@@ -19,7 +19,8 @@ class Achievement extends Model
     protected $fillable = [
         'name',
         'user_id',
-        'progress'
+        'progress',
+        'completed_at'
     ];
 
     public function user(): BelongsTo

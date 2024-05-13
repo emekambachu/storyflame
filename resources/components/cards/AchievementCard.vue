@@ -15,13 +15,13 @@
 
         <h6 class="text-black text-sm font-bold">{{ item.title }}</h6>
         <p
-            v-if="item.achievement_date && item.progress == 100"
+            v-if="item.completed_at && item.progress == 100"
             class="text-black text-sm font-normal opacity-50"
         >
-            {{ item.achievement_date }}
+            {{ DateTime.fromSQL(item.completed_at).toFormat('LLL dd, yyyy') }}
         </p>
         <div
-            v-else
+            v-else-if="item.progress > 0"
             class="w-full flex items-center gap-1 mt-1"
         >
             <progress-bar
@@ -39,6 +39,7 @@
 import ProgressBar from '@/components/ProgressBar.vue'
 import { inject } from 'vue'
 import AchievementPopup from '@/components/modals/AchievementPopup.vue'
+import { DateTime } from 'luxon'
 
 const props = defineProps({
     item: {

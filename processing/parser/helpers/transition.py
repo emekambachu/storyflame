@@ -17,7 +17,7 @@ transitionEnum = [
 ]
 
 
-def checkTransition(self, text):
+def check_transition(text):
     for transition in transitionEnum:
         if transition in text:
             return True

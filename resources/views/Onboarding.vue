@@ -1,14 +1,14 @@
 <template>
     <div
-        class="flex flex-col items-center text-center px-4 relative pt-8 pb-10 min-h-screen"
+        class="flex flex-col items-center text-center px-4 relative pt-8 pb-10 min-h-dvh"
     >
         <a
-            href="/"
             class="mb-8"
+            href="/"
         >
             <img
-                src="@/assets/logo.svg"
                 class="w-[393px]"
+                src="@/assets/logo.svg"
             />
         </a>
         <aside class="flex flex-col w-full">
@@ -65,50 +65,58 @@
                 </div>
             </template>
             <template v-else>
-                <textarea
-                    v-if="question?.type === 'text'"
-                    v-model="testInput"
-                    class="mx-auto my-auto w-full text-center text-2xl text-black font-normal bg-white !border-0 !outline-0"
-                    placeholder="Enter your answer"
-                    @keydown.enter="extractData(testInput)"
-                />
-                <div
-                    v-else
-                    class="w-full my-6 flex flex-col items-start gap-4"
-                >
-                    <ListOption
-                        v-for="option in question?.options"
-                        :key="option"
-                        :status="selectedOptions.includes(option)"
-                        multiple
-                        class="w-full"
-                        @click="
-                            selectedOptions.includes(option)
-                                ? selectedOptions.splice(
-                                      selectedOptions.indexOf(option),
-                                      1
-                                  )
-                                : selectedOptions.push(option)
-                        "
-                    >
-                        <template #text>{{ option }}</template>
-                    </ListOption>
-                    <button
-                        :class="[
-                            selectedOptions.length
-                                ? 'bg-red-600 text-white'
-                                : 'text-gray-400 border-gray-200',
-                        ]"
-                        class="w-full p-6 border-2 rounded-full duration-75 font-bold"
-                        @click="extractData(selectedOptions)"
-                    >
-                        Submit
-                    </button>
+                <div class="w-full my-6 flex flex-col items-start gap-4 grow">
+                    <textarea
+                        v-if="question?.type === 'text'"
+                        v-model="testInput"
+                        class="mx-auto my-auto w-full text-center text-2xl text-black font-normal bg-white !border-0 !outline-0 rounded-full ring-0"
+                        enterkeyhint="done"
+                        inputmode="text"
+                        placeholder="Enter your answer"
+                        @keydown.enter="extractData(testInput)"
+                    />
+                    <template v-else>
+                        <list-option
+                            v-for="option in question?.options"
+                            :key="option"
+                            :status="selectedOptions.includes(option)"
+                            class="w-full"
+                            multiple
+                            @click="
+                                selectedOptions.includes(option)
+                                    ? selectedOptions.splice(
+                                          selectedOptions.indexOf(option),
+                                          1
+                                      )
+                                    : selectedOptions.push(option)
+                            "
+                        >
+                            <template #text>{{ option }}</template>
+                        </list-option>
+                    </template>
                 </div>
             </template>
         </main>
 
-        <div class="flex justify-center mt-auto w-full">
+        <div
+            class="flex gap-3 flex-col items-center justify-center mt-auto w-full"
+        >
+            <button
+                v-if="!isSpeakingMode && !ua.isMobile"
+                :class="[
+                    selectedOptions.length || testInput.length
+                        ? 'bg-red-600 text-white'
+                        : 'text-gray-400 border-gray-200',
+                ]"
+                class="w-full p-6 border-2 rounded-full duration-75 font-bold transition-colors max-w-sm"
+                @click="
+                    extractData(
+                        selectedOptions.length ? selectedOptions : testInput
+                    )
+                "
+            >
+                Submit
+            </button>
             <button
                 class="text-neutral-500 text-base font-normal mb-0"
                 @click="isSpeakingMode = !isSpeakingMode"
@@ -124,7 +132,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import ListOption from '@/components/ListOption.vue'
 import VoiceButton from '@/components/VoiceButton.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
@@ -134,6 +142,9 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ChatMessage } from '@/types/chatMessage'
 import StaggeredAnimation from '@/components/StaggeredTextAnimation.vue'
+import { uaInjectKey } from '@/types/inject'
+import useModal from '@/composables/useModal'
+import User from '@/types/user'
 
 const router = useRouter()
 
@@ -145,6 +156,11 @@ const question = ref<ChatMessage | null>(null)
 const progress = ref(0)
 const loading = ref(true)
 const selectedOptions = ref<string[]>([])
+
+const ua = inject(uaInjectKey)
+
+const { updateUser } = useAuthStore()
+const { show, close } = useModal()
 
 function checkIfFinished() {
     // if (messages.value.filter((message) => message.type === 'finish').length) {
@@ -161,7 +177,14 @@ watch(question, (newQuestion) => {
 function setMessage(message: ChatMessage) {
     if (message.type === 'system') {
         if (message.content === 'finish') {
-            router.push('/summary')
+            const modalId = show('full-screen-loader', {})
+            axios
+                .get<SuccessResponse<User>>('/api/v1/onboarding/summary')
+                .then((res) => {
+                    updateUser(res.data.data)
+                    close(modalId)
+                    router.push({ name: 'profile' })
+                })
         }
     } else {
         question.value = message

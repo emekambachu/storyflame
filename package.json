@@ -28,8 +28,10 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@types/luxon": "^3.4.2",
         "@vueuse/core": "^10.9.0",
         "laravel-echo": "^1.16.1",
+        "luxon": "^3.4.4",
         "motion": "^10.17.0",
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^3.2.1",

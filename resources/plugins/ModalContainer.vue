@@ -6,8 +6,10 @@
             :attrs="modal.props"
             :component="modal.component"
             :data-id="modal.id"
+            :open="modal.open"
             :order="modals.filter((m) => m.open).length - i"
-            @close="closeModal(modal.id)"
+            v-bind="modal.props"
+            @close="closeModal(modal.id, true)"
             @closing="modals[i].open = false"
         />
     </teleport>
@@ -31,8 +33,8 @@ const props = defineProps({
     },
 })
 
-function closeModal(id: string) {
-    close(id)
+function closeModal(id: string, force: boolean = false) {
+    close(id, force)
 }
 </script>
 

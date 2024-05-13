@@ -7,6 +7,7 @@ use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Nette\NotImplementedException;
 
 class OnboardingService
@@ -87,7 +88,7 @@ class OnboardingService
             'type' => 'text',
             'name' => 'Skill Level',
             'examples' => ['beginner', 'intermediate', 'advanced', 'professional'],
-            'description' => 'Skill level of the user',
+            'description' => 'Writing skill level of the user',
         ],
         'genre_focus' => [
             'type' => 'array',
@@ -99,25 +100,25 @@ class OnboardingService
             'type' => 'array',
             'name' => 'Writing Medium',
             'examples' => ['TV', 'Film', 'Novelist', 'Short Story Writer', 'Poet', 'Playwright', 'Screenwriter', 'Copywriter'],
-            'description' => 'Writing medium of the user',
+            'description' => 'Writing medium of the user, such as TV, Film, Novelist, etc.',
         ],
 
         'media' => [
             'type' => 'array',
-            'name' => 'Influential Media',
-            'description' => 'Media that influences the user',
+            'name' => 'Media',
+            'description' => 'Media that influences the user, such as movies, books, TV shows, music, etc.',
             'examples' => ['Star Wars', 'Harry Potter', 'Game of Thrones', 'The Great Gatsby', 'The Matrix', 'The Simpsons', 'The Godfather', 'The Beatles'],
         ],
         'characters' => [
             'type' => 'array',
-            'name' => 'Influential Characters',
-            'description' => 'Characters that influence the user',
+            'name' => 'Characters',
+            'description' => 'Real or fictional people and characters that influence the user. Should not include media titles.',
             'examples' => ['Luke Skywalker', 'Hermione Granger', 'Sherlock Holmes', 'Elizabeth Bennet', 'James Bond', 'Walter White', 'Indiana Jones', 'Buffy Summers'],
         ],
         'audience' => [
             'type' => 'array',
-            'name' => 'Target Audience',
-            'description' => 'Target audience of the user',
+            'name' => 'Audience',
+            'description' => 'Target audience of the user, such as children, young adults, adults, seniors, etc.',
             'examples' => ['children', 'young adults', 'adults', 'seniors', 'all ages']
         ],
         'themes' => [
@@ -131,7 +132,7 @@ class OnboardingService
             'type' => 'text',
             'name' => 'Productivity',
             'examples' => ['high-output', 'steady', 'sporadic', 'procrastinator'],
-            'description' => 'Productivity style of the user',
+            'description' => 'Writing Productivity style of the user',
         ],
         'writing_process' => [
             'type' => 'text',
@@ -229,6 +230,11 @@ class OnboardingService
     public function getSummary(): User
     {
         $user = auth()->user();
+        $response = Http::post(config('app.processing_url') . '/onboarding/generate/details', [
+            'history' => $this->getChatHistory($this->getChat()),
+        ]);
+        $response->throw();
+        $user->extra_attributes->set('onboarding.bio', $response->json()['details']);
         if (!$user->extra_attributes->onboarded ?? false) {
             $this->saveUserData($user);
             $this->achievementService->updateProgress($user);
@@ -333,11 +339,44 @@ class OnboardingService
 
             $replaceNull = fn($value) => $value === null || $value === '' || $value === 'null' || $value === 'N/A' ? null : $value;
 
+            /**
+             * Clean JSON, remove null values, empty string, 'null', 'N/A', empty arrays
+             * @param array $json
+             * @return array
+             */
+            function cleanJson(array $json): array
+            {
+                $cleaned = [];
+                foreach ($json as $key => $value) {
+                    if (is_array($value)) {
+                        $arr = cleanJson($value);
+                        if (!empty($arr)) {
+                            $cleaned[$key] = $arr;
+                        }
+                    } else {
+                        if (is_string($value)) {
+                            $trim = trim($value);
+                            if (in_array(strtolower($trim), ['null', 'n/a', '', '[]'])) {
+                                continue;
+                            }
+                            $cleaned[$key] = $trim;
+                        } else if ($value === null) {
+                            continue;
+                        } else {
+                            // if it's not a string and null, it's a number or boolean
+                            $cleaned[$key] = $value;
+                        }
+                    }
+                }
+                return $cleaned;
+            }
+
+            Log::info('response', [$request->json()]);
+
             # filter out null values
-            $extracted = array_filter(array_map(
-                fn($value) => is_array($value) ? array_map($replaceNull, $value) : $replaceNull($value),
-                $request->json()
-            ), fn($value) => $value !== null && $value !== '');
+            $extracted = cleanJson($request->json());
+
+            Log::info('cleaned', [$extracted]);
         }
 
         $answer->extra_attributes->extracted = $extracted;
@@ -383,6 +422,18 @@ class OnboardingService
         ]);
     }
 
+    private function getChatHistory(Chat $chat)
+    {
+        return $chat->chatMessages()->notSystem()->oldest()->get()->map(function ($message) {
+            return [
+                'agent' => $message->user_id ? 'human' : 'ai',
+                'text' => $message->user_id === null
+                    ? ('Message: ' . $message->extra_attributes->subtitle . ' Question: ' . $message->content)
+                    : $message->content,
+            ];
+        })->toArray();
+    }
+
     private function generateNextQuestion(Chat $chat): ChatMessage
     {
         $user_data = auth()->user()->extra_attributes->onboarding ?? [];
@@ -419,6 +470,7 @@ class OnboardingService
         $nextGroupIndex = $groupIndex + ($answeredAllQuestionsInGroup ? 1 : 0);
 
         if (!isset(array_keys(self::QUESTION_GROUPS)[$nextGroupIndex])) {
+            $this->saveUserData(auth()->user());
             return $this->createQuestion($chat, $lastQuestion->extra_attributes['group'], '', 'finish', 'system');
         }
 
@@ -458,14 +510,7 @@ class OnboardingService
 
         $request = Http::post(config('app.processing_url') . '/onboarding/question', [
             'type' => $nextGroup['type'] ?? 'text',
-            'history' => $chat->chatMessages()->notSystem()->oldest()->get()->map(function ($message) {
-                return [
-                    'agent' => $message->user_id ? 'human' : 'ai',
-                    'text' => $message->user_id === null
-                        ? ('Message: ' . $message->extra_attributes->subtitle . ' Question: ' . $message->content)
-                        : $message->content,
-                ];
-            })->toArray(),
+            'history' => $this->getChatHistory($chat),
             'data' => $group->map(fn($data) => [
                 'name' => $data['name'],
                 'description' => $data['description'],
@@ -478,7 +523,7 @@ class OnboardingService
         return $this->createQuestion(
             $chat,
             $nextGroupKey,
-            $nextGroup['subtitle'] ?? $request->json()['encouragement'],
+            $nextGroup['subtitle'] ?? $request->json()['message'],
             $request->json()['question'],
             $nextGroup['type'] ?? 'text',
             $request->json()['options'] ?? null,
