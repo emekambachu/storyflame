@@ -1,38 +1,14 @@
 import { defineStore } from 'pinia'
 import User from '../types/user'
-import { computed, inject, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import axios from 'axios'
 import { SuccessResponse } from '../types/responses'
-import AchievementPopup from '@/components/modals/AchievementPopup.vue'
-import { useEcho } from '@/types/useEcho'
+
+const user = ref<User | null>(null)
 
 export const useAuthStore = defineStore(
     'auth',
     () => {
-        const { echo } = useEcho()
-        const { show } = inject('modal')
-
-        const user = ref<User | null>(null)
-
-        watch(user, () => {
-            console.log('user', user.value)
-            if (user.value) {
-                echo.private(`App.Models.User.${user.value.id}`).listen(
-                    '.achievement.unlocked',
-                    (e) => {
-                        console.log(e)
-                        show(AchievementPopup, {
-                            title: e.title,
-                            description: e.description,
-                            icon: e.icon,
-                        })
-                    }
-                )
-            } else {
-                echo.leaveAllChannels()
-            }
-        })
-
         const isLoggedIn = computed(() => !!user.value)
 
         const federate = async (email: string) => {
@@ -87,7 +63,7 @@ export const useAuthStore = defineStore(
             return data
         }
 
-        const updateUser = (data:User) => {
+        const updateUser = (data: User) => {
             user.value = data
         }
 
@@ -99,7 +75,7 @@ export const useAuthStore = defineStore(
             login,
             logout,
             getUser,
-            updateUser
+            updateUser,
         }
     },
     {
