@@ -67,6 +67,12 @@ const router = createRouter({
 			component: () => import('../views/StoryView.vue'),
 		},
 		{
+			path: '/sequence/:id',
+			name: 'sequence',
+			// beforeEnter: checkAuth,
+			component: () => import('../views/SequenceView.vue'),
+		},
+		{
 			path: '/auth',
 			redirect: '/auth/login',
 			component: () => import('../views/AuthView.vue'),
