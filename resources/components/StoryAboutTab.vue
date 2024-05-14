@@ -43,30 +43,7 @@
         </div>
 
         <div class="px-4">
-            <div class="bg-slate-200 rounded-lg w-full p-4 flex flex-col gap-3">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="rounded-full w-10 h-10 shrink-0 flex items-center justify-center bg-red-600"
-                    >
-                        <MicrophoneIcon class="text-pure-white w-4 h-4" />
-                    </div>
-
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs text-slate-400 font-bold">
-                            Want to chat about
-                        </span>
-                        <h6 class="text-base text-slate-800 font-bold">
-                            Character Goals in the Scene?
-                        </h6>
-                    </div>
-                </div>
-
-                <div class="w-full bg-slate-300 h-px" />
-
-                <button class="text-xs text-slate-400 font-bold">
-                    or choose something else to discuss
-                </button>
-            </div>
+            <discuss-component />
         </div>
 
         <div class="flex flex-col px-4 gap-3">
@@ -114,9 +91,9 @@
 import SceneCard from '@/components/SceneCard.vue'
 import CharacterCard from '@/components/CharacterCard.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
+import DiscussComponent from '@/components/DiscussComponent.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
-import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
 
 const props = defineProps({
     story: {
