@@ -89,7 +89,7 @@ const router = createRouter({
 			component: () => import('../views/UserProfile.vue'),
 		},
 		{
-			path: '/story',
+			path: '/stories/:id',
 			name: 'story',
 			// beforeEnter: checkAuth,
 			component: () => import('../views/StoryView.vue'),

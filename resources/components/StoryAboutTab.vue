@@ -28,18 +28,19 @@
             </div>
         </div>
 
-        <div class="flex flex-col px-4 gap-3">
+        <div class="flex flex-col px-4">
             <h5 class="font-bold text-base text-zinc-800">Target audience</h5>
 
-            <p class="text-sm text-zinc-800 font-normal">
-                Captivate its audience with its intricate political intrigue and
-                complex characters, leading them through a labyrinth of
-                unpredictable twists and emotional highs and lows. By immersing
-                them in a richly detailed fantasy world, the story encourages
-                viewers to reflect on themes of power, loyalty, and morality
-                while questioning their own beliefs amidst shifting allegiances
-                and ethical dilemmas.
-            </p>
+            <target-audience-card
+                v-for="(audience, audienceID) in story.target_audience"
+                :key="audienceID"
+                :audience="audience"
+                :class="[
+                    audienceID !== 0
+                        ? 'border-t ${border-zinc-300} pt-2'
+                        : 'pb-2',
+                ]"
+            />
         </div>
 
         <div class="px-4">
