@@ -17,4 +17,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/processing/__PYCACHE__
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
