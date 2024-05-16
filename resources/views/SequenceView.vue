@@ -10,10 +10,11 @@
             }`"
         >
             <button
-                class="flex items-center justify-center w-6 h-6 shrink-0 mr-4 ml-auto rounded-full bg-neutral-300 opacity-60"
-                :class="data?.image?.path ? 'text-light-600 ' : 'text-black'"
+                class="flex items-center gap-2 px-4"
+                :class="data?.image?.path ? 'text-pure-white' : 'text-black'"
             >
-                <xmark-icon />
+                <chevron-icon />
+                <span class="text-lg font-normal">Back</span>
             </button>
 
             <div class="flex flex-col gap-1.5 px-4">
@@ -48,9 +49,13 @@
             </div>
         </div>
 
-        <div class="px-4 py-2">
-            <discuss-component />
+        <div
+            v-if="showDiscuss"
+            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
+        >
+            <discuss-component @close="showDiscuss = false" />
         </div>
+
         <div class="flex items-center relative">
             <div
                 v-for="(tab, tabID) in tabs"
@@ -73,14 +78,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import PointIcon from '@/components/icons/PointIcon.vue'
+import ChevronIcon from '@/components/icons/ChevronIcon.vue'
 
 import SequenceDetailsTab from '@/components/SequenceDetailsTab.vue'
 import DiscussComponent from '@/components/DiscussComponent.vue'
-import XmarkIcon from '@/components/icons/XmarkIcon.vue'
 
 const selectedTab = ref(0)
 const tabs = ['Details', 'Progress', 'Elements', 'Script']
+
+const showDiscuss = ref(true)
 
 const data = {
     name: 'Arrival of King Robert and the Royal Family',
@@ -101,21 +109,13 @@ const data = {
             part: 'Introduction',
             description:
                 'Introduce King Robert and the royal family to the audience.',
-            progress: {
-                status: 'In progress',
-                done: 2,
-                total_amount: 4,
-            },
+            priority: 1,
         },
         {
             part: 'Introduction',
             description:
                 'Introduce King Robert and the royal family to the audience.',
-            progress: {
-                status: 'Finished',
-                done: 2,
-                total_amount: 4,
-            },
+            priority: 2,
         },
     ],
     conflict_sources: [
