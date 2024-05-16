@@ -9,7 +9,8 @@
         class="w-6 h-6 shrink-0 rounded-full flex items-center justify-center"
     >
         <svg
-            class="w-4 h-4 shrink-0"
+            class="shrink-0"
+            :class="flameClass"
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
@@ -29,6 +30,10 @@ const props = defineProps({
     priority: {
         type: Number,
         default: 1,
+    },
+    flameClass: {
+        type: String,
+        default: 'w-4 h-4 ',
     },
 })
 </script>
