@@ -6,20 +6,20 @@
             </p>
         </title-section>
 
-        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">
-            <items-list
-                v-slot="{ item }"
-                :items="user.data?.writing_medium"
-                direction="col"
-            >
-                <div
-                    class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"
-                >
-                    <point-icon />
-                    {{ item }}
-                </div>
-            </items-list>
-        </title-section>
+<!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
+<!--            <items-list-->
+<!--                v-slot="{ item }"-->
+<!--                :items="user.data?.writing_medium"-->
+<!--                direction="col"-->
+<!--            >-->
+<!--                <div-->
+<!--                    class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"-->
+<!--                >-->
+<!--                    <point-icon />-->
+<!--                    {{ item }}-->
+<!--                </div>-->
+<!--            </items-list>-->
+<!--        </title-section>-->
 
         <title-section v-if="user.data?.media?.length" title="Inspired by">
             <items-list
@@ -30,7 +30,7 @@
             </items-list>
         </title-section>
 
-        <title-section v-if="user.data?.characters?.length" title="Favorite characters">
+        <title-section v-if="user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS" title="Favorite characters">
             <items-list
                 v-slot="{ item }"
                 :items="user.data?.characters"
@@ -111,6 +111,7 @@ import StoryCard from '@/components/cards/StoryCard.vue'
 import AchievementCard from '@/components/cards/AchievementCard.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import PlusIcon from '@/components/icons/PlusIcon.vue'
+import featureFlags from '@/types/featureFlags'
 
 const props = defineProps({
     user: {

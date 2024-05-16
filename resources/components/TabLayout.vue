@@ -1,6 +1,9 @@
 <template>
     <div class="flex flex-col items-center gap-8 w-full">
-        <div class="flex flex-col sticky top-0 w-full bg-white">
+        <div
+            ref="header"
+            class="flex flex-col sticky top-0 w-full bg-white"
+        >
             <div class="overflow-hidden">
                 <slot />
             </div>
@@ -31,7 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, provide, ref, watch } from 'vue'
+import { onMounted, PropType, provide, ref, watch } from 'vue'
+import { animate, scroll } from 'motion'
 
 const props = defineProps({
     tabs: {
@@ -42,7 +46,7 @@ const props = defineProps({
 
 const activeTab = ref(props.tabs[0].template)
 const container = ref<HTMLDivElement | undefined>(undefined)
-const header = ref<HTMLDivElement | undefined>(undefined)
+const header = ref<HTMLDivElement | null>(null)
 provide('activeTab', activeTab)
 
 watch(
@@ -62,6 +66,17 @@ watch(
         }
     }
 )
+
+onMounted(() => {
+    scroll(
+        animate(header.value, {
+            translateY: ['0%', '-150px'],
+        }),
+        {
+            offset: ['start start', '150px'],
+        }
+    )
+})
 </script>
 
 <style scoped></style>

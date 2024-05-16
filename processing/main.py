@@ -317,7 +317,7 @@ class GenerateDetailsResponse(BaseModel):
 
 @app.post("/onboarding/generate/details")
 def generate_details(request: GenerateDetailsRequest):
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1)
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.1)
     langchain.debug = True
 
     prompt = ChatPromptTemplate.from_messages(

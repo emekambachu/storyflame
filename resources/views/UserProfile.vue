@@ -3,7 +3,10 @@
         class="w-full min-h-screen flex flex-col items-center pb-24 max-w-md mx-auto"
     >
         <!--            <button class="text-orange-500 mr-0 ml-auto">Edit</button>-->
-        <div v-if="user" class="flex flex-col items-center gap-8 w-full">
+        <div
+            v-if="user"
+            class="flex flex-col items-center gap-8 w-full"
+        >
             <tab-layout
                 :tabs="[
                     {
