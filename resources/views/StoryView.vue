@@ -11,7 +11,7 @@
         >
             <button
                 class="flex items-center gap-2 px-4"
-                :class="story?.image?.path ? 'text-white' : 'text-black'"
+                :class="story?.image?.path ? 'text-pure-white' : 'text-black'"
             >
                 <chevron-icon />
                 <span class="text-lg font-normal">Back</span>
@@ -87,12 +87,18 @@
             v-if="selectedTab == 0"
             :story="story"
         />
+        <story-drafts-tab
+            v-if="selectedTab == 3"
+            :drafts="story.drafts"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import StoryAboutTab from '@/components/StoryAboutTab.vue'
+import StoryDraftsTab from '@/components/StoryDraftsTab.vue'
+
 import ProgressBarCircle from '@/components/ProgressBarCircle.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
@@ -115,6 +121,25 @@ const story = {
         { image: { path: 'https://picsum.photos/300' } },
         { image: null },
         { image: { path: 'https://picsum.photos/600' } },
+    ],
+
+    progress: [
+        {
+            name: 'Characters',
+            progress: 1,
+        },
+        {
+            name: 'Sequences',
+            progress: 2,
+        },
+        {
+            name: 'Themes',
+            progress: 3,
+        },
+        {
+            name: 'Appeal',
+            progress: 4,
+        },
     ],
 
     characters: [
@@ -165,6 +190,7 @@ const story = {
                 'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
         },
     ],
+    drafts: [],
 }
 
 const tabs = ['About', 'Progress', 'Elements', 'Drafts']
