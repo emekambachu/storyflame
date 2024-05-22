@@ -28,9 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import AchievementCard from '@/components/cards/AchievementCard.vue'
-import TitleSection from '@/components/TitleSection.vue'
 import ItemsList from '@/components/ItemsList.vue'
+import TitleSection from '@/components/TitleSection.vue'
+import AchievementCard from '@/components/cards/AchievementCard.vue'
 
 const props = defineProps({
     achievements: {
