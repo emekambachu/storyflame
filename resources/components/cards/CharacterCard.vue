@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex flex-col gap-2 items-start w-full rounded-lg p-3 bg-zinc-200"
+        class="flex flex-col gap-2 items-start w-full rounded-lg p-3 bg-slate-200"
     >
         <div class="flex items-center justify-between w-full">
             <h6 class="font-bold text-sm text-neutral-700">

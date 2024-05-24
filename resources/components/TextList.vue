@@ -6,9 +6,18 @@
             class="text-slate-600 flex items-start gap-2"
         >
             <point-icon class="mt-2" />
-            <p class="text-sm text-slate-600 font-normal">
-                <span class="font-bold">{{ item.title }}</span>
-                {{ item.description }}
+            <p
+                v-if="item.title || item.description"
+                class="text-sm text-slate-600 font-normal"
+            >
+                <span class="font-bold">{{ item?.title }}</span>
+                {{ item?.description }}
+            </p>
+            <p
+                v-else
+                class="text-sm text-slate-600 font-normal"
+            >
+                {{ item }}
             </p>
         </li>
     </ul>
