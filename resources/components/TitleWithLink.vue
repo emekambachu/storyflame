@@ -2,7 +2,12 @@
     <div class="flex items-center justify-between w-full px-4">
         <h4 :class="titleClass">{{ title }}</h4>
 
-        <button @click="emit('see-all')">See all</button>
+        <button
+            @click="emit('see-all')"
+            class="text-black opacity-50 font-normal"
+        >
+            See all
+        </button>
     </div>
 </template>
 <script lang="ts" setup>

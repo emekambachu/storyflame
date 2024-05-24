@@ -19,7 +19,7 @@
         <div class="py-5 flex flex-col gap-3">
             <h5 class="text-base text-zinc-800 font-bold">Sequence Goals</h5>
             <div class="flex flex-col gap-2">
-                <sequence-goal-card
+                <sequence-card
                     v-for="(goal, goalID) in data.goals"
                     :key="goalID"
                     :goal="goal"
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import PointIcon from '@/components/icons/PointIcon.vue'
 
-import SequenceGoalCard from '@/components/cards/SequenceGoalCard.vue'
+import SequenceCard from '@/components/cards/SequenceGoalCard.vue'
 
 const props = defineProps({
     data: {

@@ -6,7 +6,7 @@
   />
   <div
     v-else
-    class="bg-zinc-200 flex items-center justify-center"
+    class="bg-slate-200 flex items-center justify-center"
   >
     <img
       src="@/assets/images/no_image.png"

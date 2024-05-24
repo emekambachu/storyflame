@@ -65,7 +65,7 @@
                 v-else
                 class="px-4 w-full"
             >
-                <div class="p-1 bg-zinc-200 rounded-lg w-full">
+                <div class="p-1 bg-slate-200 rounded-lg w-full">
                     <div
                         class="flex flex-col items-center gap-2 rounded-lg w-full p-4 border border-dashed border-gray-400"
                     >

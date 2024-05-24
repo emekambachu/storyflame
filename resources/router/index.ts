@@ -101,6 +101,12 @@ const router = createRouter({
 			component: () => import('../views/SequenceView.vue'),
 		},
 		{
+			path: '/plot/:id',
+			name: 'plot',
+			// beforeEnter: checkAuth,
+			component: () => import('../views/PlotView.vue'),
+		},
+		{
 			path: '/theme/:id',
 			name: 'theme',
 			// beforeEnter: checkAuth,
