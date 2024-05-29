@@ -9,7 +9,7 @@
             </div>
             <div
                 ref="container"
-                class="flex flex-nowrap max-w-full mx-auto overflow-x-scroll px-4"
+                class="flex flex-nowrap w-full max-w-full mx-auto overflow-x-scroll px-4"
             >
                 <button
                     v-for="tab in tabs"
