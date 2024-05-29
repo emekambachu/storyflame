@@ -4,7 +4,7 @@
 
         <button
             @click="emit('see-all')"
-            class="text-black opacity-50 font-normal"
+            class="text-slate-400 font-normal"
         >
             See all
         </button>
