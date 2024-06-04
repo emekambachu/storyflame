@@ -134,10 +134,34 @@ const router = createRouter({
 			component: () => import('../views/CharacterView.vue'),
 		},
 		{
-			path: '/achievement/:id',
-			name: 'achievement',
+			path: '/achievements',
+			name: 'achievements',
 			// beforeEnter: checkAuth,
-			component: () => import('../views/AchievementView.vue'),
+			component: ()=> import('../views/AchievementsListPage.vue')
+		},
+		{
+			path: '/stories',
+			name: 'stories',
+			// beforeEnter: checkAuth,
+			component: ()=> import('../views/StoriesListPage.vue')
+		},
+		{
+			path: '/characters',
+			name: 'characters',
+			// beforeEnter: checkAuth,
+			component: ()=> import('../views/CharacterListPage.vue')
+		},
+		// {
+		// 	path: '/sequences',
+		// 	name: 'sequences',
+		// 	// beforeEnter: checkAuth,
+		// 	component: ()=> import('../views/SequencesListPage.vue')
+		// },
+		{
+			path: '/themes',
+			name: 'themes',
+			// beforeEnter: checkAuth,
+			component: ()=> import('../views/ThemesListPage.vue')
 		},
 		{
 			path: '/auth',
