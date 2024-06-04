@@ -4,19 +4,19 @@
     >
         <div class="flex items-center justify-between w-full">
             <h6 class="font-bold text-sm text-neutral-700">
-                {{ character.name }}
+                {{ card.name }}
             </h6>
             <span class="font-normal text-sm text-neutral-700">
-                {{ character.role }}
+                {{ card.role }}
             </span>
         </div>
 
         <div
-            v-if="character?.types?.length"
+            v-if="card?.types?.length"
             class="flex items-center gap-2"
         >
             <p
-                v-for="(type, typeID) in character.types"
+                v-for="(type, typeID) in card.types"
                 :key="typeID"
                 class="font-normal text-sm text-neutral-400 flex gap-2 items-center"
             >
@@ -26,10 +26,10 @@
         </div>
 
         <p
-            v-if="character.description"
+            v-if="card.description"
             class="text-neutral-700 text-sm font-normal"
         >
-            {{ character.description }}
+            {{ card.description }}
         </p>
     </div>
 </template>
@@ -38,7 +38,7 @@
 import PointIcon from '@/components/icons/PointIcon.vue'
 
 const props = defineProps({
-    character: {
+    card: {
         type: Object,
         required: true,
     },
