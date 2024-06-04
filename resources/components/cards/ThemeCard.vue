@@ -12,11 +12,7 @@
                 </h6>
             </div>
 
-            <flame-icon
-                :priority="card.readiness"
-                class="!w-8 !h-8"
-                flameClass="w-6 h-6"
-            />
+            <flame-icon :progress="card.progress" />
         </div>
 
         <p
