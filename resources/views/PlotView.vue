@@ -145,6 +145,7 @@ const data = {
     ],
     themes: [
         {
+            readiness: 1,
             type: 'major',
             title: 'Power',
             description:

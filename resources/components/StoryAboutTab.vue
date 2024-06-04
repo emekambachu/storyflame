@@ -118,7 +118,7 @@
                 <character-card
                     v-for="(character, characterID) in story.characters"
                     :key="characterID"
-                    :character="character"
+                    :card="character"
                 />
             </div>
         </div>
@@ -129,7 +129,7 @@
                 title-class="font-bold text-lg text-zinc-800"
                 class="!p-0"
             />
-            
+
             <div class="w-full flex flex-col gap-6">
                 <scene-card
                     v-for="(scene, sceneID) in story.impactful_scenes"

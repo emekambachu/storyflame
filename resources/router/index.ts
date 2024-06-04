@@ -134,6 +134,12 @@ const router = createRouter({
 			component: () => import('../views/CharacterView.vue'),
 		},
 		{
+			path: '/achievement/:id',
+			name: 'achievement',
+			// beforeEnter: checkAuth,
+			component: () => import('../views/AchievementView.vue'),
+		},
+		{
 			path: '/auth',
             redirect: '/auth/login',
             component: () => import('../views/AuthView.vue'),
