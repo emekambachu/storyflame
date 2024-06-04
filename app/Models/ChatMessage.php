@@ -20,6 +20,8 @@ class ChatMessage extends Model
 		'chat_id',
 		'content',
 		'extra_attributes',
+        'created_at',
+        'updated_at',
 	];
 
 	public function scopeNotSystem($query)
@@ -36,4 +38,9 @@ class ChatMessage extends Model
 	{
 		return $this->hasOne(ChatVoiceMessage::class);
 	}
+
+    public function chat(): BelongsTo
+    {
+        return $this->belongsTo(Chat::class);
+    }
 }

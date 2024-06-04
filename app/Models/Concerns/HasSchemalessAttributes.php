@@ -12,13 +12,20 @@ use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
  */
 trait HasSchemalessAttributes
 {
-	public function initializeHasSchemalessAttributes(): void
-	{
-		$this->casts['extra_attributes'] = SchemalessAttributes::class;
-	}
+    protected static string $schemalessColumn = 'extra_attributes';
 
-	public function scopeWithExtraAttributes(): Builder
-	{
-		return $this->extra_attributes->modelScope();
-	}
+    public function getSchemalessColumn(): string
+    {
+        return static::$schemalessColumn;
+    }
+
+    public function initializeHasSchemalessAttributes(): void
+    {
+        $this->casts[$this->getSchemalessColumn()] = SchemalessAttributes::class;
+    }
+
+    public function scopeWithExtraAttributes(): Builder
+    {
+        return $this->{$this->getSchemalessColumn()}->modelScope();
+    }
 }

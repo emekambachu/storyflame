@@ -8,7 +8,10 @@
             :data-id="modal.id"
             :open="modal.open"
             :order="modals.filter((m) => m.open).length - i"
-            v-bind="modal.props"
+            v-bind="{
+                ...modal.props,
+                ...createEventCallbacks(modal.id, modal.events),
+            }"
             @close="closeModal(modal.id, true)"
         />
     </teleport>
@@ -16,24 +19,36 @@
 
 <script lang="ts" setup>
 import VModal from '@/plugins/VModal.vue'
-import { inject, PropType } from 'vue'
-import { ModalDefinition } from '@/plugins/modalPlugin'
+import { inject } from 'vue'
+import { ModalDefinition, ModalEventCallback, modalInjectKey } from '@/plugins/modalPlugin'
 
-const { close, modals } = inject('modal')
+const { modals, close } = inject(modalInjectKey)!!
 
 defineOptions({
     inheritAttrs: false,
 })
 
-const props = defineProps({
-    modals: {
-        type: Array as PropType<ModalDefinition[]>,
-        required: true,
-    },
-})
-
 function closeModal(id: string, force: boolean = false) {
     close(id, force)
+}
+
+function createEventCallbacks(
+    modal: ModalDefinition,
+    events: Record<string, ModalEventCallback>
+) {
+    return Object.entries(events).reduce(
+        (acc, [event, callback]) => {
+            acc[event] = (...payload: any[]) => {
+                callback(
+                    payload,
+                    (force: boolean = false) => closeModal(modal.id, force),
+                    modal
+                )
+            }
+            return acc
+        },
+        {} as Record<string, (...payload: any[]) => void>
+    )
 }
 </script>
 

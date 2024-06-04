@@ -6,22 +6,25 @@
             </p>
         </title-section>
 
-<!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
-<!--            <items-list-->
-<!--                v-slot="{ item }"-->
-<!--                :items="user.data?.writing_medium"-->
-<!--                direction="col"-->
-<!--            >-->
-<!--                <div-->
-<!--                    class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"-->
-<!--                >-->
-<!--                    <point-icon />-->
-<!--                    {{ item }}-->
-<!--                </div>-->
-<!--            </items-list>-->
-<!--        </title-section>-->
+        <!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
+        <!--            <items-list-->
+        <!--                v-slot="{ item }"-->
+        <!--                :items="user.data?.writing_medium"-->
+        <!--                direction="col"-->
+        <!--            >-->
+        <!--                <div-->
+        <!--                    class="text-neutral-950 text-sm font-normal flex items-center gap-2 pl-2"-->
+        <!--                >-->
+        <!--                    <point-icon />-->
+        <!--                    {{ item }}-->
+        <!--                </div>-->
+        <!--            </items-list>-->
+        <!--        </title-section>-->
 
-        <title-section v-if="user.data?.media?.length" title="Inspired by">
+        <title-section
+            v-if="user.data?.media?.length"
+            title="Inspired by"
+        >
             <items-list
                 v-slot="{ item }"
                 :items="user.data?.media"
@@ -30,7 +33,12 @@
             </items-list>
         </title-section>
 
-        <title-section v-if="user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS" title="Favorite characters">
+        <title-section
+            v-if="
+                user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS
+            "
+            title="Favorite characters"
+        >
             <items-list
                 v-slot="{ item }"
                 :items="user.data?.characters"
@@ -61,8 +69,9 @@
                     :story="story"
                 />
             </div>
-            <div
+            <router-link
                 v-else
+                :to="{ name: 'new-story' }"
                 class="px-4 w-full"
             >
                 <div class="p-1 bg-zinc-200 rounded-lg w-full">
@@ -79,7 +88,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            </router-link>
         </title-section>
 
         <title-section>
@@ -90,18 +99,20 @@
                 />
             </template>
             <items-list
-                class="gap-8"
                 v-slot="{ item }"
-                :items="user.achievements.filter((item)=>item.progress)"
+                :items="user.achievements.filter((item) => item.progress)"
+                class="gap-8"
             >
-                <achievement-card class="h-full" :item="item" />
+                <achievement-card
+                    :item="item"
+                    class="h-full"
+                />
             </items-list>
         </title-section>
     </div>
 </template>
 
 <script lang="ts" setup>
-import PointIcon from '@/components/icons/PointIcon.vue'
 import { inject, PropType } from 'vue'
 import User from '@/types/user'
 import TitleSection from '@/components/TitleSection.vue'

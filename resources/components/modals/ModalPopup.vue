@@ -29,7 +29,7 @@
                     </button>
                     <button
                         v-if="secondary"
-                        class="text-gray-400/50 py-3 text-base font-medium w-full"
+                        class="text-[#794E4C] py-3 text-sm font-medium w-full"
                         @click="emit('secondary')"
                     >
                         {{ secondary }}

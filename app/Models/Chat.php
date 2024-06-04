@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSchemalessAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,12 +12,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Chat extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use SoftDeletes, HasUuids, HasFactory, HasSchemalessAttributes;
 
     protected $fillable = [
         'type',
         'sender_id',
         'recipient_id',
+        'extra_attributes'
     ];
 
     public function sender(): BelongsTo

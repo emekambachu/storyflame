@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Achievement;
 use App\Models\User;
 
 class AchievementService
@@ -69,7 +70,7 @@ class AchievementService
         ],
     ];
 
-    private function collectUserData(User $user): array
+    private static function collectUserData(User $user): array
     {
         $userData = $user->attributesToArray();
         $userData = array_merge($userData, $user->extra_attributes['onboarding'] ?? [], $user->extra_attributes['data'] ?? []);
@@ -78,25 +79,25 @@ class AchievementService
         return $userData;
     }
 
-    private function checkProgress(User $user): array
+    private static function checkProgress(User $user, array $extracted): array
     {
-        $userData = $this->collectUserData($user);
         $progress = [];
-        foreach (self::ACHIEVEMENTS as $achievement => $requirements) {
-            $totalRequirements = count($requirements['user_data']);
-            $metRequirements = $totalRequirements - count(array_diff($requirements['user_data'], array_keys($userData)));
-            $progress[$achievement] = $metRequirements / $totalRequirements * 100;
+        foreach (Achievement::all() as $achievement) {
+            $requirements = $achievement->dataPoints->pluck('slug')->toArray();
+            $totalRequirements = count($requirements);
+            $metRequirements = $totalRequirements - count(array_diff($requirements, array_keys($extracted)));
+            $progress[$achievement->id] = $metRequirements / $totalRequirements * 100;
         }
         return $progress;
     }
 
-    public function updateProgress(User $user): void
+    public static function updateProgress(User $user, array $extracted): void
     {
-        foreach ($this->checkProgress($user) as $achievement => $progress) {
-            $user->achievements()->updateOrCreate([
-                'name' => $achievement,
-            ], [
-                'progress' => $progress,
+        foreach (self::checkProgress($user, $extracted) as $achievement => $progress) {
+            $user->achievements()->syncWithoutDetaching([
+                $achievement => [
+                    'progress' => $progress,
+                ]
             ]);
         }
     }

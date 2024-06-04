@@ -25,7 +25,7 @@
                         'scale-90 -translate-y-8': order > 1,
                         'h-full w-full': type === 'full',
                     }"
-                    v-bind="attrs"
+                    v-bind="$attrs"
                     @close="close"
                 />
             </transition>
@@ -50,10 +50,6 @@ const props = defineProps({
     component: {
         type: Object,
         required: true,
-    },
-    attrs: {
-        type: Object,
-        default: () => ({}),
     },
     order: {
         type: Number,

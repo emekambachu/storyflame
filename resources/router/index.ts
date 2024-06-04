@@ -64,71 +64,95 @@ const checkOnboarded = (
 }
 
 const router = createRouter({
-	history: createWebHistory(),
-	routes: [
-		{
-			path: '/',
-			name: 'home',
-			component: () => import('../views/HomeView.vue'),
-		},
-		{
-			path: '/whisper',
-			name: 'whisper',
-			component: () => import('../views/WhisperView.vue'),
-		},
-		{
-			path: '/onboard',
-			name: 'onboarding',
-			beforeEnter: [checkAuth, checkNotOnboarded],
-			component: () => import('../views/Onboarding.vue'),
-		},
-		{
-			path: '/profile',
-			name: 'profile',
-			beforeEnter: [checkAuth, checkOnboarded],
-			component: () => import('../views/UserProfile.vue'),
-		},
-		{
-			path: '/story/:id',
-			name: 'story',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/StoryView.vue'),
-		},
-		{
-			path: '/sequence/:id',
-			name: 'sequence',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/SequenceView.vue'),
-		},
-		{
-			path: '/auth',
-			redirect: '/auth/login',
-			component: () => import('../views/AuthView.vue'),
-			beforeEnter: checkGuest,
-			children: [
-				{
-					path: 'login',
-					name: 'login',
-					component: () => import('../views/LoginView.vue'),
-				},
-				{
-					path: 'register',
-					name: 'register',
-					component: () => import('../views/RegisterView.vue'),
-				},
-			],
-		},
-		{
-			path: '/dashboard',
-			name: 'dashboard',
-			component: () => import('../views/HomeView.vue'),
-		},
-		{
-			path: '/:pathMatch(.*)*',
-			name: 'not-found',
-			redirect: { name: 'home' },
-		},
-	],
+    history: createWebHistory(),
+    routes: [
+        {
+            path: '/',
+            name: 'home',
+            component: () => import('../views/HomeView.vue'),
+        },
+        {
+            path: '/whisper',
+            name: 'whisper',
+            component: () => import('../views/WhisperView.vue'),
+        },
+        {
+            path: '/onboard',
+            name: 'onboarding',
+            beforeEnter: [checkAuth, checkNotOnboarded],
+            component: () => import('../views/Onboarding.vue'),
+        },
+        {
+            path: '/',
+            beforeEnter: [checkAuth, checkOnboarded],
+            children: [
+                {
+                    path: '/profile',
+                    name: 'profile',
+                    component: () => import('../views/UserProfile.vue'),
+                },
+                {
+                    path: '/stories/new',
+                    name: 'new-story',
+                    meta: {
+                        transition: 'slide',
+                        back: 'profile',
+                    },
+                    beforeEnter: checkAuth,
+                    component: () => import('../views/NewStory.vue'),
+                },
+            ],
+        },
+        {
+            path: '/story/:id',
+            name: 'story',
+            // beforeEnter: checkAuth,
+            component: () => import('../views/StoryView.vue'),
+        },
+        {
+            path: '/sequence/:id',
+            name: 'sequence',
+            // beforeEnter: checkAuth,
+            component: () => import('../views/SequenceView.vue'),
+        },
+        {
+            path: '/auth',
+            redirect: '/auth/login',
+            component: () => import('../views/AuthView.vue'),
+            beforeEnter: checkGuest,
+            children: [
+                {
+                    path: 'login',
+                    name: 'login',
+                    component: () => import('../views/LoginView.vue'),
+                },
+                {
+                    path: 'register',
+                    name: 'register',
+                    component: () => import('../views/RegisterView.vue'),
+                },
+            ],
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: () => import('../views/HomeView.vue'),
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            redirect: { name: 'home' },
+        },
+    ],
+})
+
+router.beforeEach((to, from, next) => {
+    // scroll to top on route change
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+    })
+    next()
 })
 
 export default router

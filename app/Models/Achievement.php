@@ -3,43 +3,35 @@
 namespace App\Models;
 
 use App\Observers\AchievementObserver;
-use App\Services\AchievementService;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[ObservedBy([AchievementObserver::class])]
 class Achievement extends Model
 {
     use SoftDeletes, HasUuids, HasFactory;
 
     protected $fillable = [
+        'slug',
         'name',
-        'user_id',
-        'progress',
-        'completed_at'
+        'element',
+        'subtitle',
+        'extraction_description',
+        'purpose',
+        'color',
+        'icon'
     ];
 
-    public function user(): BelongsTo
+    public function dataPoints(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(DataPoint::class);
     }
 
-    public function getIconAttribute(): string
+    public function totalImpactScore(): int
     {
-        return '/images/achievements/' . AchievementService::ACHIEVEMENTS[$this->name]['icon'];
-    }
-
-    public function getTitleAttribute(): string
-    {
-        return AchievementService::ACHIEVEMENTS[$this->name]['title'];
-    }
-
-    public function getDescriptionAttribute(): string
-    {
-        return AchievementService::ACHIEVEMENTS[$this->name]['description'];
+        return $this->dataPoints->sum('impact_score');
     }
 }

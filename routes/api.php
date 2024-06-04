@@ -39,6 +39,14 @@ Route::group([
             });
 
             Route::resource('stories', 'StoryController');
+
+            Route::group([
+                'prefix' => 'conversation',
+                'namespace' => 'Conversation',
+            ], function () {
+                Route::get('{engine}', 'ConversationEngineController@index');
+                Route::post('{engine}', 'ConversationEngineController@store');
+            });
         });
     });
 });

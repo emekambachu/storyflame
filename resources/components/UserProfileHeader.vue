@@ -32,19 +32,19 @@
             </p>
             <p
                 v-if="
-                    !user.data?.genre_focus.length &&
-                    !user.data?.writing_medium.length
+                    !user.data?.genre_focus?.length &&
+                    !user.data?.writing_medium?.length
                 "
                 class="text-sm text-neutral-500 font-normal sticky"
             ></p>
             <p
-                v-if="user.data?.genre_focus.length"
+                v-if="user.data?.genre_focus?.length"
                 class="text-sm text-neutral-500 font-normal flex items-center gap-1 sticky"
             >
                 {{ user.data?.genre_focus.join(' & ') }}
             </p>
             <p
-                v-if="user.data?.genre_focus.length"
+                v-if="user.data?.genre_focus?.length"
                 class="text-sm text-neutral-500 font-normal flex items-center gap-1 sticky"
             >
                 {{ user.data?.writing_medium.join(' & ') }}

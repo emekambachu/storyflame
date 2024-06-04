@@ -1,0 +1,263 @@
+<template>
+    <div
+        class="relative flex h-full grow flex-col items-center px-4 pb-10 pt-8 text-center"
+    >
+        <a
+            class="mb-8"
+            href="/"
+        >
+            <img
+                alt="logo"
+                class="w-[393px]"
+                src="@/assets/logo.svg"
+            />
+        </a>
+        <aside class="flex w-full flex-col">
+            <!--            <h2 class="mb-2 text-base font-normal text-neutral-950 opacity-60">-->
+            <!--                {{ question?.title }}-->
+            <!--            </h2>-->
+            <div class="mb-14 flex items-center">
+                <progress-bar
+                    :percent="Math.min(progress, 100)"
+                    class="w-full"
+                />
+            </div>
+        </aside>
+        <main
+            class="flex h-full max-h-[432px] w-full grow flex-col items-center"
+        >
+            <staggered-text-animation
+                v-if="question"
+                v-memo="[question]"
+                :texts="[
+                    {
+                        modelValue: question?.title,
+                        class: 'text-neutral-950 opacity-60 text-sm font-normal mb-2',
+                        is: 'h3',
+                    },
+                    {
+                        modelValue: question?.content,
+                        class: 'text-neutral-700 text-3xl font-bold',
+                        is: 'h1',
+                    },
+                ]"
+            />
+
+            <template v-if="isSpeakingMode || loading">
+                <div class="mb-8 mt-auto flex w-full flex-col gap-4">
+                    <!--        <tooltip-message-->
+                    <!--          v-if="!showTooltip"-->
+                    <!--          class="text-red-200 w-fit mx-auto mb-6"-->
+                    <!--          message-class="bg-red-200 px-3 py-2 text-center w-full rounded-lg text-red-600 text-xs font-normal min-h-9"-->
+                    <!--        >-->
+                    <!--          <template #text>-->
+                    <!--            <p class="text-red-600 flex items-center gap-2">-->
+                    <!--              <img src="../assets//images/time.png" />-->
+                    <!--              Hurry up! Only 30sec left!-->
+                    <!--            </p>-->
+                    <!--          </template>-->
+                    <!--        </tooltip-message>-->
+                    <voice-button
+                        :loading="loading"
+                        class="mx-auto"
+                        @click="showTooltip = !showTooltip"
+                        @recorded="extractData"
+                    />
+                </div>
+            </template>
+            <template v-else>
+                <div class="my-6 flex w-full grow flex-col items-start gap-4">
+                    <textarea
+                        v-if="question?.type === 'text'"
+                        v-model="testInput"
+                        class="mx-auto my-auto w-full rounded-full !border-0 bg-white text-center text-2xl font-normal text-black !outline-0 ring-0"
+                        enterkeyhint="done"
+                        inputmode="text"
+                        placeholder="Enter your answer"
+                        @keydown.enter="extractData(testInput)"
+                    />
+                    <template v-else>
+                        <list-option
+                            v-for="option in question?.options"
+                            :key="option"
+                            :status="selectedOptions.includes(option)"
+                            class="w-full"
+                            multiple
+                            @click="
+                                selectedOptions.includes(option)
+                                    ? selectedOptions.splice(
+                                          selectedOptions.indexOf(option),
+                                          1
+                                      )
+                                    : selectedOptions.push(option)
+                            "
+                        >
+                            <template #text>{{ option }}</template>
+                        </list-option>
+                    </template>
+                </div>
+            </template>
+        </main>
+
+        <div
+            class="mt-auto flex w-full flex-col items-center justify-center gap-3"
+        >
+            <button
+                v-if="!isSpeakingMode || !ua.isMobile"
+                :class="[
+                    selectedOptions.length || testInput.length
+                        ? 'bg-red-600 text-white'
+                        : 'border-gray-200 text-gray-400',
+                ]"
+                class="w-full max-w-sm rounded-full border-2 p-6 font-bold transition-colors duration-75"
+                @click="
+                    extractData(
+                        selectedOptions.length ? selectedOptions : testInput
+                    )
+                "
+            >
+                Submit
+            </button>
+            <button
+                class="mb-0 text-base font-normal text-neutral-500"
+                @click="isSpeakingMode = !isSpeakingMode"
+            >
+                Switch to
+                <span class="font-bold text-red-600">
+                    {{ isSpeakingMode ? 'typing' : 'speaking' }}
+                </span>
+                mode
+            </button>
+        </div>
+    </div>
+</template>
+<script lang="ts" setup>
+import { inject, onMounted, ref } from 'vue'
+import { uaInjectKey } from '@/types/inject'
+import useModal from '@/composables/useModal'
+import StaggeredTextAnimation from '@/components/StaggeredTextAnimation.vue'
+import VoiceButton from '@/components/VoiceButton.vue'
+import ListOption from '@/components/ListOption.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
+import axios from 'axios'
+import { SuccessResponse } from '@/types/responses'
+import { ChatMessage } from '@/types/chatMessage'
+
+const emit = defineEmits(['extract', 'finish'])
+
+const props = defineProps({
+    endpoint: {
+        type: String,
+        required: true,
+    },
+})
+
+const testInput = ref('')
+const isSpeakingMode = ref(true)
+const showTooltip = ref(true)
+const selectedOptions = ref<string[]>([])
+
+const ua = inject(uaInjectKey)
+const { show } = useModal()
+
+// watch(
+//     () => props.message,
+//     (newQuestion) => {
+//         if (props.message.type === 'system') {
+//             switch (props.message.content) {
+//                 case 'prompt_repeat':
+//                     show(
+//                         'repeat-answer',
+//                         {},
+//                         {
+//                             onPrimary: (payload, close) => close(),
+//                             onSecondary: (payload, close) => {
+//                                 isSpeakingMode.value = false
+//                                 close()
+//                             },
+//                         }
+//                     )
+//                     break
+//                 case 'finish':
+//                     emit('finish')
+//                     break
+//             }
+//         } else if (newQuestion?.type === 'multiple_choice') {
+//             isSpeakingMode.value = false
+//         }
+//     }
+// )
+
+const _identifier = ref(null)
+const loading = ref(true)
+const question = ref<ChatMessage|null>(null)
+const progress = ref(0)
+
+function setMessage(message: ChatMessage) {
+    question.value = message
+    if (
+        message.type === 'system' &&
+        message.content === 'finish'
+    ) {
+        emit('finish')
+    }
+}
+
+function extractData(answer: string | string[] | Blob) {
+    console.log(answer)
+    const formData = new FormData()
+    formData.append('identifier', _identifier.value)
+    if (Array.isArray(answer)) {
+        selectedOptions.value.forEach((option) => {
+            formData.append('options[]', option)
+        })
+    } else {
+        let key
+        if (typeof answer === 'string') {
+            key = 'message'
+        } else {
+            key = 'audio'
+        }
+        formData.append(key, answer)
+    }
+
+    testInput.value = ''
+    selectedOptions.value = []
+
+    loading.value = true
+    axios
+        .post<
+            SuccessResponse<{
+                identifier: string
+                question: ChatMessage
+                progress: number
+            }>
+        >(props.endpoint, formData)
+        .then((response) => {
+            setMessage(response.data.data.question)
+            progress.value = response.data.data.progress
+            _identifier.value = response.data.data.identifier
+        })
+        .finally(() => {
+            loading.value = false
+        })
+}
+
+onMounted(() => {
+    loading.value = true
+    axios
+        .get<SuccessResponse<any>>(props.endpoint, {
+            params: {
+                identifier: _identifier.value ?? null,
+            },
+        })
+        .then((response) => {
+            progress.value = response.data.data.progress
+            _identifier.value = response.data.data.identifier
+            setMessage(response.data.data.question)
+        })
+        .finally(() => {
+            loading.value = false
+        })
+})
+</script>

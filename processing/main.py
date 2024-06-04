@@ -1,5 +1,7 @@
+import os
 from typing import Dict, List, Optional
 
+import pusher
 from dotenv import load_dotenv
 from fastapi import FastAPI
 import langchain
@@ -13,10 +15,14 @@ from langchain_core.runnables import RunnablePassthrough
 from openai import OpenAI
 
 from processing.parser.convert import convert
+from processing.api.main import api_router
 
 app = FastAPI()
 
 load_dotenv()
+# langchain.debug = True
+
+app.include_router(api_router, prefix="/api")
 
 
 @app.get("/")
@@ -191,8 +197,6 @@ class ExtractRequest(BaseModel):
 
 @app.post("/onboarding/extract")
 def extract(params: ExtractRequest):
-    langchain.debug = True
-
     evaluated = evaluate_answers(
         params.available_properties,
         params.question,

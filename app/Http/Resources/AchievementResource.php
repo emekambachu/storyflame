@@ -13,11 +13,11 @@ class AchievementResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'icon' => $this->icon,
-            'title' => $this->title,
-            'description' => $this->description,
-            'progress' => $this->progress,
-            'completed_at' => $this->completed_at,
+            'icon' => '/images/achievements/' . $this->icon,
+            'title' => $this->name,
+            'description' => $this->subtitle,
+            'progress' => $this->pivot->progress,
+            'completed_at' => $this->pivot->completed_at,
         ];
     }
 }

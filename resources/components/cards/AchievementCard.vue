@@ -12,7 +12,6 @@
             alt="icon"
             class="h-[89px] w-[82px] object-contain"
         />
-
         <h6 class="text-black text-sm font-bold">{{ item.title }}</h6>
         <p
             v-if="item.completed_at && item.progress == 100"
@@ -40,6 +39,7 @@ import ProgressBar from '@/components/ProgressBar.vue'
 import { inject } from 'vue'
 import AchievementPopup from '@/components/modals/AchievementPopup.vue'
 import { DateTime } from 'luxon'
+import useModal from '@/composables/useModal'
 
 const props = defineProps({
     item: {
@@ -48,7 +48,7 @@ const props = defineProps({
     },
 })
 
-const { show } = inject('modal')
+const { show } = useModal()
 </script>
 
 <style lang="css" scoped>

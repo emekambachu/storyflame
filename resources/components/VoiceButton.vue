@@ -137,6 +137,7 @@ import RestartIcon from '@/components/icons/RestartIcon.vue'
 import AppLoader from '@/components/AppLoader.vue'
 import TooltipMessage from '@/components/TooltipMessage.vue'
 import ErrorPopup from '@/components/modals/ErrorPopup.vue'
+import useModal from '@/composables/useModal'
 
 const emit = defineEmits(['recorded'])
 
@@ -163,7 +164,7 @@ const {
     duration,
 } = useVoice()
 
-const { show } = inject('modal')
+const { show } = useModal()
 
 const audioLevel = ref<number>(0)
 const pulse = computed(() => {

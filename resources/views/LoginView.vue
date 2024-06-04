@@ -149,7 +149,9 @@ function login() {
     }
 
     auth.login(credentials.value).then(() => {
-        router.push('/')
+        router.push({
+            name: 'onboarding'
+        })
     })
 }
 </script>
