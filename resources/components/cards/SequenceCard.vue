@@ -4,22 +4,19 @@
     >
         <div class="flex items-center w-full justify-between">
             <div class="flex items-center gap-2 w-full">
-                <span class="font-normal text-sm text-neutral-700 opacity-50">
-                    [#{{ scene.id }}]
-                </span>
                 <h6 class="font-bold text-sm text-neutral-700">
-                    {{ scene.name }}
+                    {{ card.title }}
                 </h6>
             </div>
 
-            <flame-icon :priority="scene.priority" />
+            <flame-icon :priority="card.priority" />
         </div>
 
         <p
-            v-if="scene.description"
+            v-if="card.description"
             class="text-neutral-700 text-sm font-normal"
         >
-            {{ scene.description }}
+            {{ card.description }}
         </p>
     </div>
 </template>
@@ -28,7 +25,7 @@
 import FlameIcon from '@/components/icons/FlameIcon.vue'
 
 const props = defineProps({
-    scene: {
+    card: {
         type: Object,
         required: true,
     },

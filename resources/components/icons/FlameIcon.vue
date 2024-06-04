@@ -6,7 +6,7 @@
             'bg-amber-50 text-yellow-400': priority == 3,
             'bg-slate-100 text-slate-300': priority == 4,
         }"
-        class="w-6 h-6 shrink-0 rounded-full flex items-center justify-center"
+        class="p-1 shrink-0 rounded-full flex items-center justify-center"
     >
         <svg
             class="shrink-0"

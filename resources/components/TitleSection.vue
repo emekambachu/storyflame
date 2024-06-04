@@ -3,7 +3,7 @@
         <slot name="title">
             <h4
                 v-if="title"
-                class="text-sm text-neutral-700 font-bold px-4"
+                :class="titleClass"
             >
                 {{ title }}
             </h4>
@@ -17,6 +17,10 @@ defineProps({
     title: {
         type: String,
         default: () => undefined,
+    },
+    titleClass: {
+        type: String,
+        default: 'text-sm text-neutral-700 font-bold px-4',
     },
 })
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col gap-2.5 items-start w-full rounded-lg p-2.5 bg-zinc-200"
+    class="flex flex-col gap-2.5 items-start w-full rounded-lg p-2.5 bg-slate-200"
   >
     <div class="flex gap-2">
       <image-component

@@ -9,7 +9,7 @@
             </div>
             <div
                 ref="container"
-                class="flex flex-nowrap max-w-full mx-auto overflow-x-scroll px-4"
+                class="flex flex-nowrap w-full max-w-full mx-auto overflow-x-scroll px-4"
             >
                 <button
                     v-for="tab in tabs"
@@ -20,7 +20,7 @@
                             : 'text-neutral-500 border-neutral-300',
                     ]"
                     :data-key="tab.template"
-                    class="text-sm font-semibold [&:not(:last-child)]:pr-5 [&:not(:first-child)]:pl-5 whitespace-nowrap select-none py-1 border-b"
+                    class="text-sm font-medium [&:not(:last-child)]:pr-5 [&:not(:first-child)]:pl-5 whitespace-nowrap select-none py-1 border-b"
                     @click="activeTab = tab.template"
                 >
                     {{ tab.title }}

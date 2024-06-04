@@ -3,8 +3,8 @@
         <h4 :class="titleClass">{{ title }}</h4>
 
         <button
-            :class="buttonClass"
             @click="emit('see-all')"
+            class="text-slate-400 font-normal"
         >
             See all
         </button>
@@ -21,10 +21,6 @@ defineProps({
     titleClass: {
         type: String,
         default: 'text-sm text-neutral-700 font-bold',
-    },
-    buttonClass: {
-        type: String,
-        default: 'text-sm text-black font-normal opacity-50',
     },
 })
 </script>
