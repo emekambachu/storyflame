@@ -10,7 +10,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                white: '#f2f2f2',
+                white: '#ffffff',
                 'bg-zinc-900': '#191919',
                 'pure-white': '#ffffff',
                 'orange-500': '#FF730D',
@@ -19,6 +19,7 @@ export default {
             fontFamily: {
                 main: ['"Inter"', 'sans-serif'],
                 decorative: ['"Source Serif 4"', 'serif'],
+                fjalla: ['"Fjalla One"', 'sans-serif'],
             },
             fontSize: {
                 '2m': '22px',

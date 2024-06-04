@@ -28,161 +28,181 @@
             <discuss-component @close="showDiscuss = false" />
         </div>
         <tab-layout
-            class="w-full !px-0 mt-5"
+            class="w-full !px-0 mt-5 !gap-0"
+            tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
+            tab-content-class="pb-6 w-full bg-white"
+            :scrollToPageSection="true"
             :tabs="[
-                { title: 'Progress', template: 'progress' },
-                { title: 'Clarify', template: 'clarify' },
+                { title: 'Progress', template: 'stories' },
                 { title: 'Continue', template: 'continue' },
-                { title: 'Finish', template: 'finish' },
-                { title: 'Transcripts from yesterday', template: 'transcipts' },
+                { title: 'Clarify', template: 'clarify' },
+                { title: 'New', template: 'new' },
+                { title: 'Transcripts', template: 'transcripts' },
             ]"
         >
-            <template #progress>
-                <div class="w-full flex flex-col gap-2 bg-slate-200">
-                    <div class="px-4 pb-6 w-full bg-white">
-                        <div
-                            class="px-2 py-5 w-full gap-6 rounded bg-slate-200 border border-slate-300 flex flex-col"
-                        >
-                            <achievements-statistic-card />
-
-                            <title-section
-                                v-for="(item, itemID) in data.works_on"
-                                :key="itemID"
-                                class="!gap-2"
-                            >
-                                <template #title>
-                                    <div class="flex flex-col">
-                                        <span
-                                            class="text-sm text-gray-500 font-semibold"
-                                        >
-                                            {{ item.story }}
-                                        </span>
-                                        <h4
-                                            class="text-base text-gray-800 font-semibold"
-                                        >
-                                            {{ item.title }}
-                                        </h4>
-                                    </div>
-                                </template>
-
-                                <p class="text-xs text-gray-500 font-normal">
-                                    {{ item.description }}
-                                </p>
-                            </title-section>
-                        </div>
+            <template #stories>
+                <title-section class="!gap-6 px-4 py-6">
+                    <template #title>
+                        <h4 class="text-lg text-black font-bold">
+                            Recent Stories
+                        </h4>
+                    </template>
+                    <div class="max-w-full w-full overflow-scroll flex gap-4">
+                        <recent-story-card
+                            v-for="(story, storyID) in data.stories"
+                            :key="storyID"
+                            :story="story"
+                        />
+                        <new-story-card class="h-24" />
                     </div>
-
-                    <div class="px-4 py-6 w-full bg-white">
-                        <title-section class="!gap-6">
-                            <template #title>
-                                <title-with-link
-                                    title="Clarify some discrepancies"
-                                    class="!p-0"
-                                    title-class="text-lg text-black font-bold"
-                                />
-                            </template>
-
-                            <character-creation-card
-                                v-for="(
-                                    character, characterID
-                                ) in data.characters"
-                                :key="characterID"
-                                :card="character"
-                            />
-                        </title-section>
-                    </div>
-
-                    <div class="px-4 py-6 w-full bg-white">
-                        <title-section class="!gap-6">
-                            <template #title>
-                                <title-with-link
-                                    title="Continue where you left off"
-                                    class="!p-0"
-                                    title-class="text-lg text-black font-bold"
-                                />
-                            </template>
-                        </title-section>
-                    </div>
-
-                    <div class="px-4 py-6 w-full bg-white">
-                        <title-section class="!gap-6">
-                            <template #title>
-                                <title-with-link
-                                    title="Transcripts from yesterday"
-                                    class="!p-0"
-                                    title-class="text-lg text-black font-bold"
-                                />
-                            </template>
-                        </title-section>
-                    </div>
-                </div>
-            </template>
-            <template #clarify>
-                <div>Nothing here, please check tab later</div>
+                </title-section>
             </template>
             <template #continue>
-                <div>Nothing here, please check tab later</div>
+                <title-section class="!gap-6 px-4 py-6">
+                    <template #title>
+                        <title-with-link
+                            title="Continue where you left off"
+                            class="!p-0"
+                            title-class="text-lg text-black font-bold"
+                        />
+                    </template>
+                    <character-creation-card
+                        v-for="(character, characterID) in data.characters"
+                        :key="characterID"
+                        :card="character"
+                    />
+                </title-section>
             </template>
-            <template #finish></template>
+            <template #clarify>
+                <title-section class="!gap-6 px-4 py-6">
+                    <template #title>
+                        <title-with-link
+                            title="Clarify discrepancies"
+                            class="!p-0"
+                            title-class="text-lg text-black font-bold"
+                        />
+                    </template>
+
+                    <character-creation-card
+                        v-for="(character, characterID) in data.characters"
+                        :key="characterID"
+                        :card="character"
+                    />
+                </title-section>
+            </template>
+
+            <template #new>
+                <title-section class="!gap-6 px-4 py-6">
+                    <template #title>
+                        <title-with-link
+                            title="Starting Something New"
+                            class="!p-0"
+                            title-class="text-lg text-black font-bold"
+                        />
+                        <div class="flex items-center gap-3 w-full">
+                            <div
+                                v-for="(item, itemID) in createNew"
+                                :key="itemID"
+                                class="rounded-lg bg-stone-100 p-2 flex flex-col items-center text-center gap-1 w-full"
+                            >
+                                <span
+                                    class="text-stone-400 text-xs font-normal"
+                                >
+                                    New
+                                </span>
+                                <span
+                                    class="text-stone-600 text-xs font-semibold"
+                                >
+                                    {{ item }}
+                                </span>
+                            </div>
+                        </div>
+                        <hr class="text-stone-300 w-48 mx-auto my-1" />
+                        <character-creation-card
+                            v-for="(character, characterID) in data.characters"
+                            :key="characterID"
+                            :card="character"
+                        />
+                    </template>
+                </title-section>
+            </template>
+            <template #transcripts>
+                <home-statistic-component
+                    :statistic="data.statistic"
+                    class="!py-6"
+                />
+            </template>
         </tab-layout>
-        <!-- <h1 class="text-2xl">
-            Welcome to
-            <span class="text-gradient font-bold">
-                {{ appName }}
-            </span>
-        </h1> -->
-        <!-- <div class="flex flex-col gap-2">
-            <router-link
-                is="btn"
-                :to="{ name: 'login' }"
-                class="bg-red-500 text-white px-3 py-1 rounded-full"
-            >
-                Get Started
-            </router-link>
-            <button
-                v-if="isLoggedIn"
-                class="text-gray-500 px-3 py-1 rounded-full"
-                @click="logout"
-            >
-                logout
-            </button>
-        </div> -->
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+// import { useAuthStore } from '@/stores/auth'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
+import NewStoryCard from '@/components/cards/NewStoryCard.vue'
+import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import DiscussComponent from '@/components/DiscussComponent.vue'
 import CharacterCreationCard from '@/components/cards/CharacterCreationCard.vue'
+import HomeStatisticComponent from '@/components/HomeStatisticComponent.vue'
 import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
-import AchievementsStatisticCard from '@/components/cards/AchievementsStatisticCard.vue'
 
-const appName = import.meta.env.VITE_APP_NAME
+// const appName = import.meta.env.VITE_APP_NAME
 
-const { logout, isLoggedIn } = useAuthStore()
+// const { logout, isLoggedIn } = useAuthStore()
 
 const showDiscuss = ref(true)
 
+const createNew = ['Story', 'Character', 'Sequence']
 const data = {
     smth: '[something celebratory]',
-    works_on: [
+    stories: [
         {
-            story: 'Game of Thrones',
-            title: 'Character Development',
-            description:
-                'You made significant strides in fleshing out the backstory and motivation of your protagonist, Lila. Through the "Uncovering Character Motivation" achievement, you discovered that Lila`s driving force stems from a childhood tragedy that shattered her trust in others. This insight sparked ideas for her character arc, setting the stage for a powerful journey of healing and redemption. You also completed the "Defining Character Flaws" achievement, identifying Lila`s struggle with vulnerability and her tendency to push others away. These flaws create compelling opportunities for growth and conflict throughout the story.',
+            title: 'Game of Thrones',
+            episode: 'EP 101: Pilot',
+            poster: {
+                path: 'https://picsum.photos/900',
+            },
         },
         {
-            story: 'Game of Thrones',
-            title: 'Plot and Theme Progress',
+            title: 'Game of Thrones',
+            episode: 'EP 101: Pilot',
+            poster: {
+                path: 'https://picsum.photos/900',
+            },
+        },
+    ],
+    statistic: [
+        {
+            title: 'Your Bio',
             description:
-                'Your work on character development laid the foundation for major plot and theme breakthroughs. In the "Crafting the Inciting Incident" achievement, you brainstormed a gripping scene where Lila`s past trauma resurfaces, forcing her to confront her deepest fears. This inciting incident propels her into a high-stakes adventure that challenges her to overcome her flaws and forge unexpected alliances. You also made headway in the "Establishing the Central Theme" achievement, connecting Lila`s personal struggle with the universal theme of the power of empathy and forgiveness. This theme will resonate throughout the story, adding depth and meaning to Lila`s journey.',
+                'Veronica is a rising star in the world of dramatic television writing. She recently landed a coveted position as Writer Coordinator on the acclaimed series "For All Mankind", where she will hорe the opportunity to further hone her skills in crafting compelling character-driven narratives.',
+        },
+        {
+            title: 'Your Writing Goals',
+            description:
+                'To become a staff writer for House of the Dragon and create a Sci-Fi Novel Series',
+        },
+        {
+            title: 'Your Inspiration',
+            inspiration: [
+                {
+                    poster: 'https://picsum.photos/900',
+                },
+                {
+                    poster: 'https://picsum.photos/900',
+                },
+                {
+                    poster: 'https://picsum.photos/900',
+                },
+                {
+                    poster: 'https://picsum.photos/900',
+                },
+            ],
         },
     ],
     achievements: [
