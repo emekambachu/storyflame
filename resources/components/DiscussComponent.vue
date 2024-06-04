@@ -1,6 +1,6 @@
 <template>
     <div
-        class="bg-slate-200 rounded-lg w-full p-4 flex flex-col gap-3 relative"
+        class="bg-slate-100 rounded-lg w-full p-4 flex flex-col gap-3 relative shadow-lg border-slate-200"
     >
         <button
             class="absolute right-1 top-1 text-slate-600"

@@ -2,7 +2,7 @@
     <div class="flex flex-col items-center gap-8 w-full">
         <div
             ref="header"
-            class="flex flex-col sticky top-0 w-full bg-white"
+            class="flex flex-col sticky top-0 w-full bg-white z-10"
         >
             <div class="overflow-hidden">
                 <slot />
@@ -21,26 +21,56 @@
                     ]"
                     :data-key="tab.template"
                     class="text-sm font-medium [&:not(:last-child)]:pr-5 [&:not(:first-child)]:pl-5 whitespace-nowrap select-none py-1 border-b"
-                    @click="activeTab = tab.template"
+                    @click="handleTabClick(tab.template)"
                 >
                     {{ tab.title }}
                 </button>
             </div>
         </div>
-        <slot :name="activeTab">
-            {{ activeTab }}
-        </slot>
+
+        <template v-if="!scrollToPageSection">
+            <slot :name="activeTab">
+                {{ activeTab }}
+            </slot>
+        </template>
+
+        <div
+            v-else
+            :class="tabsContentClass"
+        >
+            <div
+                v-for="tab in tabs"
+                :key="tab.template"
+                :id="tab.template"
+                :class="tabContentClass"
+            >
+                <slot :name="tab.template">
+                    {{ tab.template }}
+                </slot>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, PropType, provide, ref, watch } from 'vue'
-import { animate, scroll } from 'motion'
 
 const props = defineProps({
     tabs: {
-        type: Array as PropType<string[]>,
+        type: Array as PropType<{ title: string; template: string }[]>,
         required: true,
+    },
+    scrollToPageSection: {
+        type: Boolean,
+        default: false,
+    },
+    tabsContentClass: {
+        type: String,
+        default: 'flex flex-col gap-8 w-full',
+    },
+    tabContentClass: {
+        type: String,
+        default: '',
     },
 })
 
@@ -52,7 +82,7 @@ provide('activeTab', activeTab)
 watch(
     () => activeTab.value,
     (newValue) => {
-        if (container.value) {
+        if (!props.scrollToPageSection && container.value) {
             const tab = container.value.querySelector(
                 `[data-key="${newValue}"]`
             ) as HTMLButtonElement
@@ -67,15 +97,23 @@ watch(
     }
 )
 
-onMounted(() => {
-    scroll(
-        animate(header.value, {
-            translateY: ['0%', '-150px'],
-        }),
-        {
-            offset: ['start start', '150px'],
+function handleTabClick(template: string) {
+    if (props.scrollToPageSection) {
+        const tabContent = document.getElementById(template)
+        if (tabContent) {
+            tabContent.scrollIntoView({ behavior: 'smooth' })
         }
-    )
+    } else {
+        activeTab.value = template
+    }
+}
+
+onMounted(() => {
+    if (header.value) {
+        header.value.style.position = 'sticky'
+        header.value.style.top = '0'
+        header.value.style.zIndex = '10'
+    }
 })
 </script>
 
