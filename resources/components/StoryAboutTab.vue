@@ -97,12 +97,6 @@
             />
         </div>
 
-        <div
-            v-if="showDiscuss"
-            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
-        >
-            <discuss-component @close="showDiscuss = false" />
-        </div>
 
         <div class="flex flex-col px-4 gap-4">
             <title-with-link
@@ -142,7 +136,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import SceneCard from '@/components/cards/SceneCard.vue'
 import ProgressCard from '@/components/cards/ProgressCard.vue'
 import CharacterCard from '@/components/cards/CharacterCard.vue'
@@ -154,7 +147,6 @@ import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 
 import ImageComponent from '@/components/ImageComponent.vue'
-import DiscussComponent from '@/components/DiscussComponent.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
 
@@ -165,7 +157,6 @@ const props = defineProps({
     },
 })
 
-const showDiscuss = ref(true)
 </script>
 
 <style scoped></style>

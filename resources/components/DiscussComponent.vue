@@ -17,10 +17,10 @@
 
             <div class="flex flex-col gap-1">
                 <span class="text-xs text-slate-400 font-bold">
-                    Want to chat about
+                    Ready to Jump Right in?
                 </span>
                 <h6 class="text-base text-slate-800 font-bold">
-                    Character Goals in the Scene?
+                    Start developing now
                 </h6>
             </div>
         </div>
