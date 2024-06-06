@@ -75,7 +75,7 @@ def evaluate_answers(
     """
     Function to evaluate the user's answers to the question
     and provide the confidence level of the user providing the information
-    on the scale [unlikely, unsure, likely, most likely].
+    on the scale [no confidence, low confidence, high confidence, absolute confidence].
     """
     dict_prop_name_to_key = {
         value['name']: key for key, value in properties.items()}
@@ -84,15 +84,15 @@ def evaluate_answers(
 
     prompt = PromptTemplate(
         template="You are an expert analysis algorithm. "
-                 "From the user response to a question, tell us how likely the user provided the information we need. "
+                 "From the user response to a question, tell us how high confidence the user provided the information we need. "
                  "For each property in the list below, provide the confidence level of the user providing the "
-                 "information on the scale [unlikely, unsure, likely, most likely]."
+                 "information on the scale [no confidence, low confidence, high confidence, absolute confidence]."
                  "\n#List of properties: {properties}."
                  "\n#Question to user: {question}."
                  "\n#User answer: {message}."
                  "\n#Example: If the user mentioned the property 'name' with high confidence, set 'name' to most "
-                 "likely. If the user did not mention the property 'name', set 'name' to unlikely. If the user "
-                 "mentioned the property 'name' but you are not sure, set 'name' to unsure."
+                 "high confidence. If the user did not mention the property 'name', set 'name' to no confidence. If the user "
+                 "mentioned the property 'name' but you are not sure, set 'name' to low confidence."
                  "\n#Output Format: Property name: Confidence level\nOther property name: Confidence level",
         input_variables=["properties", "message"]
     )
@@ -131,7 +131,7 @@ def evaluate_answers(
         dict_prop_name_to_key[prop[0]]
         for prop in (prop.split(":") for prop in response.content.split("\n") if prop.strip() != "" and ":" in prop)
         if prop[0].strip() in dict_prop_name_to_key and
-           prop[1].strip().lower() in ["likely", "most likely"]
+           prop[1].strip().lower() in ["high confidence", "absolute confidence"]
     ]
 
 

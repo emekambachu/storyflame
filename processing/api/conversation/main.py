@@ -54,7 +54,7 @@ def rate(request: DialogRequest):
 
     # replace ratings with boolean values
     return {
-        key: value in ["likely", "very likely"]
+        key: value in ["high confidence", "very high confidence"]
         for key, value in ratings.dict().items()
     }
 
@@ -243,7 +243,7 @@ def generate(request: GenerateRequest, response: Response):
                 "generated": generated
             })
             print("Rating: ", rating)
-            if rating.lower() in ["likely", "very likely"]:
+            if rating.lower() in ["high confidence", "very high confidence"]:
                 return {
                     "generated": generated,
                     "rating": rating
