@@ -1,6 +1,6 @@
 <template>
     <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
-    <main class="bg-white min-h-screen flex flex-col">
+    <main class="bg-white min-h-screen flex flex-col max-w-prose mx-auto">
         <router-view v-slot="{ Component, route }">
             <transition
                 :mode="transition.mode"
