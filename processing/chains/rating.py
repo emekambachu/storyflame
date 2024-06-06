@@ -1,6 +1,7 @@
 from typing import List, Dict
 
 import langchain
+from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.output_parsers.openai_tools import PydanticToolsParser
@@ -76,6 +77,26 @@ def parse_ratings(ai_message: AIMessage) -> List[str]:
     ]
 
 
+def parse_ratings_new(ai_message: AIMessage) -> List[str]:
+    print(ai_message.content)
+    return [
+        line.split(":")[0].strip()
+        for line in ai_message.content.split("\n")
+        if (line.strip()
+            and ":" in line
+            and line.split(":")[1].strip().lower() in ["high confidence",
+                                                       "absolute confidence"])
+    ]
+
+
+confidence_template = (
+    "You should rate the following on a scale of [absolute confidence, high confidence, low confidence, no confidence]."
+    "If you are absolutely sure that the topic is being discussed, rate it as 'absolute confidence'."
+    "If there are strong indications that the topic is being discussed, rate it as 'high confidence'."
+    "If you are not sure, rate it as 'low confidence'."
+    "If you are sure that the topic is not being discussed, rate it as 'no confidence'.")
+
+
 def rate_topics(limit: int = 3):
     """
     Rate how likely a topic is being discussed in the conversation.
@@ -83,28 +104,31 @@ def rate_topics(limit: int = 3):
     prompt = PromptTemplate(
         template="You are an expert analysis and you are evaluating the conversation with a writer."
                  "Based on the response, rate how likely the topic is being discussed in the conversation."
-                 "All ratings should be on a scale [unlikely, unsure, likely, very likely]. "
-        # +
-        # (
-        #     f"Only rate the top {limit} topics that are most likely being discussed."
-        #     if limit is not None
-        #     else ""
-        # ) +
-                 "#Example: If the user mentioned anything about the topic 'plot' with high confidence, "
-                 "set 'plot' to most likely. If the user did not mention the topic 'plot', "
-                 "set 'plot' to unlikely. If the user mentioned the topic 'plot' but you are not sure, "
-                 "set 'plot' to unsure."
+                 "{confidence_template}"
+        #          "All ratings should be on a scale [unlikely, unsure, likely, very likely]. "
+        # # +
+        # # (
+        # #     f"Only rate the top {limit} topics that are most likely being discussed."
+        # #     if limit is not None
+        # #     else ""
+        # # ) +
+        #          "#Example: If the user mentioned anything about the topic 'plot' with high confidence, "
+        #          "set 'plot' to most likely. If the user did not mention the topic 'plot', "
+        #          "set 'plot' to unlikely. If the user mentioned the topic 'plot' but you are not sure, "
+        #          "set 'plot' to unsure."
                  "#Question: {question} "
                  "#Answer: {answer} "
                  "#List of topics to rate: {topics} "
                  "#Output Format: Property name: Confidence level\nOther property name: Confidence level",
         input_variables=["topics", "question", "answer"],
+        partial_variables={"confidence_template": confidence_template}
     )
 
     model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.1)
+    # model = ChatAnthropic(model="claude-3-haiku-20240307", temperature=0.1)
 
     # temperature=0 for deterministic outputs
-    chain = prompt | model | parse_ratings
+    chain = prompt | model | parse_ratings_new
 
     return chain
 
@@ -112,10 +136,11 @@ def rate_topics(limit: int = 3):
 def rate_data_points(limit: int = 6):
     prompt = PromptTemplate(
         template="You are an expert analysis algorithm. "
-                 # "From the user response to a question, tell us how likely the user provided the information we need. "
+        # "From the user response to a question, tell us how likely the user provided the information we need. "
                  "For each data point in the list below, rate how likely the user provided the information from the. "
                  "topics in the list."
-                 "All ratings should be on a scale [unlikely, unsure, likely, very likely]. "
+                 "{confidence_template}"
+        # "All ratings should be on a scale [unlikely, unsure, likely, very likely]. "
         # +
         # (
         #     f"Only rate the top {limit} data points that are most likely being discussed."
@@ -130,11 +155,14 @@ def rate_data_points(limit: int = 6):
                  "#List of data points to rate: {data_points} "
                  "#Output Format: Property name: Confidence level\nOther property name: Confidence level",
         input_variables=["data_points", "question", "answer"],
+        partial_variables={"confidence_template": confidence_template}
     )
 
     model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.1)
+    # model = ChatAnthropic(model="claude-3-haiku-20240307", temperature=0.1)
+    # model = ChatGoogleGenerativeAI(model="gemini-1.0-pro")
 
-    chain = prompt | model | parse_ratings
+    chain = prompt | model | parse_ratings_new
 
     return chain
 

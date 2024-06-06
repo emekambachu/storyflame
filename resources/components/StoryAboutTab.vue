@@ -5,7 +5,7 @@
 
             <ul class="flex flex-col">
                 <li
-                    v-for="(goal, goalID) in story.goals"
+                    v-for="(goal, goalID) in story?.goals"
                     :key="goalID"
                     class="font-normal text-lg text-zinc-800 flex items-center gap-2 pl-2"
                 >
@@ -19,7 +19,7 @@
             <h5 class="font-bold text-lg text-zinc-800">Market Comps</h5>
             <div class="flex item-start gap-3">
                 <image-component
-                    v-for="(poster, posterID) in story.market_comps"
+                    v-for="(poster, posterID) in story?.market_comps"
                     :key="posterID"
                     :src="poster.image?.path"
                     alt="poster"
@@ -35,7 +35,7 @@
 
             <div class="flex flex-wrap gap-2">
                 <progress-card
-                    v-for="(item, itemID) in story.progress"
+                    v-for="(item, itemID) in story?.progress"
                     :key="itemID"
                     :item="item"
                 />
@@ -85,7 +85,7 @@
             </h5>
 
             <target-audience-card
-                v-for="(audience, audienceID) in story.target_audience"
+                v-for="(audience, audienceID) in story?.target_audience"
                 :key="audienceID"
                 :id="audienceID + 1"
                 :audience="audience"
@@ -95,13 +95,6 @@
                         : 'pb-2',
                 ]"
             />
-        </div>
-
-        <div
-            v-if="showDiscuss"
-            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
-        >
-            <discuss-component @close="showDiscuss = false" />
         </div>
 
         <div class="flex flex-col px-4 gap-4">
@@ -116,7 +109,7 @@
                 class="w-full flex flex-col gap-2"
             >
                 <character-card
-                    v-for="(character, characterID) in story.characters"
+                    v-for="(character, characterID) in story?.characters"
                     :key="characterID"
                     :card="character"
                 />
@@ -132,17 +125,24 @@
 
             <div class="w-full flex flex-col gap-6">
                 <scene-card
-                    v-for="(scene, sceneID) in story.impactful_scenes"
+                    v-for="(scene, sceneID) in story?.impactful_scenes"
                     :key="sceneID"
                     :scene="scene"
                 />
             </div>
         </div>
+
+        <div
+            v-if="showDiscuss"
+            class="px-4 pb-3 sticky bottom-0 right-0 left-0"
+        >
+            <discuss-component @close="showDiscuss = false" />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { PropType, ref } from 'vue'
 import SceneCard from '@/components/cards/SceneCard.vue'
 import ProgressCard from '@/components/cards/ProgressCard.vue'
 import CharacterCard from '@/components/cards/CharacterCard.vue'
@@ -157,10 +157,11 @@ import ImageComponent from '@/components/ImageComponent.vue'
 import DiscussComponent from '@/components/DiscussComponent.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
+import { Story } from '@/types/story'
 
 const props = defineProps({
     story: {
-        type: Object,
+        type: Object as PropType<Story>,
         required: true,
     },
 })

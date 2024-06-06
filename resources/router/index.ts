@@ -108,6 +108,10 @@ const router = createRouter({
             name: 'story',
             // beforeEnter: checkAuth,
             component: () => import('../views/StoryView.vue'),
+            meta: {
+                transition: 'slide',
+                back: 'profile',
+            },
         },
         {
             path: '/sequence/:id',

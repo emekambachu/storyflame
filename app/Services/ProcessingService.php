@@ -33,13 +33,33 @@ class ProcessingService
         ])->json();
     }
 
+    private static function isValidData($value)
+    {
+        return !empty($value) && !in_array(strtolower($value), ['no', 'none', 'nothing', 'n/a', 'n.a.', 'n.a', 'na']);
+    }
+
+    public static function filterData(array $data): array
+    {
+        $filtered = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $filtered[$key] = static::filterData($value);
+            } else if (static::isValidData($value)) {
+                $filtered[$key] = $value;
+            }
+        }
+        return $filtered;
+    }
+
     public static function extractData(string $question, string $answer, array $groups): array
     {
-        return static::sendRequest('post', '/api/conversation/extract', [
-            'question' => $question,
-            'answer' => $answer,
-            'groups' => $groups
-        ])->json();
+        return static::filterData(
+            static::sendRequest('post', '/api/conversation/extract', [
+                'question' => $question,
+                'answer' => $answer,
+                'groups' => $groups
+            ])->json()
+        );
     }
 
     public static function generateNextQuestion(string $engine, array $getChatHistory, array $availableDataPoints, $type = 'basic'): array

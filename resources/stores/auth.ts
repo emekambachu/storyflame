@@ -3,6 +3,7 @@ import User from '../types/user'
 import { computed, ref } from 'vue'
 import axios from 'axios'
 import { SuccessResponse } from '../types/responses'
+import { getAuthenticatedUser } from '@/utils/endpoints'
 
 const user = ref<User | null>(null)
 
@@ -57,10 +58,9 @@ export const useAuthStore = defineStore(
             return data
         }
         const getUser = async () => {
-            const { data } =
-                await axios.get<SuccessResponse<User>>('/api/v1/auth/user')
-            user.value = data.data
-            return data
+            const response = await getAuthenticatedUser()
+            user.value = response.data
+            return response.data
         }
 
         const updateUser = (data: User) => {

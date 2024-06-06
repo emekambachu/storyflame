@@ -9,6 +9,7 @@ import '@/assets/app.css'
 import { createLogger } from 'vue-logger-plugin'
 import modalPlugin from '@/plugins/modalPlugin'
 import { VueMountable } from 'vue-mountable'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 // Enable CSRF token
 axios.defaults.withCredentials = true
@@ -23,6 +24,7 @@ const logger = createLogger({
 
 const app = createApp(App)
     .use(router)
+    .use(VueQueryPlugin)
     .use(pinia)
     .use(logger)
     .use(modalPlugin)

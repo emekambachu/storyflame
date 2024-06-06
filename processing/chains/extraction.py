@@ -1,5 +1,7 @@
 from typing import Optional, List
 
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
@@ -24,7 +26,11 @@ def extract_properties(data_points: List[DataPoint]):
         }
     )
 
+    print(output_parsing_model)
+
     parser = PydanticOutputParser(pydantic_object=output_parsing_model)
+
+    print(parser.get_format_instructions())
 
     prompt = PromptTemplate(
         template="You are an expert extraction algorithm. "
@@ -35,15 +41,27 @@ def extract_properties(data_points: List[DataPoint]):
                  "#List of properties to extract: {data_points} "
                  "#Question to the user: {question} "
                  "#Answer from user: {answer} "
-                 "\n{format_instructions}",
+                 "\n{format_instructions}"
+                 "Please put the formatted JSON in between <formatted_json></formatted_json>",
         input_variables=["data_points", "question", "answer"],
         partial_variables={
             "format_instructions": parser.get_format_instructions()
         }
     )
 
-    model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.1)
+    # model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.1)
+    model = ChatAnthropic(model="claude-3-haiku-20240307", temperature=0.1)
 
-    chain = prompt | model | parser
+    chain = prompt | model | regex_extract_xml | parser
 
     return chain
+
+
+import re
+
+
+def regex_extract_xml(message: AIMessage):
+    match = re.search(r"<formatted_json>(.*)</formatted_json>", message.content, re.DOTALL)
+    if match:
+        return match.group(1)
+    return message.content

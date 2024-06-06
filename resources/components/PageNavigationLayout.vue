@@ -1,12 +1,22 @@
 <template>
-    <div class="bg-white flex flex-col grow">
-        <header class="sticky -top-[1px] bg-white bg-opacity-75 py-3 backdrop-blur">
+    <div class="flex grow flex-col bg-white">
+        <header
+            :class="[
+                fixed ? 'fixed w-full' : 'sticky',
+                {
+                    'bg-white bg-opacity-75 backdrop-blur': !transparent,
+                },
+            ]"
+            class="-top-[1px] z-[15] py-3"
+        >
             <button
-                class="capitalize flex items-center text-lg"
+                class="flex items-center text-lg capitalize"
                 @click="goBack"
             >
                 <chevron-icon class="h-7" />
-                {{ backRouteTitle }}
+                <template v-if="!noBackText">
+                    {{ backRouteTitle }}
+                </template>
             </button>
         </header>
         <slot />
@@ -18,6 +28,21 @@ import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { usePagesStore } from '@/stores/pages'
 import ChevronIcon from '@/components/icons/ChevronIcon.vue'
+
+defineProps({
+    fixed: {
+        type: Boolean,
+        default: false,
+    },
+    transparent: {
+        type: Boolean,
+        default: false,
+    },
+    noBackText: {
+        type: Boolean,
+        default: false,
+    },
+})
 
 const router = useRouter()
 const { setTransition } = usePagesStore()

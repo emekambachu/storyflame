@@ -132,12 +132,9 @@ abstract class ConversationEngine
 
     public function extract(ChatMessage $question, ChatMessage $answer): array
     {
-        return array_filter(
-            ProcessingService::extractData($question->content, $answer->content, $this->getGroupedTopics(
-                except_data_points: array_keys($this->storage->getExtractedData())
-            )),
-            fn($value) => !empty($value) && !in_array(strtolower($value), ['no', 'none', 'nothing', 'n/a', 'n.a.', 'n.a', 'na'])
-        );
+        return ProcessingService::extractData($question->content, $answer->content, $this->getGroupedTopics(
+            except_data_points: array_keys($this->storage->getExtractedData())
+        ));
     }
 
     private function changeTopic(ChatMessage $question, ChatMessage $answer): ChatMessage

@@ -60,17 +60,16 @@
                 />
             </template>
             <div
-                v-if="user.stories?.length"
+                v-if="stories?.length"
                 class="flex flex-col gap-4 w-full"
             >
                 <story-card
-                    v-for="(story, storyID) in user.stories"
+                    v-for="(story, storyID) in stories"
                     :key="storyID"
                     :story="story"
                 />
             </div>
             <router-link
-                v-else
                 :to="{ name: 'new-story' }"
                 class="px-4 w-full"
             >
@@ -123,11 +122,21 @@ import AchievementCard from '@/components/cards/AchievementCard.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import PlusIcon from '@/components/icons/PlusIcon.vue'
 import featureFlags from '@/types/featureFlags'
+import { useQuery } from '@tanstack/vue-query'
+import { getStories } from '@/utils/endpoints'
 
 const props = defineProps({
     user: {
         type: Object as PropType<User>,
         required: true,
+    },
+})
+
+const { data: stories } = useQuery({
+    queryKey: ['stories'],
+    queryFn: () => getStories(),
+    select(data) {
+        return data.data
     },
 })
 

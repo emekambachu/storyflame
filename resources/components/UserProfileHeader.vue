@@ -1,14 +1,22 @@
 <template>
     <div
         ref="container"
-        class="flex flex-col items-end pt-10 gap-3 sticky"
+        class="sticky flex flex-col items-end gap-3 pt-10"
     >
         <div class="h-28 w-full">
             <div
                 ref="userIcon"
-                class="bg-gray-200 absolute h-28 origin-bottom aspect-square shrink-0 rounded-full flex items-center justify-center"
+                class="absolute flex aspect-square h-28 shrink-0 origin-bottom items-center justify-center rounded-full bg-gray-200"
             >
-                <user-icon class="text-neutral-400 w-2/3" />
+                <img
+                    v-if="user.avatar.path"
+                    :src="user.avatar.path"
+                    class="rounded-full"
+                />
+                <user-icon
+                    v-else
+                    class="w-2/3 text-neutral-400"
+                />
 
                 <verified-icon
                     ref="verifiedIcon"
@@ -19,14 +27,14 @@
 
         <div
             ref="userInfo"
-            class="flex flex-col items-start gap-2 mb-1 w-full"
+            class="mb-1 flex w-full flex-col items-start gap-2"
         >
-            <h2 class="text-2xl text-neutral-700 font-bold sticky">
+            <h2 class="sticky text-2xl font-bold text-neutral-700">
                 {{ user.name }}
             </h2>
             <p
                 v-if="user.profession"
-                class="text-sm text-neutral-500 font-normal sticky"
+                class="sticky text-sm font-normal text-neutral-500"
             >
                 {{ user.profession }}
             </p>
@@ -35,17 +43,17 @@
                     !user.data?.genre_focus?.length &&
                     !user.data?.writing_medium?.length
                 "
-                class="text-sm text-neutral-500 font-normal sticky"
+                class="sticky text-sm font-normal text-neutral-500"
             ></p>
             <p
                 v-if="user.data?.genre_focus?.length"
-                class="text-sm text-neutral-500 font-normal flex items-center gap-1 sticky"
+                class="sticky flex items-center gap-1 text-sm font-normal text-neutral-500"
             >
                 {{ user.data?.genre_focus.join(' & ') }}
             </p>
             <p
                 v-if="user.data?.genre_focus?.length"
-                class="text-sm text-neutral-500 font-normal flex items-center gap-1 sticky"
+                class="sticky flex items-center gap-1 text-sm font-normal text-neutral-500"
             >
                 {{ user.data?.writing_medium.join(' & ') }}
             </p>
@@ -85,7 +93,7 @@ onMounted(() => {
             [
                 userIcon.value,
                 {
-                    scale: 0.5,
+                    scale: 0.4,
                     left: ['50%', '0%'],
                     translateX: ['-50%', '0%'],
                 },
@@ -93,7 +101,7 @@ onMounted(() => {
             [
                 userIcon.value,
                 {
-                    translateY: ['0%', '60%'],
+                    translateY: ['0%', '45%'],
                 },
             ],
         ]),

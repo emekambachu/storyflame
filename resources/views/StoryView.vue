@@ -1,197 +1,114 @@
 <template>
-    <div class="pb-6 flex flex-col gap-6">
-        <div
-            class="pt-6 flex flex-col gap-8 w-full"
-            :class="story?.image?.path ? 'pb-4' : ''"
-            :style="`background: ${
-                story?.image?.path
-                    ? `linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), url(${story.image.path}) lightgray 50% / cover no-repeat;`
-                    : 'transparent'
-            }`"
-        >
-            <button
-                class="flex items-center gap-2 px-4"
-                :class="story?.image?.path ? 'text-pure-white' : 'text-black'"
+    <page-navigation-layout
+        class="text-slate-400"
+        fixed
+        no-back-text
+        transparent
+    >
+        <div class="flex flex-col gap-6 pb-6">
+            <tab-layout
+                :tabs="[
+                    {
+                        title: 'About',
+                        template: 'about',
+                    },
+                    {
+                        title: 'Progress',
+                        template: 'progress',
+                    },
+                    {
+                        title: 'Elements',
+                        template: 'elements',
+                    },
+                    {
+                        title: 'Drafts',
+                        template: 'drafts',
+                    },
+                ]"
+                animate-translate-y="190px"
             >
-                <chevron-icon />
-                <span class="text-lg font-normal">Back</span>
-            </button>
+                <story-header :story="story" />
+                <template #about>
+                    <story-about-tab :story="story" />
+                </template>
+                <template #drafts>
+                    <story-drafts-tab :drafts="story.drafts" />
+                </template>
+            </tab-layout>
 
-            <div class="flex flex-col gap-1.5 px-4">
-                <span
-                    class="text-sm font-normal opacity-70"
-                    :class="story?.image?.path ? 'text-white' : 'text-black'"
-                >
-                    {{ story.genre }}
-                </span>
+            <!--            <div class="relative flex items-center">-->
+            <!--                <div-->
+            <!--                    v-for="(tab, tabID) in tabs"-->
+            <!--                    :key="tabID"-->
+            <!--                    :class="-->
+            <!--                        tabID == selectedTab-->
+            <!--                            ? 'border-red-600 text-red-600'-->
+            <!--                            : 'border-neutral-300 text-neutral-500'-->
+            <!--                    "-->
+            <!--                    class="relative z-10 mx-4 border-b-2 text-base font-normal"-->
+            <!--                    @click="selectedTab = tabID"-->
+            <!--                >-->
+            <!--                    {{ tab }}-->
+            <!--                </div>-->
+            <!--                <div-->
+            <!--                    class="z-5 absolute bottom-0 h-[2px] w-full bg-neutral-300"-->
+            <!--                />-->
+            <!--            </div>-->
 
-                <div class="flex items-center w-full justify-between">
-                    <h1
-                        class="font-bold text-3xl"
-                        :class="
-                            story?.image?.path ? 'text-white' : 'text-black'
-                        "
-                    >
-                        {{ story.name }}
-                    </h1>
-
-                    <div class="w-10 h-10 shrink-0">
-                        <progress-bar-circle
-                            :percent="story.percent"
-                            class="w-full"
-                        />
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <span
-                        v-for="(genre, genreID) in story.genres"
-                        :key="genreID"
-                        :class="
-                            story?.image?.path ? 'text-white' : 'text-black'
-                        "
-                        class="text-sm font-normal opacity-40 gap-1.5 flex items-center"
-                    >
-                        <span v-if="genreID !== 0"><point-icon /></span>
-                        {{ genre }}
-                    </span>
-                </div>
-
-                <p
-                    class="text-sm opacity-70"
-                    :class="story?.image?.path ? 'text-white' : 'text-black'"
-                >
-                    {{ story.description }}
-                </p>
-            </div>
+            <!--            <story-about-tab-->
+            <!--                v-if="selectedTab == 0"-->
+            <!--                :story="story"-->
+            <!--            />-->
+            <!--            <story-drafts-tab-->
+            <!--                v-if="selectedTab == 3"-->
+            <!--                :drafts="story.drafts"-->
+            <!--            />-->
         </div>
-
-        <div class="flex items-center relative">
-            <div
-                v-for="(tab, tabID) in tabs"
-                :key="tabID"
-                :class="
-                    tabID == selectedTab
-                        ? 'text-red-600 border-red-600'
-                        : 'text-neutral-500 border-neutral-300'
-                "
-                class="mx-4 text-base font-normal border-b-2 relative z-10"
-                @click="selectedTab = tabID"
-            >
-                {{ tab }}
-            </div>
-            <div class="w-full h-[2px] bg-neutral-300 absolute bottom-0 z-5" />
-        </div>
-
-        <story-about-tab
-            v-if="selectedTab == 0"
-            :story="story"
-        />
-        <story-drafts-tab
-            v-if="selectedTab == 3"
-            :drafts="story.drafts"
-        />
-    </div>
+    </page-navigation-layout>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
 import StoryAboutTab from '@/components/StoryAboutTab.vue'
 import StoryDraftsTab from '@/components/StoryDraftsTab.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+import TabLayout from '@/components/TabLayout.vue'
+import StoryHeader from '@/components/StoryHeader.vue'
+import { useRoute } from 'vue-router'
+import { useQuery } from '@tanstack/vue-query'
+import { getStory } from '@/utils/endpoints'
 
-import ProgressBarCircle from '@/components/ProgressBarCircle.vue'
+const route = useRoute()
+const storyId = computed(() => route.params.id)
 
-import PointIcon from '@/components/icons/PointIcon.vue'
-import ChevronIcon from '@/components/icons/ChevronIcon.vue'
+const { data: story } = useQuery({
+    queryKey: ['story', storyId.value],
+    queryFn: () => getStory(storyId.value),
+    select(data) {
+        return data.data
+    },
+})
 
-const story = {
-    image: { path: 'https://picsum.photos/900' },
-    name: 'Game of Thrones',
-    genre: 'TV Show, MA-16',
-    percent: 80,
-    genres: ['Fantasy', 'Drama', 'Adventure', 'Political Intrigue'],
-    description:
-        'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-    goals: [
-        'Explore a Unique Setting',
-        'Develop Complex Character Arcs',
-        'Craft a Cliffhanger Ending',
-    ],
-    market_comps: [
-        { image: { path: 'https://picsum.photos/300' } },
-        { image: null },
-        { image: { path: 'https://picsum.photos/600' } },
-    ],
-
-    progress: [
-        {
-            name: 'Characters',
-            progress: 1,
-        },
-        {
-            name: 'Sequences',
-            progress: 2,
-        },
-        {
-            name: 'Themes',
-            progress: 3,
-        },
-        {
-            name: 'Appeal',
-            progress: 4,
-        },
-    ],
-
-    characters: [
-        {
-            role: 'Protagonist',
-            name: 'Daenerys Targaryen',
-            types: ['Helpless Sibling', 'Zero to Hero'],
-            description: 'Gain independence and reclaim her ancestral throne.',
-        },
-        {
-            role: 'Protagonist',
-            name: 'Daenerys Targaryen',
-            types: ['Helpless Sibling', 'Zero to Hero'],
-            description: 'Gain independence and reclaim her ancestral throne.',
-        },
-    ],
-    target_audience: [
-        {
-            title: 'Fantasy Enthusiast',
-            description:
-                'Immersed in fantasy worlds, interested in medieval history, politics, and warfare.',
-            prefer: 'Prefers narratives that subvert genre conventions and challenge traditional hero archetypes.',
-            dislike:
-                'Dislikes overly simplistic or clichéd fantasy tropes, prefers narratives that subvert genre conventions and challenge traditional hero archetypes.',
-        },
-        {
-            title: 'Fantasy Enthusiast',
-            description:
-                'Immersed in fantasy worlds, interested in medieval history, politics, and warfare.',
-            prefer: 'Prefers narratives that subvert genre conventions and challenge traditional hero archetypes.',
-            dislike:
-                'Dislikes overly simplistic or clichéd fantasy tropes, prefers narratives that subvert genre conventions and challenge traditional hero archetypes.',
-        },
-    ],
-    impactful_scenes: [
-        {
-            id: '1',
-            priority: 1,
-            name: 'Red Wedding',
-            description:
-                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
-        },
-        {
-            id: '21',
-            priority: 2,
-            name: 'Red Wedding',
-            description:
-                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
-        },
-    ],
-    drafts: [],
-}
+// const story = {
+//     image: { path: 'https://picsum.photos/900' },
+//     name: 'Game of Thrones',
+//     genre: 'TV Show, MA-16',
+//     percent: 80,
+//     genres: ['Fantasy', 'Drama', 'Adventure', 'Political Intrigue'],
+//     description:
+//         'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
+//     goals: [
+//         'Explore a Unique Setting',
+//         'Develop Complex Character Arcs',
+//         'Craft a Cliffhanger Ending',
+//     ],
+//     market_comps: [
+//         { image: { path: 'https://picsum.photos/300' } },
+//         { image: null },
+//         { image: { path: 'https://picsum.photos/600' } },
+//     ],
+//
+// }
 
 const tabs = ['About', 'Progress', 'Elements', 'Drafts']
 

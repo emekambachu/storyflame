@@ -3,6 +3,8 @@ pydantic>=1.8.0,<2.0.0
 uvicorn>=0.15.0,<0.16.0
 langchain
 langchain-openai
+langchain-anthropic
 python-dotenv
 pdfminer
 pusher
+anthropic

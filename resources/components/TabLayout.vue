@@ -2,7 +2,7 @@
     <div class="flex flex-col items-center gap-8 w-full">
         <div
             ref="header"
-            class="flex flex-col sticky top-0 w-full bg-white z-10"
+            class="flex flex-col sticky -top-[1px] w-full bg-white z-10"
         >
             <div class="overflow-hidden">
                 <slot />
@@ -54,6 +54,7 @@
 
 <script lang="ts" setup>
 import { onMounted, PropType, provide, ref, watch } from 'vue'
+import { animate, scroll } from 'motion'
 
 const props = defineProps({
     tabs: {
@@ -72,6 +73,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    animateTranslateY: {
+        type: String,
+        default: '150px',
+    }
 })
 
 const activeTab = ref(props.tabs[0].template)
@@ -109,6 +114,14 @@ function handleTabClick(template: string) {
 }
 
 onMounted(() => {
+    scroll(
+        animate(header.value, {
+            translateY: ['0%', '-' + props.animateTranslateY],
+        }),
+        {
+            offset: ['start start', '150px'],
+        }
+    )
     if (header.value) {
         header.value.style.position = 'sticky'
         header.value.style.top = '0'

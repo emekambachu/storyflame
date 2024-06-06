@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
+use App\Models\DataPoint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -11,7 +12,7 @@ class AchievementDataPointsSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('data_points')->truncate();
+        DataPoint::all()->each->forceDelete();
 
         // open csv file
         $file = fopen(database_path('csv/data_points.csv'), 'r');

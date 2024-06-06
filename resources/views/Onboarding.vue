@@ -6,36 +6,24 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import axios from 'axios'
-import { SuccessResponse } from '@/types/responses'
-import { ChatMessage } from '@/types/chatMessage'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import ConversationEngine from '@/views/ConversationEngine.vue'
-import User from '@/types/user'
 import useModal from '@/composables/useModal'
+import { getOnboardingSummary } from '@/utils/endpoints'
 
 const router = useRouter()
-const loading = ref(true)
 const auth = useAuthStore()
-const message = ref(null)
-const progress = ref(0)
 const modal = useModal()
-
-function extract(formData: FormData) {
-
-}
 
 function onFinish() {
     const modalId = modal.show('full-screen-loader', {})
-    axios
-        .get<SuccessResponse<User>>('/api/v1/onboarding/summary')
-        .then((res) => {
-            auth.updateUser(res.data.data)
-            router.push({ name: 'profile' })
-            close(modalId)
-        })
+    getOnboardingSummary().then((res) => {
+        auth.updateUser(res.data)
+        router.push({ name: 'profile' })
+        close(modalId)
+    })
 }
 
 onMounted(() => {

@@ -11,7 +11,7 @@ class AchievementsSeeder extends Seeder
 {
     public function run(): void
     {
-        Achievement::all()->each->delete();
+        Achievement::all()->each->forceDelete();
 
         // open csv file
         $file = fopen(database_path('csv/achievements.csv'), 'r');

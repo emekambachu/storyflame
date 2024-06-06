@@ -1,6 +1,6 @@
 <template>
     <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
-    <main class="bg-white min-h-screen flex flex-col">
+    <main class="flex min-h-screen flex-col bg-white">
         <router-view v-slot="{ Component, route }">
             <transition
                 :mode="transition.mode"
@@ -14,6 +14,7 @@
                 />
             </transition>
         </router-view>
+        <mock-popup />
     </main>
     <!-- <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer> -->
 </template>
@@ -27,6 +28,7 @@ import useModal from '@/composables/useModal'
 import AchievementPopup from '@/components/modals/AchievementPopup.vue'
 import { usePagesStore } from '@/stores/pages'
 import { useRouter } from 'vue-router'
+import MockPopup from '@/components/MockPopup.vue'
 
 const authStore = useAuthStore()
 const { echo } = useEcho()
@@ -46,6 +48,17 @@ router.beforeEach((to, from, next) => {
     }
     next()
 })
+
+// const mockStore = useMockStore()
+
+// axios.interceptors.request.use((config) => {
+//     if (mockStore.isActive(config.method, config.url)) {
+//         console.log('Mocking request', config)
+//     } else {
+//         console.log(config.method, config.url)
+//     }
+//     return config
+// })
 
 watch(
     () => authStore.user,
@@ -100,12 +113,12 @@ onMounted(() => {
 
 .slide-enter-active {
     transition: transform 0.25s ease-in-out;
-    z-index: 2;
+    z-index: 20;
     transform: translateX(100%);
 }
 
 .slide-enter-to {
-    z-index: 2;
+    z-index: 20;
     transform: translateX(0);
 }
 
@@ -134,12 +147,12 @@ onMounted(() => {
 
 .slide-back-leave-active {
     transition: transform 0.25s ease-in-out;
-    z-index: 2;
+    z-index: 20;
     transform: translateX(0%);
 }
 
 .slide-back-leave-to {
-    z-index: 2;
+    z-index: 20;
     transform: translateX(100%);
 }
 </style>

@@ -7,21 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('user_achievements', function (Blueprint $table) {
+        Schema::create('user_data_points', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('data_point_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_achievement_id')->constrained()->cascadeOnDelete();
             $table->uuidMorphs('target');
-            $table->unsignedTinyInteger('progress')->default(0);
-            $table->timestamp('completed_at')->nullable();
 
+            $table->json('data');
+            $table->text('summary');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('user_achievements');
+        Schema::dropIfExists('story_data_points');
     }
 };

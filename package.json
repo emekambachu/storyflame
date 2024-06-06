@@ -29,6 +29,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@tanstack/vue-query": "^5.40.1",
         "@types/luxon": "^3.4.2",
         "@vueuse/core": "^10.9.0",
         "laravel-echo": "^1.16.1",

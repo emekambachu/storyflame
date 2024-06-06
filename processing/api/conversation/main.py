@@ -63,6 +63,9 @@ def rate(request: DialogRequest):
 def extract(request: ExtractionRequest, response: Response):
     groups = request.groups
 
+    print('Question:', request.question)
+    print('Answer:', request.answer)
+
     all_data_points = [
         data_point
         for group in groups
