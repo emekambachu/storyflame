@@ -49,12 +49,7 @@
             </div>
         </div>
 
-        <div
-            v-if="showDiscuss"
-            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
-        >
-            <discuss-component @close="showDiscuss = false" />
-        </div>
+      
 
         <div class="flex items-center relative">
             <div
@@ -83,12 +78,9 @@ import PointIcon from '@/components/icons/PointIcon.vue'
 import ChevronIcon from '@/components/icons/ChevronIcon.vue'
 
 import SequenceDetailsTab from '@/components/SequenceDetailsTab.vue'
-import DiscussComponent from '@/components/DiscussComponent.vue'
 
 const selectedTab = ref(0)
 const tabs = ['Details', 'Progress', 'Elements', 'Script']
-
-const showDiscuss = ref(true)
 
 const data = {
     name: 'Arrival of King Robert and the Royal Family',

@@ -85,7 +85,7 @@
             </h5>
 
             <target-audience-card
-                v-for="(audience, audienceID) in story?.target_audience"
+                v-for="(audience, audienceID) in story.target_audience"
                 :key="audienceID"
                 :id="audienceID + 1"
                 :audience="audience"
@@ -95,6 +95,13 @@
                         : 'pb-2',
                 ]"
             />
+        </div>
+
+        <div
+            v-if="showDiscuss"
+            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
+        >
+            <discuss-component @close="showDiscuss = false" />
         </div>
 
         <div class="flex flex-col px-4 gap-4">
@@ -125,7 +132,7 @@
 
             <div class="w-full flex flex-col gap-6">
                 <scene-card
-                    v-for="(scene, sceneID) in story?.impactful_scenes"
+                    v-for="(scene, sceneID) in story.impactful_scenes"
                     :key="sceneID"
                     :scene="scene"
                 />
@@ -154,7 +161,6 @@ import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 
 import ImageComponent from '@/components/ImageComponent.vue'
-import DiscussComponent from '@/components/DiscussComponent.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
 import { Story } from '@/types/story'
