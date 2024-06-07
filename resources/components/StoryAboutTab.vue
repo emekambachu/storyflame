@@ -84,17 +84,14 @@
                 Target audience
             </h5>
 
+            <div class="flex flex-col gap-3">
             <target-audience-card
                 v-for="(audience, audienceID) in story.target_audience"
                 :key="audienceID"
-                :id="audienceID + 1"
-                :audience="audience"
-                :class="[
-                    audienceID !== 0
-                        ? 'border-t ${border-zinc-300} pt-2'
-                        : 'pb-2',
-                ]"
+                :card="audience"
+                
             />
+        </div>
         </div>
 
         <div

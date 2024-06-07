@@ -1,40 +1,43 @@
 <template>
-    <div
-        class="flex flex-col gap-2 items-start w-full rounded-lg p-3 bg-slate-200"
-    >
-        <div class="flex items-center justify-between w-full">
-            <h6 class="font-bold text-sm text-neutral-700">
-                {{ card.name }}
-            </h6>
-            <span class="font-normal text-sm text-neutral-700">
-                {{ card.role }}
-            </span>
-        </div>
+    <div class="flex flex-col gap-2 rounded-lg bg-stone-100 p-3">
+        <div class="flex w-full items-start justify-between">
+            <div class="flex flex-col gap-0.5">
+                <p
+                    v-if="card?.story || card?.episode"
+                    class="flex items-center gap-1 text-xs font-medium text-stone-500"
+                >
+                    {{ truncateTitle(card?.episode, 21) }}
+                    <point-icon v-if="card?.story && card?.episode" />
+                    {{ truncateTitle(card?.story, 21) }}
+                </p>
 
-        <div
-            v-if="card?.types?.length"
-            class="flex items-center gap-2"
-        >
-            <p
-                v-for="(type, typeID) in card.types"
-                :key="typeID"
-                class="font-normal text-sm text-neutral-400 flex gap-2 items-center"
-            >
-                <span v-if="typeID !== 0"><point-icon /></span>
-                {{ type }}
-            </p>
-        </div>
+                <h5 class="text-base font-bold text-stone-800">
+                    {{ card.title }}
+                </h5>
 
-        <p
-            v-if="card.description"
-            class="text-neutral-700 text-sm font-normal"
-        >
-            {{ card.description }}
-        </p>
+                <p
+                    v-if="card?.role || card?.type"
+                    class="flex items-center gap-1 text-xs font-medium text-stone-600"
+                >
+                    {{ card?.role }}
+                    <point-icon v-if="card?.role && card?.type" />
+                    {{ card?.type }}
+                </p>
+            </div>
+
+            <flame-icon
+                :priority="card.readiness"
+                class="!h-8 !w-8"
+                flameClass="w-6 h-6"
+            />
+        </div>
+        <hr class="w-full text-stone-500" />
+        <p class="text-sm text-stone-600">{{ card.description }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
+import FlameIcon from '@/components/icons/FlameIcon.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 
 const props = defineProps({
@@ -43,6 +46,16 @@ const props = defineProps({
         required: true,
     },
 })
+
+function truncateTitle(title: string, maxLength: number): string {
+    if (title) {
+        return title.length > maxLength
+            ? title.substring(0, maxLength - 3) + '...'
+            : title
+    } else {
+        return ''
+    }
+}
 </script>
 
 <style scoped></style>

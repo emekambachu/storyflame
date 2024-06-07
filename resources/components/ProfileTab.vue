@@ -66,7 +66,7 @@
                 <story-card
                     v-for="(story, storyID) in stories"
                     :key="storyID"
-                    :story="story"
+                    :card="story"
                 />
             </div>
             <router-link

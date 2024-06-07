@@ -1,33 +1,33 @@
 <template>
-    <div class="w-full flex flex-col pb-8">
+    <div class="flex w-full flex-col pb-8">
         <div
-            class="py-8 flex flex-col items-center px-4"
+            class="flex flex-col items-center px-4 py-8"
             :style="`background: linear-gradient(146deg, rgba(0, 0, 0, 0.00) 13.78%, rgba(0, 0, 0, 0.25) 87.57%), ${data.color};
         background-blend-mode: plus-darker, normal;`"
         >
             <image-component
                 :src="data.image.path"
                 alt="poster"
-                class="object-contain w-16 h-20 shrink-0"
+                class="h-20 w-16 shrink-0 object-contain"
             />
-            <span class="text-sm text-white opacity-50 mt-2">
+            <span class="mt-2 text-sm text-white opacity-50">
                 {{ data.type }}
             </span>
-            <h1 class="text-xl text-white font-bold mt-2">{{ data.title }}</h1>
-            <p class="text-sm text-white opacity-50 mt-2 mb-4">
+            <h1 class="mt-2 text-xl font-bold text-white">{{ data.title }}</h1>
+            <p class="mb-4 mt-2 text-sm text-white opacity-50">
                 {{ data.subtitle }}
             </p>
 
-            <hr class="text-white opacity-50 w-full max-w-44 mb-4" />
+            <hr class="mb-4 w-full max-w-44 text-white opacity-50" />
 
-            <div class="flex items-start justify-between w-full">
+            <div class="flex w-full items-start justify-between">
                 <div
                     v-for="(item, itemID) in itemsArray"
                     :key="itemID"
-                    class="flex flex-col items-center w-full max-w-20"
+                    class="flex w-full max-w-20 flex-col items-center"
                 >
                     <div
-                        class="rounded-full w-10 h-10 shrink-0 flex items-center justify-center"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                         style="background: rgba(255, 255, 255, 0.3)"
                     >
                         <component
@@ -35,11 +35,11 @@
                             class="text-white"
                         />
                     </div>
-                    <h6 class="text-base text-white font-bold mt-2">
+                    <h6 class="mt-2 text-base font-bold text-white">
                         {{ item.value }}
                     </h6>
                     <span
-                        class="text-white text-xs font-semibold capitalize opacity-50"
+                        class="text-xs font-semibold capitalize text-white opacity-50"
                     >
                         {{ item.title }}
                     </span>
@@ -47,16 +47,16 @@
             </div>
         </div>
 
-        <div class="w-full flex flex-col gap-2 bg-slate-100">
+        <div class="flex w-full flex-col gap-2 bg-slate-100">
             <div class="bg-white p-4">
-                <p class="text-center text-stone-950 text-lg max-w-[95%]">
+                <p class="max-w-[95%] text-center text-lg text-stone-950">
                     {{ data.description }}
                 </p>
             </div>
 
-            <title-section class="!gap-2 p-4 bg-white">
+            <title-section class="!gap-2 bg-white p-4">
                 <template #title>
-                    <h4 class="text-lg text-black font-bold">
+                    <h4 class="text-lg font-bold text-black">
                         Developed in this achievement
                     </h4>
                     <p
@@ -69,7 +69,7 @@
                 </template>
             </title-section>
 
-            <title-section class="!gap-6 p-4 bg-white">
+            <title-section class="!gap-6 bg-white p-4">
                 <template #title>
                     <title-with-link
                         title="Clarify some discrepancies"
@@ -87,13 +87,13 @@
                 </div>
             </title-section>
 
-            <title-section class="!gap-2 p-4 bg-white">
+            <title-section class="!gap-2 bg-white p-4">
                 <template #title>
-                    <h4 class="text-lg text-black font-bold">
+                    <h4 class="text-lg font-bold text-black">
                         Impacted by this achievement
                     </h4>
                     <div
-                        class="flex items-center gap-2 w-full max-w-full overflow-scroll"
+                        class="flex w-full max-w-full items-center gap-2 overflow-scroll"
                     >
                         <button
                             v-for="(tab, tabID) in Object.values(data.impacted)"
@@ -103,7 +103,7 @@
                                     ? 'bg-stone-950 text-stone-100'
                                     : 'bg-stone-200 text-stone-700'
                             "
-                            class="text-sm p-2 rounded whitespace-nowrap"
+                            class="whitespace-nowrap rounded p-2 text-sm"
                             @click="selectedTabID = tabID"
                         >
                             {{ tab?.items?.length }} {{ tab.title }}
@@ -207,16 +207,19 @@ const data = {
             title: 'Characters',
             items: [
                 {
-                    role: 'Protagonist',
-                    name: 'Daenerys Targaryen',
-                    types: ['Helpless Sibling', 'Zero to Hero'],
+                    role: 'Main major',
+                    title: 'Daenerys Targaryen',
+                    type: 'Protagonist',
+
                     description:
                         'Gain independence and reclaim her ancestral throne.',
                 },
                 {
-                    role: 'Protagonist',
-                    name: 'Daenerys Targaryen',
-                    types: ['Helpless Sibling', 'Zero to Hero'],
+                    role: 'Main major',
+                    title: 'Daenerys Targaryen',
+                    type: 'Protagonist',
+                    story: 'Game of Thrones',
+                    episode: 'Episode: 12o3j sdofijdsf woejwfo',
                     description:
                         'Gain independence and reclaim her ancestral throne.',
                 },

@@ -1,12 +1,12 @@
 <template>
     <div
-        :class="{
-            'bg-rose-50 text-red-600': priority == 1,
-            'bg-orange-50 text-amber-500': priority == 2,
-            'bg-amber-50 text-yellow-400': priority == 3,
-            'bg-slate-100 text-slate-300': priority == 4,
-        }"
-        class="p-1 shrink-0 rounded-full flex items-center justify-center"
+        :class="[{
+            'text-red-600': priority == 1,
+            'text-amber-500': priority == 2,
+            'text-yellow-400': priority == 3,
+            'text-slate-300': priority == 4,
+        },
+        `bg-white p-1 shrink-0 rounded-full flex items-center justify-center ${size}`]"
     >
         <svg
             class="shrink-0"
@@ -31,9 +31,13 @@ const props = defineProps({
         type: Number,
         default: 1,
     },
+    size: {
+        type: String,
+        default: 'w-8 h-8 ',
+    },
     flameClass: {
         type: String,
-        default: 'w-4 h-4 ',
+        default: 'w-6 h-6',
     },
 })
 </script>

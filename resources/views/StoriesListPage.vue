@@ -82,7 +82,7 @@
                         <story-card
                             v-for="story in stories"
                             :key="story.title"
-                            :story="story"
+                            :card="story"
                         />
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                         <story-card
                             v-for="story in stories"
                             :key="story.title"
-                            :story="story"
+                            :card="story"
                         />
                     </div>
                 </div>
@@ -140,7 +140,7 @@ const data = {
         {
             readiness: 1,
             image: {
-                path: 'https://picsum.photos/900',
+                path: null,
             },
             title: 'Hallo of Two Cities',
             type: 'Novel',

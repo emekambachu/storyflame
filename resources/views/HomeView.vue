@@ -1,13 +1,13 @@
 <template>
-    <div class="w-full min-h-dvh flex flex-col items-center">
-        <div class="w-full px-4 py-8 flex flex-col gap-3 bg-neutral-950">
-            <div class="w-full flex items-center justify-between">
+    <div class="flex min-h-dvh w-full flex-col items-center">
+        <div class="flex w-full flex-col gap-3 bg-neutral-950 px-4 py-8">
+            <div class="flex w-full items-center justify-between">
                 <logo-icon />
 
-                <div class="w-8 h-8 shrink-0 rounded-full bg-white"></div>
+                <div class="h-8 w-8 shrink-0 rounded-full bg-white"></div>
             </div>
 
-            <p class="font-medium text-sm text-slate-400 uppercase">
+            <p class="text-sm font-medium uppercase text-slate-400">
                 {{ data.smth }}
             </p>
 
@@ -23,12 +23,12 @@
         </div>
         <div
             v-if="showDiscuss"
-            class="px-4 pb-3 fixed bottom-0 right-0 left-0"
+            class="fixed bottom-0 left-0 right-0 px-4 pb-3"
         >
             <discuss-component @close="showDiscuss = false" />
         </div>
         <tab-layout
-            class="w-full !px-0 mt-5 !gap-0"
+            class="mt-5 w-full !gap-0 !px-0"
             tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
             tab-content-class="pb-6 w-full bg-white"
             :scrollToPageSection="true"
@@ -43,11 +43,11 @@
             <template #stories>
                 <title-section class="!gap-6 px-4 py-6">
                     <template #title>
-                        <h4 class="text-lg text-black font-bold">
+                        <h4 class="text-lg font-bold text-black">
                             Recent Stories
                         </h4>
                     </template>
-                    <div class="max-w-full w-full overflow-scroll flex gap-4">
+                    <div class="flex w-full max-w-full gap-4 overflow-scroll">
                         <recent-story-card
                             v-for="(story, storyID) in data.stories"
                             :key="storyID"
@@ -66,27 +66,52 @@
                             title-class="text-lg text-black font-bold"
                         />
                     </template>
-                    <character-creation-card
-                        v-for="(character, characterID) in data.characters"
-                        :key="characterID"
-                        :card="character"
+                    <achievement-completed-card
+                        v-for="(
+                            achievement, achievementID
+                        ) in data.achievements_completed"
+                        :key="achievementID"
+                        :card="achievement"
+                    />
+                    <achievement-in-progress-card
+                        v-for="(
+                            achievement, achievementID
+                        ) in data.achievements_in_progress"
+                        :key="achievementID"
+                        :card="achievement"
                     />
                 </title-section>
             </template>
             <template #clarify>
-                <title-section class="!gap-6 px-4 py-6">
+                <title-section
+                    class="!gap-6 px-4 py-6"
+                    style="
+                        background: linear-gradient(
+                                180deg,
+                                rgba(0, 0, 0, 0) 0%,
+                                #000 100%
+                            ),
+                            linear-gradient(
+                                0deg,
+                                rgba(0, 0, 0, 0.3) 0%,
+                                rgba(0, 0, 0, 0.3) 100%
+                            ),
+                            linear-gradient(0deg, #404040 0%, #404040 100%),
+                            #fff;
+                    "
+                >
                     <template #title>
                         <title-with-link
                             title="Clarify discrepancies"
                             class="!p-0"
-                            title-class="text-lg text-black font-bold"
+                            title-class="text-lg text-white font-bold"
                         />
                     </template>
 
-                    <character-creation-card
-                        v-for="(character, characterID) in data.characters"
-                        :key="characterID"
-                        :card="character"
+                    <discrepancies-card
+                        v-for="(card, cardID) in data.discrepancies"
+                        :key="cardID"
+                        :card="card"
                     />
                 </title-section>
             </template>
@@ -99,29 +124,36 @@
                             class="!p-0"
                             title-class="text-lg text-black font-bold"
                         />
-                        <div class="flex items-center gap-3 w-full">
+                        <div
+                            class="flex w-full max-w-full items-center gap-3 overflow-scroll"
+                        >
                             <div
                                 v-for="(item, itemID) in createNew"
                                 :key="itemID"
-                                class="rounded-lg bg-stone-100 p-2 flex flex-col items-center text-center gap-1 w-full"
+                                class="flex w-full flex-col items-center gap-1 text-center"
                             >
-                                <span
-                                    class="text-stone-400 text-xs font-normal"
+                                <div
+                                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-stone-100 font-normal"
                                 >
-                                    New
-                                </span>
+                                    <component
+                                        :is="item?.icon"
+                                        class="text-stone-400"
+                                    />
+                                </div>
                                 <span
-                                    class="text-stone-600 text-xs font-semibold"
+                                    class="text-xs font-semibold text-stone-500"
                                 >
-                                    {{ item }}
+                                    {{ item.title }}
                                 </span>
                             </div>
                         </div>
-                        <hr class="text-stone-300 w-48 mx-auto my-1" />
-                        <character-creation-card
-                            v-for="(character, characterID) in data.characters"
-                            :key="characterID"
-                            :card="character"
+                        <hr class="mx-auto my-1 w-48 text-stone-300" />
+                        <achievement-in-progress-card
+                            v-for="(
+                                achievement, achievementID
+                            ) in data.achievements_in_progress"
+                            :key="achievementID"
+                            :card="achievement"
                         />
                     </template>
                 </title-section>
@@ -140,16 +172,23 @@
 import { ref } from 'vue'
 // import { useAuthStore } from '@/stores/auth'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
+import SeriesIcon from '@/components/icons/SeriesIcon.vue'
+import BookWithPlus from '@/components/icons/BookWithPlus.vue'
+import UserWithPlus from '@/components/icons/UserWithPlus.vue'
+import SequencesWithPlus from '@/components/icons/SequencesWithPlus.vue'
+
 import NewStoryCard from '@/components/cards/NewStoryCard.vue'
 import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
+import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
+import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
+import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
+import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import DiscussComponent from '@/components/DiscussComponent.vue'
-import CharacterCreationCard from '@/components/cards/CharacterCreationCard.vue'
 import HomeStatisticComponent from '@/components/HomeStatisticComponent.vue'
-import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
 
 // const appName = import.meta.env.VITE_APP_NAME
 
@@ -157,9 +196,30 @@ import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vu
 
 const showDiscuss = ref(true)
 
-const createNew = ['Story', 'Character', 'Sequence']
+const createNew = [
+    { icon: SeriesIcon, title: 'Series' },
+    { icon: BookWithPlus, title: 'Story' },
+    { icon: UserWithPlus, title: 'Character' },
+    { icon: SequencesWithPlus, title: 'Sequence' },
+]
 const data = {
     smth: '[something celebratory]',
+    discrepancies: [
+        {
+            story: 'Game of Thrones',
+            type: 'Plot',
+            title: 'Setting for the Climax',
+            description:
+                'We’re uncertain about how you want to handle the climax, is it in the future or in 1880’s Paris?',
+        },
+        {
+            story: 'Game of Thrones',
+            type: 'Plot',
+            title: 'Setting for the Climax',
+            description:
+                'We’re uncertain about how you want to handle the climax, is it in the future or in 1880’s Paris?',
+        },
+    ],
     stories: [
         {
             title: 'Game of Thrones',
@@ -237,22 +297,38 @@ const data = {
         { title: 'Up to next', value: 0 },
     ],
 
-    characters: [
+    achievements_in_progress: [
         {
+            icon: {
+                path: 'https://picsum.photos/90',
+            },
+            time: '5 min',
             percent: 20,
+            color: '#A516AD',
+
             story: 'Game of thrones',
-            role: 'Protagonist',
-            name: 'Daenerys Targaryen',
-            types: ['Helpless Sibling', 'Zero to Hero'],
-            description: 'Gain independence and reclaim her ancestral throne.',
+            subtitle: 'Meeting the Wizard',
+
+            title: 'Unexpected Decisions',
+            description:
+                'You established an unexpected twist that endears people towards Tyrion.',
         },
+    ],
+    achievements_completed: [
         {
-            percent: 80,
+            icon: {
+                path: 'https://picsum.photos/900',
+            },
+            date: '25 Apr',
+            percent: 20,
+            color: '#099AB1',
+
             story: 'Game of thrones',
-            role: 'Protagonist',
-            name: 'Daenerys Targaryen',
-            types: ['Helpless Sibling', 'Zero to Hero'],
-            description: 'Gain independence and reclaim her ancestral throne.',
+            subtitle: 'Meeting the Wizard',
+
+            title: 'Unexpected Decisions',
+            description:
+                'You established an unexpected twist that endears people towards Tyrion.',
         },
     ],
 }
