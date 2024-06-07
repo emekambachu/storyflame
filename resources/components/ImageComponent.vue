@@ -6,16 +6,18 @@
   />
   <div
     v-else
-    class="bg-slate-200 flex items-center justify-center"
+    class="bg-slate-300 flex items-center justify-center"
   >
-    <img
-      src="@/assets/images/no_image.png"
-      class="w-10 h-10"
+
+    <no-image
+      class="w-6 text-stone-400"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import NoImage from '@/components/icons/NoImage.vue'
+
 const props = defineProps({
   src: {
     type: String,

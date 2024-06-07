@@ -4,7 +4,7 @@
     >
         <div class="flex items-center w-full justify-between">
             <div class="flex flex-col items-start gap-0.5">
-                <span class="text-stone-500 text-xs font-semibold">
+                <span class="text-stone-500 text-[8px] font-bold uppercase">
                     {{ card?.type }}
                 </span>
                 <h6 class="font-bold text-sm text-stone-800">

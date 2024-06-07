@@ -1,70 +1,68 @@
 <template>
-    <router-link
-        v-slot="{ navigate }"
-        :to="{ name: 'story', params: { id: story.id } }"
-        custom
-    >
-        <button
-            class="flex w-full flex-col items-start gap-2.5 rounded-lg bg-slate-200 p-2.5"
-            @click="navigate"
+  <div
+    class="flex flex-col gap-3 items-start w-full rounded-lg p-2 bg-stone-100"
+  >
+    <div class="flex gap-2 w-full">
+      <image-component
+        :src="card?.image?.path"
+        alt="story"
+        class="rounded-lg object-cover w-[72px] h-[72px] shrink-0"
+      />
+
+      <div class="flex flex-col w-full gap-1 w-full">
+        <div class="flex items-center justify-between gap-1 w-full">
+        <h4 class="text-stone-950 text-base text-xl font-bold font-fjalla w-full">
+          {{ truncateTitle(card.title, 23) }}
+        </h4>
+
+        <flame-icon :priority="card.readiness" flame-class="w-6 h-6" />
+      </div>
+
+        <p
+          v-if="card?.type"
+          class="text-sm text-stone-700 font-normal"
         >
-            <div class="flex gap-2">
-                <image-component
-                    :src="story?.image?.path"
-                    alt="story"
-                    class="h-20 w-20 rounded-lg object-cover"
-                />
+          {{ card.type }}
+        </p>
 
-                <div class="flex w-full flex-col">
-                    <h4 class="text-base font-bold text-neutral-700">
-                        {{ truncateTitle(story.name, 18) }}
-                    </h4>
+        <div
+          v-if="card?.genres?.length"
+          class="flex gap-2 items-center max-w-full overflow-auto text-sm text-stone-500"
+        >
+          <template
+            v-for="(genre, genreID) in card.genres"
+            :key="genreID"
+          >
+            <point-icon v-if="genreID !== 0" />
 
-                    <p
-                        v-if="story?.type"
-                        class="mt-3.5 text-sm font-normal text-neutral-700"
-                    >
-                        {{ story.type }}
-                    </p>
-
-                    <div
-                        v-if="story?.genres?.length"
-                        class="flex max-w-full items-center gap-2 overflow-auto text-black opacity-50"
-                    >
-                        <template
-                            v-for="(genre, genreID) in story.genres"
-                            :key="genreID"
-                        >
-                            <point-icon v-if="genreID !== 0" />
-
-                            <p class="text-sm font-normal">
-                                {{ genre }}
-                            </p>
-                        </template>
-                    </div>
-                </div>
-            </div>
-
-            <p
-                v-if="story?.description"
-                class="text-sm font-normal text-neutral-700"
-            >
-                {{ truncateTitle(story.description, 145) }}
+            <p class="text-sm font-normal">
+              {{ genre }}
             </p>
-        </button>
-    </router-link>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <p
+      v-if="card?.description"
+      class="text-stone-700 text-sm font-normal"
+    >
+      {{ truncateTitle(card.description, 145) }}
+    </p>
+  </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import FlameIcon from '@/components/icons/FlameIcon.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 
 import ImageComponent from '@/components/ImageComponent.vue'
 
 const props = defineProps({
-    story: {
-        type: Object,
-        required: true,
-    },
+  card: {
+    type: Object,
+    required: true,
+  },
 })
 
 function truncateTitle(title: string | undefined, maxLength: number): string {
