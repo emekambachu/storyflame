@@ -1,37 +1,57 @@
 <template>
-    <div class="flex flex-col items-center gap-8 w-full">
+    <div
+        ref="comp"
+        class="flex w-full grow flex-col items-center gap-8"
+    >
         <div
             ref="header"
-            class="flex flex-col sticky -top-[1px] w-full bg-white z-10"
+            class="sticky -top-[1px] z-10 flex w-full flex-col bg-white"
         >
-            <div class="overflow-hidden">
-                <slot />
-            </div>
-            <div
-                ref="container"
-                class="flex flex-nowrap w-full max-w-full mx-auto overflow-x-scroll px-4"
-            >
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.template"
-                    :class="[
-                        activeTab == tab.template
-                            ? 'text-red-600 border-red-600'
-                            : 'text-neutral-500 border-neutral-300',
-                    ]"
-                    :data-key="tab.template"
-                    class="text-sm font-medium [&:not(:last-child)]:pr-5 [&:not(:first-child)]:pl-5 whitespace-nowrap select-none py-1 border-b"
-                    @click="handleTabClick(tab.template)"
+            <div class="relative">
+                <div
+                    v-if="!noAnimation"
+                    ref="headerContentHidden"
+                    class="opacity-0"
+                ></div>
+                <div
+                    ref="headerContent"
+                    :class="{
+                        'absolute bottom-0': !noAnimation,
+                    }"
+                    class="h-full w-full overflow-hidden"
                 >
-                    {{ tab.title }}
-                </button>
+                    <slot />
+                </div>
+            </div>
+            <div class="overflow-x-auto max-w-full mx-auto">
+                <div
+                    ref="container"
+                    class="z-10 flex w-full flex-nowrap px-4"
+                >
+                    <button
+                        v-for="tab in tabs"
+                        :key="tab.template"
+                        :class="[
+                            activeTab == tab.template
+                                ? 'border-red-600 text-red-600'
+                                : 'border-neutral-300 text-neutral-500',
+                        ]"
+                        :data-key="tab.template"
+                        class="select-none whitespace-nowrap border-b py-1 text-sm font-medium [&:not(:first-child)]:pl-5 [&:not(:last-child)]:pr-5"
+                        @click="handleTabClick(tab.template)"
+                    >
+                        {{ tab.title }}
+                    </button>
+                </div>
             </div>
         </div>
 
         <template v-if="!scrollToPageSection">
-            <slot :name="activeTab">
-                {{ activeTab }}
-            </slot>
+            <div class="grow w-full">
+                <slot :name="activeTab">
+                    {{ activeTab }}
+                </slot>
+            </div>
         </template>
 
         <div
@@ -40,9 +60,10 @@
         >
             <div
                 v-for="tab in tabs"
-                :key="tab.template"
                 :id="tab.template"
+                :key="tab.template"
                 :class="tabContentClass"
+                class="scroll-section"
             >
                 <slot :name="tab.template">
                     {{ tab.template }}
@@ -53,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, PropType, provide, ref, watch } from 'vue'
+import { onMounted, onUnmounted, PropType, provide, ref, watch } from 'vue'
 import { animate, scroll } from 'motion'
 
 const props = defineProps({
@@ -73,15 +94,26 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    animateTranslateY: {
-        type: String,
-        default: '150px',
-    }
+    headerHeight: {
+        type: [Number, String],
+        default: 400,
+    },
+    collapseHeaderHeight: {
+        type: [Number, String],
+        default: 100,
+    },
+    noAnimation: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const activeTab = ref(props.tabs[0].template)
 const container = ref<HTMLDivElement | undefined>(undefined)
+const comp = ref<HTMLDivElement | undefined>(undefined)
 const header = ref<HTMLDivElement | null>(null)
+const headerContent = ref<HTMLDivElement | null>(null)
+const headerContentHidden = ref<HTMLDivElement | null>(null)
 provide('activeTab', activeTab)
 
 watch(
@@ -104,28 +136,76 @@ watch(
 
 function handleTabClick(template: string) {
     if (props.scrollToPageSection) {
-        const tabContent = document.getElementById(template)
+        const tabContent = comp.value?.querySelector(`#${template}`)
         if (tabContent) {
-            tabContent.scrollIntoView({ behavior: 'smooth' })
+            window.scrollTo({
+                top: tabContent.offsetTop - header.value?.clientHeight,
+                behavior: 'smooth',
+            })
         }
     } else {
         activeTab.value = template
     }
 }
 
+function onScroll(event: Event) {
+    const sections = comp.value?.querySelectorAll('.scroll-section')
+    if (!sections) return
+    const activeSection = Array.from(sections).find((section) => {
+        const sectionTop =
+            section.getBoundingClientRect().top - header.value?.clientHeight
+        return sectionTop <= 0 && sectionTop + section.clientHeight > 0
+    }) as HTMLElement
+    if (activeSection) {
+        activeTab.value = activeSection.id
+    }
+}
+
+onUnmounted(() => {
+    if (props.scrollToPageSection) {
+        document.removeEventListener('scroll', onScroll)
+    }
+})
+
 onMounted(() => {
-    scroll(
-        animate(header.value, {
-            translateY: ['0%', '-' + props.animateTranslateY],
-        }),
-        {
-            offset: ['start start', '150px'],
-        }
-    )
-    if (header.value) {
-        header.value.style.position = 'sticky'
-        header.value.style.top = '0'
-        header.value.style.zIndex = '10'
+    if (props.scrollToPageSection) {
+        document.addEventListener('scroll', onScroll)
+    }
+    if (!props.noAnimation) {
+        if (!header.value || !headerContent.value || !headerContentHidden.value)
+            return
+        headerContentHidden.value?.style.setProperty(
+            'height',
+            `${props.headerHeight}px`
+        )
+
+        const outerHeight = header.value?.getBoundingClientRect()
+        console.log(outerHeight)
+
+        scroll(
+            animate(header.value, {
+                translateY: [
+                    '0',
+                    `${+props.collapseHeaderHeight - +props.headerHeight}px`,
+                ],
+                easing: 'linear',
+            }),
+            {
+                offset: ['start start', `${+props.headerHeight / 2}px`],
+            }
+        )
+        scroll(
+            animate(headerContent.value, {
+                height: [
+                    `${props.headerHeight}px`,
+                    `${props.collapseHeaderHeight}px`,
+                ],
+                easing: 'linear',
+            }),
+            {
+                offset: ['start start', `${+props.headerHeight / 2}px`],
+            }
+        )
     }
 })
 </script>

@@ -86,10 +86,10 @@
 
             <div class="flex flex-col gap-3">
             <target-audience-card
-                v-for="(audience, audienceID) in story.target_audience"
+                v-for="(audience, audienceID) in story?.target_audience"
                 :key="audienceID"
                 :card="audience"
-                
+
             />
         </div>
         </div>
@@ -129,7 +129,7 @@
 
             <div class="w-full flex flex-col gap-6">
                 <scene-card
-                    v-for="(scene, sceneID) in story.impactful_scenes"
+                    v-for="(scene, sceneID) in story?.impactful_scenes"
                     :key="sceneID"
                     :scene="scene"
                 />
@@ -161,6 +161,7 @@ import ImageComponent from '@/components/ImageComponent.vue'
 
 import PointIcon from '@/components/icons/PointIcon.vue'
 import { Story } from '@/types/story'
+import DiscussComponent from '@/components/DiscussComponent.vue'
 
 const props = defineProps({
     story: {

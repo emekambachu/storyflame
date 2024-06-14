@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('stories', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->foreignUuid('user_id');
             $table->softDeletes();
             $table->timestamps();

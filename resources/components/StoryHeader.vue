@@ -7,18 +7,18 @@
                 ? `linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), url(${story.image.path}) lightgray 50% / cover no-repeat;`
                 : 'transparent'
         }`"
-        class="flex w-full flex-col gap-1.5 px-4 pt-16"
+        class="flex h-full w-full flex-col justify-end gap-1.5 px-4 pt-16"
     >
         <!--        <div class="flex flex-col gap-1.5 px-4">-->
         <span
             :class="story?.image?.path ? 'text-white' : 'text-black'"
-            class="animate-resize sticky animate-move text-sm font-normal opacity-70"
+            class="animate-resize animate-move sticky top-4 text-sm font-normal opacity-70"
         >
             {{ story?.format }}
         </span>
 
         <div
-            class="animate-move sticky flex w-full items-center justify-between"
+            class="animate-move sticky top-10 flex w-full items-center justify-between"
         >
             <h1
                 :class="story?.image?.path ? 'text-white' : 'text-black'"
@@ -89,10 +89,10 @@ onMounted(() => {
 
     scroll(
         animate(moveElements, {
-            translateY: [0, 140],
+            translateY: [0, 10],
         }),
         {
-            offset: ['start start', '150px'],
+            offset: ['start start', '300px'],
         }
     )
 
@@ -103,7 +103,7 @@ onMounted(() => {
             left: ['0%', '50%'],
         }),
         {
-            offset: ['start start', '150px'],
+            offset: ['start start', '300px'],
         }
     )
 })

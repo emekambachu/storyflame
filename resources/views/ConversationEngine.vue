@@ -143,6 +143,7 @@ import ListOption from '@/components/ListOption.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import { ChatMessage } from '@/types/chatMessage'
 import api from '@/utils/api'
+import axios from 'axios'
 
 const emit = defineEmits(['extract', 'finish'])
 
@@ -211,7 +212,8 @@ type ConversationData = {
 function extractData(answer: string | string[] | Blob) {
     console.log(answer)
     const formData = new FormData()
-    formData.append('identifier', _identifier.value)
+    formData.append('identifier', ''+_identifier.value)
+    console.log(_identifier.value)
     if (Array.isArray(answer)) {
         selectedOptions.value.forEach((option) => {
             formData.append('options[]', option)
@@ -229,6 +231,8 @@ function extractData(answer: string | string[] | Blob) {
     testInput.value = ''
     selectedOptions.value = []
 
+    // console.log(formData)
+    // return
     loading.value = true
     api.post<ConversationData>(props.endpoint, formData)
         .then((response) => {
@@ -252,6 +256,7 @@ onMounted(() => {
     })
         .then((response) => {
             _identifier.value = response.data.identifier
+            console.log(_identifier.value)
             progress.value = response.data.progress
             setMessage(response.data.question)
         })

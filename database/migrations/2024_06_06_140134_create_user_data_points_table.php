@@ -15,7 +15,8 @@ return new class extends Migration {
             $table->uuidMorphs('target');
 
             $table->json('data');
-            $table->text('summary');
+            $table->text('summary')->nullable();
+            $table->boolean('is_latest')->default(true);
 
             $table->softDeletes();
             $table->timestamps();

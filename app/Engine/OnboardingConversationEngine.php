@@ -23,7 +23,7 @@ class OnboardingConversationEngine extends ConversationEngine
 
     protected function getInitialTopic(): Achievement
     {
-        return Achievement::firstWhere('slug', 'writer-identity');
+        return Achievement::firstWhere('slug', 'writer_identity');
     }
 
 //    protected function getInitialQuestion(): ?string
@@ -47,7 +47,7 @@ class OnboardingConversationEngine extends ConversationEngine
 
     protected function onAnswerProcessed(ChatMessage $question, ChatMessage $answer)
     {
-        AchievementService::updateProgress(auth()->user(), $this->storage->getExtractedData());
+//        AchievementService::updateProgress(auth()->user(), $this->storage->getExtractedData());
     }
 
     public function withCacheStorage(?string $uuid = null): ConversationEngine
@@ -79,7 +79,7 @@ class OnboardingConversationEngine extends ConversationEngine
         ];
     }
 
-    protected function getEngineName(): string
+    public function getEngineName(): string
     {
         return 'onboarding';
     }
@@ -104,5 +104,10 @@ class OnboardingConversationEngine extends ConversationEngine
             'type' => 'system',
             'content' => 'finish'
         ]);
+    }
+
+    public function getStoragePrefix(): string
+    {
+        return 'onboarding_';
     }
 }

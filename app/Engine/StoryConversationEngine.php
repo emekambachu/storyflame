@@ -4,6 +4,7 @@ namespace App\Engine;
 
 use App\Engine\Storage\BaseStorage;
 use App\Engine\Storage\CacheStorage;
+use App\Engine\Storage\StorageInterface;
 use App\Engine\Storage\StoryDatabaseStorage;
 use App\Models\Achievement;
 use App\Models\ChatMessage;
@@ -13,21 +14,31 @@ use Illuminate\Support\Facades\Log;
 
 class StoryConversationEngine extends ConversationEngine
 {
+    public function onStorageSet(StorageInterface $storage)
+    {
+        if ($storage instanceof CacheStorage) {
+//            $this->setStorage(
+//                BaseStorage::make('story_' . )
+//            );
+        }
+    }
+
 
     protected function getInitialTopic(): Achievement
     {
-        return Achievement::firstWhere('slug', 'story-fundamentals');
+        return Achievement::firstWhere('slug', 'story_fundamentals');
     }
-
-//    protected function getInitialQuestion(): ?string
-//    {
-//        return 'What is your story about?';
-//    }
 
     protected function getElement(): string
     {
         return 'Story';
     }
+
+    public function getStoragePrefix(): string
+    {
+        return 'story_';
+    }
+
 
     protected function onAnswerProcessed(ChatMessage $question, ChatMessage $answer)
     {
@@ -51,7 +62,7 @@ class StoryConversationEngine extends ConversationEngine
         }
     }
 
-    protected function getEngineName(): string
+    public function getEngineName(): string
     {
         return 'story';
     }

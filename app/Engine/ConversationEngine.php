@@ -2,26 +2,42 @@
 
 namespace App\Engine;
 
+use App\Engine\Context\BaseContext;
+use App\Engine\Context\ContextInterface;
+use App\Engine\Processing\LocalPythonProcessing;
+use App\Engine\Processing\MockProcessing;
+use App\Engine\Processing\ProcessingInterface;
 use App\Engine\Storage\BaseStorage;
-use App\Engine\Storage\CacheStorage;
+use App\Engine\Storage\DatabaseStorage;
 use App\Engine\Storage\StorageInterface;
 use App\Jobs\DeepElementAnalysisJob;
 use App\Models\Achievement;
 use App\Models\ChatMessage;
 use App\Models\DataPoint;
-use App\Services\ProcessingService;
+use App\Services\AchievementService;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 abstract class ConversationEngine
 {
-    protected StorageInterface $storage;
+    protected DatabaseStorage $storage;
+    protected ProcessingInterface $processing;
 
-    public function __construct(
-        private string $element,
+    public final function __construct(
+        string|null $storageIdentifier = null
     )
     {
+        $this->processing = new LocalPythonProcessing();
+        if ($storageIdentifier === null)
+            $storageIdentifier = $this->getStoragePrefix();
+        else if (!str_starts_with($storageIdentifier, $this->getStoragePrefix()))
+            throw new Exception('Invalid storage identifier');
+        $this->storage = DatabaseStorage::make($storageIdentifier);
     }
+
+    public abstract function getStoragePrefix(): string;
 
     public function getProgress(): float
     {
@@ -60,37 +76,56 @@ abstract class ConversationEngine
     {
     }
 
-    public function onStorageSet(StorageInterface $storage)
+    public function onStorageSet(DatabaseStorage $storage)
     {
     }
 
-    public static function make(string $engine): self
+    public static function make(string $engine, string|null $storage = null): self
     {
         $engine = match ($engine) {
-            'stories' => new StoryConversationEngine($engine),
-            'onboarding' => new OnboardingConversationEngine($engine),
-            default => throw new \Exception('Engine not found'),
+            'stories' => new StoryConversationEngine($storage),
+            'onboarding' => new OnboardingConversationEngine($storage),
+            'Character' => new CharacterConversationEngine($storage),
+            default => throw new Exception('Engine not found'),
         };
         $engine->initializeEngine();
         return $engine;
     }
 
-    public function setStorage(StorageInterface $storage): static
+    /**
+     * @param DatabaseStorage $storage
+     * @return $this
+     * @deprecated sets automatically
+     */
+    public function setStorage(DatabaseStorage $storage): static
     {
         $this->storage = $storage;
         $this->onStorageSet($storage);
         return $this;
     }
 
+    /**
+     * @throws Exception if uuid is invalid
+     * @deprecated sets automatically
+     */
     public function withCacheStorage(string|null $uuid = null): self
     {
-        $this->setStorage(new CacheStorage($uuid));
+//        $this->setStorage(new CacheStorage($uuid));
         return $this;
     }
 
-    protected function rateAnswer(string $question, ChatMessage $answer): array
+    /**
+     * @throws Exception if responses are empty
+     */
+    public function withMockResponses(array $responses): self
     {
-        $rating = ProcessingService::rateResponse($question, $answer);
+        $this->processing = new MockProcessing($responses);
+        return $this;
+    }
+
+    protected function rateAnswer(ChatMessage $question, ChatMessage $answer): array
+    {
+        $rating = $this->processing->rateResponse($question->content, $answer->content);
         $answer->extra_attributes->set('rating', $rating);
         return $rating;
     }
@@ -99,6 +134,9 @@ abstract class ConversationEngine
     {
         $questions = $this->getQuestionHistory();
         $dataPoints = $question->extra_attributes->get('data_points', []);
+        if (empty($dataPoints)) {
+            return false;
+        }
 
         // count how many times data points have been asked
         $dataPointsCount = [];
@@ -132,7 +170,7 @@ abstract class ConversationEngine
 
     public function extract(ChatMessage $question, ChatMessage $answer): array
     {
-        return ProcessingService::extractData($question->content, $answer->content, $this->getGroupedTopics(
+        return $this->processing->extractData($question->content, $answer->content, $this->getGroupedTopics(
             except_data_points: array_keys($this->storage->getExtractedData())
         ));
     }
@@ -181,7 +219,7 @@ abstract class ConversationEngine
     {
         $currentBranch = $this->getCurrentBranch();
         if (!$currentBranch) {
-            throw new \Exception('No branch found');
+            throw new Exception('No branch found');
         }
         if ($currentBranch['name'] === 'main')
             $achievement = $this->getInitialTopic();
@@ -202,14 +240,14 @@ abstract class ConversationEngine
                     fn($branch) => $this->isTopicFinished(Achievement::firstWhere('slug', $branch['topic']))
                 )
             );
-            $nextTopic = Achievement::where('element', $this->getElement())
+            $nextTopic = $this->getTopics()
                 ->whereNotIn('slug', $finishedTopics)
                 ->get()
                 ->sort(fn($a, $b) => $a->totalImpactScore() <=> $b->totalImpactScore())
                 ->first();
 
             if (!$nextTopic) {
-                throw new \Exception('No more topics');
+                throw new Exception('No more topics');
             }
             $this->storage->setCurrentBranch($nextTopic);
             return $this->getAvailableDataPoints($nextTopic);
@@ -242,12 +280,11 @@ abstract class ConversationEngine
         );
     }
 
-    abstract protected function getEngineName(): string;
+    abstract public function getEngineName(): string;
 
     private function generateQuestion(ChatMessage $previousQuestion, ChatMessage $previousAnswer, array $dataPoints, string $type = 'basic'): ChatMessage
     {
-        $this->storage->push($previousAnswer);
-        $next = ProcessingService::generateNextQuestion(
+        $next = $this->processing->generateNextQuestion(
             $this->getEngineName(),
             $this->getChatHistory(),
             $dataPoints,
@@ -365,30 +402,59 @@ abstract class ConversationEngine
         return null;
     }
 
+    /**
+     * Get all topics for the current element
+     * @return Builder
+     */
+    protected function getTopics(): Builder
+    {
+        return Achievement::query()->where('element', $this->getElement());
+    }
+
     private function getGroupedTopics(array $except_topics = [], array $except_data_points = []): array
     {
-        return Achievement::where('element', $this->getElement())
+        return $this->getTopics()
             ->whereNotIn('slug', $except_topics)
             ->with(['dataPoints'])
             ->get()
-            ->map(function (Achievement $topic) use ($except_data_points) {
-                return [
-                    'name' => $topic->slug,
-                    'title' => $topic->name,
-                    'description' => $topic->extraction_description,
-                    'data_points' => $topic->dataPoints
-                        ->filter(function (DataPoint $dataPoint) use ($except_data_points) {
-                            // only return data points that are not extracted for faster processing
-                            return !in_array($dataPoint->slug, $except_data_points);
-                        })
-                        ->map(function (DataPoint $dataPoint) {
-                            return $dataPoint->toProcessingArray();
-                        })
-                        ->values()
-                        ->toArray(),
-                ];
-            })
+            ->map
+            ->toProcessingArray($except_data_points)
             ->toArray();
+    }
+
+    /**
+     * @param string $content Question content
+     * @param string $title Question title
+     * @param array $dataPoints Data points slugs
+     * @param string $topic Achievement slug
+     * @param string|null $group Group name if any
+     * @param string $branch Branch name, default is 'main'
+     * @return ChatMessage
+     */
+    public function pushQuestion(string $content, string $title, array $dataPoints, string $topic, string $group = null, string $branch = 'main'): ChatMessage
+    {
+        $chatMessage = ChatMessage::make([
+            'id' => 'cache_' . Str::uuid(),
+            'type' => 'text',
+            'content' => $content,
+            'extra_attributes' => [
+                'title' => $title,
+                'topic' => $topic,
+                'data_points' => $dataPoints,
+                'group' => $group,
+                'branch' => $branch
+            ]
+        ]);
+        $this->pushMessageObject($chatMessage);
+        return $chatMessage;
+    }
+
+    public function pushMessageObject(ChatMessage $message): void
+    {
+        if ($this->processing instanceof MockProcessing) {
+            $this->processing->simulateDelay();
+        }
+        $this->storage->push($message);
     }
 
     private function generateFirstQuestion(): ChatMessage
@@ -397,12 +463,12 @@ abstract class ConversationEngine
         $topic = $this->getInitialTopic();
         if (!$initialQuestion) {
             // generate first question
-            throw new \Exception('Not implemented');
+            throw new Exception('Logic to generate first question not implemented yet');
         }
         $initialQuestion->extra_attributes->set('topic', $topic->slug);
         $initialQuestion->extra_attributes->set('branch', 'main');
 
-        $this->storage->push($initialQuestion);
+        $this->pushMessageObject($initialQuestion);
         $this->storage->setCurrentBranch($topic, 'main');
         return $initialQuestion;
     }
@@ -426,19 +492,25 @@ abstract class ConversationEngine
 
     private function processTextAnswer(ChatMessage $question, ChatMessage $answer): ChatMessage
     {
-        $rating = $this->rateAnswer($question->content, $answer);
+        $rating = $this->rateAnswer($question, $answer);
 
         // user did answer the question
         if ($rating['answer_rating']) {
             $extracted = $this->extract($question, $answer);
             $extracted = $this->onDataExtracted($answer, $extracted);
+            dump($extracted);
             $answer->extra_attributes->set('extracted', $extracted);
             $this->storage->saveExtractedData($extracted);
-            DeepElementAnalysisJob::dispatch($question->content, $answer->content, $this, $extracted)->afterResponse();
-
+            DeepElementAnalysisJob::dispatch(
+                $question,
+                $answer,
+                $this,
+                $extracted
+            );
 
             // if user want to change topic
             if ($rating['topic_change']) {
+                $this->pushMessageObject($answer);
                 return $this->changeTopic($question, $answer);
             }
 
@@ -446,12 +518,18 @@ abstract class ConversationEngine
             // generate next question
             // otherwise, skip or generate follow up
             if (count($extracted) !== 0) {
+                $this->pushMessageObject($answer);
                 if ($generated = $this->getNextPredefinedQuestion()) {
                     return $generated;
+                }
+                if ($queuedMessage = $this->storage->popQuestionQueue()) {
+                    return $queuedMessage;
                 }
                 return $this->generateNextQuestion($question, $answer);
             }
         }
+
+        $this->pushMessageObject($answer);
 
         if ($this->didAskedQuestionRecently($question)) {
             return $this->skipQuestion($question, $answer);
@@ -489,8 +567,17 @@ abstract class ConversationEngine
                     $this->setStorage(BaseStorage::make($item['to']));
                     break;
                 default:
-                    throw new \Exception('Not implemented ' . $item['type'] . ' type');
+                    throw new Exception('Not implemented ' . $item['type'] . ' type');
             }
+        }
+    }
+
+    protected function processConfirmSwitchElement(ChatMessage $question, ChatMessage $answer): ChatMessage
+    {
+        $positive = true;
+        if ($positive) {
+            $engine = ConversationEngine::make($question->extra_attributes->get('element'));
+            dd('here');
         }
     }
 
@@ -509,12 +596,14 @@ abstract class ConversationEngine
         $question = match ($question->type) {
             'text' => $this->processTextAnswer($question, $answer),
             'multiple_choice' => $this->processMultipleChoiceAnswer($question, $answer),
-            default => throw new \Exception('Not implemented ' . $question->type . ' type'),
+            'confirm_switch_element' => $this->processConfirmSwitchElement($question, $answer),
+            default => throw new Exception('Not implemented ' . $question->type . ' type'),
         };
 
-        $this->storage->push($question);
+        $this->pushMessageObject($question);
 
         $this->onAnswerProcessed($question, $answer);
+        $this->updateAchievementsProgress($this->storage->getExtractedData());
 
         return $question->content;
     }
@@ -526,16 +615,22 @@ abstract class ConversationEngine
 
     public function extractEverything(string $question, string $answer, array $except): array
     {
-        return ProcessingService::extractData(
-            $question,
-            $answer,
-            $this->getGroupedTopics(except_data_points: $except)
-        );
     }
 
-    public function getStorage(): StorageInterface
+    public function getStorage(): DatabaseStorage
     {
         return $this->storage;
+    }
+
+    public function getProcessing(): ProcessingInterface
+    {
+        return $this->processing;
+    }
+
+    public function setProcessing(ProcessingInterface $processing): static
+    {
+        $this->processing = $processing;
+        return $this;
     }
 
     /**
@@ -549,6 +644,16 @@ abstract class ConversationEngine
         return $extracted;
     }
 
+    protected function updateAchievementsProgress(array $extracted): void
+    {
+        AchievementService::updateProgress(
+            auth()->user(),
+            $extracted,
+            Achievement::where('element', $this->getElement())->get(),
+            auth()->user(),//todo: change target to the correct model
+        );
+    }
+
     protected function onAnswerProcessed(ChatMessage $question, ChatMessage $answer)
     {
     }
@@ -556,5 +661,18 @@ abstract class ConversationEngine
     protected function onTopicFinished(Achievement $achievement): ?ChatMessage
     {
         return null;
+    }
+
+    public function extractCategories(ChatMessage $question, ChatMessage $answer): array
+    {
+        return $this->processing->extractCategories(
+            $question->content,
+            $answer->content,
+        );
+    }
+
+    public function getContext(): ContextInterface
+    {
+        return BaseContext::make($this->storage->getModel());
     }
 }

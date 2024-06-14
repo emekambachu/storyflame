@@ -1,21 +1,27 @@
 <template>
-    <div class="flex flex-col gap-1 shrink-0">
-        <div class="w-fit h-fit relative">
+    <router-link
+        :to="{
+            name: 'story',
+            params: { story: story?.id ?? 'test' },
+        }"
+        class="flex shrink-0 flex-col gap-1"
+    >
+        <div class="relative h-fit w-fit">
             <image-component
                 :src="story.poster.path"
                 alt="poster"
-                class="rounded-lg object-cover w-24 h-24 shrink-0"
+                class="h-24 w-24 shrink-0 rounded-lg object-cover"
             />
-            <flame-icon class="absolute right-1 bottom-1" />
+            <flame-icon class="absolute bottom-1 right-1" />
         </div>
         <h4
             v-if="story.title"
-            class="text-xs font-fjalla text-stone-950"
+            class="font-fjalla text-xs text-stone-950"
         >
             {{ story.title }}
         </h4>
-        <p class="text-[8px] text-stone-800 font-inter">{{ story.episode }}</p>
-    </div>
+        <p class="font-inter text-[8px] text-stone-800">{{ story.episode }}</p>
+    </router-link>
 </template>
 
 <script lang="ts" setup>

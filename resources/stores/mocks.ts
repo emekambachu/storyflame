@@ -383,6 +383,19 @@ export const useMockStore = defineStore(
             {
                 name: 'Story mocks',
                 mocks: {
+                    'story conversation get': {
+                        url: '/api/v1/conversation/stories',
+                        method: 'GET',
+                        response: {
+                            identifier:
+                                'story_9c2ce7f0-2d47-46da-b84d-3ceee57cf2f6',
+                            question: {
+                                type: 'text',
+                                content: 'Mocked question',
+                                title: 'Mocked title',
+                            },
+                        },
+                    },
                     'story conversation': {
                         url: '/api/v1/conversation/stories',
                         method: 'POST',

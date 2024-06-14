@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\UserAchievementObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy(UserAchievementObserver::class)]
 class UserAchievement extends Model
 {
     use HasUuids, HasFactory;

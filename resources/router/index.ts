@@ -84,103 +84,125 @@ const router = createRouter({
         },
         {
             path: '/',
-            beforeEnter: [checkAuth, checkOnboarded],
+            beforeEnter: [checkAuth],
             children: [
                 {
                     path: '/profile',
                     name: 'profile',
                     component: () => import('../views/UserProfile.vue'),
-                },
-                {
-                    path: '/stories/new',
-                    name: 'new-story',
                     meta: {
                         transition: 'slide',
-                        back: 'profile',
+                        back: 'home',
                     },
-                    beforeEnter: checkAuth,
-                    component: () => import('../views/NewStory.vue'),
+                },
+                {
+                    path: 'stories/',
+                    children: [
+                        {
+                            path: '',
+                            name: 'stories',
+                            component: () =>
+                                import('../views/StoriesListPage.vue'),
+                        },
+                        {
+                            path: 'new',
+                            name: 'new-story',
+                            meta: {
+                                transition: 'slide',
+                            },
+                            beforeEnter: checkAuth,
+                            component: () => import('../views/NewStory.vue'),
+                        },
+                        {
+                            path: ':story/',
+                            children: [
+                                {
+                                    path: '',
+                                    name: 'story',
+                                    // beforeEnter: checkAuth,
+                                    component: () =>
+                                        import('../views/StoryView.vue'),
+                                    meta: {
+                                        transition: 'slide',
+                                    },
+                                },
+                                {
+                                    path: ':characters/',
+                                    children: [
+                                        {
+                                            path: ':character',
+                                            name: 'character',
+                                            // beforeEnter: checkAuth,
+                                            component: () =>
+                                                import('../views/CharacterView.vue'),
+                                        },
+                                    ]
+                                },
+
+                            ],
+                        },
+                        {
+                            path: 'sequences/:id',
+                            name: 'sequence',
+                            // beforeEnter: checkAuth,
+                            component: () =>
+                                import('../views/SequenceView.vue'),
+                        },
+                        {
+                            path: 'plots/:id',
+                            name: 'plot',
+                            // beforeEnter: checkAuth,
+                            component: () => import('../views/PlotView.vue'),
+                        },
+                        {
+                            path: '/themes/:id',
+                            name: 'theme',
+                            // beforeEnter: checkAuth,
+                            component: () => import('../views/ThemeView.vue'),
+                        },
+                        {
+                            path: '/audiences/:id',
+                            name: 'audience',
+                            // beforeEnter: checkAuth,
+                            component: () =>
+                                import('../views/TargetAudienceView.vue'),
+                        },
+                    ],
                 },
             ],
         },
         {
-            path: '/story/:id',
-            name: 'story',
+            path: '/achievement/:id',
+            name: 'achievement',
             // beforeEnter: checkAuth,
-            component: () => import('../views/StoryView.vue'),
-            meta: {
-                transition: 'slide',
-                back: 'profile',
-            },
+            component: () => import('../views/AchievementView.vue'),
         },
         {
-            path: '/sequence/:id',
-            name: 'sequence',
+            path: '/achievements',
+            name: 'achievements',
             // beforeEnter: checkAuth,
-            component: () => import('../views/SequenceView.vue'),
+            component: () => import('../views/AchievementsListPage.vue'),
         },
         {
-            path: '/plot/:id',
-			name: 'plot',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/PlotView.vue'),
-		},
-		{
-			path: '/theme/:id',
-			name: 'theme',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/ThemeView.vue'),
-		},
-		{
-			path: '/character/:id',
-			name: 'character',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/CharacterView.vue'),
-		},
+            path: '/characters',
+            name: 'characters',
+            // beforeEnter: checkAuth,
+            component: () => import('../views/CharacterListPage.vue'),
+        },
+        // {
+        // 	path: '/sequences',
+        // 	name: 'sequences',
+        // 	// beforeEnter: checkAuth,
+        // 	component: ()=> import('../views/SequencesListPage.vue')
+        // },
         {
-			path: '/target-audience/:id',
-			name: 'audience',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/TargetAudienceView.vue'),
-		},
+            path: '/themes',
+            name: 'themes',
+            // beforeEnter: checkAuth,
+            component: () => import('../views/ThemesListPage.vue'),
+        },
         {
-			path: '/achievement/:id',
-			name: 'achievement',
-			// beforeEnter: checkAuth,
-			component: () => import('../views/AchievementView.vue'),
-		},
-		{
-			path: '/achievements',
-			name: 'achievements',
-			// beforeEnter: checkAuth,
-			component: ()=> import('../views/AchievementsListPage.vue')
-		},
-		{
-			path: '/stories',
-			name: 'stories',
-			// beforeEnter: checkAuth,
-			component: ()=> import('../views/StoriesListPage.vue')
-		},
-		{
-			path: '/characters',
-			name: 'characters',
-			// beforeEnter: checkAuth,
-			component: ()=> import('../views/CharacterListPage.vue')
-		},
-		// {
-		// 	path: '/sequences',
-		// 	name: 'sequences',
-		// 	// beforeEnter: checkAuth,
-		// 	component: ()=> import('../views/SequencesListPage.vue')
-		// },
-		{
-			path: '/themes',
-			name: 'themes',
-			// beforeEnter: checkAuth,
-			component: ()=> import('../views/ThemesListPage.vue')
-		},
-		{
-			path: '/auth',
+            path: '/auth',
             redirect: '/auth/login',
             component: () => import('../views/AuthView.vue'),
             beforeEnter: checkGuest,

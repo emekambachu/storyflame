@@ -8,6 +8,8 @@ use App\Services\ProcessingService;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ExtractionTest extends TestCase
@@ -27,36 +29,36 @@ class ExtractionTest extends TestCase
 //                ]
 //            ]
 //        ],
-//        'Named & Unnamed Characters' => [
-//            'question' => "Describe your protagonist's primary motivation.",
-//            'response' => "Sarah wants to uncover the truth behind her endearing and strong father's disappearance.",
-//            'element' => 'Story',
-//            'assert' => [
-//                'protagonists-overarching-goal' => [
-//                    'rule' => ['required', 'string'],
-//                    'value' => "Sarah wants to uncover the truth behind her father's disappearance."
-//                ],
+       'Named & Unnamed Characters' => [
+           'question' => "Describe your protagonist's primary motivation.",
+           'response' => "Sarah wants to uncover the truth behind her endearing and strong father's disappearance.",
+           'element' => 'Story',
+           'assert' => [
+               'protagonists-overarching-goal' => [
+                   'rule' => ['required', 'string'],
+                   'value' => "Sarah wants to uncover the truth behind her father's disappearance."
+               ],
 //                'characters' => [
 //                    'rule' => ['required', 'array', 'size:2'],
 //                    'value' => ['Sarah', 'father']
 //                ]
-//            ]
-//        ],
-        'Inspiration and Genre' => [
-            'question' => 'What inspired you to write this story?',
-            'response' => "I've always been fascinated by the idea of a hidden world beneath our own. It's a contemporary fantasy with elements of mystery and romance.",
-            'element' => 'Story',
-            'assert' => [
-                'story-genres' => [
-                    'rule' => ['required', 'array', 'size:3'],
-                    'value' => ['fantasy', 'mystery', 'romance']
-                ],
-                'setting' => [
-                    'rule' => ['required', 'string'],
-                    'value' => 'hidden world beneath our own'
-                ]
-            ]
-        ],
+           ]
+       ],
+         'Inspiration and Genre' => [
+             'question' => 'What inspired you to write this story?',
+             'response' => "I've always been fascinated by the idea of a hidden world beneath our own. It's a contemporary fantasy with elements of mystery and romance.",
+             'element' => 'Story',
+             'assert' => [
+                 'genres' => [
+                     'rule' => ['required', 'array', 'size:3'],
+                     'value' => ['fantasy', 'mystery', 'romance']
+                 ],
+                 'setting' => [
+                     'rule' => ['required', 'string'],
+                     'value' => 'hidden world beneath our own'
+                 ]
+             ]
+         ],
 //        'Character Intro and Conflict' => [
 //            'question' => 'Tell us about your favorite characters.',
 //            'response' => "Well, there's Liza, she's a young journalist, and she stumbles upon a secret society of magic users. She must learning about this new world, and as she does, she uncovers a plot that threatens both realms.",
@@ -193,10 +195,8 @@ class ExtractionTest extends TestCase
         return $similarity >= 70;
     }
 
-    /**
-     * @group extraction
-     * @return void
-     */
+    #[Test]
+    #[Group("extraction")]
     public function test_extractor_extracts_parameters()
     {
         $asserts = [];

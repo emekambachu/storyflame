@@ -7,6 +7,8 @@
     >
         <div class="flex flex-col gap-6 pb-6">
             <tab-layout
+                header-height="300"
+                collapse-header-height="100"
                 :tabs="[
                     {
                         title: 'About',
@@ -79,7 +81,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { getStory } from '@/utils/endpoints'
 
 const route = useRoute()
-const storyId = computed(() => route.params.id)
+const storyId = computed(() => route.params.story)
 
 const { data: story } = useQuery({
     queryKey: ['story', storyId.value],

@@ -1,14 +1,15 @@
 <template>
-    <div
-        class="mx-auto flex min-h-screen w-full max-w-md flex-col items-center pb-24"
-    >
-        <!--            <button class="text-orange-500 mr-0 ml-auto">Edit</button>-->
+    <page-navigation-layout fixed transparent>
         <div
-            v-if="user"
-            class="flex w-full flex-col items-center gap-8"
+            class="mx-auto flex h-full grow w-full max-w-md flex-col items-center"
         >
-            <tab-layout
-                :tabs="[
+            <!--            <button class="text-orange-500 mr-0 ml-auto">Edit</button>-->
+            <div
+                v-if="user"
+                class="flex w-full h-full grow flex-col items-center gap-8"
+            >
+                <tab-layout
+                    :tabs="[
                     {
                         title: 'My profile',
                         template: 'profile',
@@ -22,20 +23,23 @@
                         template: 'achievements',
                     },
                 ]"
-            >
-                <user-profile-header :user="user" />
-                <template #profile>
-                    <profile-tab :user="user" />
-                </template>
-                <template #stories>
-                    <stories-tab :user="user" />
-                </template>
-                <template #achievements>
-                    <achievements-tab :achievements="user.achievements" />
-                </template>
-            </tab-layout>
+                    collapse-header-height="100"
+                    header-height="200"
+                >
+                    <user-profile-header :user="user" />
+                    <template #profile>
+                        <profile-tab :user="user" />
+                    </template>
+                    <template #stories>
+                        <stories-tab :user="user" />
+                    </template>
+                    <template #achievements>
+                        <achievements-tab :achievements="user.achievements" />
+                    </template>
+                </tab-layout>
+            </div>
         </div>
-    </div>
+    </page-navigation-layout>
 </template>
 
 <script lang="ts" setup>
@@ -46,6 +50,7 @@ import AchievementsTab from '@/components/AchievementsTab.vue'
 import TabLayout from '@/components/TabLayout.vue'
 import UserProfileHeader from '@/components/UserProfileHeader.vue'
 import { useAuthStore } from '@/stores/auth'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 
 const loading = ref(true)
 // const user = ref<User | null>(null)

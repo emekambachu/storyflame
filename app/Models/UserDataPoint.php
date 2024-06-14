@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\UserDataPointObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(UserDataPointObserver::class)]
 class UserDataPoint extends Model
 {
     use SoftDeletes, HasUuids, HasFactory;
@@ -19,6 +22,7 @@ class UserDataPoint extends Model
         'data_point_id',
         'target_type',
         'target_id',
+        'user_achievement_id',
         'data',
         'summary',
     ];

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -65,6 +66,11 @@ class User extends Authenticatable
         return $this->hasMany(Story::class);
     }
 
+    public function characters(): HasManyThrough
+    {
+        return $this->hasManyThrough(Character::class, Story::class);
+    }
+
     public function verificationCodes(): HasMany
     {
         return $this->hasMany(VerificationCode::class);
@@ -81,8 +87,21 @@ class User extends Authenticatable
 
     public function achievements(): BelongsToMany
     {
-        return $this->belongsToMany(Achievement::class, 'user_achievements')->withPivot([
-            'progress',
-        ]);
+        return $this
+            ->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot([
+                'progress',
+            ])
+            ->withTimestamps();
+    }
+
+    public function userAchievements(): HasMany
+    {
+        return $this->hasMany(UserAchievement::class);
+    }
+
+    public function dataPoints(): HasMany
+    {
+        return $this->hasMany(UserDataPoint::class);
     }
 }

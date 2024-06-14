@@ -61,6 +61,9 @@ def rate(request: DialogRequest):
 
 @router.post("/extract")
 def extract(request: ExtractionRequest, response: Response):
+
+
+    return dict()
     groups = request.groups
 
     print('Question:', request.question)

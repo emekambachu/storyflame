@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Achievement;
 use App\Models\DataPoint;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AchievementDataPointsSeeder extends Seeder
@@ -33,11 +32,19 @@ class AchievementDataPointsSeeder extends Seeder
                 $rowData[$columns[$key]] = $value;
             }
 
+            $example = $rowData['Extraction Example'];
+            if (empty($example))
+                $example = null;
+//            else if (!str_starts_with($example, '['))
+//                $example = '"' . $example . '"';
+
             $data[] = [
-                'slug' => Str::slug($rowData['Data Point']),
+                'slug' => Str::slug($rowData['Data Point'], '_'),
                 'achievement' => $rowData['Achievement Title'],
                 'category' => $rowData['Category'],
                 'name' => $rowData['Data Point'],
+                'type' => $rowData['Extraction Type'],
+                'example' => $example,
                 'development_order' => $rowData['Development Order'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Definition/Purpose'],

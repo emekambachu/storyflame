@@ -1,37 +1,6 @@
 <template>
-    <div class="flex min-h-dvh w-full flex-col items-center">
-        <div class="flex w-full flex-col gap-3 bg-neutral-950 px-4 py-8">
-            <div class="flex w-full items-center justify-between">
-                <logo-icon />
-
-                <div class="h-8 w-8 shrink-0 rounded-full bg-white"></div>
-            </div>
-
-            <p class="text-sm font-medium uppercase text-slate-400">
-                {{ data.smth }}
-            </p>
-
-            <div class="flex items-center justify-between gap-3">
-                <achievement-summary-card
-                    value-class="text-sm text-pure-white font-bold"
-                    card-class="flex flex-col gap-2 p-2 rounded-lg bg-neutral-800 w-full max-w-28"
-                    v-for="(card, cardID) in data.achievements_summary"
-                    :key="cardID"
-                    :item="card"
-                />
-            </div>
-        </div>
-        <div
-            v-if="showDiscuss"
-            class="fixed bottom-0 left-0 right-0 px-4 pb-3"
-        >
-            <discuss-component @close="showDiscuss = false" />
-        </div>
+    <div class="flex w-full flex-col items-center">
         <tab-layout
-            class="mt-5 w-full !gap-0 !px-0"
-            tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
-            tab-content-class="pb-6 w-full bg-white"
-            :scrollToPageSection="true"
             :tabs="[
                 { title: 'Progress', template: 'stories' },
                 { title: 'Continue', template: 'continue' },
@@ -39,7 +8,36 @@
                 { title: 'New', template: 'new' },
                 { title: 'Transcripts', template: 'transcripts' },
             ]"
+            class="!gap-0"
+            no-animation
+            scroll-to-page-section
+            tab-content-class="pb-6 w-full bg-white"
+            tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
         >
+            <div class="flex w-full flex-col gap-3 bg-neutral-950 px-4 py-8">
+                <div class="flex w-full items-center justify-between">
+                    <logo-icon />
+
+                    <router-link :to="{
+                        name: 'profile',
+
+                    }" class="h-8 w-8 shrink-0 rounded-full bg-white"></router-link>
+                </div>
+
+                <p class="text-sm font-medium uppercase text-slate-400">
+                    {{ data.smth }}
+                </p>
+
+                <div class="flex items-center justify-between gap-3">
+                    <achievement-summary-card
+                        v-for="(card, cardID) in data.achievements_summary"
+                        :key="cardID"
+                        :item="card"
+                        card-class="flex flex-col gap-2 p-2 rounded-lg bg-neutral-800 w-full max-w-28"
+                        value-class="text-sm text-pure-white font-bold"
+                    />
+                </div>
+            </div>
             <template #stories>
                 <title-section class="!gap-6 px-4 py-6">
                     <template #title>
@@ -61,8 +59,8 @@
                 <title-section class="!gap-6 px-4 py-6">
                     <template #title>
                         <title-with-link
-                            title="Continue where you left off"
                             class="!p-0"
+                            title="Continue where you left off"
                             title-class="text-lg text-black font-bold"
                         />
                     </template>
@@ -102,8 +100,8 @@
                 >
                     <template #title>
                         <title-with-link
-                            title="Clarify discrepancies"
                             class="!p-0"
+                            title="Clarify discrepancies"
                             title-class="text-lg text-white font-bold"
                         />
                     </template>
@@ -120,8 +118,8 @@
                 <title-section class="!gap-6 px-4 py-6">
                     <template #title>
                         <title-with-link
-                            title="Starting Something New"
                             class="!p-0"
+                            title="Starting Something New"
                             title-class="text-lg text-black font-bold"
                         />
                         <div
@@ -165,30 +163,34 @@
                 />
             </template>
         </tab-layout>
+        <!--        <div-->
+        <!--            v-if="showDiscuss"-->
+        <!--            class="fixed bottom-0 left-0 right-0 px-4 pb-3"-->
+        <!--        >-->
+        <!--            <discuss-component @close="showDiscuss = false" />-->
+        <!--        </div>-->
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 // import { useAuthStore } from '@/stores/auth'
-import LogoIcon from '@/components/icons/LogoIcon.vue'
 import SeriesIcon from '@/components/icons/SeriesIcon.vue'
 import BookWithPlus from '@/components/icons/BookWithPlus.vue'
 import UserWithPlus from '@/components/icons/UserWithPlus.vue'
 import SequencesWithPlus from '@/components/icons/SequencesWithPlus.vue'
 
-import NewStoryCard from '@/components/cards/NewStoryCard.vue'
-import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
-import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
-import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
-import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
-import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
-
 import TabLayout from '@/components/TabLayout.vue'
-import TitleSection from '@/components/TitleSection.vue'
-import TitleWithLink from '@/components/TitleWithLink.vue'
-import DiscussComponent from '@/components/DiscussComponent.vue'
+import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 import HomeStatisticComponent from '@/components/HomeStatisticComponent.vue'
+import TitleWithLink from '@/components/TitleWithLink.vue'
+import TitleSection from '@/components/TitleSection.vue'
+import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
+import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
+import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
+import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
+import LogoIcon from '@/components/icons/LogoIcon.vue'
+import NewStoryCard from '@/components/cards/NewStoryCard.vue'
 
 // const appName = import.meta.env.VITE_APP_NAME
 

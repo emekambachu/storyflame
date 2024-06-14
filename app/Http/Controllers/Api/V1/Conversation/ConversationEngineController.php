@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Conversation;
 
 use App\Engine\ConversationEngine;
+use App\Engine\ConversationEngineV2;
 use App\Engine\Storage\BaseStorage;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatMessageResource;
@@ -13,17 +14,17 @@ use Illuminate\Http\Request;
 
 class ConversationEngineController extends Controller
 {
-    public function successConversationResponse($message, ConversationEngine $engine): JsonResponse
+    public function successConversationResponse($message, ConversationEngineV2 $engine): JsonResponse
     {
         return $this->successResponse($message, [
             'identifier' => $engine->getIdentifier(),
             'question' => ChatMessageResource::make($engine->getLastQuestion()),
-            'progress' => $engine->getProgress(),
-            'data' => [
-                'extracted' => $engine->getStorage()->getExtractedData(),
-                'branches' => $engine->getStorage()->getBranches(),
-                'history' => $engine->getStorage()->getHistory(),
-            ],
+//            'progress' => $engine->getProgress(),
+//            'data' => [
+//                'extracted' => $engine->getStorage()->getExtractedData(),
+//                'branches' => $engine->getStorage()->getBranches(),
+//                'history' => $engine->getStorage()->getHistory(),
+//            ],
         ]);
     }
 
@@ -35,15 +36,7 @@ class ConversationEngineController extends Controller
         ]);
 
         // create new engine with session storage
-        $engine = ConversationEngine::make($engine);
-
-        if (isset($validated['identifier'])) {
-            $engine = $engine->setStorage(
-                BaseStorage::make($validated['identifier'])
-            );
-        } else {
-            $engine = $engine->withCacheStorage();
-        }
+        $engine = ConversationEngineV2::makeFromIdentifier($engine, $validated['identifier'] ?? null);
 
         return $this->successConversationResponse('New Conversation started', $engine);
     }
@@ -65,10 +58,7 @@ class ConversationEngineController extends Controller
             'audio' => ['nullable', 'file', 'mimes:mp4,wav,webm'],
         ]);
 
-        $engine = ConversationEngine::make($engine)
-            ->setStorage(
-                BaseStorage::make($validated['identifier'])
-            );
+        $engine = ConversationEngineV2::makeFromIdentifier($engine, $validated['identifier']);
 
         $engine->process($validated['message']);
 

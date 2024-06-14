@@ -12,35 +12,55 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ChatMessage extends Model
 {
-	use SoftDeletes, HasUuids, HasFactory, HasSchemalessAttributes;
+    use SoftDeletes, HasUuids, HasFactory, HasSchemalessAttributes;
 
-	protected $fillable = [
-		'type',
-		'user_id',
-		'chat_id',
-		'content',
-		'extra_attributes',
+    protected $fillable = [
+        'type',
+        'user_id',
+        'chat_id',
+        'content',
+        'extra_attributes',
         'created_at',
         'updated_at',
-	];
+    ];
 
-	public function scopeNotSystem($query)
-	{
-		return $query->where('type', '!=', 'system');
-	}
+    public function scopeNotSystem($query)
+    {
+        return $query->where('type', '!=', 'system');
+    }
 
-	public function user(): BelongsTo
-	{
-		return $this->belongsTo(User::class);
-	}
+    public function scopeFromAssistant($query)
+    {
+        return $query->whereNull('user_id');
+    }
 
-	public function voiceMessage(): HasOne
-	{
-		return $this->hasOne(ChatVoiceMessage::class);
-	}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function voiceMessage(): HasOne
+    {
+        return $this->hasOne(ChatVoiceMessage::class);
+    }
 
     public function chat(): BelongsTo
     {
         return $this->belongsTo(Chat::class);
+    }
+
+    public function achievement()
+    {
+        return $this->belongsToMany(Achievement::class, 'achievement_chat_message');
+    }
+
+    public function expectsConfirmation()
+    {
+        return str_starts_with($this->type, 'confirm');
+    }
+
+    public function dataPoints()
+    {
+        return $this->belongsToMany(DataPoint::class, 'chat_message_data_point');
     }
 }

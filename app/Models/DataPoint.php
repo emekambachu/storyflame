@@ -18,8 +18,13 @@ class DataPoint extends Model
         'development_order',
         'impact_score',
         'extraction_description',
+        'example',
         'purpose',
         'achievement_id',
+    ];
+
+    protected $casts = [
+        'example' => 'json',
     ];
 
     public function achievement(): BelongsTo
@@ -27,6 +32,10 @@ class DataPoint extends Model
         return $this->belongsTo(Achievement::class);
     }
 
+    /**
+     * Return a formatted array for processing
+     * @return array
+     */
     public function toProcessingArray(): array
     {
         return [

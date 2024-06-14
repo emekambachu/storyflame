@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 abstract class DatabaseStorage extends BaseStorage implements StorageInterface
 {
     public function __construct(
-        string $uid
+        string|null $uid
     )
     {
         $this->uid = $uid;
@@ -19,9 +19,25 @@ abstract class DatabaseStorage extends BaseStorage implements StorageInterface
             throw new \Exception('Invalid conversation id');
     }
 
+    public static function make(string $uid = null): DatabaseStorage
+    {
+        $explode = explode('_', $uid);
+        $type = $explode[0];
+        $id = $explode[1] ?? null;
+        if ($id === '')
+            $id = null;
+        return match ($type) {
+            'story' => new StoryDatabaseStorage($id),
+            'onboarding' => new OnboardingDatabaseStorage($id),
+            'character' => new CharacterDatabaseStorage($id),
+            default => throw new \Exception('Unexpected storage type'),
+        };
+    }
+
+
     abstract protected function getChat(): Chat;
 
-    abstract protected function getModel(): Model;
+    abstract public function getModel(): Model;
 
     abstract static protected function initFromCache(CacheStorage $storage): static;
 
@@ -87,14 +103,16 @@ abstract class DatabaseStorage extends BaseStorage implements StorageInterface
 
     public function getData(): array
     {
-        return $this->getChat()->extra_attributes?->toArray() ?? [
-            'user_id' => auth()->id(),
-            'messages' => [],
-            'extracted' => [],
-            'queue' => [],
-            'branches' => [],
-            'created_at' => now(),
-        ];
+        if ($this->getChat()->extra_attributes->isEmpty())
+            $this->setData([
+                'user_id' => auth()->id(),
+                'messages' => [],
+                'extracted' => [],
+                'queue' => [],
+                'branches' => [],
+                'created_at' => now(),
+            ]);
+        return $this->getChat()->extra_attributes?->toArray();
     }
 
     public function setData(array $data): void

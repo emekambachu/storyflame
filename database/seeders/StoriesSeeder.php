@@ -52,11 +52,11 @@ class StoriesSeeder extends Seeder
         $characterAchievements = Achievement::where('element', 'Character')
             ->get();
 
-        Story::factory(5, [
+        Story::factory(1, [
             'user_id' => $user->id,
         ])
             ->hasImages(1)
-            ->hasCharacters(10)
+            ->hasCharacters(5)
             ->create()
             ->each(function (Story $story) use ($characterAchievements, $storyAchievements) {
                 $storyAchievements->each(function (Achievement $achievement) use ($story) {

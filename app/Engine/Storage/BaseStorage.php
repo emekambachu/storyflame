@@ -3,6 +3,7 @@
 namespace App\Engine\Storage;
 
 use App\Models\Achievement;
+use App\Models\ChatMessage;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -117,6 +118,30 @@ abstract class BaseStorage implements StorageInterface
         $data['queue'] = $queue;
         $this->setData($data);
         return $item;
+    }
+
+    public function queueQuestion(array $message): int
+    {
+        $data = $this->getData();
+        if (!isset($data['messages_queue'])) {
+            $data['messages_queue'] = [];
+        }
+        $count = array_unshift($data['messages_queue'], $message); // Add to the end of the queue (FIFO)
+        $this->setData($data);
+        return $count;
+    }
+
+    public function popQuestionQueue(): ChatMessage|bool
+    {
+        $data = $this->getData();
+        $queue = $data['messages_queue'];
+        if (empty($queue)) {
+            return false;
+        }
+        $item = array_pop($queue); // Remove from the end of the queue (FIFO)
+        $data['messages_queue'] = $queue;
+        $this->setData($data);
+        return ChatMessage::make($item);
     }
 
     public function getExtractedData(): array

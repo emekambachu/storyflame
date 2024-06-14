@@ -15,7 +15,8 @@ return new class extends Migration {
             $table->string('name');
             $table->string('type')->default('text');
             $table->string('category');
-            $table->string('extraction_description')->nullable();
+            $table->text('extraction_description')->nullable();
+            $table->json('example')->nullable();
             $table->string('purpose');
 
             $table->unsignedSmallInteger('development_order');

@@ -9,12 +9,30 @@ class StoryDatabaseStorage extends DatabaseStorage
 {
     protected const IDENTIFIER_PREFIX = 'story_';
 
+    public function __construct(string|null $uid)
+    {
+        if ($uid && $uid !== '') {
+            $story = Story::findOrFail($uid);
+            if ($story->user_id !== auth()->id()) {
+                throw new \Exception('Invalid conversation id');
+            }
+        } else {
+            $story = Story::create([
+                'name' => null,
+                'user_id' => auth()->id(),
+            ]);
+            $uid = $story->id;
+        }
+        $this->model = $story;
+        parent::__construct($uid);
+    }
+
     private Story $model;
 
     protected function getChat(): Chat
     {
         $model = $this->getModel();
-        if ($chat = $model->chats()->where('type', 'story')->first()) {
+        if ($chat = $model->chats()->first()) {
             return $chat;
         }
 
@@ -24,7 +42,7 @@ class StoryDatabaseStorage extends DatabaseStorage
         ]);
     }
 
-    protected function getModel(): Story
+    public function getModel(): Story
     {
         if (!isset($this->model)) {
             $this->model = Story::findOrFail($this->uid);

@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->foreignUuid('story_id')->constrained()->cascadeOnDelete();
 
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->schemalessAttributes('extra_attributes');
 
             $table->softDeletes();

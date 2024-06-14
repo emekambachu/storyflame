@@ -16,7 +16,7 @@ return new class extends Migration {
 
             $table->string('slug')->after('id');
             $table->string('element')->after('name');
-            $table->string('extraction_description')->nullable()->after('element');
+            $table->text('extraction_description')->nullable()->after('element');
             $table->string('subtitle')->after('element');
             $table->string('purpose')->after('subtitle');
             $table->string('color')->after('purpose');

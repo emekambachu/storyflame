@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use App\Models\Alias;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasAliases
 {
@@ -15,7 +16,7 @@ trait HasAliases
         return 'name';
     }
 
-    public function aliases()
+    public function aliases(): MorphMany
     {
         return $this->morphMany(Alias::class, 'aliasable');
     }

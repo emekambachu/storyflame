@@ -48,6 +48,7 @@ const router = useRouter()
 const { setTransition } = usePagesStore()
 
 const backRoute = computed(() => {
+    if (!router.currentRoute.value.meta.back) return null
     return router
         .getRoutes()
         .find((route) => route.name === router.currentRoute.value.meta.back)
@@ -59,9 +60,13 @@ const backRouteTitle = computed(() => {
 
 function goBack() {
     setTransition('back')
-    router.push({
-        name: backRoute.value?.name ?? 'home',
-    })
+    if (backRoute.value) {
+        router.push({
+            name: backRoute.value?.name,
+        })
+    } else {
+        router.back()
+    }
 }
 </script>
 

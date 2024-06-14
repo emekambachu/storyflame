@@ -34,13 +34,13 @@ class AchievementsSeeder extends Seeder
 
             $data[] = [
                 'name' => $rowData['Achievement Title'],
-                'slug' => Str::slug($rowData['Achievement Title']),
+                'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'element' => $rowData['Element'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],
-                'icon' => 'temp.png',
+                'icon' => $rowData['Final Icon Image'] . '.png',
             ];
         }
 
@@ -49,6 +49,12 @@ class AchievementsSeeder extends Seeder
 
         // insert the data
         foreach ($data as $row) {
+            // check if image exists
+            if (!file_exists(public_path('images/achievements/' . $row['icon']))) {
+                throw new \Exception('Image not found: ' . $row['icon']);
+            }
+
+
             Achievement::create($row);
         }
 

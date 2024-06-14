@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Log;
 
 class ProcessingService
 {
-    protected static function getProcessingUrl()
+    public static function getProcessingUrl()
     {
         return config('app.processing_url');
     }
 
-    private static function sendRequest(string $method, string $uri, array $data = []): \Illuminate\Http\Client\Response
+    public static function sendRequest(string $method, string $uri, array $data = []): \Illuminate\Http\Client\Response
     {
         Log::info($uri, $data);
         $response = Http::$method(
@@ -33,7 +33,7 @@ class ProcessingService
         ])->json();
     }
 
-    private static function isValidData($value)
+    public static function isValidData($value)
     {
         return !empty($value) && !in_array(strtolower($value), ['no', 'none', 'nothing', 'n/a', 'n.a.', 'n.a', 'na']);
     }
