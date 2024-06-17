@@ -20,7 +20,7 @@ const pinia = createPinia().use(piniaPluginPersistedState)
 const logger = createLogger({
     enabled: true,
     level: import.meta.env.MODE === 'development' ? 'debug' : 'error',
-})
+});
 
 const app = createApp(App)
     .use(router)
@@ -28,7 +28,8 @@ const app = createApp(App)
     .use(pinia)
     .use(logger)
     .use(modalPlugin)
-    .use(VueMountable())
+    .use(VueMountable());
+
 
 axios.interceptors.response.use(
     (response) => {

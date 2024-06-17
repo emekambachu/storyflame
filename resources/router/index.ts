@@ -224,6 +224,15 @@ const router = createRouter({
             name: 'dashboard',
             component: () => import('../views/HomeView.vue'),
         },
+
+        {
+            path: '/admin/login',
+            name: 'admin-login',
+            component: () => import('../views/admin/pages/AdminLoginView.vue'),
+        },
+
+
+
         {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
