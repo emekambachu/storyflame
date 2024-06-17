@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Conversation;
 
-use App\Engine\ConversationEngine;
 use App\Engine\ConversationEngineV2;
-use App\Engine\Storage\BaseStorage;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatMessageResource;
-use App\Models\ChatMessage;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +15,7 @@ class ConversationEngineController extends Controller
     {
         return $this->successResponse($message, [
             'identifier' => $engine->getIdentifier(),
+            'endpoint' => $engine->getEndpoint(),
             'question' => ChatMessageResource::make($engine->getLastQuestion()),
 //            'progress' => $engine->getProgress(),
 //            'data' => [
@@ -36,7 +34,10 @@ class ConversationEngineController extends Controller
         ]);
 
         // create new engine with session storage
-        $engine = ConversationEngineV2::makeFromIdentifier($engine, $validated['identifier'] ?? null);
+        $engine = ConversationEngineV2::makeFromIdentifier(
+            $engine,
+            $validated['identifier'] ?? null
+        );
 
         return $this->successConversationResponse('New Conversation started', $engine);
     }

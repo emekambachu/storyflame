@@ -39,10 +39,10 @@ class DataPoint extends Model
     public function toProcessingArray(): array
     {
         return [
-            'name' => $this->slug,
-            'title' => $this->name,
+            'id' => $this->slug,
+            'name' => $this->name,
+            'extraction_description' => $this->extraction_description,
             'type' => $this->type ?? 'text',
-            'description' => $this->extraction_description,
         ];
     }
 }

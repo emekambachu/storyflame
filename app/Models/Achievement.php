@@ -42,9 +42,10 @@ class Achievement extends Model
     public function toProcessingArray(array $except_data_points = []): array
     {
         return [
-            'name' => $this->slug,
-            'title' => $this->name,
-            'description' => $this->extraction_description,
+            'id' => $this->slug,
+            'name' => $this->name,
+            'extraction_description' => $this->extraction_description,
+            'category' => $this->element,
             'data_points' => $this->dataPoints
                 ->filter(fn($data_point) => !in_array($data_point->slug, $except_data_points))
                 ->map

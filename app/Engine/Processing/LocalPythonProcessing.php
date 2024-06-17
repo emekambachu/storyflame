@@ -6,7 +6,7 @@ use App\Models\Concerns\ModelWithComparableNames;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class LocalPythonProcessing implements ProcessingInterface
+class LocalPythonProcessing extends BaseProcessing implements ProcessingInterface
 {
     public function getProcessingUrl()
     {
@@ -29,8 +29,7 @@ class LocalPythonProcessing implements ProcessingInterface
     public function rateResponse(string $question, string $answer): array
     {
         return $this->sendRequest('post', '/api/conversation/rate', [
-            'question' => $question,
-            'answer' => $answer
+            'current_context' => $this->context->getCurrentContext($question, $answer),
         ])->json();
     }
 
@@ -61,9 +60,8 @@ class LocalPythonProcessing implements ProcessingInterface
     {
         return $this->filterData(
             $this->sendRequest('post', '/api/conversation/extract', [
-                'question' => $question,
-                'answer' => $answer,
-                'groups' => $groups
+                'current_context' => $this->context->getCurrentContext($question, $answer),
+                'topic_data_points' => $groups
             ])->json()
         );
     }
@@ -72,8 +70,9 @@ class LocalPythonProcessing implements ProcessingInterface
     {
         return $this->sendRequest('post', '/api/conversation/next', [
             'engine' => $engine,
-            'chat_history' => $getChatHistory,
-            'available_data_points' => $availableDataPoints,
+            'current_context' => $this->context->getCurrentContext(),
+            'history' => $getChatHistory,
+            'achievements' => $availableDataPoints,
             'type' => $type
         ])->json();
     }
@@ -102,6 +101,23 @@ class LocalPythonProcessing implements ProcessingInterface
 
     public function getSimilarElement(array $elementData, array $relatedElements): ?ModelWithComparableNames
     {
-        // TODO: Implement getSimilarElement() method.
+        throw new \Exception('Not implemented');
+    }
+
+    public function generateContextSwitchQuestion(array $elements, array $history)
+    {
+        return $this->sendRequest('post', '/api/conversation/switch', [
+            'elements' => $elements,
+            'history' => $history
+        ])->json();
+    }
+
+    public function isPositiveConfirmation(string $question, string $answer, array|null $selectElements = null): array
+    {
+        return $this->sendRequest('post', '/api/conversation/confirm', [
+            'question' => $question,
+            'answer' => $answer,
+            'select_elements' => $selectElements
+        ])->json();
     }
 }

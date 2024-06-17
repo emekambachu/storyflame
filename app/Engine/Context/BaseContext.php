@@ -26,13 +26,26 @@ abstract class BaseContext implements ContextInterface
     protected EngineConfig $config;
 
     /**
-     * @param T $model
+     * @return class-string<T>|null
+     */
+    abstract function getContextClass(): ?string;
+
+    /**
+     * @param ModelWIthRelatedChats|null $model
      */
     public function __construct(
-        protected $model = null
+        protected ?Model $model = null
     )
     {
+        if (!$this->model) {
+            if ($c = $this->getContextClass()) {
+                $this->model = $c::create([
+                    'user_id' => auth()->id(),
+                ]);
+            }
+        }
     }
+
 
     public function getChat(): Chat
     {
@@ -74,11 +87,11 @@ abstract class BaseContext implements ContextInterface
     public static function make($model): BaseContext
     {
         return (match (get_class($model)) {
-            Story::class => new StoryContext(),
-            User::class => new UserContext(),
-            Character::class => new CharacterContext(),
+            Story::class => new StoryContext($model),
+            User::class => new UserContext($model),
+            Character::class => new CharacterContext($model),
             default => throw new Exception('Unknown model type ' . $model::class)
-        })->setModel($model);
+        });
     }
 
     public function withConfig(EngineConfig $config): static
@@ -90,7 +103,7 @@ abstract class BaseContext implements ContextInterface
     public function getElements(string $elementType): array
     {
         return match ($elementType) {
-            'Character' => $this->getCharacters(),
+            'Character' => $this->characters()->get()->all(),
             default => []
         };
     }
@@ -166,9 +179,11 @@ abstract class BaseContext implements ContextInterface
             foreach ($categoryElements as $elementData) {
                 // todo: add update logic
                 if ($newModel = $this->getSimilarElement($categoryType, $elementData)) {
-
-                } else
+//                    dd('update');
+                } else {
                     $newModel = $this->addElement($categoryType, $elementData, $answer);
+                    $newModel->chats()->save($this->getChat());
+                }
                 $innerElements = $elementData['elements'] ?? [];
                 unset($elementData['elements']);
                 // if there are inner elements,
@@ -305,8 +320,34 @@ abstract class BaseContext implements ContextInterface
 
     public function getIdentifier()
     {
-        return match (get_class($this->config)) {
-            StoryEngineConfig::class => 'stories',
-        } . '_' . $this->getModel()->id;
+        return $this->getModel()->id;
     }
+
+    protected abstract function getCurrentData(): array;
+
+    protected abstract function getContextName(): string;
+
+    protected abstract function getContextGoal(): string;
+
+    public function getCurrentContext(string|null $question = null, string|null $answer = null): array
+    {
+        $c = [
+            'processing_type' => 'live',
+            'conversation_mode' => 'development',
+            'focus' => [
+                'type' => $this->getElementName(),
+                'name' => $this->getContextName(),
+                'current_data' => $this->getCurrentData(),
+            ],
+            'goal' => $this->getContextGoal(),
+        ];
+        if ($question) {
+            $c['question_asked'] = $question;
+        }
+        if ($answer) {
+            $c['writer_response'] = $answer;
+        }
+        return $c;
+    }
+
 }

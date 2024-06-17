@@ -6,7 +6,7 @@ use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\DataPoint;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithTime;
 
-class MockProcessing implements ProcessingInterface
+class MockProcessing extends BaseProcessing implements ProcessingInterface
 {
     use InteractsWithTime;
 
@@ -17,6 +17,7 @@ class MockProcessing implements ProcessingInterface
     )
     {
         $this->setResponses($responses);
+        parent::__construct(null);
     }
 
     public static function make(array $responses = []): MockProcessing
@@ -24,12 +25,12 @@ class MockProcessing implements ProcessingInterface
         return new MockProcessing($responses);
     }
 
-    public function addResponse(string $key, array $response, array|null $filters = null, bool|null $persist = null): static
+    public function addResponse(string $key, array|\Closure $response, array|null $filters = null, bool|null $persist = null): static
     {
         // check if response should be saved as list
         // either by providing filters or persist flag
         // or response already exists
-        $is_list = $filters !== null || $persist !== null || isset($this->responses[$key]) || array_is_list($response);
+        $is_list = $filters !== null || $persist !== null || isset($this->responses[$key]);
 
         if ($is_list) {
             if (isset($this->responses[$key])) {
@@ -115,11 +116,17 @@ class MockProcessing implements ProcessingInterface
             throw new \Exception("Response key $key not found in mock responses");
         }
 
-        if (array_is_list($this->responses[$key])) {
+        if (!is_callable($this->responses[$key]) && array_is_list($this->responses[$key])) {
             return $this->getFilteredResponse($key, $attributes);
         }
 
-        return $this->responses[$key];
+        $this->saveUsage($key, [
+            'model' => 'mock',
+            'input_tokens' => rand(100, 10000),
+            'output_tokens' => rand(100, 10000)
+        ]);
+
+        return is_callable($this->responses[$key]) ? $this->responses[$key]($attributes) : $this->responses[$key];
     }
 
     /**
@@ -182,4 +189,15 @@ class MockProcessing implements ProcessingInterface
         }
         return null;
     }
+
+    public function generateContextSwitchQuestion(array $elements, array $history)
+    {
+        return $this->getResponse('generateContextSwitchQuestion', ['elements' => $elements, 'history' => $history]);
+    }
+
+    public function isPositiveConfirmation(string $question, string $answer, array|null $selectElements = null): array
+    {
+        return $this->getResponse('isPositiveConfirmation', ['question' => $question, 'answer' => $answer, 'selectElements' => $selectElements]);
+    }
+
 }

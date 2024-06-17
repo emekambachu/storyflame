@@ -4,16 +4,19 @@ namespace App\Models;
 
 use App\Models\Concerns\HasAchievements;
 use App\Models\Concerns\HasAliases;
+use App\Models\Concerns\HasRelatedChats;
 use App\Models\Concerns\ModelWithComparableNames;
+use App\Models\Concerns\ModelWithId;
+use App\Models\Concerns\ModelWIthRelatedChats;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Character extends Model implements ModelWithComparableNames
+class Character extends Model implements ModelWithComparableNames, ModelWIthRelatedChats, ModelWithId
 {
-    use SoftDeletes, HasUuids, HasFactory, HasAchievements, HasAliases;
+    use SoftDeletes, HasUuids, HasFactory, HasAchievements, HasAliases, HasRelatedChats;
 
     protected $fillable = [
         'story_id',

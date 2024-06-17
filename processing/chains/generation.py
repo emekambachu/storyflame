@@ -5,14 +5,24 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
+from processing.templates.next_question import onboarding_engine_prompt, story_engine_prompt, basic_question_task, \
+    followup_question_task, brainstorming_task
+
 
 class OnboardingResponse(BaseModel):
-    message: str = Field(
-        title="Message",
-        description="Encouragement message to provide to the user after they provide the information."
+    brief_affirming_summarizing_active_listening_statement: str = Field(
+        title="Brief Affirming Summarizing Active Listening Statement",
+        description="A brief, affirming, summarizing, and active listening statement to show understanding and "
+                    "encouragement to the user.",
     )
     question: str = Field(
-        title="Question", description="The question to ask the user to extract the data."
+        title="Question", description="The question to ask the user."
+    )
+    tooltip: str = Field(
+        title="Tooltip", description="A tooltip to provide additional information or context to the user."
+    )
+    examples: List[str] = Field(
+        title="Examples", description="Examples of the type of response expected from the user."
     )
 
 
@@ -22,39 +32,13 @@ class OnboardingResponseMultipleChoice(OnboardingResponse):
     )
 
 
-def onboarding_template():
-    return (
-        "You are a smart helper chatbot for a writing platform that engages the user in a conversation to extract "
-        "information about their writing interests and preferences for a writing platform"
-        " You need to craft a {task}"
-        "Inside of message field, you need to provide user your understanding of their answer to previous question."
-        "Great examples of message are: 'Nice, Star Wars. So, you like sci-fi.', 'I see, you like fantasy.', "
-        "'Interesting, you like to write about characters with superpowers.', etc."
-        "Good examples of questions are: 'What type of characters do you like to write about?', 'What's your "
-        "favorite genre?', etc."
-        "# Question: {question} "
-        "# User answer: {answer} "
-        "# Topics to ask next: {topics} "
-        "# Important instructions: message field should never include any questions. "
-        "{format_instructions}"
-    )
-
-
-def story_template():
-    return (
-        "You are a smart helper chatbot for a writing platform "
-        "that keeps an engaging dialog with the user to help them write a story"
-        " Use chat history to craft a {task} based on chat history."
-        "Inside of message field, you need to provide user your understanding of their message."
-        "Great examples of message are: 'Nice, Star Wars. So, you like sci-fi.', 'I see, you like fantasy.', "
-        "'Interesting, you like to write about characters with superpowers.', etc."
-        "Good examples of questions are: 'What type of characters do you like to write about?', 'What's your "
-        "favorite genre?', etc."
-        "# Chat history: {chat_history} "
-        "# Topics to ask next: {topics} "
-        "# Important instructions: message field should never include any questions. "
-        "{format_instructions}"
-    )
+def remap_response(response: dict):
+    return {
+        "title": response["brief_affirming_summarizing_active_listening_statement"],
+        "question": response["question"],
+        "tooltip": response["tooltip"],
+        "examples": response["examples"],
+    }
 
 
 def base_chain(engine: str, task: str, task_topics: str, multiple_choice: bool = False):
@@ -62,9 +46,9 @@ def base_chain(engine: str, task: str, task_topics: str, multiple_choice: bool =
         pydantic_object=OnboardingResponseMultipleChoice if multiple_choice else OnboardingResponse)
 
     if engine == 'onboarding':
-        template = onboarding_template()
+        template = onboarding_engine_prompt
     elif engine == 'story':
-        template = story_template()
+        template = story_engine_prompt
     else:
         raise ValueError("Invalid engine " + engine)
 
@@ -79,7 +63,7 @@ def base_chain(engine: str, task: str, task_topics: str, multiple_choice: bool =
 
     model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=1)
 
-    chain = prompt | model | parser
+    chain = prompt | model | parser | remap_response
 
     return chain
 
@@ -87,8 +71,7 @@ def base_chain(engine: str, task: str, task_topics: str, multiple_choice: bool =
 def generate_short_open_ended_question(engine: str):
     return base_chain(
         engine,
-        "short open ended question that is easy to understand based on chat that is easy to understand "
-        "history to get more information about provided topics.",
+        basic_question_task,
         "Topics to ask next"
     )
 
@@ -96,8 +79,7 @@ def generate_short_open_ended_question(engine: str):
 def generate_follow_up_question(engine: str):
     return base_chain(
         engine,
-        "follow-up question for the user to better understand the question they asked earlier, question should be "
-        "different from previous to help user think from different perspective.",
+        followup_question_task,
         "Topics discussed"
     )
 
@@ -105,8 +87,7 @@ def generate_follow_up_question(engine: str):
 def generate_brainstorming_question(engine: str):
     return base_chain(
         engine,
-        "brainstorming question to help the user think of new ideas about topics discussed earlier, question should "
-        "be different from previous to help user think from different perspective.",
+        brainstorming_task,
         "Topics discussed"
     )
 

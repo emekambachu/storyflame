@@ -56,11 +56,19 @@ class ChatMessage extends Model
 
     public function expectsConfirmation()
     {
-        return str_starts_with($this->type, 'confirm');
+        return str_starts_with($this->type, 'confirm_');
     }
 
     public function dataPoints()
     {
         return $this->belongsToMany(DataPoint::class, 'chat_message_data_point');
+    }
+
+    public function toProcessingArray()
+    {
+        return [
+            'agent' => $this->user_id ? 'user' : 'assistant',
+            'content' => $this->content,
+        ];
     }
 }

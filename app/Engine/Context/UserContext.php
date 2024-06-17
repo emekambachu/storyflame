@@ -3,19 +3,20 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\UserEngineConfig;
-use App\Models\Character;
-use App\Models\Story;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
  * @template-extends BaseContext<User>
  */
 class UserContext extends BaseContext implements ContextInterface
 {
+    function getContextClass(): ?string
+    {
+        return null;
+    }
+
+
     public function __construct($model = null)
     {
         parent::__construct($model);
@@ -62,5 +63,27 @@ class UserContext extends BaseContext implements ContextInterface
         }
     }
 
+    protected function getCurrentData(): array
+    {
+        return [
+            'Writer' => [
+                [
+                    'name' => $this->getModel()->name,
+                    'type' => 'Writer',
+                    'existing_data_points' => $this->getModel()
+                        ->dataPointsToArray()
+                ]
+            ]
+        ];
+    }
 
+    protected function getContextName(): string
+    {
+        return $this->getModel()->name;
+    }
+
+    protected function getContextGoal(): string
+    {
+        return 'Learn about the writer, and generally about their stories.';
+    }
 }
