@@ -142,6 +142,13 @@ const router = createRouter({
                             ],
                         },
                         {
+                            path: 'outline/:id',
+                            name: 'outline',
+                            // beforeEnter: checkAuth,
+                            component: () =>
+                                import('../views/SequenceView.vue'),
+                        },
+                        {
                             path: 'sequences/:id',
                             name: 'sequence',
                             // beforeEnter: checkAuth,

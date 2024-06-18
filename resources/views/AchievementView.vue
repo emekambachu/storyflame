@@ -230,7 +230,7 @@ const data = {
             items: [
                 {
                     number: 1,
-                    readiness: 1,
+                    progress: 40,
                     title: 'Red Wedding',
                     description:
                         'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
@@ -253,7 +253,7 @@ const data = {
             items: [
                 {
                     type: 'major',
-                    readiness: 2,
+                    progress: 80,
                     title: 'Power',
                     description:
                         'The quest for power and the lengths characters will go to attain and maintain it.',
