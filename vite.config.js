@@ -1,12 +1,16 @@
-import { defineConfig } from 'vite'
-import laravel from 'laravel-vite-plugin'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/assets/app.css', 'resources/app.ts'],
+            input: [
+                'resources/assets/app.css',
+                'resources/app.ts',
+                'resources/admin-app.ts',
+            ],
             refresh: false,
         }),
         vue({
@@ -33,6 +37,15 @@ export default defineConfig({
             // eslint-disable-next-line no-undef
             '@': resolve(__dirname, 'resources'),
             vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vue-components': ['./components/**/*.vue'],
+                },
+            },
         },
     },
 })

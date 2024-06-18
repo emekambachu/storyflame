@@ -52,10 +52,6 @@ class AdminLoginController extends Controller
         }
     }
 
-    use AuthenticatesUsers {
-        logout as performLogout;
-    }
-
     public function logout(): \Illuminate\Http\JsonResponse
     {
         try {

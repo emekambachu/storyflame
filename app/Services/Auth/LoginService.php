@@ -7,6 +7,7 @@ use App\Services\Base\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class LoginService
@@ -61,8 +62,13 @@ class LoginService
         if(Auth::guard('admin')->attempt($credentials)){
             // get Session
             $user = Auth::guard($webGuard)->user();
+
             // Get Token
-            $token = $user->createToken($request->email, [$apiGuard])->plainTextToken;
+            // Create Token with UUID
+            //$uuid = Str::uuid()->toString();
+            $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
+            $token = $user->createToken($request->email, [$apiGuard], $expiresAt)->plainTextToken;
+
             // Last login
             $queryBuilder->where('email', $request->email)->update([
                 'last_login' => Carbon::now()->format('Y-m-d h:i:s'),

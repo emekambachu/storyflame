@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -51,7 +52,7 @@ Route::group([
     });
 });
 
-
+Route::post('/admin/login', [AdminLoginController::class, 'adminLogin']);
 
 # fallback route
 Route::fallback(function () {

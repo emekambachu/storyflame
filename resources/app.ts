@@ -1,11 +1,11 @@
-import { createApp, provide } from 'vue'
-import App from './App.vue'
-import router from './router'
-import axios, { isAxiosError } from 'axios'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
-import { useAuthStore } from './stores/auth'
-import '@/assets/app.css'
+import { createApp, provide } from 'vue';
+import App from './App.vue';
+import router from './router';
+import axios, { isAxiosError } from 'axios';
+import { createPinia } from 'pinia';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
+import { useAuthStore } from './stores/auth';
+import '@/assets/app.css';
 import { createLogger } from 'vue-logger-plugin'
 import modalPlugin from '@/plugins/modalPlugin'
 import { VueMountable } from 'vue-mountable'
@@ -29,7 +29,6 @@ const app = createApp(App)
     .use(logger)
     .use(modalPlugin)
     .use(VueMountable());
-
 
 axios.interceptors.response.use(
     (response) => {
@@ -60,4 +59,4 @@ axios.interceptors.response.use(
     }
 )
 
-app.mount('body')
+app.mount('body');

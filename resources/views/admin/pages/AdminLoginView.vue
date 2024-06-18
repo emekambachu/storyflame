@@ -1,74 +1,115 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-    <!-- Page Wrapper -->
-    <div class="flex justify-center items-center my-auto">
+    <div class="flex items-center justify-center h-screen bg-stone-100">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold mb-6">Log In</h2>
 
-        <div class="card mt-5 rounded-lg p-5 lg:p-7 bg-sky-200">
-            <label class="block">
-                <span>Username:</span>
-                <span class="relative mt-1.5 flex">
-                <input class="form-input peer w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:z-10 hover:border-slate-400 focus:z-10 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Enter Username" type="text">
-                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                </span>
-              </span>
-            </label>
-            <label class="mt-4 block">
-                <span>Password:</span>
-                <span class="relative mt-1.5 flex">
-                <input class="form-input peer w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:z-10 hover:border-slate-400 focus:z-10 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" placeholder="Enter Password" type="password">
-                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                  </svg>
-                </span>
-              </span>
-            </label>
-            <div class="mt-4 flex items-center justify-between space-x-2">
-                <label class="inline-flex items-center space-x-2">
-                    <input class="form-checkbox is-basic size-5 rounded border-slate-400/70 checked:border-primary checked:bg-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:checked:border-accent dark:checked:bg-accent dark:hover:border-accent dark:focus:border-accent" type="checkbox">
-                    <span class="line-clamp-1">Remember me</span>
-                </label>
-                <a href="#" class="text-xs text-slate-400 transition-colors line-clamp-1 hover:text-slate-800 focus:text-slate-800 dark:text-navy-300 dark:hover:text-navy-100 dark:focus:text-navy-100">Forgot Password?</a>
-            </div>
-            <button class="btn mt-5 w-full bg-primary font-medium text-white focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-blue-950 hover:bg-blue-600 dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                Sign In
-            </button>
+<!--            <p class="text-red-500 text-xs italic" v-if="errors.value.error_message">-->
+<!--                {{ errors.value.error_message }}-->
+<!--            </p>-->
 
-<!--            <div class="mt-4 text-center text-xs+">-->
-<!--                <p class="line-clamp-1">-->
-<!--                    <span>Dont have Account?</span>-->
-
-<!--                    <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent" href="pages-singup-1.html">Create account</a>-->
-<!--                </p>-->
-<!--            </div>-->
-<!--            <div class="my-7 flex items-center space-x-3">-->
-<!--                <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>-->
-<!--                <p>OR</p>-->
-<!--                <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>-->
-<!--            </div>-->
-<!--            <div class="flex space-x-4">-->
-<!--                <button class="btn w-full space-x-3 border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">-->
-<!--                    <img class="size-5.5" src="images/logos/google.svg" alt="logo">-->
-<!--                    <span>Google</span>-->
-<!--                </button>-->
-<!--                <button class="btn w-full space-x-3 border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">-->
-<!--                    <img class="size-5.5" src="images/logos/github.svg" alt="logo">-->
-<!--                    <span>Github</span>-->
-<!--                </button>-->
-<!--            </div>-->
-
+            <form @submit.prevent="submitLogin">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-stone-100"
+                        type="email"
+                        placeholder="example@mail.com"
+                        v-model="form.email"
+                    />
+                    <p class="text-red-500 text-xs italic"
+                       v-if="errors?.value.email">
+                        {{ errors?.value.email }}
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-bold mb-2" for="password">
+                        Password
+                    </label>
+                    <input
+                        class="shadow bg-stone-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password"
+                        type="password"
+                        placeholder="Enter Password"
+                        v-model="form.password"
+                    />
+                    <p class="text-red-500 text-xs italic"
+                       v-if="errors?.value.password">
+                        {{ errors?.value.password }}
+                    </p>
+                    <a class="text-gray-700" href="">
+                        <p class="text-sm text-blue-500 hover:text-blue-800">Forgot Password?</p>
+                    </a>
+                </div>
+                <div class="flex items-center justify-center">
+                    <button
+                        class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline w-2/3"
+                        type="submit"
+                    >
+                        Login
+                    </button>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
+import axios from 'axios';
+import validationService from '@/utils/validation-service'
 
-</style>
+let errors = reactive({});
+const loading = ref(false);
+
+const form = reactive({
+    email: '',
+    password: '',
+});
+
+const submitLogin = async () => {
+
+    loading.value = false;
+    localStorage.removeItem("story-flame-admin");
+    validationService.deleteErrorsInObject(errors, null, true);
+
+    try {
+        const response = await axios.post('/api/admin/login', form,
+            {
+                headers: {"Accept": "application/json"}
+            });
+
+        if(response.data.success) {
+            // Store relevant user details in local storage
+            const user = {
+                name: response.data.user.first_name + ' ' + response.data.user.last_name,
+                email: response.data.user.email,
+                token: response.data.token,
+                authenticated: true,
+            };
+            // Store logged-in user in local storage
+            localStorage.setItem('story-flame-admin', JSON.stringify(user));
+
+            console.log(response.data.user);
+            window.location.href = '/admin/dashboard';
+        }
+
+    } catch (error) {
+        if (error?.response?.data?.success === false) {
+            if(error.response.data.server_error) {
+                console.log("Server error", error.response.data.error_message);
+                console.log("Server error", error.response.data.error_message);
+                errors.server_error = 'Oh oh, error occurred. please contact the admin';
+            }
+
+            if (error.response?.data?.errors) {
+                // if errors exist in response, check if it's an object and convert to array
+                errors = error.response?.data?.errors;
+                console.log("Errors", errors);
+            }
+        }
+    }
+
+}
+</script>

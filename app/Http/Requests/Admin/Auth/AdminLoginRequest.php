@@ -41,12 +41,11 @@ class AdminLoginRequest extends FormRequest
     }
 
     protected function failedValidation(Validator $validator){
-
         // return errors in json object/array
-        $message = $validator->errors()->all();
+        $message = $validator->errors()->messages();
         throw new HttpResponseException(response()->json([
             'success' => false,
             'errors' => $message
-        ]));
+        ], 401));
     }
 }
