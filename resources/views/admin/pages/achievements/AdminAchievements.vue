@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
+import AdminAchievementsForm from './AdminAchievementsForm.vue';
+
+const isSlideoverOpen = ref(false);
+
+const openSlideover = () => {
+    isSlideoverOpen.value = true;
+};
+
+const closeSlideover = () => {
+    isSlideoverOpen.value = false;
+};
 
 </script>
 
@@ -7,8 +18,17 @@ import { ref } from 'vue'
     <div>
         <div class="flex justify-between items-center mt-4">
             <h2 class="text-2xl font-bold">Achievements (36)</h2>
-            <button class="px-4 py-2 bg-black text-white rounded-full">Create new achievement</button>
+            <button @click="openSlideover" class="px-4 py-2 bg-black text-white rounded-full">Create new achievement</button>
         </div>
+
+        <AdminAchievementsForm :isOpen="isSlideoverOpen" @close="closeSlideover">
+<!--            <template v-slot:title>-->
+<!--                Slideover Title-->
+<!--            </template>-->
+<!--            <template v-slot:content>-->
+<!--                <p>Slideover content goes here.</p>-->
+<!--            </template>-->
+        </AdminAchievementsForm>
 
         <div class="relative overflow-x-auto mt-4">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -53,8 +73,11 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center flex">
-                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
+                    <td class="px-6 py-4 text-center">
+                        <div class="d-flex">
+                            <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span>
+                            <span class="mt-1">+3</span>
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
