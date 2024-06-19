@@ -22,6 +22,16 @@ const router = createRouter({
                     name: 'admin-achievements',
                     component: () => import('../views/admin/pages/achievements/AdminAchievements.vue'),
                 },
+                {
+                    path: 'data-points',
+                    name: 'admin-data-points',
+                    component: () => import('../views/admin/pages/data-points/AdminDataPoints.vue'),
+                },
+                {
+                    path: 'summaries',
+                    name: 'admin-summaries',
+                    component: () => import('../views/admin/pages/summaries/AdminSummaries.vue'),
+                },
             ],
         },
 

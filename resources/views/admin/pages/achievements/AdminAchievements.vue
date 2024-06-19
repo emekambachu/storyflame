@@ -53,8 +53,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
@@ -102,8 +102,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
@@ -151,8 +151,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
@@ -200,8 +200,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
@@ -249,8 +249,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
@@ -298,8 +298,8 @@ import { ref } from 'vue'
                         <p class="font-extrabold text-lg text-black">Achievement Name</p>
                         <p class="text-gray-400 text-md">ID: 123456</p>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="bg-stone-200 p-2 rounded-md text-black">Category</span> +3
+                    <td class="px-6 py-4 text-center flex">
+                        <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">Category</span> <span class="mt-2">+3</span>
                     </td>
                     <td class="px-6 py-4 text-center">
                         7
