@@ -20,7 +20,7 @@ const router = createRouter({
                 {
                     path: 'achievements',
                     name: 'admin-achievements',
-                    component: () => import('../views/admin/pages/AdminAchievements.vue'),
+                    component: () => import('../views/admin/pages/achievements/AdminAchievements.vue'),
                 },
             ],
         },
