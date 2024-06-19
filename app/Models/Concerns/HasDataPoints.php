@@ -3,13 +3,13 @@
 namespace App\Models\Concerns;
 
 use App\Models\UserDataPoint;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasDataPoints
 {
-    public function dataPoints(): HasMany
+    public function dataPoints(): MorphMany
     {
-        return $this->hasMany(UserDataPoint::class);
+        return $this->morphMany(UserDataPoint::class, 'target');
     }
 
     public function dataPointsToArray(): array

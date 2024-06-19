@@ -16,4 +16,6 @@ class StoryEngineConfig extends EngineConfig
     public const ELEMENT_NAME = 'Story';
 
     public const INITIAL_ACHIEVEMENT_SLUG = 'story_fundamentals';
+
+    public const ENDPOINT_KEY = 'stories';
 }

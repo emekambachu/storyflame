@@ -1,12 +1,17 @@
+import pprint
 from typing import Optional, List
 
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser, JsonOutputParser
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate, ChatPromptTemplate, SystemMessagePromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
+from processing.models.DynamicModel import DynamicModel
+from processing.parsing.xml_tag_parser import XMLOutputParser
 from processing.templates.next_question import onboarding_engine_prompt, story_engine_prompt, basic_question_task, \
-    followup_question_task, brainstorming_task
+    followup_question_task, brainstorming_task, onboarding_engine_system_message, story_engine_system_message, \
+    next_question_prompt
+from processing.types.Messages import Message
 
 
 class OnboardingResponse(BaseModel):
@@ -20,6 +25,9 @@ class OnboardingResponse(BaseModel):
     )
     tooltip: str = Field(
         title="Tooltip", description="A tooltip to provide additional information or context to the user."
+    )
+    data_points: List[str] = Field(
+        title="Data Points", description="Data points ids used to generate the question."
     )
     examples: List[str] = Field(
         title="Examples", description="Examples of the type of response expected from the user."
@@ -38,69 +46,78 @@ def remap_response(response: dict):
         "question": response["question"],
         "tooltip": response["tooltip"],
         "examples": response["examples"],
+        "data_points": response["data_points"],
     }
 
 
-def base_chain(engine: str, task: str, task_topics: str, multiple_choice: bool = False):
+def base_chain(engine: str, task: str, history: List[Message], multiple_choice: bool = False):
+    xml_parser = XMLOutputParser.from_tag("json_response")
     parser = JsonOutputParser(
         pydantic_object=OnboardingResponseMultipleChoice if multiple_choice else OnboardingResponse)
 
-    if engine == 'onboarding':
-        template = onboarding_engine_prompt
-    elif engine == 'story':
-        template = story_engine_prompt
+    if engine == 'Writer':
+        template = onboarding_engine_system_message
     else:
-        raise ValueError("Invalid engine " + engine)
+        template = story_engine_system_message
 
-    prompt = PromptTemplate(
-        template=template,
-        input_variables=["chat_history", "topics"],
-        partial_variables={
-            "task": task,
-            "format_instructions": parser.get_format_instructions(),
-        },
+    messages = [
+        ("user", template),
+        *[
+            ("user" if message.agent == "user" else "assistant", message.content)
+            for message in history[-10:]
+        ],
+        ("user", next_question_prompt)
+    ]
+    pprint.pprint(messages)
+
+    prompt = ChatPromptTemplate.from_messages(
+        messages
     )
 
-    model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=1)
+    prompt = prompt.partial(task=task)
+    prompt = prompt.partial(format_instructions=parser.get_format_instructions())
+    prompt.input_variables = ["topics"]
 
-    chain = prompt | model | parser | remap_response
+    model = DynamicModel.default_generation()
+
+    chain = prompt | model | xml_parser | parser | remap_response
 
     return chain
 
 
-def generate_short_open_ended_question(engine: str):
+def generate_short_open_ended_question(engine: str, history: List[Message]):
     return base_chain(
         engine,
         basic_question_task,
-        "Topics to ask next"
+        history
     )
 
 
-def generate_follow_up_question(engine: str):
+def generate_follow_up_question(engine: str, history: List[Message]):
     return base_chain(
         engine,
         followup_question_task,
-        "Topics discussed"
+        history
     )
 
 
-def generate_brainstorming_question(engine: str):
+def generate_brainstorming_question(engine: str, history: List[Message]):
     return base_chain(
         engine,
         brainstorming_task,
-        "Topics discussed"
+        history
     )
 
 
-def generate_next_question(engine: str, question_type: Optional[str]):
+def generate_next_question(engine: str, history: List[Message], question_type: Optional[str]):
     print(question_type)
     if not question_type or question_type == "basic":
-        return generate_short_open_ended_question(engine)
+        return generate_short_open_ended_question(engine, history)
     if question_type == "follow-up":
-        return generate_follow_up_question(engine)
+        return generate_follow_up_question(engine, history)
     if question_type == "brainstorm":
-        return generate_brainstorming_question(engine)
-    return generate_short_open_ended_question(engine)
+        return generate_brainstorming_question(engine, history)
+    return generate_short_open_ended_question(engine, history)
 
 
 def generate_title_chain():

@@ -13,5 +13,5 @@ class Achievement(BaseModel):
     id: str
     name: str
     category: str
-    applicable_elements: Optional[List[str]]
+    applicable_elements: Optional[List[str]] = None
     data_points: List[DataPoint]

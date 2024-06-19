@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Any, List
 
+from fastapi import Request
 from pydantic import BaseModel
 
 from processing.types.Messages import Message
@@ -20,7 +21,6 @@ class NextQuestionRequest(BaseRequest):
 
 
 class CategoryExtractionRequest(BaseRequest):
-    topic_data_points: List[Achievement]
     pass
 
 

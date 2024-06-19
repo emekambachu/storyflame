@@ -12,7 +12,8 @@ class DataObject(BaseModel):
 class ContextFocus(BaseModel):
     type: str
     name: str
-    current_data: Dict[str, List[DataObject]]
+    # current_data: List[Dict[str, List[DataObject]]]
+    current_data: dict
     pass
 
 
@@ -21,6 +22,6 @@ class CurrentContext(BaseModel):
     conversation_mode: str
     focus: ContextFocus
     goal: str
-    question_asked: Optional[str]
-    writer_response: Optional[str]
+    question_asked: Optional[str] = None
+    writer_response: Optional[str] = None
     pass

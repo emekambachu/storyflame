@@ -7,13 +7,16 @@ use App\Engine\Context\BaseContext;
 use App\Engine\Processing\BaseProcessing;
 use App\Engine\Processing\LocalPythonProcessing;
 use App\Engine\Processing\MockProcessing;
+use App\Jobs\DeepElementAnalysisJob;
 use App\Models\Achievement;
 use App\Models\Character;
 use App\Models\ChatMessage;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Story;
 use App\Models\User;
+use App\Models\UserDataPoint;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 final class ConversationEngineV2
 {
@@ -61,6 +64,7 @@ final class ConversationEngineV2
 
     public static function makeFromIdentifier(string $engine, string|null $identifier = null): ConversationEngineV2
     {
+        // get the class based on the engine
         $class = match ($engine) {
             'users', 'onboarding' => User::class,
             'stories' => Story::class,
@@ -68,10 +72,12 @@ final class ConversationEngineV2
             default => throw new \Exception('Invalid engine ' . $engine)
         };
 
+        // if the engine is user, we'll use the current user as the context
         if ($class === User::class) {
             $model = auth()->user();
         } else {
-            if ($identifier) {
+            // if the identifier is provided and its not 'new' then we'll find the model
+            if ($identifier && $identifier !== 'new') {
                 $model = $class::findOrFail($identifier);
             } else {
                 $model = new $class();
@@ -178,32 +184,59 @@ final class ConversationEngineV2
      */
     private function processBasicAnswer(ChatMessage $question, ChatMessage $answer): ChatMessage
     {
-        $extracted = $this->processing->extractData(
+        $extractCategories = $this->processing->extractCategories(
+            $question->content,
+            $answer->content,
+        );
+        Log::debug('extracted', $extractCategories);
+        if (!isset($extractCategories['categories'])) {
+            dd('implement no elements');
+        }
+        $otherElements = $this->context->saveOrUpdateElements($answer, $extractCategories['categories']);
+        Log::debug('other elements ct: ' . $otherElements->count());
+
+        $extractedData = $this->processing->extractData(
             $question->content,
             $answer->content,
             $this->context->getGroupedDataPoints()
         );
-        dump($extracted);
-        if (!isset($extracted['categories'])) {
-            dd('implement no elements');
+
+        $this->context->saveExtractedData(
+            $answer,
+            collect($extractedData)
+                ->flatMap(fn($data) => $data['data_points'])
+                ->filter(fn($item) => isset($item['data_point_id']) && isset($item['data_point_value']))
+                ->mapWithKeys(fn($item) => [$item['data_point_id'] => $item['data_point_value']])
+                ->toArray()
+        );
+
+        // if we have other categories extracted
+        // we'll extract all the data for them
+        // in background
+        if (count($otherElements)) {
+            DeepElementAnalysisJob::dispatch(
+                $otherElements->toArray(),
+                $this->processing,
+                $question,
+                $answer
+            );
         }
-        $otherElements = $this->context->saveOrUpdateElements($answer, $extracted['categories']);
-        dump('other elements', $otherElements->count());
 
         // if user mentioned some other elements
         // and config allows to switch engine
         if ($this->context->canSwitchEngine() && count($otherElements)) {
             // confirm if the user wants to switch to that context
+            // todo: remove this, it's for testing
             if ($otherElements->count() === 1) {
                 $this->setContext(BaseContext::make($otherElements->first()));
             } else {
-                dump('switch context');
+                Log::debug('switch context');
                 return $this->switchContext($otherElements);
             }
         } else {
             // if we have predefined question for the next question
             if ($predefined = $this->context->getNextPredefinedQuestion($question)) {
-                dd('predefined question');
+                Log::debug('predefined question', [$predefined->content]);
                 return $predefined;
             }
 
@@ -256,19 +289,19 @@ final class ConversationEngineV2
 
     private function processConversation(ChatMessage $question, ChatMessage $answer): ChatMessage
     {
-        dump($question->content, $answer->content);
+        Log::debug('qa', [$question->content, $answer->content]);
 
         $rating = $this->processing->rateResponse($question->content, $answer->content);
         $answer->extra_attributes->set('rating', $rating);
         $answer->save();
 
-        dump($rating);
+        Log::debug('rating', $rating);
 
-        if (isset($rating['is_skipped']) && $rating['is_skipped']) {
+        if (isset($rating['is_skipped']) && $rating['is_skipped'] > 0.7) {
             dd('implement skip');
-        } else if (isset($rating['we_dont_understand']) && $rating['we_dont_understand']) {
+        } else if (isset($rating['we_do_not_understand']) && $rating['we_do_not_understand'] > 0.7) {
             dd('implement we dont understand');
-        } else if (isset($rating['user_not_understand']) && $rating['user_not_understand']) {
+        } else if (isset($rating['user_does_not_understand']) && $rating['user_does_not_understand'] > 0.7) {
             $previousDataPoints = Achievement::whereHas('dataPoints', function ($query) use ($question) {
                 $query->whereIn('slug', $question->extra_attributes->get('data_points', []));
             })->get();
@@ -280,7 +313,7 @@ final class ConversationEngineV2
                     }
                 ])
             );
-        } else if (isset($rating['user_dont_know']) && $rating['user_dont_know']) {
+        } else if (isset($rating['user_does_not_know']) && $rating['user_does_not_know'] > 0.7) {
             $previousDataPoints = Achievement::whereHas('dataPoints', function ($query) use ($question) {
                 $query->whereIn('slug', $question->extra_attributes->get('data_points', []));
             })->get();
@@ -330,5 +363,20 @@ final class ConversationEngineV2
     public function getEndpoint()
     {
         return $this->context->getEndpointKey();
+    }
+
+    public function getProgress()
+    {
+        $achievement = $this->context->getCurrentAchievement();
+        $model = $this->context->getModel();
+        if (!$model || !$achievement || !$model->id) return 0;
+        $data_points_count = $achievement->dataPoints->count();
+        $user_data_points_count = UserDataPoint::where('user_id', auth()->id())
+            ->whereIn('data_point_id', $achievement->dataPoints->pluck('id'))
+            ->where('is_latest', true)
+            ->where('target_id', $model->id)
+            ->where('target_type', get_class($model))
+            ->count();
+        return $data_points_count > 0 ? ($user_data_points_count / $data_points_count) * 100 : 0;
     }
 }

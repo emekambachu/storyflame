@@ -27,4 +27,6 @@ class OnboardingEngineConfig extends EngineConfig
     public const ELEMENT_NAME = 'Writer';
 
     public const ALLOW_ACHIEVEMENT_SWITCH = false;
+
+    public const ENDPOINT_KEY = 'onboarding';
 }

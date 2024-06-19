@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('characters', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('story_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('story_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->string('name')->nullable();
             $table->schemalessAttributes('extra_attributes');

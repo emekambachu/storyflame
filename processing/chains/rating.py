@@ -3,12 +3,14 @@ from typing import List, Dict
 import langchain
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, validator
 
+from processing.models.DynamicModel import DynamicModel
+from processing.parsing.xml_tag_parser import XMLOutputParser
 from processing.templates.rating import answer_rating_template
 from processing.types.answer_rating import AnswerEvaluation
 
@@ -22,11 +24,13 @@ def rate_response_chain():
         input_variables=["current_context"],
     )
 
-    parser = PydanticToolsParser(tools=[AnswerEvaluation])
+    parser = PydanticOutputParser(pydantic_object=AnswerEvaluation)
+    xml_parser = XMLOutputParser.from_tag("json_response")
     # temperature=0 for deterministic outputs
-    model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0).bind_tools([AnswerEvaluation])
+    # model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0).bind_tools([AnswerEvaluation])
+    model = DynamicModel.default_rating()
 
-    chain = prompt | model | parser
+    chain = prompt | model | xml_parser | parser
 
     return chain
 

@@ -81,25 +81,23 @@ class StoryContext extends BaseContext implements ContextInterface
     protected function getCurrentData(): array
     {
         return [
-            [
-                'Story' => [
-                    [
-                        $this->getModel()
-                            ->dataPointsToArray()
-                    ]
-                ],
-                'Character' => [
-                    $this->characters()
-                        ->get()
-                        ->map(fn($item) => $item->dataPointsToArray())
+            'Story' => [
+                [
+                    $this->getModel()
+                        ->dataPointsToArray()
                 ]
+            ],
+            'Character' => [
+                $this->characters()
+                    ->get()
+                    ->map(fn($item) => $item->dataPointsToArray())
             ]
         ];
     }
 
     protected function getContextName(): string
     {
-        return $this->getModel()->name;
+        return $this->getModel()->name ?? 'New Story';
     }
 
     protected function getContextGoal(): string

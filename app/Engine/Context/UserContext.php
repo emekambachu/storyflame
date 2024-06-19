@@ -79,7 +79,7 @@ class UserContext extends BaseContext implements ContextInterface
 
     protected function getContextName(): string
     {
-        return $this->getModel()->name;
+        return $this->getModel()?->name ?? 'New Writer';
     }
 
     protected function getContextGoal(): string

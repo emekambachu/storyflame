@@ -14,4 +14,6 @@ class UserEngineConfig extends EngineConfig
     public const INITIAL_ACHIEVEMENT_SLUG = 'writer_identity';
 
     public const ELEMENT_NAME = 'Writer';
+
+    public const ENDPOINT_KEY = 'writer';
 }

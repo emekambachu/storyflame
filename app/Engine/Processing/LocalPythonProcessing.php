@@ -66,6 +66,15 @@ class LocalPythonProcessing extends BaseProcessing implements ProcessingInterfac
         );
     }
 
+    public function extractCategories(string $question, string $answer): array
+    {
+        return $this->filterData(
+            $this->sendRequest('post', '/api/conversation/categories/extract', [
+                'current_context' => $this->context->getCurrentContext($question, $answer),
+            ])->json()
+        );
+    }
+
     public function generateNextQuestion(string $engine, array $getChatHistory, array $availableDataPoints, $type = 'basic'): array
     {
         return $this->sendRequest('post', '/api/conversation/next', [
@@ -92,11 +101,6 @@ class LocalPythonProcessing extends BaseProcessing implements ProcessingInterfac
             'old_value' => $oldValue,
             'new_value' => $newValue
         ])->json();
-    }
-
-    public function extractCategories(string $question, string $answer): array
-    {
-        throw new \Exception('Not implemented');
     }
 
     public function getSimilarElement(array $elementData, array $relatedElements): ?ModelWithComparableNames

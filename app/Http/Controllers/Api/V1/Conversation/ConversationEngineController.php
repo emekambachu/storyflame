@@ -17,7 +17,7 @@ class ConversationEngineController extends Controller
             'identifier' => $engine->getIdentifier(),
             'endpoint' => $engine->getEndpoint(),
             'question' => ChatMessageResource::make($engine->getLastQuestion()),
-//            'progress' => $engine->getProgress(),
+            'progress' => $engine->getProgress(),
 //            'data' => [
 //                'extracted' => $engine->getStorage()->getExtractedData(),
 //                'branches' => $engine->getStorage()->getBranches(),
