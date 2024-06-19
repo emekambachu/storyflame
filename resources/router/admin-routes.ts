@@ -18,13 +18,12 @@ const router = createRouter({
             component: () => import('../views/admin/layouts/AdminLayout.vue'),
             children: [
                 {
-                    path: '/dashboard',
-                    name: 'admin-dashboard',
-                    component: () => import('../views/RegisterView.vue'),
+                    path: 'achievements',
+                    name: 'admin-achievements',
+                    component: () => import('../views/admin/pages/AdminAchievements.vue'),
                 },
             ],
         },
-
 
     ],
 });
