@@ -6,9 +6,10 @@
         transparent
     >
         <div class="flex flex-col gap-6 pb-6">
+            <!-- 
+                animate-translate-y="190px"
+                 -->
             <tab-layout
-                header-height="300"
-                collapse-header-height="100"
                 :tabs="[
                     {
                         title: 'About',
@@ -27,7 +28,11 @@
                         template: 'drafts',
                     },
                 ]"
-                animate-translate-y="190px"
+                :no-animation="true"
+                menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-4 py-3 rounded-lg border-none"
+                menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-4 py-3 border-none"
+                menu-container-class="w-full flex gap-2"
+                menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3"
             >
                 <story-header :story="story" />
                 <template #about>
