@@ -13,24 +13,65 @@ return new class extends Migration {
         DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
 
         Schema::table('achievements', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('user_id');
-            $table->dropColumn('progress');
-            $table->dropColumn('completed_at');
+            // Drop columns if they exist
+            $columnsToDrop = ['user_id', 'progress', 'completed_at'];
+            foreach ($columnsToDrop as $column) {
+                if (Schema::hasColumn('achievements', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
 
-            $table->string('slug')->after('id');
-            //$table->string('element')->after('name');
-            //$table->text('extraction_description')->nullable()->after('element');
-            $table->text('extraction_description')->nullable();
-            //$table->string('subtitle')->after('element');
-            $table->string('subtitle');
-            $table->string('purpose')->after('subtitle');
-            $table->string('color')->after('purpose');
-            $table->string('icon')->after('color');
-            $table->string('icon_path')->nullable();
-            $table->unsignedBigInteger('item_id')->unique()->after('slug');
-            $table->timestamp('publish_at')->nullable();
+            // Add new columns
+            $columnsToAdd = [
+                'slug' => 'string',
+                'extraction_description' => 'text',
+                'subtitle' => 'string',
+                'purpose' => 'string',
+                'color' => 'string',
+                'icon' => 'string',
+                'icon_path' => 'string',
+                'item_id' => 'unsignedBigInteger',
+                'publish_at' => 'timestamp',
+            ];
 
+            foreach ($columnsToAdd as $column => $type) {
+                if (!Schema::hasColumn('achievements', $column)) {
+                    $table->$type($column);
+                }
+            }
+
+            // Add unique constraint to 'item_id' after it has been created
+            if (Schema::hasColumn('achievements', 'item_id')) {
+                $table->unique('item_id');
+            }
+
+            if (Schema::hasColumn('achievements', 'icon_path')) {
+                $table->string('icon_path')->nullable()->change();
+            }
+
+            if (Schema::hasColumn('achievements', 'publish_at')) {
+                $table->timestamp('publish_at')->nullable()->change();
+            }
         });
+
+//        Schema::table('achievements', function (Blueprint $table) {
+//            $table->dropConstrainedForeignId('user_id');
+//            $table->dropColumn('progress');
+//            $table->dropColumn('completed_at');
+//
+//            $table->string('slug')->after('id');
+//            //$table->string('element')->after('name');
+//            //$table->text('extraction_description')->nullable()->after('element');
+//            $table->text('extraction_description')->nullable();
+//            //$table->string('subtitle')->after('element');
+//            $table->string('subtitle');
+//            $table->string('purpose')->after('subtitle');
+//            $table->string('color')->after('purpose');
+//            $table->string('icon')->after('color');
+//            $table->string('icon_path')->nullable();
+//            $table->unsignedBigInteger('item_id')->unique();
+//            $table->timestamp('publish_at')->nullable();
+//        });
     }
 
     public function down(): void
@@ -42,6 +83,13 @@ return new class extends Migration {
 
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::table('achievements', function (Blueprint $table) {
+
+            foreach ($this->columns as $column) {
+                if (Schema::hasColumn('achievements', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
+
             //$table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 //            $table->integer('progress')->default(0);
 //            $table->timestamp('completed_at')->nullable();
@@ -54,12 +102,6 @@ return new class extends Migration {
 //            $table->dropColumn('color');
 //            $table->dropColumn('icon');
 
-            foreach ($this->columns as $column) {
-                if (Schema::hasColumn('achievements', $column)) {
-                    $table->dropColumn($column);
-                }
-            }
-
         });
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
@@ -67,6 +109,7 @@ return new class extends Migration {
     private array $columns = [
         'slug',
         'item_id',
+        'progress',
         //'element',
         'extraction_description',
         'subtitle',

@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
+use App\Models\Achievement\AchievementCategory;
+use App\Models\Category;
+use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -35,7 +38,8 @@ class AchievementsSeeder extends Seeder
             $data[] = [
                 'name' => $rowData['Achievement Title'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
-                'element' => $rowData['Element'],
+                'item_id' => (int)BaseService::randomCharacters(5, '0123456789'),
+                //'element' => $rowData['Element'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
@@ -51,11 +55,14 @@ class AchievementsSeeder extends Seeder
         foreach ($data as $row) {
             // check if image exists
             if (!file_exists(public_path('images/achievements/' . $row['icon']))) {
-                throw new \Exception('Image not found: ' . $row['icon']);
+                throw new \RuntimeException('Image not found: ' . $row['icon']);
             }
 
-
-            Achievement::create($row);
+            $achievement = Achievement::create($row);
+            AchievementCategory::create([
+                'achievement_id' => $achievement->id,
+                'category_id' => Category::inrandomOrder()->first()->id,
+            ]);
         }
 
         // seed data points

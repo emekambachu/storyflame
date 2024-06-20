@@ -52,8 +52,6 @@ Route::group([
     });
 });
 
-Route::post('/admin/login', [AdminLoginController::class, 'adminLogin']);
-
 # fallback route
 Route::fallback(function () {
     return response()->json([
@@ -62,3 +60,5 @@ Route::fallback(function () {
         'details' => 'The requested resource was not found.'
     ], 404);
 });
+
+include __DIR__ . '/admin/api.php';
