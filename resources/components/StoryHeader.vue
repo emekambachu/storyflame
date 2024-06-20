@@ -54,17 +54,35 @@
         >
             {{ story?.description }}
         </p>
-        <!--        </div>-->
+        <div
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2"
+            style="background: rgba(40, 37, 36, 0.8)"
+        >
+            <div class="flex w-full items-center gap-2">
+                <achievements-list-card :achievements="story?.achievements" />
+                <span class="text-[8px] font-bold text-stone-500">
+                    {{
+                        `${completedAchievements?.length}/${story?.achievements?.length ?? 0}`
+                    }}
+                </span>
+            </div>
+            <flame-icon
+                v-if="story?.progress"
+                :progress="story?.progress"
+                class="!w-8 w-full rounded-full bg-white"
+            />
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from 'vue'
+import { ref, computed, onMounted, PropType } from 'vue'
 import { Story } from '@/types/story'
 import { animate, scroll } from 'motion'
-import ProgressBarCircle from '@/components/ProgressBarCircle.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
+import AchievementsListCard from '@/components/cards/AchievementsListCard.vue'
 
-defineProps({
+const props = defineProps({
     story: {
         type: Object as PropType<Story>,
         required: true,
@@ -106,5 +124,15 @@ onMounted(() => {
             offset: ['start start', '300px'],
         }
     )
+})
+
+const completedAchievements = computed(() => {
+    if (props.story.achievements) {
+        return props.story.achievements.filter(
+            (achievement: Object) => achievement?.progress == 100
+        )
+    } else {
+        return []
+    }
 })
 </script>

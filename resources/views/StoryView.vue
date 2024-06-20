@@ -12,20 +12,24 @@
             <tab-layout
                 :tabs="[
                     {
-                        title: 'About',
-                        template: 'about',
+                        title: 'Develop',
+                        template: 'develop',
                     },
                     {
                         title: 'Progress',
                         template: 'progress',
                     },
                     {
+                        title: 'Story',
+                        template: 'story',
+                    },
+                    {
                         title: 'Elements',
                         template: 'elements',
                     },
                     {
-                        title: 'Drafts',
-                        template: 'drafts',
+                        title: 'Marketing',
+                        template: 'marketing',
                     },
                 ]"
                 :no-animation="true"
@@ -120,8 +124,8 @@ const story = {
     type: 'Movie',
     genres: ['Action', 'Comedy'],
     format: 'Animated, 3D',
-    readiness: 1,
-    progress:
+    progress: 60,
+    progress_description:
         'Your characters and themes are looking great, but your story could use some world building development.',
     progress_list: [
         {
@@ -297,10 +301,84 @@ const story = {
         title: 'Plot',
         readiness: 4,
         achievements: [
-            { image: { path: 'https://picsum.photos/900' } },
-            { image: { path: 'https://picsum.photos/900' } },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 2,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 3,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 4,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
         ],
-        amount_max_achievements: 12,
 
         effectiveness:
             'The plot sets up conflicts and power dynamics that have the potential to test the characters` morality, but the stakes and central tensions need to be heightened to fully realize the writer`s vision of exploring the cost of power in a gritty world.',
@@ -350,10 +428,84 @@ const story = {
         title: 'Characters',
         readiness: 2,
         achievements: [
-            { image: { path: 'https://picsum.photos/900' } },
-            { image: { path: 'https://picsum.photos/900' } },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 2,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 3,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 4,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
         ],
-        amount_max_achievements: 12,
 
         effectiveness:
             'The plot sets up conflicts and power dynamics that have the potential to test the characters` morality, but the stakes and central tensions need to be heightened to fully realize the writer`s vision of exploring the cost of power in a gritty world.',
@@ -403,10 +555,84 @@ const story = {
         title: 'Sequences',
         readiness: 1,
         achievements: [
-            { image: { path: 'https://picsum.photos/900' } },
-            { image: { path: 'https://picsum.photos/900' } },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 2,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 3,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 4,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
         ],
-        amount_max_achievements: 12,
 
         effectiveness:
             'The plot sets up conflicts and power dynamics that have the potential to test the characters` morality, but the stakes and central tensions need to be heightened to fully realize the writer`s vision of exploring the cost of power in a gritty world.',

@@ -4,9 +4,10 @@
             <h5 class="text-lg font-bold text-zinc-800">Current Progress</h5>
 
             <p
+                v-if="story?.progress_description"
                 class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
             >
-                {{ story.progress }}
+                {{ story.progress_description }}
             </p>
         </div>
         <title-section class="!gap-6 bg-white px-4 py-6">

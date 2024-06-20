@@ -26,11 +26,9 @@
                     template: 'settings',
                 },
             ]"
-            animate-translate-y="190px"
-            class="!gap-0"
+            :no-animation="true"
+            class="z-10 !gap-0"
             :scroll-to-page-section="true"
-            tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
-            tabs-container-class="flex w-full max-w-[100vw] mx-auto overflow-x-scroll px-3 py-4"
         >
             <template #plot>
                 <story-progress-tab-card :card="story.plot" />
