@@ -15,18 +15,26 @@ class Achievement extends Model
     protected $fillable = [
         'slug',
         'name',
-        'element',
+        //'element',
         'subtitle',
         'extraction_description',
         'example',
         'purpose',
         'color',
-        'icon'
+        'icon_path',
+        'icon',
+        'item_id',
+        'publish_at',
     ];
 
     public function dataPoints(): HasMany
     {
         return $this->hasMany(DataPoint::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class, 'achievement_id', 'id');
     }
 
     public function totalImpactScore(): int
