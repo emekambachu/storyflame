@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-8 py-8 px-4">
+    <div class="flex flex-col gap-8 px-4 py-8">
         <button class="flex items-center gap-2 text-black">
             <chevron-icon />
             <span class="text-lg font-normal">Back</span>
@@ -7,23 +7,23 @@
 
         <div class="flex flex-col items-center">
             <flame-icon
-                class="!w-8 !h-8"
+                class="!h-8 !w-8"
                 flameClass="w-8 h-8"
             />
-            <h1 class="text-2xl text-neutral-700 font-bold">
+            <h1 class="text-2xl font-bold text-neutral-700">
                 {{ data.title }}
             </h1>
-            <span class="text-xs text-black font-bold opacity-50">
+            <span class="text-xs font-bold text-black opacity-50">
                 {{ data.type }}
             </span>
-            <p class="text-sm text-black text-center font-normal opacity-50">
+            <p class="text-center text-sm font-normal text-black opacity-50">
                 {{ data.description }}
             </p>
         </div>
 
         <title-section>
             <template #title>
-                <h4 class="text-lg text-black font-bold">
+                <h4 class="text-lg font-bold text-black">
                     Associated characters
                 </h4>
             </template>
@@ -51,7 +51,7 @@
                 />
             </template>
 
-            <div class="flex items-start gap-2 justify-between w-full">
+            <div class="flex w-full items-start justify-between gap-2">
                 <achievement-card
                     v-for="(
                         achievement, achievementID
@@ -71,7 +71,7 @@ import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import AchievementCard from '@/components/cards/AchievementCard.vue'
 
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import ChevronIcon from '@/components/icons/ChevronIcon.vue'
 
 const data = {
