@@ -1,14 +1,35 @@
 <template>
     <div class="flex w-full flex-col gap-2 bg-slate-100">
-        <div class="flex flex-col gap-4 bg-white px-4 pb-4">
-            <h5 class="text-lg font-bold text-zinc-800">Current Progress</h5>
-
-            <p
-                v-if="story?.progress_description"
-                class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
+        <div class="flex flex-col bg-white">
+            <title-section class="px-3 py-3">
+                <template #title>
+                    <title-with-link
+                        class="!p-0"
+                        title="Progress Report"
+                        title-class="text-lg text-black font-bold"
+                        button-text="All Reports"
+                    />
+                </template>
+                <div class="flex w-full flex-wrap gap-2">
+                    <progress-card
+                        v-for="(item, itemID) in story?.progress_list"
+                        :key="itemID"
+                        :item="item"
+                    />
+                </div>
+            </title-section>
+            <title-section
+                class="px-3 py-4"
+                title="Current Progress"
+                title-class="text-lg font-bold text-zinc-800"
             >
-                {{ story.progress_description }}
-            </p>
+                <p
+                    v-if="story?.progress_description"
+                    class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
+                >
+                    {{ story.progress_description }}
+                </p>
+            </title-section>
         </div>
         <title-section class="!gap-6 bg-white px-4 py-6">
             <template #title>
@@ -84,7 +105,9 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref } from 'vue'
+import { PropType } from 'vue'
+
+import ProgressCard from '@/components/cards/ProgressCard.vue'
 import StartSomethingNew from '@/components/StartSomethingNew.vue'
 import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
 import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'

@@ -1,12 +1,5 @@
 <template>
     <div class="flex w-full flex-col gap-2 bg-white">
-        <div class="flex flex-wrap gap-2 px-3 pb-3">
-            <progress-card
-                v-for="(item, itemID) in story?.progress_list"
-                :key="itemID"
-                :item="item"
-            />
-        </div>
         <tab-layout
             :tabs="[
                 {
@@ -27,7 +20,7 @@
                 },
             ]"
             :no-animation="true"
-            class="z-10 !gap-0"
+            class="z-0 !gap-0"
             :scroll-to-page-section="true"
         >
             <template #plot>
@@ -46,8 +39,6 @@
 
 <script setup lang="ts">
 import { PropType, ref } from 'vue'
-import ProgressCard from '@/components/cards/ProgressCard.vue'
-
 import StoryProgressTabCard from '@/components/cards/StoryProgressTabCard.vue'
 
 import TabLayout from '@/components/TabLayout.vue'

@@ -7,36 +7,29 @@
                 ? `linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), url(${story.image.path}) lightgray 50% / cover no-repeat;`
                 : 'transparent'
         }`"
-        class="flex h-full w-full flex-col justify-end gap-1.5 px-4 pt-16"
+        class="flex h-full w-full flex-col justify-end px-4 pt-24"
     >
-        <!--        <div class="flex flex-col gap-1.5 px-4">-->
-        <span
-            :class="story?.image?.path ? 'text-white' : 'text-black'"
-            class="animate-resize animate-move sticky top-4 text-sm font-normal opacity-70"
-        >
-            {{ story?.format }}
-        </span>
-
         <div
-            class="animate-move sticky top-10 flex w-full items-center justify-between"
+            v-if="story?.format?.length"
+            class="mb-1.5 flex items-center gap-1"
         >
-            <h1
-                :class="story?.image?.path ? 'text-white' : 'text-black'"
-                class="text-3xl font-bold"
+            <span
+                v-for="(item, itemID) in story.format"
+                :key="itemID"
+                class="w-fit rounded bg-stone-600 p-1 text-[10px] font-normal text-stone-300"
             >
-                {{ story?.name }}
-            </h1>
-
-            <div class="h-10 w-10 shrink-0">
-                <progress-bar-circle
-                    v-if="story"
-                    :percent="story?.percent"
-                    class="w-full"
-                />
-            </div>
+                {{ item }}
+            </span>
         </div>
 
-        <div class="animate-hide flex items-center gap-2">
+        <h1
+            :class="story?.image?.path ? 'text-white' : 'text-black'"
+            class="animate-move sticky top-10 font-fjalla text-3xl font-bold"
+        >
+            {{ story?.name }}
+        </h1>
+
+        <div class="mt-1.5 flex items-center gap-2">
             <span
                 v-for="(genre, genreID) in story?.genres"
                 :key="genreID"
@@ -50,12 +43,12 @@
 
         <p
             :class="story?.image?.path ? 'text-white' : 'text-black'"
-            class="animate-hide text-sm opacity-70"
+            class="animate-hide mt-5 text-sm opacity-70"
         >
             {{ story?.description }}
         </p>
         <div
-            class="flex w-full items-center justify-between rounded-lg px-3 py-2"
+            class="mt-5 flex w-full items-center justify-between rounded-lg px-3 py-2"
             style="background: rgba(40, 37, 36, 0.8)"
         >
             <div class="flex w-full items-center gap-2">
@@ -91,40 +84,40 @@ const props = defineProps({
 
 const container = ref<HTMLDivElement | null>(null)
 
-onMounted(() => {
-    const hideElements = container.value?.querySelectorAll('.animate-hide')
-    const moveElements = container.value?.querySelectorAll('.animate-move')
-    const resizeElements = container.value?.querySelectorAll('.animate-resize')
+// onMounted(() => {
+//     const hideElements = container.value?.querySelectorAll('.animate-hide')
+//     const moveElements = container.value?.querySelectorAll('.animate-move')
+//     const resizeElements = container.value?.querySelectorAll('.animate-resize')
 
-    scroll(
-        animate(hideElements, {
-            opacity: [1, 0],
-        }),
-        {
-            offset: ['start start', '100px'],
-        }
-    )
+//     scroll(
+//         animate(hideElements, {
+//             opacity: [1, 0],
+//         }),
+//         {
+//             offset: ['start start', '100px'],
+//         }
+//     )
 
-    scroll(
-        animate(moveElements, {
-            translateY: [0, 10],
-        }),
-        {
-            offset: ['start start', '300px'],
-        }
-    )
+//     scroll(
+//         animate(moveElements, {
+//             translateY: [0, 10],
+//         }),
+//         {
+//             offset: ['start start', '300px'],
+//         }
+//     )
 
-    scroll(
-        animate(resizeElements, {
-            width: ['fit-content', 'fit-content'],
-            translateX: ['0%', '-50%'],
-            left: ['0%', '50%'],
-        }),
-        {
-            offset: ['start start', '300px'],
-        }
-    )
-})
+//     scroll(
+//         animate(resizeElements, {
+//             width: ['fit-content', 'fit-content'],
+//             translateX: ['0%', '-50%'],
+//             left: ['0%', '50%'],
+//         }),
+//         {
+//             offset: ['start start', '300px'],
+//         }
+//     )
+// })
 
 const completedAchievements = computed(() => {
     if (props.story.achievements) {

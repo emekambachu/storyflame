@@ -33,10 +33,11 @@
                     },
                 ]"
                 :no-animation="true"
+                class="!gap-0"
                 menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
                 menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
                 menu-container-class="w-full flex gap-2"
-                menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3"
+                menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
             >
                 <story-header :story="story" />
                 <template #develop>
@@ -55,34 +56,6 @@
                     <story-marketing-tab :story="story" />
                 </template>
             </tab-layout>
-
-            <!--            <div class="relative flex items-center">-->
-            <!--                <div-->
-            <!--                    v-for="(tab, tabID) in tabs"-->
-            <!--                    :key="tabID"-->
-            <!--                    :class="-->
-            <!--                        tabID == selectedTab-->
-            <!--                            ? 'border-red-600 text-red-600'-->
-            <!--                            : 'border-neutral-300 text-neutral-500'-->
-            <!--                    "-->
-            <!--                    class="relative z-10 mx-4 border-b-2 text-base font-normal"-->
-            <!--                    @click="selectedTab = tabID"-->
-            <!--                >-->
-            <!--                    {{ tab }}-->
-            <!--                </div>-->
-            <!--                <div-->
-            <!--                    class="z-5 absolute bottom-0 h-[2px] w-full bg-neutral-300"-->
-            <!--                />-->
-            <!--            </div>-->
-
-            <!--            <story-about-tab-->
-            <!--                v-if="selectedTab == 0"-->
-            <!--                :story="story"-->
-            <!--            />-->
-            <!--            <story-drafts-tab-->
-            <!--                v-if="selectedTab == 3"-->
-            <!--                :drafts="story.drafts"-->
-            <!--            />-->
         </div>
     </page-navigation-layout>
 </template>
@@ -123,29 +96,29 @@ const story = {
         'This is a test story about some hero saving the world from some evil villain. First he struggles, then he realizes someting and then he wins. The end.',
     type: 'Movie',
     genres: ['Action', 'Comedy'],
-    format: 'Animated, 3D',
+    format: ['Show', 'MA-16'],
     progress: 60,
     progress_description:
         'Your characters and themes are looking great, but your story could use some world building development.',
     progress_list: [
         {
             name: 'Characters',
-            progress: 1,
+            progress: 30,
             count: 20,
         },
         {
             name: 'Sequences',
-            progress: 2,
+            progress: 60,
             count: 20,
         },
         {
             name: 'Themes',
-            progress: 3,
+            progress: 100,
             count: 20,
         },
         {
             name: 'Appeal',
-            progress: 4,
+            progress: 10,
             count: 20,
         },
     ],
@@ -241,6 +214,85 @@ const story = {
             title: 'Setting for the Climax',
             description:
                 'We’re uncertain about how you want to handle the climax, is it in the future or in 1880’s Paris?',
+        },
+    ],
+    achievements: [
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 2,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 3,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 4,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
         },
     ],
     achievements_not_started: [
