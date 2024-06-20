@@ -7,8 +7,6 @@
     >
         <div class="flex flex-col gap-6 pb-6">
             <tab-layout
-                header-height="300"
-                collapse-header-height="100"
                 :tabs="[
                     {
                         title: 'Expanded',
@@ -19,7 +17,7 @@
                         template: 'condensed',
                     },
                 ]"
-                animate-translate-y="190px"
+                :no-animation="true"
             >
                 <outline-header :outline="outline" />
                 <template #expanded></template>
@@ -32,19 +30,19 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { getStory } from '@/utils/endpoints'
-import { useQuery } from '@tanstack/vue-query'
+// import { getStory } from '@/utils/endpoints'
+// import { useQuery } from '@tanstack/vue-query'
 
 import OutlineHeader from '@/components/OutlineHeader.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 
-import OutlineExpandedTab from '@/components/OutlineExpandedTab.vue'
-import OutlineCondensedTab from '@/components/OutlineCondensedTab.vue'
+// import OutlineExpandedTab from '@/components/OutlineExpandedTab.vue'
+// import OutlineCondensedTab from '@/components/OutlineCondensedTab.vue'
 
 const route = useRoute()
-const outlineId = computed(() => route.params.outline)
+// const outlineId = computed(() => route.params.outline)
 
 // const { data: outline } = useQuery({
 //     queryKey: ['outline', outlineId.value],
@@ -58,72 +56,86 @@ const outline = {
     title: 'Some title here',
     story: 'Game of Thrones',
     type: 'TV Pilot',
-    tag: 'Outline',
+    format: 'Outline',
 
     progress: 80,
+    image: {
+        path: 'https://picsum.photos/900',
+    },
 
     achievements: [
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: '2023-05-10',
             progress: 100,
         },
         {
+            id: 2,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: '2023-05-10',
             progress: 100,
         },
         {
+            id: 3,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 4,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
             progress: 0,
         },
         {
+            id: 1,
             icon: 'https://picsum.photos/900',
             title: 'Achievement One',
             completed_at: null,
