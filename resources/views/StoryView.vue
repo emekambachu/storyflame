@@ -35,11 +35,20 @@
                 menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3"
             >
                 <story-header :story="story" />
-                <template #about>
-                    <story-about-tab :story="story" />
+                <template #develop>
+                    <story-develop-tab :story="story" />
                 </template>
-                <template #drafts>
-                    <story-drafts-tab :drafts="story.drafts" />
+                <template #progress>
+                    <story-progress-tab :story="story" />
+                </template>
+                <template #story>
+                    <story-story-tab :story="story" />
+                </template>
+                <template #elements>
+                    <story-elements-tab :story="story" />
+                </template>
+                <template #marketing>
+                    <story-marketing-tab :story="story" />
                 </template>
             </tab-layout>
 
