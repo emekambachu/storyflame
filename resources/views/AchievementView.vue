@@ -121,7 +121,7 @@
                     </template>
 
                     <template v-if="selectedTabID == 1">
-                        <sequences-card
+                        <sequence-card
                             v-for="(sequence, sequenceID) in data.impacted
                                 ?.sequences?.items"
                             :key="sequenceID"
@@ -160,7 +160,7 @@ import ImageComponent from '@/components/ImageComponent.vue'
 import PlotCard from '@/components/cards/PlotCard.vue'
 import ThemeCard from '@/components/cards/ThemeCard.vue'
 import CharacterCard from '@/components/cards/CharacterCard.vue'
-import SequencesCard from '@/components/cards/SequencesCard.vue'
+import SequenceCard from '@/components/cards/SequenceCard.vue'
 import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
 
 import ClockIcon from '@/components/icons/ClockIcon.vue'
