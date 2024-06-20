@@ -86,16 +86,11 @@
 import { PropType, ref } from 'vue'
 import StartSomethingNew from '@/components/StartSomethingNew.vue'
 import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
-import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
 import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 
-import ItemsList from '@/components/ItemsList.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 
-import ImageComponent from '@/components/ImageComponent.vue'
-
-import PointIcon from '@/components/icons/PointIcon.vue'
 import { Story } from '@/types/story'
 
 const props = defineProps({
