@@ -85,8 +85,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import StoryAboutTab from '@/components/StoryAboutTab.vue'
-import StoryDraftsTab from '@/components/StoryDraftsTab.vue'
+import StoryStoryTab from '@/components/StoryStoryTab.vue'
+import StoryDevelopTab from '@/components/StoryDevelopTab.vue'
+import StoryProgressTab from '@/components/StoryProgressTab.vue'
+import StoryElementsTab from '@/components/StoryElementsTab.vue'
+import StoryMarketingTab from '@/components/StoryMarketingTab.vue'
+
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import TabLayout from '@/components/TabLayout.vue'
 import StoryHeader from '@/components/StoryHeader.vue'
