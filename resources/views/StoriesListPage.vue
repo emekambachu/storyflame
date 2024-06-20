@@ -115,7 +115,7 @@ import ListsHeroSection from '@/components/ListsHeroSection.vue'
 
 import StoryCard from '@/components/cards/StoryCard.vue'
 
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 
 const searchValue = ref('')
 const selectedOptions = ref([0])
