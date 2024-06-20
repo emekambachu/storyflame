@@ -142,13 +142,6 @@ const router = createRouter({
                             ],
                         },
                         {
-                            path: 'outline/:id',
-                            name: 'outline',
-                            // beforeEnter: checkAuth,
-                            component: () =>
-                                import('../views/OutlineView.vue'),
-                        },
-                        {
                             path: 'sequences/:id',
                             name: 'sequence',
                             // beforeEnter: checkAuth,
@@ -177,6 +170,13 @@ const router = createRouter({
                     ],
                 },
             ],
+        },
+        {
+            path: '/outline/:id',
+            name: 'outline',
+            // beforeEnter: checkAuth,
+            component: () =>
+                import('../views/OutlineView.vue'),
         },
         {
             path: '/achievement/:id',

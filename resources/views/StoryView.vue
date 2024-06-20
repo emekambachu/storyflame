@@ -32,8 +32,9 @@
                         template: 'marketing',
                     },
                 ]"
-                :no-animation="true"
                 class="!gap-0"
+                header-height="400"
+                collapse-header-height="200"
                 menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
                 menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
                 menu-container-class="w-full flex gap-2"
@@ -351,7 +352,7 @@ const story = {
 
     plot: {
         title: 'Plot',
-        readiness: 4,
+        progress: 30,
         achievements: [
             {
                 id: 1,
@@ -478,7 +479,8 @@ const story = {
 
     characters_list: {
         title: 'Characters',
-        readiness: 2,
+        progress: 100,
+
         achievements: [
             {
                 id: 1,
@@ -605,7 +607,134 @@ const story = {
 
     sequences: {
         title: 'Sequences',
-        readiness: 1,
+        progress: 65,
+        achievements: [
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 2,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: '2023-05-10',
+                progress: 100,
+            },
+            {
+                id: 3,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 4,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+            {
+                id: 1,
+                icon: 'https://picsum.photos/900',
+                title: 'Achievement One',
+                completed_at: null,
+                progress: 0,
+            },
+        ],
+
+        effectiveness:
+            'The plot sets up conflicts and power dynamics that have the potential to test the characters` morality, but the stakes and central tensions need to be heightened to fully realize the writer`s vision of exploring the cost of power in a gritty world.',
+        audience:
+            'The morally grey characters and their high-stakes conflicts should appeal to the target audience of mature fantasy drama fans. However, the characters need to be quickly established as compelling and relatable to fully engage viewers. Strengthening the sense of character perspective and ensuring each one has a clear goal will help audiences invest in their journeys.',
+        market_comparisons:
+            'Prospera`s characters have the complex moral shading and mix of noble and selfish motivations that define prestige fantasy drama protagonists. However, their distinct personalities and voices need to be sharpened to match the memorable characterization of market comp ensembles. The characters need to command the screen and leave the audience eager to follow them.',
+        potential_explorations: [
+            {
+                icon: {
+                    path: 'https://picsum.photos/90',
+                },
+                type: 'Character development',
+                time: '5 min',
+                percent: 20,
+                color: '#A516AD',
+
+                story: 'Game of thrones',
+                subtitle: 'Meeting the Wizard',
+
+                title: 'Unexpected Decisions',
+                description:
+                    'You established an unexpected twist that endears people towards Tyrion.',
+            },
+        ],
+        something_new: [
+            {
+                icon: {
+                    path: 'https://picsum.photos/90',
+                },
+                type: 'Character development',
+                time: '5 min',
+                percent: 20,
+                color: '#A516AD',
+
+                story: 'Game of thrones',
+                subtitle: 'Meeting the Wizard',
+
+                title: 'Unexpected Decisions',
+                description:
+                    'You established an unexpected twist that endears people towards Tyrion.',
+            },
+        ],
+    },
+
+    settings: {
+        title: 'Settings',
+        progress: 65,
         achievements: [
             {
                 id: 1,

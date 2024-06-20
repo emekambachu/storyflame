@@ -32,7 +32,9 @@
             <template #sequences>
                 <story-progress-tab-card :card="story.sequences" />
             </template>
-            <template #settings></template>
+            <template #settings>
+                <story-progress-tab-card :card="story.settings" />
+            </template>
         </tab-layout>
     </div>
 </template>
