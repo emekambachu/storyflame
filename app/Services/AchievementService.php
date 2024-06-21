@@ -35,6 +35,7 @@ class AchievementService
             $inputs = $request->all();
             $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
             $inputs['icon_path'] = config('app.url').'/'.$this->imagePath.'/';
+            $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
             $achievement = $this->achievement()->create($inputs);
 
             if(!empty($inputs['categories'])){
