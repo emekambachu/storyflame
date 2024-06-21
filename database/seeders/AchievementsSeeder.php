@@ -59,10 +59,21 @@ class AchievementsSeeder extends Seeder
             }
 
             $achievement = Achievement::create($row);
+
+            // Add 2 categories to each achievement
             AchievementCategory::create([
                 'achievement_id' => $achievement->id,
-                'category_id' => Category::inrandomOrder()->first()->id,
+                'category_id' => Category::inRandomOrder()->first()->id,
             ]);
+            AchievementCategory::create([
+                'achievement_id' => $achievement->id,
+                'category_id' => Category::inRandomOrder()->first()->id,
+            ]);
+
+//            AchievementCategory::factory(3)->create([
+//                'achievement_id' => $achievement->id,
+//                'category_id' => Category::inRandomOrder()->first()->id,
+//            ]);
         }
 
         // seed data points

@@ -17,7 +17,15 @@ return new class extends Migration {
             $columnsToDrop = ['user_id', 'progress', 'completed_at'];
             foreach ($columnsToDrop as $column) {
                 if (Schema::hasColumn('achievements', $column)) {
-                    $table->dropColumn($column);
+
+                    if($column === 'user_id') {
+                        if (DB::getSchemaBuilder()->getColumnType('achievements', 'user_id') === 'uuid') {
+                            $table->dropForeign(['user_id']); // use this if the foreign key is named 'user_id'
+                        }
+                    }else{
+                        $table->dropColumn($column);
+                    }
+
                 }
             }
 
@@ -52,6 +60,9 @@ return new class extends Migration {
             if (Schema::hasColumn('achievements', 'publish_at')) {
                 $table->timestamp('publish_at')->nullable()->change();
             }
+
+            // Add foreign key constraint to 'user_id'
+
         });
 
 //        Schema::table('achievements', function (Blueprint $table) {
