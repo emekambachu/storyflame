@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Achievement\AchievementCategory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,14 +29,21 @@ class Achievement extends Model
         'publish_at',
     ];
 
-    public function dataPoints(): HasMany
+    public function dataPoints(): BelongsToMany
     {
-        return $this->hasMany(DataPoint::class);
+        return $this->belongsToMany(
+            DataPoint::class,
+            'data_point_achievements',
+            'achievement_id',
+            'data_point_id'
+        )
+            ->withPivot('id')
+            ->withTimestamps();
     }
 
     public function categories(): HasMany
     {
-        return $this->hasMany(Category::class, 'achievement_id', 'id');
+        return $this->hasMany(AchievementCategory::class, 'achievement_id', 'id');
     }
 
     public function totalImpactScore(): int

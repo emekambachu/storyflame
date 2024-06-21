@@ -21,11 +21,12 @@ class AdminAchievementController extends Controller
     {
         try {
             $data = $this->achievement->achievement()
-                ->with('categories:id,name')
+                ->with('achievement_categories', 'dataPoints:id,slug,achievement_id')
                 ->latest()->get();
             return response()->json([
                 'success' => true,
-                'achievements' => AdminAchievementResource::collection($data)
+                'achievements' => AdminAchievementResource::collection($data),
+                'total' => $data->count(),
             ]);
 
         }catch (\Exception $e){

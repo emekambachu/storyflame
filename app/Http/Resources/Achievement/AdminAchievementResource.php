@@ -22,6 +22,7 @@ class AdminAchievementResource extends JsonResource
             'description' => $this->subtitle ?? null,
             'extraction_description' => $this->extraction_description ?? null,
             'categories' => $this->categories ?? null,
+            'data_points' => $this->dataPoints ?? null,
             'example' => $this->example ?? null,
             'purpose' => $this->purpose ?? null,
             'color' => $this->color ?? null,

@@ -37,8 +37,22 @@ class AchievementService
             $inputs['image_path'] = config('app.url').'/'.$this->imagePath.'/';
             $achievement = $this->achievement()->create($inputs);
 
-            if(!empty($request->categories)){
-                $achievement->categories()->sync($request->categories);
+            if(!empty($inputs['categories'])){
+                foreach ($inputs['categories'] as $category){
+                    $achievement->categories()->create([
+                        'category_id' => $category,
+                        'achievement_id' => $achievement->id,
+                    ]);
+                }
+            }
+
+            if(!empty($inputs['data_points'])){
+                foreach ($inputs['data_points'] as $data_point){
+                    $achievement->categories()->create([
+                        'data_point_id' => $data_point,
+                        'achievement_id' => $achievement->id,
+                    ]);
+                }
             }
 
             DB::commit();

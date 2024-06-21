@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Models\Achievement;
+namespace App\Models\DataPoint;
 
 use App\Models\Achievement;
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AchievementCategory extends Model
+class DataPointCategory extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
-
+    use HasFactory;
     protected $fillable = [
-        'achievement_id',
+        'data_point_id',
         'category_id',
     ];
 
