@@ -50,7 +50,7 @@ class AchievementSeeder extends Seeder
                 'icon_path' => null,
                 'publish_at' => now()->format('Y-m-d H:i:s'),
                 'admin_id' => Admin::first()->id,
-                //'user_id' => User::factory()->create()->id,
+                'user_id' => User::factory()->create()->id,
             ];
         }
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AchievementCategory extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use HasUuids, HasFactory;
 
     protected $fillable = [
         'achievement_id',

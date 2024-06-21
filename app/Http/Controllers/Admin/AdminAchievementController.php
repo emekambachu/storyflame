@@ -21,7 +21,7 @@ class AdminAchievementController extends Controller
     {
         try {
             $data = $this->achievement->achievement()
-                ->with('achievement_categories', 'dataPoints:id,slug,achievement_id')
+                ->with('categories')
                 ->latest()->get();
             return response()->json([
                 'success' => true,

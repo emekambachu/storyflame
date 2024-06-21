@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
+import axios from 'axios'
+
 import AdminAchievementsForm from './AdminAchievementsForm.vue';
 import AdminAchievementsItem from '@/views/admin/pages/achievements/AdminAchievementsItem.vue'
 
@@ -39,6 +41,10 @@ const getAchievements = async () => {
         console.log(error);
     });
 }
+
+onBeforeMount(() => {
+    getAchievements();
+});
 
 </script>
 

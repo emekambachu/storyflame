@@ -15,13 +15,16 @@ const achievement = ref(props.achievement);
             <img src="/images/achievements/icebreaker.png" width="60">
         </th>
         <td class="px-6 py-4 text-center">
-            <p class="font-extrabold text-lg text-black">{{ achievement.name }}</p>
+            <p class="font-extrabold text-md text-black">{{ achievement.name }}</p>
             <p class="text-gray-400 text-md">ID: {{ achievement.item_id }}</p>
         </td>
         <td class="px-6 py-4 text-center">
             <div v-if="achievement.categories?.length > 0" class="d-flex">
-                <span class="bg-stone-200 p-2 mr-2 rounded-md text-black">
-                    {{ achievement.categories[0].name }}
+                <span
+                    v-for="category in achievement.categories"
+                    :key="category.id"
+                      class="bg-stone-200 p-2 mr-2 text-[12px] rounded-md text-black">
+                    {{ category.name }}
                 </span>
                 <span class="mt-1">+3</span>
             </div>
@@ -39,8 +42,8 @@ const achievement = ref(props.achievement);
             20
         </td>
         <td class="px-6 py-4 text-center">
-            <p class="text-black">June 17, 2024</p>
-            <p>By Veronika S</p>
+            <p class="text-black">{{ achievement.updated_at }}</p>
+            <p>{{ achievement.admin }}</p>
         </td>
         <td class="px-6 py-4 text-center flex">
             <svg class="mr-2"

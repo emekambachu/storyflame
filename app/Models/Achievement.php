@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Models\Achievement\AchievementCategory;
+use App\Models\Admin\Admin;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
@@ -26,6 +29,7 @@ class Achievement extends Model
         'icon_path',
         'icon',
         'item_id',
+        'admin_id',
         'publish_at',
     ];
 
@@ -41,9 +45,21 @@ class Achievement extends Model
             ->withTimestamps();
     }
 
-    public function categories(): HasMany
+    public function admin(): BelongsTo
     {
-        return $this->hasMany(AchievementCategory::class, 'achievement_id', 'id');
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
+
+    public function categories(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Category::class,
+            AchievementCategory::class,
+            'achievement_id',
+            'id',
+            'id',
+            'category_id'
+        );
     }
 
     public function totalImpactScore(): int
