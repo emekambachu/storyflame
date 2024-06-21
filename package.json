@@ -42,6 +42,7 @@
         "vue": "^3.4.24",
         "vue-logger-plugin": "^2.2.3",
         "vue-mountable": "^0.1.5",
-        "vue-router": "^4.3.2"
+        "vue-router": "^4.3.2",
+        "vuex": "^4.0.2"
     }
 }

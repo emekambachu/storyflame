@@ -10,6 +10,7 @@ import modalPlugin from '@/plugins/modalPlugin';
 import { VueMountable } from 'vue-mountable';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 import { defineAsyncComponent } from 'vue';
+import store from "./store";
 
 // Enable CSRF token
 axios.defaults.withCredentials = true
@@ -28,7 +29,8 @@ const adminApp = createApp(AdminApp)
     .use(pinia)
     .use(logger)
     .use(modalPlugin)
-    .use(VueMountable());
+    .use(VueMountable())
+    .use(store);
 
 const AdminLoginView = defineAsyncComponent(() => import('@/views/admin/pages/AdminLoginView.vue'));
 adminApp.component('admin-login-view', AdminLoginView);

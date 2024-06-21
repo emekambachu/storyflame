@@ -66,7 +66,7 @@
                                             </label>
                                             <input
                                                 type="file"
-                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input"
+                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
                                             >
                                         </div>
                                     </div>
@@ -74,13 +74,30 @@
                                 </div>
 
                                 <div>
-                                    <label for="subtitle" class="block text-sm font-medium text-gray-700">Subtitle</label>
-                                    <input id="subtitle" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                    <label
+                                        for="subtitle"
+                                        class="block text-sm font-medium text-gray-700">
+                                        Subtitle
+                                    </label>
+                                    <input
+                                        id="subtitle"
+                                        type="text"
+                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
                                 </div>
-                                <div>
-                                    <label for="publishAt" class="block text-sm font-medium text-gray-700">Publish at</label>
-                                    <input id="publishAt" type="date" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+
+                                <div class="w-full sm:w-1/2">
+                                    <label
+                                        for="publishAt"
+                                        class="block text-sm font-medium text-gray-700">
+                                        Publish at
+                                    </label>
+                                    <input
+                                        id="publishAt"
+                                        type="date"
+                                        :min="new Date().toISOString().split('T')[0]"
+                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
                                 </div>
+
                                 <div>
                                     <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
                                     <input id="category" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
