@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            AchievementsSeeder::class,
+            AchievementSeeder::class,
             StoriesSeeder::class,
         ]);
     }

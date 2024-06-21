@@ -18,9 +18,9 @@ return new class extends Migration {
             foreach ($columnsToDrop as $column) {
                 if (Schema::hasColumn('achievements', $column)) {
 
-                    if($column === 'user_id') {
-                        if (DB::getSchemaBuilder()->getColumnType('achievements', 'user_id') === 'uuid') {
-                            $table->dropForeign(['user_id']); // use this if the foreign key is named 'user_id'
+                    if(in_array($column, ['user_id', 'admin_id'])) {
+                        if (DB::getSchemaBuilder()->getColumnType('achievements', $column) === 'uuid') {
+                            $table->dropForeign([$column]); // use this if the foreign key is named 'user_id'
                         }
                     }else{
                         $table->dropColumn($column);
@@ -37,7 +37,7 @@ return new class extends Migration {
                 'purpose' => 'string',
                 'color' => 'string',
                 'icon' => 'string',
-                'icon_path' => 'string',
+//                'icon_path' => 'string',
                 'item_id' => 'unsignedBigInteger',
                 'publish_at' => 'timestamp',
             ];
@@ -53,12 +53,12 @@ return new class extends Migration {
                 $table->unique('item_id');
             }
 
-            if (Schema::hasColumn('achievements', 'icon_path')) {
-                $table->string('icon_path')->nullable()->change();
-            }
+//            if (Schema::hasColumn('achievements', 'icon_path')) {
+//                $table->string('icon_path')->nullable();
+//            }
 
             if (Schema::hasColumn('achievements', 'publish_at')) {
-                $table->timestamp('publish_at')->nullable()->change();
+                $table->timestamp('publish_at')->nullable();
             }
 
             // Add foreign key constraint to 'user_id'
@@ -127,8 +127,7 @@ return new class extends Migration {
         'purpose',
         'color',
         'icon',
-        'icon_path',
-        'item_id',
+//        'icon_path',
         'publish_at'
     ];
 };
