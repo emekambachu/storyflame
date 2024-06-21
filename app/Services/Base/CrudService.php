@@ -3,58 +3,42 @@
 namespace App\Services\Base;
 
 use Illuminate\Support\Facades\File;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 /**
  * Class CrudService.
  */
 class CrudService
 {
-    public function publishItem($item): array
-    {
-        if($item->status === 1){
-            $item->status = 0;
-            $item_name = $item->name ?? $item->title;
-            $message = $item_name.' is pending';
-        }else{
-            $item->status = 1;
-            $item_name = $item->name ?? $item->title;
-            $message = $item_name.' is published';
-        }
-        $item->save();
-
-        return [
-            'item' => $item,
-            'message' => $message,
-        ];
-    }
 
     public static function uploadAndCompressImage($request, $path, $width, $height, String $imageName): ?string
     {
         if($file = $request->file($imageName)) {
+            $extension = $file->getClientOriginalExtension();
             $name = time() . $file->getClientOriginalName();
             // create path to directory
             if (!File::exists($path)){
                 File::makeDirectory($path, 0777, true, true);
             }
 
-            // start image conversion (Must install Image Intervention Package first)
-            $convert_image = Image::make($file->path());
+            $imageManager = new ImageManager(new Driver());
+            $image = $imageManager->read($request->file($imageName));
 
             // If image width and height is available, resize image
             // else upload just as is
             if($width !== null || $height !== null){
-                $background = Image::canvas($width, $height);
-                $convert_image->resize($width, $height, static function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-                $background->insert($convert_image, 'center');
-                $background->save($path.'/'.$name);
-            }else{
-                // Upload just as is
-                $convert_image->save($path.'/'.$name);
+                $image->scale($width, $height);
             }
+
+            // get an extension of image
+            if($extension === 'png'){
+                $image->toPng(80);
+            }else if($extension === 'jpeg' || $extension === 'jpg'){
+                $image->toJpeg(80);
+            }
+
+            $image->save($path.'/'.$name);
 
             // Return full image upload path
             return $name;

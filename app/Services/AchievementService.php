@@ -2,14 +2,132 @@
 
 namespace App\Services;
 
+use App\Http\Resources\Achievement\AdminAchievementResource;
+use App\Http\Resources\AchievementResource;
 use App\Models\Achievement;
+use App\Models\Achievement\AchievementCategory;
 use App\Models\User;
 use App\Models\UserAchievement;
+use App\Services\Base\BaseService;
+use App\Services\Base\CrudService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class AchievementService
 {
+    protected string $imagePath = 'uploads/achievements/icons';
+
+    public function achievement(): Achievement
+    {
+        return new Achievement();
+    }
+
+    public function achievementCategories(): AchievementCategory
+    {
+        return new AchievementCategory();
+    }
+
+    public function storeAchievement($request): array
+    {
+        DB::beginTransaction();
+        try {
+            $inputs = $request->all();
+            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
+            $inputs['image_path'] = config('app.url').'/'.$this->imagePath.'/';
+            $achievement = $this->achievement()->create($inputs);
+
+            if(!empty($request->categories)){
+                $achievement->categories()->sync($request->categories);
+            }
+
+            DB::commit();
+            return [
+                'success' => true,
+                'achievement' => new AchievementResource($achievement)
+            ];
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            BaseService::logError($e);
+            return [
+                'success' => false,
+                'error_message' => 'Something went wrong',
+                'status_code' => 500
+            ];
+        }
+    }
+
+    public function updateAchievement($request): array
+    {
+        $inputs = $request->all();
+        $achievement = $this->achievement()->find($request->id);
+
+        if(!empty($inputs['icon']) && $inputs['icon'] !== "null"){
+            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
+            $inputs['image_path'] = config('app.url').'/'.$this->imagePath.'/';
+        }else{
+            $inputs['icon'] = $achievement->image;
+        }
+
+        $achievement->update($inputs);
+        return [
+            'success' => true,
+            'achievement' => new AchievementResource($achievement)
+        ];
+    }
+
+    public function deleteAchievement($request): array
+    {
+        // Start a transaction
+        DB::beginTransaction();
+
+        try {
+            $achievement = $this->achievement()->find($request->id);
+            // Check if the achievement exists
+            if (!$achievement) {
+                return [
+                    'success' => false,
+                    'error_message' => 'Achievement not found'
+                ];
+            }
+
+            // Delete the icon
+            if (!empty($achievement->icon)) {
+                CrudService::deleteFile($achievement->icon, $this->imagePath);
+            }
+
+            // Detach the categories
+            if ($achievement->categories && $achievement->categories->count() > 0) {
+                $achievement->categories()->detach();
+            }
+
+            // Delete the achievement
+            $achievement->delete();
+
+            // Commit the transaction
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Achievement deleted successfully'
+            ];
+
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of errors
+            DB::rollBack();
+            // Log the error
+            BaseService::logError($e);
+
+            return [
+                'success' => false,
+                'error_message' => 'An error occurred while deleting the achievement'
+            ];
+        }
+    }
+
+
+
     public const ACHIEVEMENTS = [
         'icebreaker' => [
             'title' => 'Ice Breaker',
