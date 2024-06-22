@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->unsignedBigInteger('item_id')->unique();
             $table->string('location');
+            $table->text('purpose');
+            $table->text('creation_prompt');
+            $table->text('example_summary');
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

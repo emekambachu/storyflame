@@ -1,25 +1,24 @@
 <?php
 
-namespace App\Models\DataPoint;
+namespace App\Models\Summary;
 
-use App\Models\Achievement;
 use App\Models\Category;
-use App\Models\DataPoint;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DataPointCategory extends Model
+class SummaryCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
     protected $fillable = [
-        'data_point_id',
+        'summary_id',
         'category_id',
     ];
 
-    public function dataPoint(): BelongsTo
+    public function summary(): BelongsTo
     {
-        return $this->belongsTo(DataPoint::class, 'data_point_id', 'id');
+        return $this->belongsTo(Summary::class, 'summary_id', 'id');
     }
 
     public function category(): BelongsTo

@@ -18,110 +18,170 @@
                             </button>
                         </div>
 
-                        <!--Contents-->
-                        <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                        <form @submit.prevent="submitAchievement">
+                            <!--Contents-->
+                            <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
 
-                            <div class="flex items-center justify-between bg-stone-300 p-3">
-                                <h2 class="text-md font-bold">Create new achievement</h2>
-                                <button type="button" class="px-4 py-2 bg-black text-white rounded-full">Save</button>
-                            </div>
+                                <div class="flex items-center justify-between bg-stone-300 p-3">
+                                    <h2 class="text-md font-bold">Create new achievement</h2>
+                                    <button type="button" class="px-4 py-2 bg-black text-white rounded-full">Save</button>
+                                </div>
 
-                            <div class="space-y-6 bg-white p-6 rounded-lg">
+                                <div class="space-y-6 bg-white p-6 rounded-lg">
 
-                                <div class="w-full space-x-4 block sm:flex">
-                                    <div class="sm:w-2/3 w-full">
-                                        <div class="mb-3">
-                                            <label
-                                                for="achievementName"
-                                                class="block text-sm font-medium text-gray-700">
-                                                Achievement name
-                                            </label>
-                                            <input
-                                                v-model="form.name"
-                                                id="achievementName"
-                                                type="text"
-                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
-                                        </div>
-                                        <div>
-                                            <label
-                                                for="achievementName"
-                                                class="block text-sm font-medium text-gray-700">
-                                                Color
-                                            </label>
-                                            <div class="bg-stone-150 border border-gray-300 rounded-md flex">
+                                    <div class="w-full space-x-4 block sm:flex">
+                                        <div class="sm:w-2/3 w-full">
+                                            <div class="mb-3">
+                                                <label
+                                                    for="achievementName"
+                                                    class="block text-sm font-medium text-gray-700">
+                                                    Achievement name
+                                                </label>
                                                 <input
-                                                    v-model="form.color"
-                                                    type="color"
-                                                    class="color-picker">
-                                                <p class="my-auto ml-1">{{ form.color }}</p>
+                                                    v-model="form.name"
+                                                    id="achievementName"
+                                                    type="text"
+                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    for="achievementName"
+                                                    class="block text-sm font-medium text-gray-700">
+                                                    Color
+                                                </label>
+                                                <div class="bg-stone-150 border border-gray-300 rounded-md flex">
+                                                    <input
+                                                        v-model="form.color"
+                                                        type="color"
+                                                        class="color-picker">
+                                                    <p class="my-auto ml-1">{{ form.color }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="w-3/6 sm:w-1/3 justify-center">
-                                        <div class="">
-                                            <label
-                                                class="block text-sm font-medium text-gray-700">
-                                                Upload Icon
-                                            </label>
-                                            <input
-                                                type="file"
-                                                class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
-                                            >
+                                        <div class="w-3/6 sm:w-1/3 justify-center">
+                                            <div class="">
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700">
+                                                    Upload Icon
+                                                </label>
+                                                <input
+                                                    type="file"
+                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
+                                                >
+                                            </div>
                                         </div>
+
                                     </div>
 
+                                    <div>
+                                        <label
+                                            for="subtitle"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Subtitle
+                                        </label>
+                                        <input
+                                            id="subtitle"
+                                            type="text"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                    </div>
+
+                                    <div class="w-full sm:w-1/2">
+                                        <label
+                                            for="publishAt"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Publish at
+                                        </label>
+                                        <input
+                                            id="publishAt"
+                                            type="date"
+                                            :min="new Date().toISOString().split('T')[0]"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div>
+                                        <label
+                                            for="category"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Category
+                                        </label>
+                                        <div v-if="form.categories?.length > 0">
+                                        <span
+                                            v-for="(category, index) in form.categories"
+                                            :key="index"
+                                            class="bg-sky-200 text-sky-600 p-1 rounded-md mr-1"
+                                        >
+                                            <span class="">
+                                                {{ category.name }}
+                                                <i class="" @click.prevent="deleteCategory">x</i>
+                                            </span>
+                                        </span>
+                                        </div>
+                                        <select
+                                            @change.prevent="selectCategory"
+                                            id="category"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            <option>Select Category</option>
+                                            <option
+                                                v-for="category in categories"
+                                                :key="category.id"
+                                                :value="category.id"
+                                            >
+                                                {{ category.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label
+                                            for="purpose"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Purpose
+                                        </label>
+                                        <textarea
+                                            v-model="form.purpose"
+                                            id="purpose"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div>
+                                        <label
+                                            for="extractionDescription"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Extraction Description
+                                        </label>
+                                        <textarea
+                                            v-model="form.extraction_description"
+                                            id="extractionDescription"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                    </div>
+                                    <div>
+                                        <label
+                                            for="openEndedQuestions"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Example Open-ended Questions
+                                        </label>
+                                        <textarea
+                                            v-model="form.example"
+                                            id="openEndedQuestions"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div>
+                                        <label for="dataPoints" class="block text-sm font-medium text-gray-700">Data Points</label>
+                                        <input id="dataPoints" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <button type="button" class="text-blue-600">+ Create new Data Point</button>
                                 </div>
 
-                                <div>
-                                    <label
-                                        for="subtitle"
-                                        class="block text-sm font-medium text-gray-700">
-                                        Subtitle
-                                    </label>
-                                    <input
-                                        id="subtitle"
-                                        type="text"
-                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
-                                </div>
-
-                                <div class="w-full sm:w-1/2">
-                                    <label
-                                        for="publishAt"
-                                        class="block text-sm font-medium text-gray-700">
-                                        Publish at
-                                    </label>
-                                    <input
-                                        id="publishAt"
-                                        type="date"
-                                        :min="new Date().toISOString().split('T')[0]"
-                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
-                                </div>
-
-                                <div>
-                                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                                    <input id="category" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
-                                </div>
-                                <div>
-                                    <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose</label>
-                                    <textarea id="purpose" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
-                                </div>
-                                <div>
-                                    <label for="extractionDescription" class="block text-sm font-medium text-gray-700">Extraction Description</label>
-                                    <textarea id="extractionDescription" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
-                                </div>
-                                <div>
-                                    <label for="openEndedQuestions" class="block text-sm font-medium text-gray-700">Example Open-ended Questions</label>
-                                    <textarea id="openEndedQuestions" class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
-                                </div>
-                                <div>
-                                    <label for="dataPoints" class="block text-sm font-medium text-gray-700">Data Points</label>
-                                    <input id="dataPoints" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
-                                </div>
-                                <button type="button" class="text-blue-600">+ Create new Data Point</button>
                             </div>
+                        </form>
 
-                        </div>
                     </div>
                 </div>
             </div>
@@ -130,7 +190,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, reactive } from 'vue'
+import { defineProps, defineEmits, reactive, ref, onMounted, computed } from 'vue'
+import store from '@/store/index.js'
 
 const props = defineProps({
     isOpen: {
@@ -145,6 +206,26 @@ const closeModal = () => {
     emit('close');
 };
 
+const categories = computed(() => store.state.categories);
+const selectCategory = (e) => {
+    if(e.target.value !== 'Select Category' && !form.categories.includes(e.target.value)) {
+        form.categories.push({
+            id: e.target.value,
+            name: e.target.options[e.target.selectedIndex].text,
+        });
+    }
+
+    console.log("CATEGORIES", form.categories);
+};
+
+const deleteCategory = (index) => {
+    form.categories.splice(index, 1);
+};
+
+const submitAchievement = () => {
+    console.log("FORM", form);
+};
+
 const form = reactive({
     name: '',
     color: '',
@@ -157,6 +238,13 @@ const form = reactive({
     example: '',
     extraction_description: '',
     openEndedQuestions: '',
+});
+
+onMounted(() => {
+    store.dispatch('getData', {
+        url: '/api/categories',
+        commit_name: 'SET_CATEGORIES',
+    });
 });
 
 </script>
