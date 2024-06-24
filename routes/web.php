@@ -5,4 +5,6 @@ use Illuminate\Support\Facades\Route;
 # direct all request to app.blade except /api and /public
 Route::get('/{any}', function () {
     return view('app');
-})->where('any', '^(?!api).*$');
+})->where('any', '^(?!api|admin).*$');
+
+include __DIR__ . '/admin/web.php';

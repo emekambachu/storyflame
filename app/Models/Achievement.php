@@ -2,31 +2,59 @@
 
 namespace App\Models;
 
+use App\Models\Achievement\AchievementCategory;
+use App\Models\Admin\Admin;
+use App\Models\Concerns\HasCategories;
+use App\Models\DataPoint\DataPointAchievement;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use SoftDeletes, HasUuids, HasFactory, HasCategories;
 
     protected $fillable = [
         'slug',
         'name',
-        'element',
         'subtitle',
         'extraction_description',
         'example',
         'purpose',
         'color',
-        'icon'
+        'icon_path',
+        'icon',
+        'item_id',
+        'admin_id',
+        'publish_at',
     ];
 
-    public function dataPoints(): HasMany
+    public function admin(): BelongsTo
     {
-        return $this->hasMany(DataPoint::class);
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
+
+    public function dataPoints(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            DataPoint::class,
+            'data_point_achievements'
+        )
+            ->using(DataPointAchievement::class)
+            ->withTimestamps();
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Category::class,
+            AchievementCategory::class,
+        )
+            ->using(AchievementCategory::class)
+            ->withTimestamps();
     }
 
     public function totalImpactScore(): int

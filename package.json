@@ -34,6 +34,7 @@
         "@vueuse/core": "^10.9.0",
         "laravel-echo": "^1.16.1",
         "luxon": "^3.4.4",
+        "moment": "^2.30.1",
         "motion": "^10.17.0",
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^3.2.1",
@@ -41,6 +42,7 @@
         "vue": "^3.4.24",
         "vue-logger-plugin": "^2.2.3",
         "vue-mountable": "^0.1.5",
-        "vue-router": "^4.3.2"
+        "vue-router": "^4.3.2",
+        "vuex": "^4.0.2"
     }
 }

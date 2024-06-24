@@ -268,6 +268,7 @@ const router = createRouter({
             name: 'dashboard',
             component: () => import('../views/HomeView.vue'),
         },
+
         {
             path: '/:pathMatch(.*)*',
             name: 'not-found',
