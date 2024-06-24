@@ -13,6 +13,7 @@ return new class extends Migration {
                 $table->uuid('id')->primary();
                 $table->uuid('achievement_id')->nullable();
                 $table->string('slug')->unique();
+                $table->unsignedBigInteger('item_id')->unique();
                 $table->string('name');
                 $table->string('type')->default('text');
                 //$table->string('category');

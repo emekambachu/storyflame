@@ -12,7 +12,7 @@ const achievement = ref(props.achievement);
 <template>
     <tr class="bg-white border-b">
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-            <img src="/images/achievements/icebreaker.png" width="60">
+            <img :src="achievement.icon" width="60">
         </th>
         <td class="px-6 py-4 text-center">
             <p class="font-extrabold text-md text-black">{{ achievement.name }}</p>
@@ -33,13 +33,13 @@ const achievement = ref(props.achievement);
             {{ achievement.data_points?.length > 0 ? achievement.data_points.length : 0}}
         </td>
         <td class="px-6 py-4 text-center">
-            20
+            {{ achievement.summaries?.length > 0 ? achievement.sumamries.length : 0}}
         </td>
         <td class="px-6 py-4 text-center">
-            2
+            {{ achievement.dev_order }}
         </td>
         <td class="px-6 py-4 text-center">
-            20
+            {{ achievement.impact_score }}
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ achievement.updated_at }}</p>

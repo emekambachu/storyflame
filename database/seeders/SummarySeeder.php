@@ -18,7 +18,7 @@ class SummarySeeder extends Seeder
         $summaries = [
             [
                 'name' => 'Logline',
-                'slug' => 'logline',
+                'slug' => 'logline'.BaseService::randomCharacters(5, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => 'Story Detail Page',
                 'purpose' => 'Provide a concise, compelling summary of the main story concept to guide development and pitch to others.',
@@ -28,7 +28,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Impact One-Liner',
-                'slug' => 'impact-one-liner',
+                'slug' => 'impact-one-liner'.BaseService::randomCharacters(5, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Summarize the most important way this achievement helps develop the story, to motivate the writer.',
@@ -38,7 +38,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => '[Per Category] Impact Summary',
-                'slug' => 'per-category-impact-summary',
+                'slug' => 'per-category-impact-summary'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Explain how this achievement contributes to the development of its specific category (character, plot, etc.), to help the writer understand its value.',
@@ -48,7 +48,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Title',
-                'slug' => 'title',
+                'slug' => 'title'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
@@ -58,7 +58,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Discrepancy',
-                'slug' => 'discrepancy',
+                'slug' => 'discrepancy'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Describe what needs to be resolved and why, to maintain story integrity.',
@@ -68,7 +68,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Bio',
-                'slug' => 'bio',
+                'slug' => 'bio'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => 'User Profile',
                 'purpose' => 'Showcase a writer\'s unique differentiators, interests, experience, and perspective, to facilitate professional opportunities and connections.',
@@ -78,7 +78,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Writing Goals',
-                'slug' => 'writing-goals',
+                'slug' => 'writing-goals'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => 'User Profile',
                 'purpose' => 'Articulate the writer\'s aspirations and target audience, to guide project choice and development.',
@@ -88,7 +88,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Character Card Summary',
-                'slug' => 'character-card-summary',
+                'slug' => 'character-card-summary'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Encapsulate the character\'s key traits and role, to provide a quick reference.',
@@ -98,7 +98,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Plot Card Title',
-                'slug' => 'plot-card-title',
+                'slug' => 'plot-card-title'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Name the main event or turning point of the plot point, to orient the writer.',
@@ -108,7 +108,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Plot Card Summary',
-                'slug' => 'plot-card-summary',
+                'slug' => 'plot-card-summary'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Summarize the key event and its impact on the story, to trace the narrative arc.',
@@ -118,7 +118,7 @@ class SummarySeeder extends Seeder
             ],
             [
                 'name' => 'Setting Card Title',
-                'slug' => 'setting-card-title',
+                'slug' => 'setting-card-title'.BaseService::randomCharacters(2, '0123456789'),
                 'item_id' => BaseService::randomCharacters(5, '0123456789'),
                 'location' => '-',
                 'purpose' => 'Name the primary location or time period of the setting, to establish the story world.',

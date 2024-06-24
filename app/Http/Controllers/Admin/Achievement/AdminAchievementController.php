@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Achievement;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Achievement\AdminAchievementResource;
+use App\Http\Resources\Admin\Achievement\AdminAchievementResource;
 use App\Services\AchievementService;
 use App\Services\Base\BaseService;
 use Illuminate\Http\JsonResponse;

@@ -33,6 +33,8 @@ class Summary extends Model
         return $this->belongsToMany(
             DataPoint::class,
             DataPointSummary::class,
+            'summary_id',
+            'data_point_id',
         )
             ->using(DataPointSummary::class)
             ->withTimestamps();
@@ -42,14 +44,23 @@ class Summary extends Model
     {
         return $this->belongsToMany(
             Category::class,
-            SummaryCategory::class
+            SummaryCategory::class,
+            'summary_id',
+            'category_id',
         )
             ->using(SummaryCategory::class)
             ->withTimestamps();
     }
 
-    public function summaries(): HasMany
+    public function summaries(): BelongsToMany
     {
-        return $this->hasMany(__CLASS__, 'primary_summary_id', 'linked_summary_id');
+        return $this->belongsToMany(
+            __CLASS__,
+            SummaryLink::class,
+            'summary_id',
+            'linked_summary_id',
+        )
+            ->using(SummaryLink::class)
+            ->withTimestamps();
     }
 }

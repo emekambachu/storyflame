@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Achievement;
+namespace App\Http\Resources\Admin\Summary;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminAchievementResource extends JsonResource
+class AdminSummaryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,17 +17,15 @@ class AdminAchievementResource extends JsonResource
         return [
             'id' => $this->id,  // Try both id and uuid
             'name' => $this->name,
-            'icon' => $this->icon ? '/images/achievements/' . $this->icon : null,
-            'title' => $this->name,
+            'slug' => $this->slug,
             'item_id' => $this->item_id,
-            'subtitle' => $this->subtitle ?? null,
-            'extraction_description' => $this->extraction_description ?? null,
+            'location' => $this->location,
+            'purpose' => $this->purpose,
+            'creation_prompt' => $this->creation_prompt,
+            'example_summary' => $this->example_summary,
             'categories' => $this->categories ?? null,
-            'data_points' => $this->dataPoints ?? null,
-            'example' => $this->example ?? null,
-            'purpose' => $this->purpose ?? null,
-            'color' => $this->color ?? null,
-            'icon_path' => $this->icon_path ?? null,
+            'summaries' => $this->sumamries ?? null,
+            'data_points' => $this->data_points ?? null,
             'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
             'publish_at' => $this->publish_at ?? null,
             'updated_at' => $this->updated_at->format('F d Y'),

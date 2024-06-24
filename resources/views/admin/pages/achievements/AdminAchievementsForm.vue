@@ -65,11 +65,20 @@
                                                     class="block text-sm font-medium text-gray-700">
                                                     Upload Icon
                                                 </label>
-                                                <input v-if="form.icon === null"
+                                                <input
+                                                    v-if="form.icon === null"
+                                                    @change="uploadIcon"
                                                     type="file"
                                                     class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
                                                 >
-                                                <img v-else :src="iconPreview" class="w-full h-40 object-cover rounded-md">
+                                                <img v-else
+                                                     :src="iconPreview"
+                                                     class="w-full h-40 object-cover rounded-md">
+                                                <p
+                                                    v-if="form.icon !== null"
+                                                    @click="form.icon = null"
+                                                   class="text-center text-red-500"
+                                                   title="delete">x</p>
                                             </div>
                                         </div>
 
