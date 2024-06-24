@@ -2,17 +2,19 @@
     <div class="flex flex-col gap-2 rounded-lg bg-stone-100 p-2">
         <div class="flex w-full items-start justify-between">
             <div class="flex flex-col gap-0.5">
+                <p
+                    class="flex items-center gap-1 text-[8px] font-bold uppercase text-stone-500"
+                >
+                    {{ card?.type }}
+                    <point-icon
+                        v-if="card?.type && card?.sequences_amount"
+                        class="h-1 w-1"
+                    />
+                    {{ card?.sequences_amount ?? 0 }} Sequences
+                </p>
                 <h5 class="text-base font-bold text-stone-800">
                     {{ card.title }}
                 </h5>
-
-                <p
-                    class="flex items-center gap-1 text-xs font-medium text-stone-500"
-                >
-                    {{ card?.episodes ?? 0 }} Episodes
-                    <point-icon />
-                    {{ card?.characters ?? 0 }} Characters
-                </p>
             </div>
 
             <flame-icon

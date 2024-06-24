@@ -20,16 +20,16 @@
                         template: 'progress',
                     },
                     {
-                        title: 'Story',
-                        template: 'story',
+                        title: 'Arcs',
+                        template: 'arcs',
                     },
                     {
                         title: 'Elements',
                         template: 'elements',
                     },
                     {
-                        title: 'Marketing',
-                        template: 'marketing',
+                        title: 'References',
+                        template: 'references',
                     },
                 ]"
                 class="!gap-0"
@@ -47,13 +47,13 @@
                 <template #progress>
                     <story-progress-tab :story="story" />
                 </template>
-                <template #story>
+                <template #arcs>
                     <story-story-tab :story="story" />
                 </template>
                 <template #elements>
                     <story-elements-tab :story="story" />
                 </template>
-                <template #marketing>
+                <template #references>
                     <story-marketing-tab :story="story" />
                 </template>
             </tab-layout>
@@ -904,6 +904,61 @@ const story = {
                 'The shocking final scene with Bran`s fall and the revelation of Jaime and Cersei`s secret relationship',
                 'The introduction of compelling characters with rich backstories and motivations, such as Ned Stark, Daenerys Targaryen, and Tyrion Lannister',
             ],
+        },
+    ],
+
+    episodes: [
+        {
+            episode: '1st Novel',
+            story: 'Game of Thrones',
+            title: 'A Study in Pink',
+            progress: 80,
+            description:
+                "Sherlock and Watson's first meeting and their investigation into a series of mysterious deaths linked by the color pink.",
+        },
+        {
+            episode: '1st Novel',
+            story: 'Game of Thrones',
+            title: 'A Study in Pink',
+            progress: 80,
+            description:
+                "Sherlock and Watson's first meeting and their investigation into a series of mysterious deaths linked by the color pink.",
+        },
+    ],
+    themes: [
+        {
+            type: 'Major Theme',
+            title: 'Power',
+            progress: 80,
+            description:
+                'The quest for power and the lengths characters will go to attain and maintain it.',
+        },
+        {
+            episode: '1st Novel',
+            story: 'Game of Thrones',
+            title: 'A Study in Pink',
+            progress: 80,
+            description:
+                'The quest for power and the lengths characters will go to attain and maintain it.',
+        },
+    ],
+    plots: [
+        {
+            progress: 80,
+            title: 'A Study in Pink',
+            subtitle: 'main plot',
+            description:
+                'Sherlock Holmes and Dr. John Watson meet for the first time and investigate a series of mysterious deaths linked by the color pink, leading them into a deadly game with a clever serial killer.',
+        },
+    ],
+    settingsList: [
+        {
+            progress: 80,
+            title: 'The Magical Realm',
+            type: 'major setting',
+            sequences_amount: 23,
+            description:
+                'Sherlock Holmes and Dr. John Watson meet for the first time and investigate a series of mysterious deaths linked by the color pink, leading them into a deadly game with a clever serial killer.',
         },
     ],
 }
