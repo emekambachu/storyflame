@@ -47,9 +47,9 @@ class StoriesSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $storyAchievements = Achievement::where('element', 'Story')
+        $storyAchievements = Achievement::whereCategory('Story')
             ->get();
-        $characterAchievements = Achievement::where('element', 'Character')
+        $characterAchievements = Achievement::whereCategory('Character')
             ->get();
 
         Story::factory(1, [

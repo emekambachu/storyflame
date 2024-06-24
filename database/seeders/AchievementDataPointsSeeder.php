@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
+use App\Models\Category;
 use App\Models\DataPoint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -58,8 +59,16 @@ class AchievementDataPointsSeeder extends Seeder
         // insert the data
         foreach ($data as $row) {
             $achievement = Achievement::where('name', $row['achievement'])->first();
+            $category = Category::firstOrCreate(
+                ['name' => $row['category']],
+                ['slug' => Str::slug($row['category'], '_')]
+            );
+            unset($row['category']);
             unset($row['achievement']);
-            $achievement?->dataPoints()->create($row);
+            $dataPoint = $achievement?->dataPoints()->create($row);
+            if ($dataPoint) {
+                $dataPoint->categories()->attach($category->id);
+            }
         }
     }
 }

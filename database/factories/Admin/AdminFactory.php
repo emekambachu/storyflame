@@ -21,7 +21,6 @@ class AdminFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'role' => 1,
             'last_login' => now()->format('Y-m-d H:i:s'),
