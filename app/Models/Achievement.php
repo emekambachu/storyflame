@@ -4,23 +4,22 @@ namespace App\Models;
 
 use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
+use App\Models\Concerns\HasCategories;
+use App\Models\DataPoint\DataPointAchievement;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use SoftDeletes, HasUuids, HasFactory, HasCategories;
 
     protected $fillable = [
         'slug',
         'name',
-        //'element',
         'subtitle',
         'extraction_description',
         'example',
@@ -33,33 +32,29 @@ class Achievement extends Model
         'publish_at',
     ];
 
-    public function dataPoints(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            DataPoint::class,
-            'data_point_achievements',
-            'achievement_id',
-            'data_point_id'
-        )
-            ->withPivot('id')
-            ->withTimestamps();
-    }
-
     public function admin(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'admin_id', 'id');
     }
 
-    public function categories(): HasManyThrough
+    public function dataPoints(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
+            DataPoint::class,
+            'data_point_achievements'
+        )
+            ->using(DataPointAchievement::class)
+            ->withTimestamps();
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(
             Category::class,
             AchievementCategory::class,
-            'achievement_id',
-            'id',
-            'id',
-            'category_id'
-        );
+        )
+            ->using(AchievementCategory::class)
+            ->withTimestamps();
     }
 
     public function totalImpactScore(): int

@@ -3,19 +3,20 @@
 namespace App\Models\Summary;
 
 use App\Models\Category;
+use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint;
-use App\Models\DataPoint\DataPointCategory;
+use App\Models\DataPoint\DataPointSummary;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Summary extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use SoftDeletes, HasUuids, HasFactory, HasCategories;
+
     protected $fillable = [
         'name',
         'slug',
@@ -31,22 +32,20 @@ class Summary extends Model
     {
         return $this->belongsToMany(
             DataPoint::class,
-            'data_point_summaries',
-            'summary_id',
-            'data_point_id'
-        );
+            DataPointSummary::class,
+        )
+            ->using(DataPointSummary::class)
+            ->withTimestamps();
     }
 
-    public function categories(): HasManyThrough
+    public function categories(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Category::class,
-            SummaryCategory::class,
-            'summary_id',
-            'id',
-            'id',
-            'category_id'
-        );
+            SummaryCategory::class
+        )
+            ->using(SummaryCategory::class)
+            ->withTimestamps();
     }
 
     public function summaries(): HasMany

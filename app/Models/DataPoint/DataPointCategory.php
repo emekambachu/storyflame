@@ -2,16 +2,19 @@
 
 namespace App\Models\DataPoint;
 
-use App\Models\Achievement;
 use App\Models\Category;
 use App\Models\DataPoint;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class DataPointCategory extends Model
+class DataPointCategory extends Pivot
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $table = 'data_point_categories';
+
     protected $fillable = [
         'data_point_id',
         'category_id',

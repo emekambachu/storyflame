@@ -2,17 +2,19 @@
 
 namespace App\Models\DataPoint;
 
-use App\Models\Achievement;
-use App\Models\Category;
 use App\Models\DataPoint;
 use App\Models\Summary\Summary;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class DataPointSummary extends Model
+class DataPointSummary extends Pivot
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $table = 'data_point_summaries';
+
     protected $fillable = [
         'data_point_id',
         'summary_id',

@@ -9,7 +9,7 @@ use App\Models\Summary\Summary;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPoint extends Model
@@ -38,40 +38,34 @@ class DataPoint extends Model
         return $this->belongsTo(Achievement::class);
     }
 
-    public function categories(): HasManyThrough
+    public function categories(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Category::class,
-            DataPointCategory::class,
-            'data_point_id',
-            'id',
-            'id',
-            'category_id'
-        );
+            DataPointCategory::class
+        )
+            ->using(DataPointCategory::class)
+            ->withTimestamps();
     }
 
-    public function achievements(): HasManyThrough
+    public function achievements(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Achievement::class,
-            DataPointAchievement::class,
-            'data_point_id',
-            'id',
-            'id',
-            'achievement_id'
-        );
+            DataPointAchievement::class
+        )
+            ->using(DataPointAchievement::class)
+            ->withTimestamps();
     }
 
-    public function summaries(): HasManyThrough
+    public function summaries(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Summary::class,
             DataPointSummary::class,
-            'data_point_id',
-            'id',
-            'id',
-            'summary_id'
-        );
+        )
+            ->using(DataPointSummary::class)
+            ->withTimestamps();
     }
 
     /**
