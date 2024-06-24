@@ -222,30 +222,30 @@ final class ConversationEngineV2
             );
         }
 
-        // if user mentioned some other elements
-        // and config allows to switch engine
-        if ($this->context->canSwitchEngine() && count($otherElements)) {
-            // confirm if the user wants to switch to that context
-            // todo: remove this, it's for testing
-            if ($otherElements->count() === 1) {
-                $this->setContext(BaseContext::make($otherElements->first()));
-            } else {
-                Log::debug('switch context');
-                return $this->switchContext($otherElements);
-            }
-        } else {
-            // if we have predefined question for the next question
-            if ($predefined = $this->context->getNextPredefinedQuestion($question)) {
-                Log::debug('predefined question', [$predefined->content]);
-                return $predefined;
-            }
+//        // if user mentioned some other elements
+//        // and config allows to switch engine
+//        if ($this->context->canSwitchEngine() && count($otherElements)) {
+//            // confirm if the user wants to switch to that context
+//            // todo: remove this, it's for testing
+//            if ($otherElements->count() === 1) {
+//                $this->setContext(BaseContext::make($otherElements->first()));
+//            } else {
+//                Log::debug('switch context');
+//                return $this->switchContext($otherElements);
+//            }
+//        }
 
-            // check if the current achievement is finished
-            if ($achievement = $this->context->isCurrentAchievementFinished()) {
-                dd('achievement finished');
-                // switch to the next achievement
-                return $this->switchAchievement();
-            }
+        // if we have predefined question for the next question
+        if ($predefined = $this->context->getNextPredefinedQuestion($question)) {
+            Log::debug('predefined question', [$predefined->content]);
+            return $predefined;
+        }
+
+        // check if the current achievement is finished
+        if ($achievement = $this->context->isCurrentAchievementFinished()) {
+            dd('achievement finished');
+            // switch to the next achievement
+            return $this->switchAchievement();
         }
         return $this->generateNextQuestion('basic', collect([$this->context->getCurrentAchievement()]));
     }
@@ -332,6 +332,7 @@ final class ConversationEngineV2
     public function process(string $message): ChatMessage
     {
         $lastQuestion = $this->context->getLastQuestion();
+        Log::debug('last question', [$this->context->getIdentifier(), $lastQuestion->content]);
         if (!$lastQuestion) {
             $lastQuestion = $this->createFirstQuestion();
             if ($this->processing instanceof MockProcessing) {

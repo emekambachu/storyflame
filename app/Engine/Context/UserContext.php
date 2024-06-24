@@ -33,19 +33,19 @@ class UserContext extends BaseContext implements ContextInterface
         return $this->getModel()->stories();
     }
 
-    public function characters(): HasMany
+    public function characters(): ?HasMany
     {
-        return $this->getModel()->characters();
+        return null;
     }
 
-    public function plots(): HasMany
+    public function plots(): ?HasMany
     {
-
+        return null;
     }
 
-    public function sequences(): HasMany
+    public function sequences(): ?HasMany
     {
-        // TODO: Implement sequences() method.
+        return null;
     }
 
     protected function onDataPointSaved(string $key, mixed $value): void

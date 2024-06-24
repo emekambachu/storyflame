@@ -37,33 +37,6 @@ class StoryContext extends BaseContext implements ContextInterface
         return $this->getModel()->user->stories();
     }
 
-
-    /**
-     * @inheritDoc
-     */
-    public function getStories(): array
-    {
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCharacters(): array
-    {
-        return $this->getModel()->characters()->get()->all();
-    }
-
-    public function addStory(Story $story): Story
-    {
-        // TODO: Implement addStory() method.
-    }
-
-    public function addCharacter(array $character): Character
-    {
-        return $this->getModel()->characters()->create($character);
-    }
-
     public function characters(): HasMany
     {
         return $this->getModel()->characters();

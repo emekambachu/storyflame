@@ -124,48 +124,103 @@ const router = createRouter({
                                         import('../views/StoryView.vue'),
                                     meta: {
                                         transition: 'slide',
+                                        back: 'home'
                                     },
                                 },
                                 {
-                                    path: ':characters/',
+                                    path: 'characters/',
                                     children: [
+                                        {
+                                            path: '',
+                                            name: 'characters',
+                                            component: () =>
+                                                import(
+                                                    '../views/CharacterListPage.vue'
+                                                ),
+                                            meta: {
+                                                transition: 'slide',
+                                            },
+                                        },
                                         {
                                             path: ':character',
                                             name: 'character',
-                                            // beforeEnter: checkAuth,
                                             component: () =>
-                                                import('../views/CharacterView.vue'),
+                                                import(
+                                                    '../views/CharacterView.vue'
+                                                ),
+                                            meta: {
+                                                transition: 'slide',
+                                            },
                                         },
-                                    ]
+                                    ],
                                 },
-
+                                {
+                                    path: 'sequences/',
+                                    children: [
+                                        // {
+                                        //     path: '',
+                                        //     name: 'sequences',
+                                        //     component: () =>
+                                        //         import(
+                                        //             '../views/SequencesListPage.vue'
+                                        //         ),
+                                        // },
+                                        {
+                                            path: ':sequence',
+                                            name: 'sequence',
+                                            component: () =>
+                                                import(
+                                                    '../views/SequenceView.vue'
+                                                ),
+                                        },
+                                    ],
+                                },
+                                {
+                                    path: 'plots/',
+                                    children: [
+                                        {
+                                            path: ':plot',
+                                            name: 'plot',
+                                            component: () =>
+                                                import('../views/PlotView.vue'),
+                                        },
+                                    ],
+                                },
+                                {
+                                    path: 'themes/',
+                                    children: [
+                                        {
+                                            path: '',
+                                            name: 'themes',
+                                            component: () =>
+                                                import(
+                                                    '../views/ThemesListPage.vue'
+                                                ),
+                                        },
+                                        {
+                                            path: ':theme',
+                                            name: 'theme',
+                                            component: () =>
+                                                import(
+                                                    '../views/ThemeView.vue'
+                                                ),
+                                        },
+                                    ],
+                                },
+                                {
+                                    path: 'audiences/',
+                                    children: [
+                                        {
+                                            path: ':id',
+                                            name: 'audience',
+                                            component: () =>
+                                                import(
+                                                    '../views/TargetAudienceView.vue'
+                                                ),
+                                        },
+                                    ],
+                                },
                             ],
-                        },
-                        {
-                            path: 'sequences/:id',
-                            name: 'sequence',
-                            // beforeEnter: checkAuth,
-                            component: () =>
-                                import('../views/SequenceView.vue'),
-                        },
-                        {
-                            path: 'plots/:id',
-                            name: 'plot',
-                            // beforeEnter: checkAuth,
-                            component: () => import('../views/PlotView.vue'),
-                        },
-                        {
-                            path: '/themes/:id',
-                            name: 'theme',
-                            // beforeEnter: checkAuth,
-                            component: () => import('../views/ThemeView.vue'),
-                        },
-                        {
-                            path: '/audiences/:id',
-                            name: 'audience',
-                            // beforeEnter: checkAuth,
-                            component: () =>
-                                import('../views/TargetAudienceView.vue'),
                         },
                     ],
                 },
@@ -182,24 +237,6 @@ const router = createRouter({
             name: 'achievements',
             // beforeEnter: checkAuth,
             component: () => import('../views/AchievementsListPage.vue'),
-        },
-        {
-            path: '/characters',
-            name: 'characters',
-            // beforeEnter: checkAuth,
-            component: () => import('../views/CharacterListPage.vue'),
-        },
-        // {
-        // 	path: '/sequences',
-        // 	name: 'sequences',
-        // 	// beforeEnter: checkAuth,
-        // 	component: ()=> import('../views/SequencesListPage.vue')
-        // },
-        {
-            path: '/themes',
-            name: 'themes',
-            // beforeEnter: checkAuth,
-            component: () => import('../views/ThemesListPage.vue'),
         },
         {
             path: '/auth',

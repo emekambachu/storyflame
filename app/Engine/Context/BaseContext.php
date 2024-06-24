@@ -118,20 +118,23 @@ abstract class BaseContext implements ContextInterface
     public function getElements(string $elementType): array
     {
         return match ($elementType) {
-            'Character' => $this->characters()->get()->all(),
+            'Character' => $this->characters()?->get()->all(),
+            'Story' => $this->stories()?->get()->all(),
+            'Plot' => $this->plots()?->get()->all(),
+//            'Sequence' => $this->sequences()->get()->all(),
             default => []
-        };
+        } ?? [];
     }
 
     public function addElement(string $elementType, array $elementData): ?ModelWithComparableNames
     {
         return match ($elementType) {
-            'Story' => $this->stories()->create($elementData),
-            'Character' => $this->characters()->create($elementData),
-//            'Plot' => $this->plots()->create($elementData),
+            'Story' => $this->stories()?->create($elementData),
+            'Character' => $this->characters()?->create($elementData),
+            'Plot' => $this->plots()?->create($elementData),
 //            'Sequence' => $this->sequences()->create($elementData),
             default => null
-        };
+        } ?? null;
     }
 
     protected function onDataPointSaved(string $key, mixed $value): void
@@ -196,6 +199,7 @@ abstract class BaseContext implements ContextInterface
         if ($this->getModel()->exists === false) {
             $this->model->user_id = auth()->id();
             $this->model->save();
+            $this->model->chats()->save($this->getChat());
         }
 
         $otherModels = collect();

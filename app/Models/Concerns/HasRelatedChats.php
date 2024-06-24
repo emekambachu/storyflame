@@ -9,6 +9,7 @@ trait HasRelatedChats
 {
     public function chats(): MorphToMany
     {
-        return $this->morphToMany(Chat::class, 'related', 'related_chats');
+        return $this->morphToMany(Chat::class, 'related', 'related_chats')
+            ->withTimestamps();
     }
 }

@@ -20,6 +20,7 @@ export default {
                 main: ['"Inter"', 'sans-serif'],
                 decorative: ['"Source Serif 4"', 'serif'],
                 fjalla: ['"Fjalla One"', 'sans-serif'],
+                inter: ['"Inter"', 'sans-serif'],
             },
             fontSize: {
                 '2m': '22px',

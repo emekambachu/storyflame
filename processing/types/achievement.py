@@ -7,6 +7,9 @@ class DataPoint(BaseModel):
     id: str
     name: str
     extraction_description: str
+    extraction_examples: Optional[List[str]] = None
+    purpose: Optional[str] = None
+    data_value_instructions: Optional[str] = None
 
 
 class Achievement(BaseModel):
