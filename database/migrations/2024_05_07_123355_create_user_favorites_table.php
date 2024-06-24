@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_favorites', function (Blueprint $table) {
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->uuidMorphs('favorite');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->morphs('favorite');
             $table->timestamps();
 
             $table->primary(['user_id', 'favorite_id', 'favorite_type']);

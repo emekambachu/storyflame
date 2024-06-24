@@ -4,14 +4,13 @@ namespace App\Models\Achievement;
 
 use App\Models\Achievement;
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AchievementCategory extends Pivot
 {
-    use HasUuids, HasFactory;
+    use HasFactory;
 
     protected $table = 'achievement_categories';
 

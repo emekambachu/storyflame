@@ -6,7 +6,6 @@ use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
 use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint\DataPointAchievement;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory, HasCategories;
+    use SoftDeletes, HasFactory, HasCategories;
 
     protected $fillable = [
         'slug',

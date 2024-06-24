@@ -8,11 +8,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('chats', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
             $table->string('type');
-            $table->foreignUuid('sender_id')->comment('User that initiated this chat.')->constrained('users');
-            $table->foreignUuid('recipient_id')->nullable()->comment('The person user is speaking to, typically null which means AI')->constrained('users');
+            $table->foreignId('sender_id')->comment('User that initiated this chat.')->constrained('users');
+            $table->foreignId('recipient_id')->nullable()->comment('The person user is speaking to, typically null which means AI')->constrained('users');
 
             $table->softDeletes();
             $table->timestamps();

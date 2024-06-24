@@ -6,7 +6,6 @@ use App\Models\DataPoint\DataPointAchievement;
 use App\Models\DataPoint\DataPointCategory;
 use App\Models\DataPoint\DataPointSummary;
 use App\Models\Summary\Summary;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPoint extends Model
 {
-    use SoftDeletes, HasUuids;
+    use SoftDeletes;
 
     protected $fillable = [
         'slug',

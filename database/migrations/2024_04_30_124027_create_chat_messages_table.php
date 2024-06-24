@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('chat_messages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
-            $table->foreignUuid('chat_id')->constrained('chats');
-            $table->foreignUuid('user_id')->nullable()->constrained('users');
+            $table->foreignId('chat_id')->constrained('chats');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->text('content')->nullable();
 
             $table->softDeletes();

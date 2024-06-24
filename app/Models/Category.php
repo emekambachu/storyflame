@@ -4,14 +4,13 @@ namespace App\Models;
 
 use App\Models\Achievement\AchievementCategory;
 use App\Models\DataPoint\DataPointCategory;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Category extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
     protected $fillable = [
         'name',

@@ -9,12 +9,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('achievements', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
             $table->string('name');
             $table->string('icon_path')->nullable();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('admin_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('admin_id')->constrained('users')->cascadeOnDelete();
 
             $table->softDeletes();
             $table->timestamps();

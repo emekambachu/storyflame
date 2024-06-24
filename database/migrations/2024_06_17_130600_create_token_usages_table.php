@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('token_usages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('key');
-            $table->foreignUuid('user_id');
-            $table->uuidMorphs('target');
+            $table->foreignId('user_id');
+            $table->morphs('target');
             $table->string('model');
             $table->unsignedSmallInteger('input_tokens')->default(0);
             $table->unsignedSmallInteger('output_tokens')->default(0);

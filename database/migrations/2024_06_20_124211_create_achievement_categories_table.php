@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('achievement_categories', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

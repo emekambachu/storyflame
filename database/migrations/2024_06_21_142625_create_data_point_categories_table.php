@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_point_categories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('data_point_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('data_point_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

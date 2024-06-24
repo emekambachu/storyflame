@@ -19,9 +19,9 @@ return new class extends Migration
 
         // Create the table
         Schema::create('summary_links', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('summary_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('linked_summary_id');
+            $table->id();
+            $table->foreignId('summary_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('linked_summary_id');
             $table->timestamps();
         });
     }

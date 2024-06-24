@@ -3,14 +3,13 @@
 namespace App\Models\Summary;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class SummaryCategory extends Pivot
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
     protected $table = 'summary_categories';
 

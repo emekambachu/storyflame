@@ -13,7 +13,6 @@ use App\Models\Concerns\ModelWithId;
 use App\Models\Concerns\ModelWIthRelatedChats;
 use App\Observers\StoryObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy(StoryObserver::class)]
 class Story extends Model implements ModelWithComparableNames, ModelWIthRelatedChats, ModelWithId
 {
-    use SoftDeletes, HasFactory, HasUuids, HasRelatedChats, HasSchemalessAttributes, HasAchievements, HasImages, HasAliases, HasDataPoints;
+    use SoftDeletes, HasFactory, HasRelatedChats, HasSchemalessAttributes, HasAchievements, HasImages, HasAliases, HasDataPoints;
 
     protected $fillable = [
         'name',

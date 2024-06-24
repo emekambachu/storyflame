@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('achievement_chat_message', function (Blueprint $table) {
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('chat_message_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('chat_message_id')->constrained()->cascadeOnDelete();
             $table->primary(['achievement_id', 'chat_message_id']);
         });
     }

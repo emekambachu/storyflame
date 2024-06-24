@@ -100,19 +100,6 @@ return new class extends Migration {
                     $table->dropColumn($column);
                 }
             }
-
-            //$table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-//            $table->integer('progress')->default(0);
-//            $table->timestamp('completed_at')->nullable();
-//
-//            $table->dropColumn('slug');
-//            $table->dropColumn('element');
-//            $table->dropColumn('extraction_description');
-//            $table->dropColumn('subtitle');
-//            $table->dropColumn('purpose');
-//            $table->dropColumn('color');
-//            $table->dropColumn('icon');
-
         });
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }

@@ -7,14 +7,13 @@ use App\Models\Concerns\HasImages;
 use App\Models\Concerns\HasSchemalessAttributes;
 use App\Observers\MediaObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy([MediaObserver::class])]
 class Media extends Model
 {
-    use SoftDeletes, HasUuids, HasSchemalessAttributes, HasAliases, HasImages;
+    use SoftDeletes, HasSchemalessAttributes, HasAliases, HasImages;
 
     public static function getAliasableNameAttribute(): string
     {
