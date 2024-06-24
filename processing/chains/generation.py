@@ -18,25 +18,25 @@ class OnboardingResponse(BaseModel):
     brief_affirming_summarizing_active_listening_statement: str = Field(
         title="Brief Affirming Summarizing Active Listening Statement",
         description="A brief, affirming, summarizing, and active listening statement to show understanding and "
-                    "encouragement to the user.",
+                    "encouragement to the writer. Max 10 words.",
     )
     question: str = Field(
-        title="Question", description="The question to ask the user."
+        title="Question", description="The question to ask the writer."
     )
     tooltip: str = Field(
-        title="Tooltip", description="A tooltip to provide additional information or context to the user."
+        title="Tooltip", description="A tooltip to provide additional information or context to the writer."
     )
     data_points: List[str] = Field(
         title="Data Points", description="Data points ids used to generate the question."
     )
     examples: List[str] = Field(
-        title="Examples", description="Examples of the type of response expected from the user."
+        title="Examples", description="Examples of the type of response expected from the writer."
     )
 
 
 class OnboardingResponseMultipleChoice(OnboardingResponse):
     options: List[str] = Field(
-        title="Options", description="The options to provide to the user."
+        title="Options", description="The options to provide to the writer."
     )
 
 
@@ -143,12 +143,12 @@ def generate_title_chain():
 
 def generate_bio_chain():
     """
-    Chain that generates a bio for a user based on the extracted data points.
+    Chain that generates a bio for a writer based on the extracted data points.
     """
     prompt = PromptTemplate(
-        template="You are given a list of key elements from a user's profile for a writing platform, including "
-                 "interests, writing style, and preferences. Based on this data, create a short bio for the user. "
-                 "Bio should be engaging and informative, reflecting the user's personality and writing style. "
+        template="You are given a list of key elements from a writer's profile for a writing platform, including "
+                 "interests, writing style, and preferences. Based on this data, create a short bio for the writer. "
+                 "Bio should be engaging and informative, reflecting the writer's personality and writing style. "
                  "Write from the perspective of the writer, in the first person."
                  "The bio should be 3-4 sentences long and be useful for producers to understand who the writer is."
                  "Do not make up any information, only use the information provided in the conversation."

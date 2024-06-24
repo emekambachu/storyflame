@@ -48,6 +48,22 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    menuBtnClass: {
+        type: String,
+        default: 'border-neutral-300 text-neutral-500',
+    },
+    menuBtnSelectedClass: {
+        type: String,
+        default: 'border-red-600 text-red-600',
+    },
+    menuContainerClass: {
+        type: String,
+        default: 'z-10 flex w-full flex-nowrap px-4 ',
+    },
+    menuWrapperClass: {
+        type: String,
+        default: 'mx-auto max-w-full overflow-x-auto',
+    },
     tabsContentClass: {
         type: String,
         default: 'flex flex-col gap-8 w-full',

@@ -155,7 +155,14 @@ const router = createRouter({
                                     ],
                                 },
                                 {
-                                    path: 'sequences/',
+                                    path: 'outline/:id',
+                            name: 'outline',
+                            // beforeEnter: checkAuth,
+                            component: () =>
+                                import('../views/OutlineView.vue'),
+                        },
+                        {
+                            path: 'sequences/',
                                     children: [
                                         // {
                                         //     path: '',

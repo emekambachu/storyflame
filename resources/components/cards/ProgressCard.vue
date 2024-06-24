@@ -23,7 +23,7 @@
             {{ item.name }}
         </h6>
         <flame-icon
-            :priority="item.progress"
+            :progress="item.progress"
             class="!w-10 !h-10"
             flameClass="w-8 h-8"
         />
