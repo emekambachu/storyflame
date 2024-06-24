@@ -5,7 +5,7 @@
             <div class="absolute inset-0 overflow-hidden">
                 <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="closeModal"></div>
                 <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
-                    <div class="relative w-screen max-w-md">
+                    <div class="relative w-screen max-w-md overflow-y-auto">
 
                         <!--Close slide-over-->
                         <div class="absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4">
@@ -20,9 +20,9 @@
 
                         <form @submit.prevent="submitAchievement">
                             <!--Contents-->
-                            <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                            <div class="h-full flex flex-col bg-white shadow-xl overflow-y-auto">
 
-                                <div class="flex items-center justify-between bg-stone-300 p-3">
+                                <div class="flex items-center justify-between bg-stone-300 p-3 sticky top-0">
                                     <h2 class="text-md font-bold">Create new achievement</h2>
                                     <button type="button" class="px-4 py-2 bg-black text-white rounded-full">Save</button>
                                 </div>
@@ -65,10 +65,11 @@
                                                     class="block text-sm font-medium text-gray-700">
                                                     Upload Icon
                                                 </label>
-                                                <input
+                                                <input v-if="form.icon === null"
                                                     type="file"
                                                     class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
                                                 >
+                                                <img v-else :src="iconPreview" class="w-full h-40 object-cover rounded-md">
                                             </div>
                                         </div>
 
@@ -192,6 +193,7 @@
 <script setup>
 import { defineProps, defineEmits, reactive, ref, onMounted, computed } from 'vue'
 import store from '@/store/index.js'
+import validationService from '@/utils/validation-service.js'
 
 const props = defineProps({
     isOpen: {
@@ -205,6 +207,9 @@ const emit = defineEmits(['close', 'closed']);
 const closeModal = () => {
     emit('close');
 };
+
+const errors = ref({});
+const loading = ref(false);
 
 const categories = computed(() => store.state.categories);
 const selectCategory = (e) => {
@@ -239,6 +244,29 @@ const form = reactive({
     extraction_description: '',
     openEndedQuestions: '',
 });
+
+const iconPreview = ref(null);
+
+const uploadIcon = (event) => {
+    let validateFileType = validationService.validateFileType(event.target.files[0], ['jpg', 'jpeg', 'png']);
+    if(!validateFileType){
+        errors.value['icon'] = ['Incorrect file format. allowed: jpg, jpeg, png'];
+        form.icon = null;
+        return false;
+    }
+
+    let validateFileSize = validationService.validateFileSize(event.target.files[0], 1000000);
+    if(!validateFileSize){
+        errors.value['icon'] = ['File too large, 1mb max'];
+        form.icon = null;
+        return false;
+    }
+
+    //Assign image and path to this variable
+    form.icon = event.target.files[0];
+    iconPreview.value = URL.createObjectURL(event.target.files[0]);
+    errors.value['icon'] = [];
+}
 
 onMounted(() => {
     store.dispatch('getData', {

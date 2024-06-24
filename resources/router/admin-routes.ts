@@ -2,6 +2,7 @@ import {
     createRouter,
     createWebHistory,
 } from 'vue-router'
+import routeService from '@/utils/route-service'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,6 +17,13 @@ const router = createRouter({
         {
             path: '/admin',
             component: () => import('../views/admin/layouts/AdminLayout.vue'),
+            beforeEnter: (to, from, next) => {
+                routeService.authenticateUser(
+                    '/api/admin/authenticate',
+                    next,
+                    '/admin/login',
+                )
+            },
             children: [
                 {
                     path: 'achievements',

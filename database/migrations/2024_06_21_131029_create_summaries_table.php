@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->text('example_summary');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
             $table->engine = 'InnoDB';
         });
     }
@@ -31,6 +33,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('data_point_summaries');
         Schema::dropIfExists('summaries');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 };

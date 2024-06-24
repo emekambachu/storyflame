@@ -12,14 +12,14 @@ return new class extends Migration {
             Schema::create('data_points', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('achievement_id')->nullable();
-                $table->string('slug');
+                $table->string('slug')->unique();
                 $table->string('name');
                 $table->string('type')->default('text');
                 //$table->string('category');
                 $table->text('extraction_description')->nullable();
                 $table->json('example')->nullable();
                 $table->string('purpose');
-                $table->unsignedSmallInteger('development_order');
+                $table->unsignedBigInteger('development_order');
                 $table->unsignedSmallInteger('impact_score');
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();
@@ -31,6 +31,7 @@ return new class extends Migration {
     {
         // temporarily disable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('data_point_achievements');
         Schema::dropIfExists('data_points');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }

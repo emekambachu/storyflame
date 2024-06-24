@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignUuid('summary_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('linked_summary_id');
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
     }
 
