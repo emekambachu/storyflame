@@ -15,12 +15,9 @@ return new class extends Migration
 
         Schema::create('achievement_categories', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('category_id');
-            $table->uuid('achievement_id');
+            $table->foreignUuid('category_id')->nullable();
+            $table->foreignUuid('achievement_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreign('achievement_id')->references('id')->on('achievements')->onDelete('cascade');
             $table->engine = 'InnoDB';
         });
     }

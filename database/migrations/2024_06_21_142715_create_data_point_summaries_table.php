@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_point_summaries', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('data_point_id');
-            $table->uuid('summary_id');
-            $table->timestamps();
-
-            $table->foreign('data_point_id')
-                ->references('id')->on('data_points')->onDelete('cascade');
-            $table->foreign('summary_id')
-                ->references('id')->on('summaries')->onDelete('cascade');
-            $table->engine = 'InnoDB';
-        });
+        if(!Schema::hasTable('data_point_summaries')) {
+            Schema::create('data_point_summaries', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('data_point_id')->nullable();
+                $table->foreignUuid('summary_id')->nullable();
+                $table->timestamps();
+                $table->engine = 'InnoDB';
+            });
+        }
     }
 
     /**

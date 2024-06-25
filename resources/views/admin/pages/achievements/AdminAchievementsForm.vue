@@ -32,6 +32,9 @@
                                         Loading...
                                     </button>
                                 </div>
+                                <div v-if="submitted" class="flex items-center justify-center bg-emerald-400 p-2">
+                                    Submitted successfully
+                                </div>
 
                                 <div class="space-y-6 bg-white p-6 rounded-lg">
 
@@ -344,6 +347,7 @@ const submitAchievement = async () => {
         delete errors.value[key];
     });
 
+    submitted.value = false;
     loading.value = true;
 
     const formData = new FormData();

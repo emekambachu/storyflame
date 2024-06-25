@@ -15,14 +15,9 @@ return new class extends Migration
 
         Schema::create('data_point_achievements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('data_point_id');
-            $table->uuid('achievement_id');
+            $table->foreignUuid('data_point_id')->nullable();
+            $table->foreignUuid('achievement_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('data_point_id')
-                ->references('id')->on('data_points')->onDelete('cascade');
-            $table->foreign('achievement_id')
-                ->references('id')->on('achievements')->onDelete('cascade');
             $table->engine = 'InnoDB';
         });
     }

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('achievement_data_points', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('data_point_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('achievement_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('data_point_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
