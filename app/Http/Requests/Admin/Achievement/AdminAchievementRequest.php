@@ -34,14 +34,8 @@ class AdminAchievementRequest extends FormRequest
             'example' => ['required', 'string'],
             'purpose' => ['required', 'string'],
             'publish_at' => ['required', 'date'],
-
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-
+            'categories' => ['required', 'array'],
+            'data_points' => ['required', 'array'],
         ];
     }
 
@@ -52,6 +46,6 @@ class AdminAchievementRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'success' => false,
             'errors' => $message
-        ]));
+        ], 422));
     }
 }
