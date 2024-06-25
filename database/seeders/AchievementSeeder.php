@@ -46,7 +46,7 @@ class AchievementSeeder extends Seeder
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],
                 'icon' => $rowData['Final Icon Image'] . '.png',
-                'icon_path' => 'uploads/achievements/icons',
+                'icon_path' => '/uploads/achievements/icons/',
                 'publish_at' => now()->format('Y-m-d H:i:s'),
                 'admin_id' => Admin::first()->id,
                 'user_id' => User::factory()->create()->id,

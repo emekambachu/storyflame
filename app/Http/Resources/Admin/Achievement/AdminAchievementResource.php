@@ -18,7 +18,7 @@ class AdminAchievementResource extends JsonResource
             'id' => $this->id,  // Try both id and uuid
             'name' => $this->name,
             'slug' => $this->slug,
-            'icon' => $this->icon ? '/'.$this->icon_path.'/'.$this->icon : null,
+            'icon' => !empty($this->icon) ? config('app.url').$this->icon_path.$this->icon : null,
             'title' => $this->name,
             'item_id' => $this->item_id,
             'subtitle' => $this->subtitle ?? null,

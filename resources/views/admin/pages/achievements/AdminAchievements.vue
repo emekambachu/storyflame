@@ -4,8 +4,9 @@ import axios from 'axios'
 
 import AdminAchievementsForm from './AdminAchievementsForm.vue';
 import AdminAchievementsItem from '@/views/admin/pages/achievements/AdminAchievementsItem.vue'
+import baseService from '@/utils/base-service'
 
-const user = computed(() => JSON.parse(localStorage.getItem('story-flame-admin')));
+const user = ref(baseService.getUserFromLocalStorage());
 
 // Slide over
 const isSlideoverOpen = ref(false);

@@ -42,7 +42,7 @@ class AchievementService
         try {
             $inputs = $request->all();
             $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-            $inputs['icon_path'] = config('app.url').'/'.$this->imagePath.'/';
+            $inputs['icon_path'] = '/'.$this->imagePath.'/';
             $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
             $inputs['admin_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
