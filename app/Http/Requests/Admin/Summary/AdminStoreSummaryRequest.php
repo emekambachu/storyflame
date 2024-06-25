@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin\DataPoint;
+namespace App\Http\Requests\Admin\Summary;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AdminDataPointRequest extends FormRequest
+class AdminStoreSummaryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,16 +26,15 @@ class AdminDataPointRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'unique:data_points,name'],
-            'type' => ['required', 'string'],
-            'development_order' => ['required', 'integer'],
-            'impact_score' => ['required', 'integer'],
-            'extraction_description' => ['required', 'string'],
-            'example' => ['required', 'string'],
+            'name' => ['required', 'string', 'unique:summaries,name'],
+            'example_summary' => ['required', 'string'],
+            'location' => ['required', 'string'],
             'purpose' => ['required', 'string'],
-            'publish_at' => ['required', 'string'],
+            'creation_prompt' => ['required', 'string'],
             'categories' => ['required', 'array'],
             'data_points' => ['required', 'array'],
+            'summaries' => ['required', 'array'],
+            'publish_at' => ['required', 'string'],
         ];
     }
 

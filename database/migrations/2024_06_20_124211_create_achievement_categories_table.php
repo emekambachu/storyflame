@@ -11,11 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('achievement_categories');
+
         Schema::create('achievement_categories', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
+            $table->uuid('category_id');
+            $table->uuid('achievement_id');
             $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('achievement_id')->references('id')->on('achievements')->onDelete('cascade');
             $table->engine = 'InnoDB';
         });
     }

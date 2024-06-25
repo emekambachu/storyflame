@@ -40,7 +40,7 @@ class AchievementSeeder extends Seeder
                 'name' => $rowData['Achievement Title'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'item_id' => (int)BaseService::randomCharacters(5, '0123456789'),
-                //'element' => $rowData['Element'],
+                'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],

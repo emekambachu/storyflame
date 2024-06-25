@@ -11,11 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('data_point_achievements');
+
         Schema::create('data_point_achievements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('data_point_id')->constrained()->cascadeOnDelete();
+            $table->uuid('data_point_id');
+            $table->uuid('achievement_id');
             $table->timestamps();
+
+            $table->foreign('data_point_id')
+                ->references('id')->on('data_points')->onDelete('cascade');
+            $table->foreign('achievement_id')
+                ->references('id')->on('achievements')->onDelete('cascade');
             $table->engine = 'InnoDB';
         });
     }

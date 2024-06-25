@@ -3,15 +3,19 @@
 namespace App\Services;
 
 use App\Http\Resources\AchievementResource;
+use App\Http\Resources\Admin\Achievement\AdminAchievementResource;
 use App\Models\Achievement;
 use App\Models\Achievement\AchievementCategory;
+use App\Models\DataPoint\DataPointAchievement;
 use App\Models\User;
 use App\Models\UserAchievement;
 use App\Services\Base\BaseService;
 use App\Services\Base\CrudService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AchievementService
 {
@@ -22,9 +26,14 @@ class AchievementService
         return new Achievement();
     }
 
-    public function achievementCategories(): AchievementCategory
+    public function achievementCategory(): AchievementCategory
     {
         return new AchievementCategory();
+    }
+
+    public function dataPointAchievement(): DataPointAchievement
+    {
+        return new DataPointAchievement();
     }
 
     public function storeAchievement($request): array
@@ -35,21 +44,23 @@ class AchievementService
             $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
             $inputs['icon_path'] = config('app.url').'/'.$this->imagePath.'/';
             $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
+            $inputs['admin_id'] = Auth::id();
+            $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $achievement = $this->achievement()->create($inputs);
 
             if(!empty($inputs['categories'])){
-                foreach ($inputs['categories'] as $category){
-                    $achievement->categories()->create([
-                        'category_id' => $category,
+                foreach ($inputs['categories'] as $categoryId){
+                    $this->achievementCategory()->create([
+                        'category_id' => $categoryId,
                         'achievement_id' => $achievement->id,
                     ]);
                 }
             }
 
             if(!empty($inputs['data_points'])){
-                foreach ($inputs['data_points'] as $data_point){
-                    $achievement->categories()->create([
-                        'data_point_id' => $data_point,
+                foreach ($inputs['data_points'] as $dataPointId){
+                    $this->dataPointAchievement()->create([
+                        'data_point_id' => $dataPointId,
                         'achievement_id' => $achievement->id,
                     ]);
                 }
@@ -58,7 +69,7 @@ class AchievementService
             DB::commit();
             return [
                 'success' => true,
-                'achievement' => new AchievementResource($achievement)
+                'achievement' => new AdminAchievementResource($achievement)
             ];
 
         }catch (\Exception $e){
@@ -67,6 +78,7 @@ class AchievementService
             return [
                 'success' => false,
                 'error_message' => 'Something went wrong',
+                'server_error' => $e->getMessage(),
                 'status_code' => 500
             ];
         }

@@ -13,7 +13,7 @@ return new class extends Migration {
 
             $table->string('name');
             $table->string('icon_path')->nullable();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignUuid('admin_id')->constrained()->cascadeOnDelete();
 
             $table->softDeletes();

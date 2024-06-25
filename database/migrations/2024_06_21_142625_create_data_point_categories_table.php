@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::create('data_point_categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('data_point_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
+            $table->uuid('data_point_id');
+            $table->uuid('category_id');
             $table->timestamps();
+
+            $table->foreign('data_point_id')
+                ->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('category_id')
+                ->references('id')->on('achievements')->onDelete('cascade');
             $table->engine = 'InnoDB';
         });
     }
