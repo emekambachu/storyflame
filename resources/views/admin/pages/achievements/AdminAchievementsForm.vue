@@ -18,12 +18,21 @@
                             </button>
                         </div>
 
-                        <form @submit.prevent="submitAchievement">
+                        <form>
                             <!--Contents-->
                             <div class="h-full flex flex-col bg-white shadow-xl overflow-y-auto">
                                 <div class="flex items-center justify-between bg-stone-300 p-3 sticky top-0">
-                                    <h2 class="text-md font-bold">Create new achievement</h2>
-                                    <button v-if="!loading" type="submit" class="px-4 py-2 bg-black text-white rounded-full">Save</button>
+
+                                    <h2 class="text-md font-bold text-black">
+                                        {{ achievement !== null ? 'Edit achievement' : 'Create new achievement' }}
+                                    </h2>
+                                    <button
+                                        @click.prevent="achievement !== null ? updateAchievement() : submitAchievement()"
+                                        v-if="!loading"
+                                        type="submit"
+                                        class="px-4 py-2 bg-black text-white rounded-full">
+                                        {{ achievement !== null ? 'Update' : 'Save' }}
+                                    </button>
                                     <button v-else type="button" disabled class="px-4 py-2 bg-black text-white rounded-full">
                                         <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-gray-100 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -31,9 +40,10 @@
                                         </svg>
                                         Loading...
                                     </button>
+
                                 </div>
-                                <div v-if="submitted" class="flex items-center justify-center bg-emerald-400 p-2">
-                                    Submitted successfully
+                                <div v-if="submitted" class="flex items-center justify-center bg-emerald-400 p-2 text-stone-600">
+                                    {{ achievement !== null ? 'Achievement updated successfully' : 'Achievement created successfully' }}
                                 </div>
 
                                 <div class="space-y-6 bg-white p-6 rounded-lg">
@@ -50,7 +60,10 @@
                                                     v-model="form.name"
                                                     id="achievementName"
                                                     type="text"
-                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
+                                                <p v-if="errors.name" class="text-red-500 text-sm">
+                                                    {{ errors.name[0] }}
+                                                </p>
                                             </div>
                                             <div>
                                                 <label
@@ -62,9 +75,12 @@
                                                     <input
                                                         v-model="form.color"
                                                         type="color"
-                                                        class="color-picker">
+                                                        class="color-picker text-black">
                                                     <p class="my-auto ml-1">{{ form.color }}</p>
                                                 </div>
+                                                <p v-if="errors.color" class="text-red-500 text-sm">
+                                                    {{ errors.color[0] }}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -74,20 +90,29 @@
                                                     class="block text-sm font-medium text-gray-700">
                                                     Upload Icon
                                                 </label>
-                                                <input
-                                                    v-if="form.icon === null"
-                                                    @change="uploadIcon"
-                                                    type="file"
-                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150"
-                                                >
-                                                <img v-else
-                                                     :src="iconPreview"
-                                                     class="w-full h-40 object-cover rounded-md">
-                                                <a href=""
-                                                    v-if="form.icon !== null"
-                                                    @click.prevent="form.icon = null"
-                                                   class="text-center text-red-500 font-semibold block w-full"
-                                                   title="delete">x</a>
+                                                <div>
+                                                    <input
+                                                        v-if="form.icon === null"
+                                                        @change="uploadIcon"
+                                                        type="file"
+                                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md file-input bg-stone-150 mb-2"
+                                                    >
+                                                    <img v-else
+                                                         :src="iconPreview"
+                                                         class="w-full h-40 object-cover rounded-md">
+                                                    <a href=""
+                                                       v-if="form.icon !== null"
+                                                       @click.prevent="form.icon = null"
+                                                       class="text-center text-red-500 font-semibold block w-full"
+                                                       title="delete">x</a>
+                                                    <img v-if="achievement !== null && achievement.icon !== null"
+                                                         :src="achievement.icon"
+                                                         class="w-full h-40 object-cover rounded-md">
+                                                </div>
+
+                                                <p v-if="errors.icon" class="text-red-500 text-sm">
+                                                    {{ errors.icon[0] }}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -103,7 +128,10 @@
                                             v-model="form.subtitle"
                                             id="subtitle"
                                             type="text"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
+                                        <p v-if="errors.subtitle" class="text-red-500 text-sm">
+                                            {{ errors.subtitle[0] }}
+                                        </p>
                                     </div>
 
                                     <div class="w-full sm:w-1/2">
@@ -117,7 +145,7 @@
                                             id="publishAt"
                                             type="date"
                                             :min="new Date().toISOString().split('T')[0]"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                     </div>
 
                                     <hr class="my-4">
@@ -136,16 +164,16 @@
                                         >
                                             <span class="">
                                                 {{ category.name }}
-                                                <i class="" @click.prevent="deleteCategory">x</i>
+                                                <a class="font-extrabold" href="" @click.prevent="deleteCategory">x</a>
                                             </span>
                                         </span>
                                         </div>
                                         <select
                                             @change.prevent="selectCategory"
                                             id="category"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                             <option>Select Category</option>
-                                            <option
+                                            <option class="text-black"
                                                 v-for="category in categories"
                                                 :key="category.id"
                                                 :value="category.id"
@@ -153,6 +181,9 @@
                                                 {{ category.name }}
                                             </option>
                                         </select>
+                                        <p v-if="errors.categories" class="text-red-500 text-sm">
+                                            {{ errors.categories[0] }}
+                                        </p>
                                     </div>
 
                                     <div>
@@ -164,7 +195,10 @@
                                         <textarea
                                             v-model="form.purpose"
                                             id="purpose"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.purpose" class="text-red-500 text-sm">
+                                            {{ errors.purpose[0] }}
+                                        </p>
                                     </div>
 
                                     <hr class="my-4">
@@ -178,7 +212,10 @@
                                         <textarea
                                             v-model="form.extraction_description"
                                             id="extractionDescription"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.extraction_description" class="text-red-500 text-sm">
+                                            {{ errors.extraction_description[0] }}
+                                        </p>
                                     </div>
 
                                     <div>
@@ -190,7 +227,10 @@
                                         <textarea
                                             v-model="form.example"
                                             id="openEndedQuestions"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.example" class="text-red-500 text-sm">
+                                            {{ errors.example[0] }}
+                                        </p>
                                     </div>
 
                                     <div>
@@ -201,9 +241,10 @@
                                         </label>
                                         <select
                                             @change.prevent="selectDataPoints"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                             <option>Select Data Point</option>
                                             <option
+                                                class="text-black"
                                                 v-for="data in dataPoints"
                                                 :key="data.id"
                                                 :value="data.id"
@@ -238,7 +279,9 @@
                                                 </span>
                                             </div>
                                         </div>
-
+                                        <p v-if="errors.data_points" class="text-red-500 text-sm">
+                                            {{ errors.data_points[0] }}
+                                        </p>
                                     </div>
 
                                     <button type="button" class="text-blue-600">+ Create new Data Point</button>
@@ -265,9 +308,14 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
+    achievement: {
+        type: Object,
+        required: false,
+        default: null,
+    },
 });
 
-const emit = defineEmits(['close', 'closed']);
+const emit = defineEmits(['close', 'closed', 'formSubmitted']);
 
 
 const closeModal = () => {
@@ -327,17 +375,17 @@ const getDataPoints = async () => {
 }
 
 const form = reactive({
-    name: '',
-    color: '',
-    subtitle: '',
+    name: props.achievement !== null ? props.achievement.name : '',
+    color: props.achievement !== null ? props.achievement.color : '#000000',
+    subtitle: props.achievement !== null ? props.achievement.subtitle : '',
     icon: null,
-    publish_at: '',
-    categories: [],
-    data_points: [],
-    purpose: '',
-    example: '',
-    extraction_description: '',
-    openEndedQuestions: '',
+    publish_at: props.achievement !== null ? props.achievement.publish_at : '',
+    categories: props.achievement !== null && props.achievement.categories.length > 0 ? props.achievement.categories : [],
+    data_points: props.achievement !== null && props.achievement.data_points.length > 0 ? props.achievement.data_points : [],
+    purpose: props.achievement !== null ? props.achievement.purpose : '',
+    example: props.achievement !== null ? props.achievement.example : '',
+    extraction_description: props.achievement !== null ? props.achievement.extraction_description : '',
+    openEndedQuestions: props.achievement !== null ? props.achievement.open_ended_questions : '',
 });
 
 const submitAchievement = async () => {
@@ -379,6 +427,83 @@ const submitAchievement = async () => {
         if (response.data.success){
             errors.value = []; // Empty error messages
             submitted.value = true;
+            // Emit the submitted data to the parent component
+            emit('formSubmitted', response.data.data);
+            // Empty form fields
+            Object.keys(form).forEach(function(key) {
+                if(key === 'icon'){
+                    form[key] = null;
+                    iconPreview.value = null;
+                }else if(key === 'categories'){
+                    form[key] = [];
+                }else if(key === 'data_points'){
+                    form[key] = [];
+                }else{
+                    form[key] = '';
+                }
+            });
+        }
+
+    }).catch((error) => {
+
+        if([401, 402, 422].includes(error.response.status)){
+            console.log(error.response);
+
+            if(Object.keys(error.response?.data?.errors).length > 0){
+                errors.value = error.response?.data?.errors;
+            }
+
+            if(error.response?.data?.server_error){
+                errors.value.server_error = 'Server error. Please try again later or contact your admin.';
+            }
+        }
+
+        console.log(error);
+    });
+    loading.value = false;
+}
+
+const updateAchievement = async () => {
+
+    // Delete all errors
+    Object.keys(errors.value).forEach(function(key) {
+        delete errors.value[key];
+    });
+
+    submitted.value = false;
+    loading.value = true;
+
+    const formData = new FormData();
+    // iterate and add form data
+    Object.keys(form).forEach(function(key) {
+        console.log(key); // key
+        if(form[key] !== null && form[key] !== ''){
+            if(key === 'categories'){
+                form[key].forEach((category) => {
+                    formData.append('categories[]', category.id);
+                });
+            } else if(key === 'data_points'){
+                form[key].forEach((data) => {
+                    formData.append('data_points[]', data.id);
+                });
+            } else {
+                formData.append(key, form[key]);
+            }
+        }
+    });
+
+    await axios.post('/api/admin/achievements/'+props.achievement.item_id+'/update', formData, {
+        headers: {
+            'content-type': 'multipart/form-data',
+            'Accept' : 'application/json',
+            "Authorization" : "Bearer " + user.value.token,
+        }
+    }).then((response) => {
+        if (response.data.success){
+            errors.value = []; // Empty error messages
+            submitted.value = true;
+            // Emit the submitted data to the parent component
+            emit('formUpdated', response.data.data);
         }
 
     }).catch((error) => {
@@ -422,18 +547,6 @@ const uploadIcon = (event) => {
     iconPreview.value = URL.createObjectURL(event.target.files[0]);
     errors.value['icon'] = [];
 }
-
-onMounted(() => {
-    store.dispatch('getData', {
-        url: '/api/categories',
-        commit_name: 'SET_CATEGORIES',
-    });
-
-    store.dispatch('getData', {
-        url: '/api/admin/data-points/min',
-        commit_name: 'SET_MIN_DATA_POINTS',
-    });
-});
 
 </script>
 

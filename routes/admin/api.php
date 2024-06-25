@@ -17,8 +17,8 @@ Route::middleware('auth:admin-api')->group(static function (){
     Route::get('/admin/achievements', [AdminAchievementController::class, 'index']);
     Route::get('/admin/achievement/{item_id}/categories', [AdminAchievementController::class, 'achievementCategories']);
     Route::post('/admin/achievements/store', [AdminAchievementController::class, 'store']);
-    Route::post('/admin/achievements/update', [AdminAchievementController::class, 'update']);
-    Route::delete('/admin/achievements/delete', [AdminAchievementController::class, 'destroy']);
+    Route::post('/admin/achievements/{item_id}/update', [AdminAchievementController::class, 'update']);
+    Route::delete('/admin/achievements/{item_id}/delete', [AdminAchievementController::class, 'destroy']);
 
     // Data Points
     Route::get('/admin/data-points', [AdminDataPointController::class, 'index']);

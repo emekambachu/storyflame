@@ -6,6 +6,7 @@ use App\Http\Resources\AchievementResource;
 use App\Http\Resources\Admin\Achievement\AdminAchievementResource;
 use App\Models\Achievement;
 use App\Models\Achievement\AchievementCategory;
+use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointAchievement;
 use App\Models\User;
 use App\Models\UserAchievement;
@@ -29,6 +30,11 @@ class AchievementService
     public function achievementCategory(): AchievementCategory
     {
         return new AchievementCategory();
+    }
+
+    public function dataPoint(): DataPoint
+    {
+        return new DataPoint();
     }
 
     public function dataPointAchievement(): DataPointAchievement
@@ -84,32 +90,97 @@ class AchievementService
         }
     }
 
-    public function updateAchievement($request): array
+    public function updateAchievement($request, $itemId): array
     {
-        $inputs = $request->all();
-        $achievement = $this->achievement()->find($request->id);
+        $achievement = $this->achievement()->where('item_id', $itemId)->first();
 
-        if(!empty($inputs['icon']) && $inputs['icon'] !== "null"){
-            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-            $inputs['image_path'] = config('app.url').'/'.$this->imagePath.'/';
-        }else{
-            $inputs['icon'] = $achievement->image;
+        DB::beginTransaction();
+        try {
+            $inputs = $request->all();
+
+            if($request->hasFile('icon')){
+                $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
+            }
+
+            $inputs['admin_id'] = Auth::id();
+            $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
+            $achievement->update($inputs);
+
+            if(!empty($inputs['categories'])){
+
+                $categories = $this->achievementCategory()->where('achievement_id', $achievement->id)->get();
+                // remove deleted categories
+                foreach ($categories as $category){
+                    if(!in_array($category->category_id, $inputs['categories'], true)){
+                        $category->delete();
+                    }
+                }
+
+                $existingCategories = $this->achievementCategory()
+                    ->select('category_id', 'achievement_id')
+                    ->where('achievement_id', $achievement->id)
+                    ->get()->pluck('category_id')->toArray();
+
+                foreach ($inputs['categories'] as $categoryId){
+                    if(!in_array($categoryId, $existingCategories, true)){
+                        $this->achievementCategory()->create([
+                            'category_id' => $categoryId,
+                            'achievement_id' => $achievement->id,
+                        ]);
+                    }
+                }
+
+            }
+
+            if(!empty($inputs['data_points'])){
+                $dataPoints = $this->dataPoint()->where('achievement_id', $achievement->id)->get();
+                // remove deleted categories
+                foreach ($dataPoints as $data){
+                    if(!in_array($data->data_point_id, $inputs['data_points'], true)){
+                        $data->delete();
+                    }
+                }
+
+                $existingDataPoints = $this->dataPointAchievement()
+                    ->select('data_point_id', 'achievement_id')
+                    ->where('achievement_id', $achievement->id)
+                    ->get()->pluck('data_point_id')->toArray();
+
+                foreach ($inputs['data_points'] as $dataPointId){
+                    if(!in_array($dataPointId, $existingDataPoints, true)){
+                        $this->dataPointAchievement()->create([
+                            'data_point_id' => $dataPointId,
+                            'achievement_id' => $achievement->id,
+                        ]);
+                    }
+                }
+
+            }
+
+            DB::commit();
+            return [
+                'success' => true,
+                'achievement' => new AdminAchievementResource($achievement)
+            ];
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            BaseService::logError($e);
+            return [
+                'success' => false,
+                'error_message' => 'Something went wrong',
+                'server_error' => $e->getMessage(),
+                'status_code' => 500
+            ];
         }
-
-        $achievement->update($inputs);
-        return [
-            'success' => true,
-            'achievement' => new AchievementResource($achievement)
-        ];
     }
 
-    public function deleteAchievement($request): array
+    public function deleteAchievement($request, $itemId): array
     {
         // Start a transaction
         DB::beginTransaction();
-
         try {
-            $achievement = $this->achievement()->find($request->id);
+            $achievement = $this->achievement()->where('item_id', $itemId)->first();
             // Check if the achievement exists
             if (!$achievement) {
                 return [
