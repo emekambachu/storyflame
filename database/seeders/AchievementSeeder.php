@@ -3,13 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
-use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
-use App\Models\Category;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AchievementSeeder extends Seeder
@@ -49,7 +46,7 @@ class AchievementSeeder extends Seeder
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],
                 'icon' => $rowData['Final Icon Image'] . '.png',
-                'icon_path' => null,
+                'icon_path' => 'uploads/achievements/icons',
                 'publish_at' => now()->format('Y-m-d H:i:s'),
                 'admin_id' => Admin::first()->id,
                 'user_id' => User::factory()->create()->id,

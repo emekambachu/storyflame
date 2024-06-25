@@ -22,6 +22,8 @@ Route::middleware('auth:admin-api')->group(static function (){
 
     // Data Points
     Route::get('/admin/data-points', [AdminDataPointController::class, 'index']);
+    // return only id and name
+    Route::get('/admin/data-points/min', [AdminDataPointController::class, 'indexMin']);
     Route::get('/admin/data-points/{item_id}/categories', [AdminDataPointController::class, 'achievementCategories']);
     Route::post('/admin/data-points/store', [AdminDataPointController::class, 'store']);
     Route::put('/admin/data-points/update', [AdminDataPointController::class, 'update']);

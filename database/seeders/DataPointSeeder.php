@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
+use App\Models\Admin\Admin;
 use App\Models\Category;
 use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointAchievement;
@@ -68,6 +69,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -80,6 +82,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -92,6 +95,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -104,6 +108,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -116,6 +121,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -128,6 +134,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -140,6 +147,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -152,6 +160,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => 'Required',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 1,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -164,6 +173,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 2,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -176,6 +186,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 3,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -188,6 +199,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 33,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -200,6 +212,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 5,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -212,6 +225,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 6,
+                'admin_id' => Admin::first()->id,
             ],
             [
                 'achievement_id' => null,
@@ -224,6 +238,7 @@ class DataPointSeeder extends Seeder
                 'purpose' => '',
                 'development_order' => BaseService::randomCharacters(2, '0123456789'),
                 'impact_score' => 7,
+                'admin_id' => Admin::first()->id,
             ],
         ];
 

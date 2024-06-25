@@ -22,6 +22,7 @@ return new class extends Migration {
                 $table->string('purpose');
                 $table->unsignedBigInteger('development_order');
                 $table->unsignedSmallInteger('impact_score');
+                $table->foreignUuid('admin_id')->nullable()->constrained()->cascadeOnDelete();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();
             });

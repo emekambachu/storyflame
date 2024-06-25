@@ -34,7 +34,7 @@ const getAchievements = async () => {
             achievements.value = response.data.achievements;
             total.value = response.data.total;
         }else{
-            console.log(users.value);
+            console.log(achievements.value);
         }
         console.log(achievements.value);
     }).catch((error) => {

@@ -27,6 +27,7 @@ class DataPoint extends Model
         'extraction_description',
         'example',
         'purpose',
+        'admin_id',
         //'achievement_id',
     ];
 

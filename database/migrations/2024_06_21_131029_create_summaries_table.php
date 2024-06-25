@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('creation_prompt');
             $table->text('example_summary');
             $table->timestamp('published_at')->nullable();
+            $table->foreignUuid('admin_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
             $table->engine = 'InnoDB';

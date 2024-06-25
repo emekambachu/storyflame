@@ -74,11 +74,11 @@
                                                 <img v-else
                                                      :src="iconPreview"
                                                      class="w-full h-40 object-cover rounded-md">
-                                                <p
+                                                <a href=""
                                                     v-if="form.icon !== null"
-                                                    @click="form.icon = null"
-                                                   class="text-center text-red-500"
-                                                   title="delete">x</p>
+                                                    @click.prevent="form.icon = null"
+                                                   class="text-center text-red-500 font-semibold block w-full"
+                                                   title="delete">x</a>
                                             </div>
                                         </div>
 
@@ -143,6 +143,7 @@
                                             </option>
                                         </select>
                                     </div>
+
                                     <div>
                                         <label
                                             for="purpose"
@@ -168,6 +169,7 @@
                                             id="extractionDescription"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                                     </div>
+
                                     <div>
                                         <label
                                             for="openEndedQuestions"
@@ -180,12 +182,54 @@
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
                                     </div>
 
-                                    <hr class="my-4">
-
                                     <div>
-                                        <label for="dataPoints" class="block text-sm font-medium text-gray-700">Data Points</label>
-                                        <input id="dataPoints" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                                        <label
+                                            for="category"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Data Points
+                                        </label>
+                                        <select
+                                            @change.prevent="selectDataPoints"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150">
+                                            <option>Select Data Point</option>
+                                            <option
+                                                v-for="data in dataPoints"
+                                                :key="data.id"
+                                                :value="data.id"
+                                            >
+                                                {{ data.name }}
+                                            </option>
+                                        </select>
+                                        <div v-if="form.data_points?.length > 0" class="mt-1">
+                                            <div
+                                                v-for="(data, index) in form.data_points"
+                                                :key="index"
+                                                class="w-full flex justify-center mb-1"
+                                            >
+                                                <span class="w-11/12 mr-1 p-1 bg-stone-200 text-black rounded-sm">
+                                                    {{ data.name }}
+                                                </span>
+                                                <span @click="deleteDataPoint" class="w-1/12">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                        <g clip-path="url(#clip0_1946_18183)">
+                                                        <path d="M3.33337 5.83331H16.6667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M8.33337 9.16669V14.1667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M11.6666 9.16669V14.1667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M4.16663 5.83331L4.99996 15.8333C4.99996 16.2753 5.17555 16.6993 5.48811 17.0118C5.80068 17.3244 6.2246 17.5 6.66663 17.5H13.3333C13.7753 17.5 14.1992 17.3244 14.5118 17.0118C14.8244 16.6993 15 16.2753 15 15.8333L15.8333 5.83331" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.5 5.83333V3.33333C7.5 3.11232 7.5878 2.90036 7.74408 2.74408C7.90036 2.5878 8.11232 2.5 8.33333 2.5H11.6667C11.8877 2.5 12.0996 2.5878 12.2559 2.74408C12.4122 2.90036 12.5 3.11232 12.5 3.33333V5.83333" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </g>
+                                                        <defs>
+                                                        <clipPath id="clip0_1946_18183">
+                                                        <rect width="20" height="20" fill="white"/>
+                                                        </clipPath>
+                                                        </defs>
+                                                        </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+
                                     </div>
+
                                     <button type="button" class="text-blue-600">+ Create new Data Point</button>
                                 </div>
 
@@ -203,6 +247,7 @@
 import { defineProps, defineEmits, reactive, ref, onMounted, computed } from 'vue'
 import store from '@/store/index.js'
 import validationService from '@/utils/validation-service.js'
+import axios from 'axios'
 
 const props = defineProps({
     isOpen: {
@@ -219,6 +264,7 @@ const closeModal = () => {
 
 const errors = ref({});
 const loading = ref(false);
+const submitted = ref(false);
 
 const categories = computed(() => store.state.categories);
 const selectCategory = (e) => {
@@ -231,14 +277,40 @@ const selectCategory = (e) => {
 
     console.log("CATEGORIES", form.categories);
 };
-
 const deleteCategory = (index) => {
     form.categories.splice(index, 1);
 };
 
-const submitAchievement = () => {
-    console.log("FORM", form);
+const dataPoints = computed(() => store.state.dataPoints);
+
+const selectDataPoints = (e) => {
+    if(e.target.value !== 'Select Data Point' && !form.data_points.includes(e.target.value)) {
+        form.data_points.push({
+            id: e.target.value,
+            name: e.target.options[e.target.selectedIndex].text,
+        });
+    }
+
+    console.log("Data points", form.data_points);
 };
+
+const deleteDataPoint = (index) => {
+    form.data_points.splice(index, 1);
+};
+
+const getDataPoints = async () => {
+    await axios.get('/api/admin/data-points/min', {
+        headers: {
+            'Accept' : 'application/json',
+        }
+    }).then((response) => {
+        if (response.data.success){
+            dataPoints.value = response.data.data_points;
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+}
 
 const form = reactive({
     name: '',
@@ -253,6 +325,58 @@ const form = reactive({
     extraction_description: '',
     openEndedQuestions: '',
 });
+
+const submitAchievement = async () => {
+
+    // Delete all errors
+    Object.keys(errors.value).forEach(function(key) {
+        delete errors.value[key];
+    });
+
+    loading.value = true;
+
+    const formData = new FormData();
+    // iterate and add form data
+    Object.keys(form).forEach(function(key) {
+        console.log(key); // key
+        if(form[key] !== null && form[key] !== ''){
+            formData.append(key, form[key]);
+        }
+    });
+
+    await axios.post('/api/admin/achievement/store', formData, {
+        headers: {
+            'content-type': 'multipart/form-data',
+            'Accept' : 'application/json',
+        }
+    }).then((response) => {
+        if (response.data.success){
+            errors.value = []; // Empty error messages
+            submitted.value = true;
+
+        } else {
+            errors.value = response.data.errors;
+            // console.log("form errors", errors.value);
+
+            if(response.data.error_message){
+                console.log(response.data.error_message);
+            }
+            if(Object.keys(response.data.errors).length > 0){
+                errors.value = response.data.errors;
+            }
+        }
+        loading.value = false;
+
+    }).catch((error) => {
+
+        if(error.response.data.server_error){
+            errors.value = {'server_error': error.response.data.server_error};
+        }
+
+        console.log(error);
+        loading.value = false;
+    });
+}
 
 const iconPreview = ref(null);
 
@@ -281,6 +405,11 @@ onMounted(() => {
     store.dispatch('getData', {
         url: '/api/categories',
         commit_name: 'SET_CATEGORIES',
+    });
+
+    store.dispatch('getData', {
+        url: '/api/admin/data-points/min',
+        commit_name: 'SET_MIN_DATA_POINTS',
     });
 });
 

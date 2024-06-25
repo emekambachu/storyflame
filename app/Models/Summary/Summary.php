@@ -26,6 +26,7 @@ class Summary extends Model
         'creation_prompt',
         'example_summary',
         'published_at',
+        'admin_id',
     ];
 
     public function dataPoints(): BelongsToMany
