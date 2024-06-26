@@ -24,6 +24,7 @@ class DataPoint extends Model
         //'category',
         'development_order',
         'impact_score',
+        'estimated_seconds',
         'extraction_description',
         'example',
         'purpose',

@@ -16,12 +16,12 @@ return new class extends Migration {
                 $table->unsignedBigInteger('item_id')->unique();
                 $table->string('name');
                 $table->string('type')->default('text');
-                //$table->string('category');
                 $table->text('extraction_description')->nullable();
                 $table->json('example')->nullable();
                 $table->string('purpose');
                 $table->unsignedBigInteger('development_order');
                 $table->unsignedSmallInteger('impact_score');
+                $table->unsignedSmallInteger('estimated_seconds');
                 $table->foreignUuid('admin_id')->nullable()->constrained()->cascadeOnDelete();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();

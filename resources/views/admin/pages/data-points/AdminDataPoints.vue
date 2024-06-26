@@ -4,8 +4,10 @@ import axios from 'axios'
 
 import AdminDataPointForm from './AdminDataPointsForm.vue';
 import AdminDataPointItem from '@/views/admin/pages/data-points/AdminDataPointsItem.vue'
+import baseService from '@/utils/base-service'
+import store from '@/store'
 
-const user = computed(() => JSON.parse(localStorage.getItem('story-flame-admin')));
+const user = computed(() => baseService.getUserFromLocalStorage());
 
 // Slide over
 const isSlideoverOpen = ref(false);
@@ -21,7 +23,7 @@ const loading = ref(false);
 const dataPoints = ref([]);
 const total = ref(0);
 
-const getAchievements = async () => {
+const getDataPoints = async () => {
     loading.value = true;
     await axios.get('/api/admin/data-points', {
         // withCredentials: true,
@@ -42,7 +44,21 @@ const getAchievements = async () => {
 }
 
 onBeforeMount(() => {
-    getAchievements();
+    getDataPoints();
+    store.dispatch('getData', {
+        url: '/api/categories',
+        commit_name: 'SET_CATEGORIES',
+    });
+
+    store.dispatch('getData', {
+        url: '/api/admin/achievements/min',
+        commit_name: 'SET_MIN_ACHIEVEMENTS',
+    });
+
+    store.dispatch('getData', {
+        url: '/api/admin/summaries/min',
+        commit_name: 'SET_MIN_SUMMARIES',
+    });
 });
 
 </script>

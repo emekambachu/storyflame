@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import moment from 'moment';
 import {ref, defineProps} from 'vue';
 import AdminAchievementsForm from '@/views/admin/pages/achievements/AdminAchievementsForm.vue'
 
