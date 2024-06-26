@@ -51,6 +51,7 @@ return new class extends Migration {
 
     public function down(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::table('achievements', function (Blueprint $table) {
 
             foreach ($this->columns as $column) {
@@ -64,15 +65,13 @@ return new class extends Migration {
 
     private array $columns = [
         'slug',
-        'item_id',
         'progress',
-        //'element',
         'extraction_description',
         'subtitle',
         'purpose',
         'color',
         'icon',
-//        'icon_path',
+        'icon_path',
         'publish_at'
     ];
 };

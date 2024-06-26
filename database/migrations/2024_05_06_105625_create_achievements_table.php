@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('icon_path')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('admin_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
 
             $table->softDeletes();
             $table->timestamps();
