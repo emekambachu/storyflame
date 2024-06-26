@@ -47,6 +47,8 @@ class AchievementSeeder extends Seeder
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],
+                'dev_order' => $rowData['Order'],
+                'total_impact' => $rowData['Total Impact'],
                 'icon' => $rowData['Final Icon Image'] . '.png',
                 'icon_path' => '/uploads/achievements/icons/',
                 'publish_at' => now()->format('Y-m-d H:i:s'),

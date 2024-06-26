@@ -47,7 +47,7 @@ const getAchievements = async () => {
 const emittedAchievement = (event) => {
     achievements.value.unshift(event);
     total.value++;
-    closeSlideover();
+    // closeSlideover();
 }
 
 onBeforeMount(() => {

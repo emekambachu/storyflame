@@ -33,6 +33,8 @@ return new class extends Migration {
                 'example' => 'string',
                 'item_id' => 'unsignedBigInteger',
                 'publish_at' => 'timestamp',
+                'dev_order' => 'float',
+                'total_impact' => 'unsignedBigInteger',
             ];
 
             foreach ($columnsToAdd as $column => $type) {
@@ -70,6 +72,8 @@ return new class extends Migration {
         'purpose',
         'color',
         'icon',
-        'publish_at'
+        'publish_at',
+        'dev_order',
+        'total_impact',
     ];
 };

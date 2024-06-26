@@ -147,6 +147,9 @@
                                             :min="new Date().toISOString().split('T')[0]"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                     </div>
+                                    <p v-if="errors.publish_at" class="text-red-500 text-sm">
+                                        {{ errors.publish_at[0] }}
+                                    </p>
 
                                     <hr class="my-4">
 

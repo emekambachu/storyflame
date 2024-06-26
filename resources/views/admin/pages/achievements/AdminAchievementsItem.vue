@@ -52,7 +52,7 @@ const emittedAchievement = (event) => {
             {{ achievement.dev_order }}
         </td>
         <td class="px-6 py-4 text-center">
-            {{ achievement.impact_score }}
+            {{ achievement.total_impact }}
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ achievement.updated_at }}</p>
