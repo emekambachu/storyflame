@@ -149,8 +149,8 @@ class StoryConversationEngineTest extends TestCase
 //                        'user_not_understand' => false,
 //                        'user_dont_know' => false,
 //                    ])
-//                    ->addResponse('extractData', [
-//                        'elements' => [
+//                    ->addResponse('extractCategories', [
+//                        'categories' => [
 //                            'Writer' => [
 //                                [
 //                                    'name' => 'John Doe',
@@ -192,8 +192,8 @@ class StoryConversationEngineTest extends TestCase
 //                            'name'
 //                        ],
 //                    ])
-//                    ->addResponse('extractData', [
-//                        'elements' => [
+//                    ->addResponse('extractCategories', [
+//                        'categories' => [
 //                            'Character' => [
 //                                [
 //                                    'name' => 'Lucy',
@@ -216,25 +216,47 @@ class StoryConversationEngineTest extends TestCase
 //                            ]
 //                        ]
 //                    ])
+//                    ->addResponse('extractCategories', [
+//                        'categories' => [
+//                        ]
+//                    ], null, true)
+//                    ->addResponse('extractData', [
+//                        [
+//                            'data_points' => [
+//                                [
+//                                    'data_point_id' => 'writer_name',
+//                                    'data_point_value' => 'John Doe'
+//                                ],
+//                                [
+//                                    'data_point_id' => 'origin_story',
+//                                    'data_point_value' => 'Galactic war between aliens and humans'
+//                                ]
+//                            ]
+//                        ]
+//                    ], [
+//                        'answer' => 'answer 3'
+//                    ])
+//                    ->addResponse('extractData', [
+//                    ], null, true)
 //                    ->addResponse('generateContextSwitchQuestion', [
 //                        'question' => 'You mentioned some characters, do you want to talk about them?',
 //                        'title' => 'Context switch question',
 //                    ])
-//                ->addResponse('isPositiveConfirmation', function ($attributes) {
-//                    return [
-//                        'is_positive' => true,
-//                        'is_selected' => true,
-//                        'selected_type' => $attributes['selectElements'][0]['type'],
-//                        'selected_id' => $attributes['selectElements'][0]['id'],
-//                        'selected_name' => $attributes['selectElements'][0]['name'],
-//                    ];
-//                })
+//                    ->addResponse('isPositiveConfirmation', function ($attributes) {
+//                        return [
+//                            'is_positive' => true,
+//                            'is_selected' => true,
+//                            'selected_type' => $attributes['selectElements'][0]['type'],
+//                            'selected_id' => $attributes['selectElements'][0]['id'],
+//                            'selected_name' => $attributes['selectElements'][0]['name'],
+//                        ];
+//                    })
 //            );
 
-        dd($engine->process('answer 1 start'));
+        dd($engine->process('answer 1'));
 
         $engine->process('answer 2');
 
-        dd($engine->process('yes'));
+        $engine->process('answer 3');
     }
 }

@@ -40,6 +40,7 @@ class AchievementDataPointsSeeder extends Seeder
 //                $example = '"' . $example . '"';
 
             $data[] = [
+                'item_id' => $rowData['DataPointID'],
                 'slug' => Str::slug($rowData['Data Point'], '_'),
                 'achievement' => $rowData['Achievement Title'],
                 'category' => $rowData['Category'],

@@ -38,8 +38,8 @@ class AchievementSeeder extends Seeder
 
             $data[] = [
                 'name' => $rowData['Achievement Title'],
+                'item_id' => $rowData['Achievement ID'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
-                'item_id' => (int)BaseService::randomCharacters(5, '0123456789'),
                 'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'extraction_description' => $rowData['Extraction Description'],
@@ -63,7 +63,13 @@ class AchievementSeeder extends Seeder
                 throw new \RuntimeException('Image not found: ' . $row['icon']);
             }
 
+            $category = Category::firstOrCreate(
+                ['name' => $row['category']],
+                ['slug' => Str::slug($row['category'], '_')]
+            );
+            unset($row['category']);
             $achievement = Achievement::create($row);
+            $achievement->categories()->attach($category->id);
 
             // Add 2 categories to each achievement
 //            AchievementCategory::create([
