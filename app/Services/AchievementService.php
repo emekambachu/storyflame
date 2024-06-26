@@ -90,9 +90,9 @@ class AchievementService
         }
     }
 
-    public function updateAchievement($request, $itemId): array
+    public function updateAchievement($request): array
     {
-        $achievement = $this->achievement()->where('item_id', $itemId)->first();
+        $achievement = $this->achievement()->where('item_id', $request->item_id)->first();
 
         DB::beginTransaction();
         try {
@@ -175,12 +175,12 @@ class AchievementService
         }
     }
 
-    public function deleteAchievement($request, $itemId): array
+    public function deleteAchievement($request): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $achievement = $this->achievement()->where('item_id', $itemId)->first();
+            $achievement = $this->achievement()->where('item_id', $request->item_id)->first();
             // Check if the achievement exists
             if (!$achievement) {
                 return [
