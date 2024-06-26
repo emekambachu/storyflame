@@ -72,7 +72,7 @@ class Achievement extends Model
             'id' => $this->slug,
             'name' => $this->name,
             'extraction_description' => $this->extraction_description,
-            'category' => $this->element,
+            'category' => $this->categories()->first()->name,
             'data_points' => $this->dataPoints
                 ->filter(fn($data_point) => !in_array($data_point->slug, $except_data_points))
                 ->map

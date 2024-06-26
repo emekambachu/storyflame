@@ -1,3 +1,5 @@
+import json
+
 storyflame_brand_voice_prompt = (
     "StoryFlame Brand Voice Guidelines: "
     "Mission: Empower writers at every stage by providing a supportive, intuitive platform that simplifies story "
@@ -80,24 +82,24 @@ brainstorming_task = (
 
 basic_question_format_instructions = (
     "Please put the formatted JSON in between <json_response></json_response> and do not include any other text."
-    "The formatted JSON should be:"
-    {
+    "The formatted JSON should be:" +
+    json.dumps({
         "message": "A brief, affirming, summarizing, and active listening statement to show understanding and encouragement to the writer, while connecting that response to this next question. Max 15 words.",
         "data_points": ["Array of data points ids that we're hoping to answer with this question."],
         "question": "Story development question for the writer.",
         "tooltip": "A tooltip to provide additional information or context to the writer about the purpose of the question and how it helps with story and character development.",
-    }
+    })
 )
 
 followup_question_format_instructions = (
     "Please put the formatted JSON in between <json_response></json_response> and do not include any other text."
-    "The formatted JSON should be:"
-    {
+    "The formatted JSON should be:" +
+    json.dumps({
         "message": "A brief statement giving more information about the purpose of the question to help guide the writer. Max 15 words.",
         "data_points": ["Array of data points ids that we're hoping to answer with this question."],
         "question": "Story development question for the writer.",
         "tooltip": "A tooltip to provide additional information or context to the writer about the purpose of the question and how it helps with story and character development.",
-    }
+    })
 )
 
 gauge_next_topic = (
@@ -108,8 +110,8 @@ gauge_next_topic = (
 
 gauge_next_topic_format_instructions = (
     "Please put the formatted JSON in between <json_response></json_response> and do not include any other text."
-    "The formatted JSON should be:"
-    {
+    "The formatted JSON should be:" +
+    json.dumps({
         "reasoning": "Two to three sentences sharing your assessment as a Story Consultant about what the writer seems most excited to talk about next and why.  And what would make the most sense to discuss next to further the story & character development process.",
         "top_five_elements_to_consider": [
             {
@@ -126,29 +128,25 @@ gauge_next_topic_format_instructions = (
                 ]
             }
         ]
-    }
+    })
 )
 
-elements_and_topics_format = (
-    {
-        "characters": [
-            {
-                "element_name": "string",
-                "element_id": "string",
-                "incomplete_achievements": [
-                    {
-                        "achievement_id": "string",
-                        "achievement_name": "string"
-                        "percent_complete": "double"
-                    }
-                ]
-            }
-        ],
-        "settings": [ {...}],
-        "plots": [ {...}],
-        "themes": [ {...}],
-        "sequences": [ {...}],
-        "themes": [ {...}],
-    }
-)
-
+elements_and_topics_format = json.dumps({
+    "characters": [
+        {
+            "element_name": "string",
+            "element_id": "string",
+            "incomplete_achievements": [
+                {
+                    "achievement_id": "string",
+                    "achievement_name": "string",
+                    "percent_complete": "double"
+                }
+            ]
+        }
+    ],
+    "settings": [{}],
+    "plots": [{}],
+    "themes": [{}],
+    "sequences": [{}],
+})

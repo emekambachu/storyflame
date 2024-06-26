@@ -16,6 +16,7 @@ class DataPoint extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'item_id',
         'slug',
         'name',
         'type',

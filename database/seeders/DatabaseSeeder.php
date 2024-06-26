@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AchievementSeeder::class,
             AchievementDataPointsSeeder::class,
             SummarySeeder::class,
+            SummarySchemaSeeder::class,
             StoriesSeeder::class,
         ]);
     }
