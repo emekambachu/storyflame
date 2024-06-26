@@ -27,7 +27,7 @@ class AdminStoreAchievementRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'unique:achievements,name'],
-            'sub_title' => ['required', 'string'],
+            'subtitle' => ['required', 'string'],
             'icon'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'color' => ['required', 'string'],
             'extraction_description' => ['required', 'string'],

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('summary_categories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignId('summary_id')->nullable();
             $table->foreignId('category_id')->nullable();
             $table->timestamps();

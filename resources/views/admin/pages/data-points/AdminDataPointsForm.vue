@@ -126,20 +126,7 @@
                                             class="block text-sm font-medium text-gray-700">
                                             Link Achievement
                                         </label>
-                                        <div v-if="form.achievements?.length > 0">
-                                            <span
-                                                v-for="(achieve, index) in form.achievements"
-                                                :key="index"
-                                                class="bg-sky-200 text-sky-600 p-1 rounded-md mr-1"
-                                            >
-                                            <span class="">
-                                                {{ achieve.name }}
-                                                <a class="font-extrabold" href="" @click.prevent="deleteAchievement">x</a>
-                                            </span>
-                                        </span>
-                                        </div>
                                         <select
-                                            @change.prevent="selectAchievement"
                                             id="category"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                             <option>Select Achievement</option>
@@ -151,8 +138,8 @@
                                                 {{ achieve.name }}
                                             </option>
                                         </select>
-                                        <p v-if="errors.achievements" class="text-red-500 text-sm">
-                                            {{ errors.achievements[0] }}
+                                        <p v-if="errors.achievement" class="text-red-500 text-sm">
+                                            {{ errors.achievement[0] }}
                                         </p>
                                     </div>
 
@@ -331,7 +318,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close', 'closed', 'formSubmitted']);
+const emit = defineEmits(['close', 'closed', 'formSubmitted', 'formUpdated']);
 
 
 const closeModal = () => {
@@ -362,17 +349,17 @@ const deleteCategory = (index) => {
     form.categories.splice(index, 1);
 };
 
-const selectAchievement = (e) => {
-    if(e.target.value !== 'Select' && !form.achievements.includes(e.target.value)) {
-        form.achievements.push({
-            id: e.target.value,
-            name: e.target.options[e.target.selectedIndex].text,
-        });
-    }
-};
-const deleteAchievement = (index) => {
-    form.achievements.splice(index, 1);
-};
+// const selectAchievement = (e) => {
+//     if(e.target.value !== 'Select' && !form.achievements.includes(e.target.value)) {
+//         form.achievements.push({
+//             id: e.target.value,
+//             name: e.target.options[e.target.selectedIndex].text,
+//         });
+//     }
+// };
+// const deleteAchievement = (index) => {
+//     form.achievements.splice(index, 1);
+// };
 
 const selectSummary = (e) => {
     if(e.target.value !== 'Select' && !form.summaries.includes(e.target.value)) {
@@ -395,7 +382,7 @@ const form = reactive({
     type: props.datapoint !== null ? props.datapoint.type : '',
 
     categories: props.datapoint !== null ? props.datapoint.categories : [],
-    achievements: props.datapoint !== null ? props.datapoint.achievements : [],
+    achievement: props.datapoint !== null ? props.datapoint.achievement : '',
     summaries: props.datapoint !== null ? props.datapoint.summaries : [],
 
     extraction_description: props.datapoint !== null ? props.datapoint.extraction_description : '',
@@ -422,10 +409,6 @@ const submitDataPoint = async () => {
                 form[key].forEach((category) => {
                     formData.append('categories[]', category.id);
                 });
-            } else if(key === 'achievements'){
-                form[key].forEach((data) => {
-                    formData.append('achievements[]', data.id);
-                });
             } else if(key === 'summaries'){
                 form[key].forEach((data) => {
                     formData.append('summaries[]', data.id);
@@ -447,7 +430,7 @@ const submitDataPoint = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formSubmitted', response.data.data);
+            emit('formSubmitted', response.data.data_point);
             // Empty form fields
             Object.keys(form).forEach(function(key) {
                 if(key === 'icon'){
@@ -501,10 +484,6 @@ const updateDataPoint = async () => {
                 form[key].forEach((category) => {
                     formData.append('categories[]', category.id);
                 });
-            } else if(key === 'achievements'){
-                form[key].forEach((data) => {
-                    formData.append('achievements[]', data.id);
-                });
             } else if(key === 'summaries'){
                 form[key].forEach((data) => {
                     formData.append('summaries[]', data.id);
@@ -526,7 +505,7 @@ const updateDataPoint = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formUpdated', response.data.data);
+            emit('formUpdated', response.data.data_point);
         }
 
     }).catch((error) => {

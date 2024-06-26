@@ -51,6 +51,7 @@ class AchievementDataPointsSeeder extends Seeder
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Definition/Purpose'],
                 'impact_score' => $rowData['Impact Score'],
+                'estimated_seconds' => $rowData['Seconds'],
             ];
         }
 

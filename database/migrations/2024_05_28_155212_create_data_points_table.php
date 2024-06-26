@@ -12,7 +12,6 @@ return new class extends Migration {
             Schema::create('data_points', function (Blueprint $table) {
                 $table->id();
 
-                $table->unsignedBigInteger('item_id')->unique();
                 $table->foreignId('achievement_id')->nullable();
                 $table->string('slug')->unique();
                 $table->string('name');

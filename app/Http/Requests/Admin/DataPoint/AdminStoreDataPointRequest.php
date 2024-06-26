@@ -36,7 +36,7 @@ class AdminStoreDataPointRequest extends FormRequest
             'publish_at' => ['required', 'string'],
 
             'categories' => ['required', 'array'],
-            'achievements' => ['required', 'array'],
+            'achievement' => ['required', 'string'],
             'summaries' => ['required', 'array'],
         ];
     }

@@ -315,7 +315,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['close', 'closed', 'formSubmitted']);
+const emit = defineEmits(['close', 'closed', 'formSubmitted', 'formUpdated']);
 
 
 const closeModal = () => {
@@ -428,7 +428,7 @@ const submitAchievement = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formSubmitted', response.data.data);
+            emit('formSubmitted', response.data.achievement);
             // Empty form fields
             Object.keys(form).forEach(function(key) {
                 if(key === 'icon'){
@@ -503,12 +503,12 @@ const updateAchievement = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formUpdated', response.data.data);
+            emit('formUpdated', response.data.achievement);
         }
 
     }).catch((error) => {
 
-        if([401, 402, 422].includes(error.response.status)){
+        if(error.response && [401, 402, 422].includes(error.response.status)){
             console.log(error.response);
 
             if(Object.keys(error.response?.data?.errors).length > 0){

@@ -28,7 +28,7 @@ class AdminUpdateAchievementRequest extends FormRequest
         $itemId = $this->route('item_id');
         return [
             'name' => ['required', 'string', 'unique:achievements,name,' . $itemId],
-            'sub_title' => ['required', 'string'],
+            'subtitle' => ['required', 'string'],
             'icon'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'color' => ['required', 'string'],
             'extraction_description' => ['required', 'string'],

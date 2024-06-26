@@ -28,7 +28,7 @@ class AdminDataPointResource extends JsonResource
 
             'categories' => $this->categories ?? null,
             'summaries' => $this->sumamries ?? null,
-            'achievements' => $this->achievements ?? null,
+            'achievement' => $this->achievements ? $this->achievements->first() : null,
 
             'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
             'publish_at' => $this->publish_at ?? null,

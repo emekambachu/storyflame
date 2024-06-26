@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Achievement;
 use App\Models\Admin\Admin;
+use App\Models\Category;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
@@ -42,6 +43,7 @@ class AchievementSeeder extends Seeder
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
+                'category' => $rowData['Element'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],

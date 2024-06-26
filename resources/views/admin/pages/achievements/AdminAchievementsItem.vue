@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, defineProps} from 'vue';
+import { ref, defineProps, reactive } from 'vue'
 import AdminAchievementsForm from '@/views/admin/pages/achievements/AdminAchievementsForm.vue'
 
 const props = defineProps([
@@ -15,8 +15,8 @@ const openSlideover = () => {
 const closeSlideover = () => {
     isSlideoverOpen.value = false;
 };
-const emittedAchievement = (achievement) => {
-    achievement.value = achievement;
+const emittedAchievement = (event) => {
+    achievement.value = event;
     closeSlideover();
 }
 
@@ -39,7 +39,7 @@ const emittedAchievement = (achievement) => {
                       class="bg-stone-200 p-2 mr-2 text-[12px] rounded-md text-black">
                     {{ category.name }}
                 </span>
-                <span class="mt-1">+3</span>
+<!--                <span class="mt-1">+3</span>-->
             </div>
         </td>
         <td class="px-6 py-4 text-center">
@@ -88,7 +88,7 @@ const emittedAchievement = (achievement) => {
         :isOpen="isSlideoverOpen"
         :achievement="achievement"
         @close="closeSlideover"
-        @formEditted="emittedAchievement"
+        @formUpdated="emittedAchievement"
     >
     </AdminAchievementsForm>
 </template>

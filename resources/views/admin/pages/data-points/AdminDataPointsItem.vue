@@ -30,7 +30,7 @@ const emittedDataPoint = (datapoint) => {
         </td>
 
         <td class="px-6 py-4 text-center">
-            {{ datapoint.achievements?.length > 0 ? datapoint.achievements.length : 0}}
+            {{ datapoint.achievement }}
         </td>
 
         <td class="px-6 py-4 text-center">
@@ -41,7 +41,7 @@ const emittedDataPoint = (datapoint) => {
                     class="bg-stone-200 p-2 mr-2 text-[12px] rounded-md text-black">
                     {{ category.name }}
                 </span>
-                <span class="mt-1">+3</span>
+<!--                <span class="mt-1">+3</span>-->
             </div>
         </td>
 
@@ -49,10 +49,10 @@ const emittedDataPoint = (datapoint) => {
             {{ datapoint.dev_order }}
         </td>
         <td class="px-6 py-4 text-center">
-            {{ datapoint.impact_score }} }}
+            {{ datapoint.impact_score }}
         </td>
         <td class="px-6 py-4 text-center">
-            {{ datapoint.summaries?.length > 0 ? datapoint.sumamries.length : 0}}
+            {{ datapoint.summaries?.length > 0 ? datapoint.sumamries.length : 0 }}
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ datapoint.updated_at }}</p>
@@ -105,7 +105,7 @@ const emittedDataPoint = (datapoint) => {
         :isOpen="isSlideoverOpen"
         :datapoint="datapoint"
         @close="closeSlideover"
-        @formEditted="emittedDataPoint"
+        @formUpdated="emittedDataPoint"
     >
     </AdminDataPointsForm>
 </template>
