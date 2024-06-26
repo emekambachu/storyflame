@@ -18,6 +18,12 @@ const closeSlideover = () => {
     isSlideoverOpen.value = false;
 };
 
+const emittedDataPoint = (event) => {
+    dataPoints.value.unshift(event);
+    total.value++;
+    // closeSlideover();
+}
+
 const loading = ref(false);
 
 const dataPoints = ref([]);
@@ -72,7 +78,9 @@ onBeforeMount(() => {
 
         <AdminDataPointForm
             :isOpen="isSlideoverOpen"
-            @close="closeSlideover">
+            @close="closeSlideover"
+            @formSubmitted="emittedDataPoint"
+        >
         </AdminDataPointForm>
 
         <div class="relative overflow-x-auto mt-4">

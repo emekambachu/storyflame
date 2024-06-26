@@ -27,8 +27,8 @@ class AdminAchievementResource extends JsonResource
             'purpose' => $this->purpose ?? null,
             'color' => $this->color ?? null,
 
-            'categories' => $this->categories ?? null,
-            'data_points' => $this->dataPoints ?? null,
+            'categories' => $this->categories && count($this->categories) > 0 ? $this->categories : [],
+            'data_points' => $this->dataPoints && count($this->dataPoints) > 0 ? $this->dataPoints : [],
 
             'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
             'publish_at' => $this->publish_at ?? null,

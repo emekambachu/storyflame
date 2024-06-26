@@ -22,7 +22,7 @@ return new class extends Migration {
                 $table->text('extraction_description')->nullable();
                 $table->json('example')->nullable();
                 $table->string('type')->default('text');
-                $table->unsignedSmallInteger('estimated_seconds')->nullable()->default(0);
+                $table->bigInteger('estimated_seconds')->default(0);
                 $table->foreignId('admin_id')->nullable();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();

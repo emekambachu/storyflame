@@ -44,8 +44,8 @@ const getAchievements = async () => {
     });
 }
 
-const emittedAchievement = (achievement) => {
-    achievements.value.unshift(achievement);
+const emittedAchievement = (event) => {
+    achievements.value.unshift(event);
     total.value++;
     closeSlideover();
 }

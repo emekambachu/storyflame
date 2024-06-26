@@ -29,7 +29,7 @@ Route::middleware('auth:admin-api')->group(static function (){
     Route::get('/admin/data-points/min', [AdminDataPointController::class, 'indexMin']);
     Route::get('/admin/data-points/{item_id}/categories', [AdminDataPointController::class, 'achievementCategories']);
     Route::post('/admin/data-points/store', [AdminDataPointController::class, 'store']);
-    Route::put('/admin/data-points/{item_id}/update', [AdminDataPointController::class, 'update']);
+    Route::post('/admin/data-points/{item_id}/update', [AdminDataPointController::class, 'update']);
     Route::delete('/admin/data-points/{item_id}/delete', [AdminDataPointController::class, 'destroy']);
 
     // Summaries

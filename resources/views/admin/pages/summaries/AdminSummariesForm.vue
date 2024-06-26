@@ -24,13 +24,13 @@
                                 <div class="flex items-center justify-between bg-stone-300 p-3 sticky top-0">
 
                                     <h2 class="text-md font-bold text-black">
-                                        {{ datapoint !== null ? 'Edit Data Point' : 'Create New Data Point' }}
+                                        {{ summary !== null ? 'Edit Summary' : 'Create New Summary' }}
                                     </h2>
                                     <button
-                                        @click.prevent="datapoint !== null ? updateDataPoint() : submitDataPoint()"
+                                        @click.prevent="summary !== null ? updateSummary() : submitSummary()"
                                         v-if="!loading"
                                         class="px-4 py-2 bg-black text-white rounded-full">
-                                        {{ datapoint !== null ? 'Update' : 'Save' }}
+                                        {{ summary !== null ? 'Update' : 'Save' }}
                                     </button>
                                     <button v-else type="button" disabled class="px-4 py-2 bg-black text-white rounded-full">
                                         <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-gray-100 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
 
                                 </div>
                                 <div v-if="submitted" class="flex items-center justify-center bg-emerald-400 p-2 text-stone-600">
-                                    {{ datapoint !== null ? 'Data Point Updated Successfully' : 'Data Point Created Successfully' }}
+                                    {{ summary !== null ? 'Summary Updated Successfully' : 'Summary Created Successfully' }}
                                 </div>
 
                                 <div class="space-y-6 bg-white p-6 rounded-lg">
@@ -52,7 +52,7 @@
                                             <div class="mb-3">
                                                 <label
                                                     class="block text-sm font-medium text-gray-700">
-                                                    Data Point Name
+                                                    Summary Name
                                                 </label>
                                                 <input
                                                     v-model="form.name"
@@ -70,6 +70,21 @@
                                         <label
                                             for="purpose"
                                             class="block text-sm font-medium text-gray-700">
+                                            Location
+                                        </label>
+                                        <textarea
+                                            v-model="form.location"
+                                            id="purpose"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.location" class="text-red-500 text-sm">
+                                            {{ errors.location[0] }}
+                                        </p>
+                                    </div>
+
+                                    <div class="w-full">
+                                        <label
+                                            for="purpose"
+                                            class="block text-sm font-medium text-gray-700">
                                             Purpose
                                         </label>
                                         <textarea
@@ -81,8 +96,6 @@
                                         </p>
                                     </div>
 
-                                    <hr class="my-4">
-
                                     <div class="w-full">
                                         <label
                                             for="category"
@@ -91,10 +104,10 @@
                                         </label>
                                         <div v-if="form.categories?.length > 0">
                                             <span
-                                            v-for="(category, index) in form.categories"
-                                            :key="index"
-                                            class="bg-sky-200 text-sky-600 p-1 rounded-md mr-1"
-                                        >
+                                                v-for="(category, index) in form.categories"
+                                                :key="index"
+                                                class="bg-sky-200 text-sky-600 p-1 rounded-md mr-1"
+                                            >
                                             <span class="">
                                                 {{ category.name }}
                                                 <a class="font-extrabold" href="" @click.prevent="deleteCategory">x</a>
@@ -118,6 +131,22 @@
                                             {{ errors.categories[0] }}
                                         </p>
                                     </div>
+
+                                    <div class="w-full sm:w-1/2">
+                                        <label
+                                            for="publishAt"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Publish at
+                                        </label>
+                                        <input
+                                            v-model="form.publish_at"
+                                            id="publishAt"
+                                            type="date"
+                                            :min="new Date().toISOString().split('T')[0]"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
+                                    </div>
+
+                                    <hr class="my-4">
 
                                     <div class="w-full">
                                         <label
@@ -145,100 +174,85 @@
                                     <hr class="my-4">
 
                                     <div class="w-full">
-                                        <div class="grid grid-cols-2 gap-1">
-                                            <div class="mb-3">
-                                                <label
-                                                    class="block text-sm font-medium text-gray-700">
-                                                    Development Order
-                                                </label>
-                                                <input
-                                                    v-model="form.development_order"
-                                                    type="text"
-                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
-                                                <p v-if="errors.development_order" class="text-red-500 text-sm">
-                                                    {{ errors.development_order[0] }}
-                                                </p>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label
-                                                    class="block text-sm font-medium text-gray-700">
-                                                    Impact Score
-                                                </label>
-                                                <input
-                                                    v-model="form.impact_score"
-                                                    type="text"
-                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
-                                                <p v-if="errors.impact_score" class="text-red-500 text-sm">
-                                                    {{ errors.impact_score[0] }}
-                                                </p>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label
-                                                    class="block text-sm font-medium text-gray-700">
-                                                    Est. Seconds (To Complete)
-                                                </label>
-                                                <input
-                                                    required
-                                                    v-model="form.estimated_seconds"
-                                                    type="number"
-                                                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
-                                                <p v-if="errors.estimated_seconds" class="text-red-500 text-sm">
-                                                    {{ errors.estimated_seconds[0] }}
-                                                </p>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4">
-
-                                    <div class="w-full">
                                         <label
                                             class="block text-sm font-medium text-gray-700">
-                                            Extraction Description
+                                            Creation Prompt
                                         </label>
                                         <textarea
-                                            v-model="form.extraction_description"
+                                            v-model="form.creation_prompt"
                                             id="extractionDescription"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
-                                        <p v-if="errors.extraction_description" class="text-red-500 text-sm">
-                                            {{ errors.extraction_description[0] }}
+                                        <p v-if="errors.creation_prompt" class="text-red-500 text-sm">
+                                            {{ errors.creation_prompt[0] }}
                                         </p>
                                     </div>
 
                                     <div class="w-full">
                                         <label
                                             class="block text-sm font-medium text-gray-700">
-                                            Extraction Type
+                                            Example Summary
+                                        </label>
+                                        <textarea
+                                            v-model="form.example_summary"
+                                            id="extractionDescription"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.example_summary" class="text-red-500 text-sm">
+                                            {{ errors.example_summary[0] }}
+                                        </p>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div>
+                                        <label
+                                            for="category"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Linked Data Points
                                         </label>
                                         <select
-                                            v-model="form.type"
+                                            @change="selectDataPoint"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
-                                            <option>Select Extraction Type</option>
-                                            <option value="text">Text</option>
+                                            <option>Select</option>
+                                            <option
+                                                class="text-black"
+                                                v-for="data in dataPoints"
+                                                :key="data.id"
+                                                :value="data.id"
+                                            >
+                                                {{ data.name }}
+                                            </option>
                                         </select>
-                                        <p v-if="errors.type" class="text-red-500 text-sm">
-                                            {{ errors.type[0] }}
+                                        <div v-if="form.data_points?.length > 0" class="mt-1">
+                                            <div
+                                                v-for="(data, index) in form.data_points"
+                                                :key="index"
+                                                class="w-full flex justify-center mb-1"
+                                            >
+                                                <span class="w-11/12 mr-1 p-1 bg-stone-200 text-black rounded-sm">
+                                                    {{ data.name }}
+                                                </span>
+                                                <span @click="deleteDataPoint" class="w-1/12">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                        <g clip-path="url(#clip0_1946_18183)">
+                                                        <path d="M3.33337 5.83331H16.6667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M8.33337 9.16669V14.1667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M11.6666 9.16669V14.1667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M4.16663 5.83331L4.99996 15.8333C4.99996 16.2753 5.17555 16.6993 5.48811 17.0118C5.80068 17.3244 6.2246 17.5 6.66663 17.5H13.3333C13.7753 17.5 14.1992 17.3244 14.5118 17.0118C14.8244 16.6993 15 16.2753 15 15.8333L15.8333 5.83331" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M7.5 5.83333V3.33333C7.5 3.11232 7.5878 2.90036 7.74408 2.74408C7.90036 2.5878 8.11232 2.5 8.33333 2.5H11.6667C11.8877 2.5 12.0996 2.5878 12.2559 2.74408C12.4122 2.90036 12.5 3.11232 12.5 3.33333V5.83333" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </g>
+                                                        <defs>
+                                                        <clipPath id="clip0_1946_18183">
+                                                        <rect width="20" height="20" fill="white"/>
+                                                        </clipPath>
+                                                        </defs>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p v-if="errors.data_points" class="text-red-500 text-sm">
+                                            {{ errors.data_points[0] }}
                                         </p>
                                     </div>
-
-                                    <div class="w-full">
-                                        <label
-                                            class="block text-sm font-medium text-gray-700">
-                                            Extraction Example
-                                        </label>
-                                        <textarea
-                                            v-model="form.example"
-                                            id="extractionDescription"
-                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
-                                        <p v-if="errors.example" class="text-red-500 text-sm">
-                                            {{ errors.example[0] }}
-                                        </p>
-                                    </div>
-
-                                    <hr class="my-4">
 
                                     <div>
                                         <label
@@ -306,13 +320,14 @@
 import { defineProps, defineEmits, reactive, ref, computed } from 'vue'
 import store from '@/store/index.js'
 import axios from 'axios'
+import baseService from '@/utils/base-service.js'
 
 const props = defineProps({
     isOpen: {
         type: Boolean,
         required: true,
     },
-    datapoint: {
+    summary: {
         type: Object,
         required: false,
         default: null,
@@ -325,14 +340,14 @@ const closeModal = () => {
     emit('close');
 };
 
-const user = computed(() => JSON.parse(localStorage.getItem('story-flame-admin')));
+const user = computed(() => baseService.getUserFromLocalStorage());
 
 const errors = ref({});
 const loading = ref(false);
 const submitted = ref(false);
 
 const categories = computed(() => store.state.categories);
-const achievements = computed(() => store.state.achievements);
+const data_points = computed(() => store.state.data_points);
 const summaries = computed(() => store.state.summaries);
 
 const selectCategory = (e) => {
@@ -361,24 +376,32 @@ const deleteSummary = (index) => {
     form.summaries.splice(index, 1);
 };
 
+const selectDataPoint = (e) => {
+    if(e.target.value !== 'Select' && !form.data_points.includes(e.target.value)) {
+        form.data_points.push({
+            id: e.target.value,
+            name: e.target.options[e.target.selectedIndex].text,
+        });
+    }
+};
+const deleteDataPoint = (index) => {
+    form.data_points.splice(index, 1);
+};
+
 
 const form = reactive({
-    name: props.datapoint !== null ? props.datapoint.name : '',
-    development_order: props.datapoint !== null ? props.datapoint.development_order : '',
-    impact_score: props.datapoint !== null ? props.datapoint.impact_score : '',
-    estimated_seconds: props.datapoint !== null ? props.datapoint.estimated_seconds : '',
-    type: props.datapoint !== null ? props.datapoint.type : '',
-
-    categories: props.datapoint !== null ? props.datapoint.categories : [],
-    achievement: props.datapoint !== null ? props.datapoint.achievement : '',
-    summaries: props.datapoint !== null ? props.datapoint.summaries : [],
-
-    extraction_description: props.datapoint !== null ? props.datapoint.extraction_description : '',
-    example: props.datapoint !== null ? props.datapoint.example : '',
-    purpose: props.datapoint !== null ? props.datapoint.purpose : '',
+    name: props.summary !== null ? props.summary.name : '',
+    location: props.summary !== null ? props.summary.location : '',
+    purpose: props.summary !== null ? props.summary.purpose : '',
+    creation_prompt: props.summary !== null ? props.summary.creation_prompt : '',
+    example_summary: props.summary !== null ? props.summary.example_summary : '',
+    publish_at: props.summary !== null ? props.summary.publish_at : '',
+    categories: props.summary !== null ? props.summary.categories : [],
+    summaries: props.summary !== null ? props.summary.summaries : [],
+    data_points: props.summary !== null ? props.summary.data_points : [],
 });
 
-const submitDataPoint = async () => {
+const submitSummary = async () => {
     // Delete all errors
     Object.keys(errors.value).forEach(function(key) {
         delete errors.value[key];
@@ -400,13 +423,17 @@ const submitDataPoint = async () => {
                 form[key].forEach((data) => {
                     formData.append('summaries[]', data.id);
                 });
+            } else if(key === 'data_points'){
+                form[key].forEach((data) => {
+                    formData.append('data_points[]', data.id);
+                });
             } else {
                 formData.append(key, form[key]);
             }
         }
     });
 
-    await axios.post('/api/admin/data-points/store', formData, {
+    await axios.post('/api/admin/summaries/store', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',
@@ -417,12 +444,14 @@ const submitDataPoint = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formSubmitted', response.data.data_point);
+            emit('formSubmitted', response.data.summary);
             // Empty form fields
             Object.keys(form).forEach(function(key) {
                 if(key === 'categories'){
                     form[key] = [];
                 }else if(key === 'summaries'){
+                    form[key] = [];
+                }else if(key === 'data_points'){
                     form[key] = [];
                 }else{
                     form[key] = '';
@@ -449,7 +478,7 @@ const submitDataPoint = async () => {
     loading.value = false;
 }
 
-const updateDataPoint = async () => {
+const updateSummary = async () => {
 
     // Delete all errors
     Object.keys(errors.value).forEach(function(key) {
@@ -472,13 +501,17 @@ const updateDataPoint = async () => {
                 form[key].forEach((data) => {
                     formData.append('summaries[]', data.id);
                 });
+            } else if(key === 'data_points'){
+                form[key].forEach((data) => {
+                    formData.append('data_points[]', data.id);
+                });
             } else {
                 formData.append(key, form[key]);
             }
         }
     });
 
-    await axios.post('/api/admin/data-points/'+props.datapoint.item_id+'/update', formData, {
+    await axios.post('/api/admin/summaries/'+props.summary.item_id+'/update', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',
@@ -489,12 +522,12 @@ const updateDataPoint = async () => {
             errors.value = []; // Empty error messages
             submitted.value = true;
             // Emit the submitted data to the parent component
-            emit('formUpdated', response.data.data_point);
+            emit('formUpdated', response.data.summary);
         }
 
     }).catch((error) => {
 
-        if([401, 402, 422].includes(error.response.status)){
+        if(error.response && [401, 402, 422].includes(error.response.status)){
             console.log(error.response);
 
             if(Object.keys(error.response?.data?.errors).length > 0){

@@ -26,12 +26,11 @@ class AdminDataPointResource extends JsonResource
             'example' => $this->example ?? null,
             'purpose' => $this->purpose ?? null,
 
-            'categories' => $this->categories ?? null,
-            'summaries' => $this->sumamries ?? null,
-            'achievement' => $this->achievements ? $this->achievements->first() : null,
+            'categories' => $this->categories && count($this->categories) > 0 ? $this->categories : [],
+            'summaries' => $this->summaries && count($this->summaries) > 0 ? $this->summaries : [],
+            'achievement' => $this->achievements && count($this->achievements) > 0 ? $this->achievements->first()->name : null,
 
             'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
-            'publish_at' => $this->publish_at ?? null,
             'updated_at' => $this->updated_at->format('F d Y'),
 
             'progress' => $this->when(isset($this->pivot), function () {

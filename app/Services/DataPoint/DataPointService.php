@@ -45,6 +45,7 @@ class DataPointService
             $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
             $inputs['admin_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
+            $inputs['estimated_seconds'] = !empty($inputs['estimated_seconds']) ? $inputs['estimated_seconds'] : 0;
             $dataPoint = $this->dataPoint()->create($inputs);
 
             if(!empty($inputs['categories'])){
@@ -102,6 +103,8 @@ class DataPointService
 
             $inputs['admin_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
+            $inputs['estimated_seconds'] = !empty($inputs['estimated_seconds']) ? $inputs['estimated_seconds'] : 0;
+
             $dataPoint->update($inputs);
 
             if(!empty($inputs['categories'])){
@@ -182,7 +185,7 @@ class DataPointService
             DB::commit();
             return [
                 'success' => true,
-                'data_points' => new AdminDataPointResource($dataPoint)
+                'data_point' => new AdminDataPointResource($dataPoint)
             ];
 
         }catch (\Exception $e){

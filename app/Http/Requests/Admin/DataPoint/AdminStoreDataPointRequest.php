@@ -33,11 +33,11 @@ class AdminStoreDataPointRequest extends FormRequest
             'extraction_description' => ['required', 'string'],
             'example' => ['required', 'string'],
             'purpose' => ['required', 'string'],
-            'publish_at' => ['required', 'string'],
+            'estimated_seconds' => ['required', 'integer'],
 
             'categories' => ['required', 'array'],
-            'achievement' => ['required', 'string'],
-            'summaries' => ['required', 'array'],
+            'achievement' => ['nullable', 'string'],
+            'summaries' => ['nullable', 'array'],
         ];
     }
 

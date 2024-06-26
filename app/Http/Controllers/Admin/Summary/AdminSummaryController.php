@@ -26,7 +26,7 @@ class AdminSummaryController extends Controller
     {
         try {
             $data = $this->summary->summary()
-                ->with('categories', 'dataPoints', 'summaries')
+                ->with('categories', 'dataPoints:id', 'summaries:id')
                 ->latest()->get();
             return response()->json([
                 'success' => true,

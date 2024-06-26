@@ -31,10 +31,10 @@ class AdminStoreSummaryRequest extends FormRequest
             'location' => ['required', 'string'],
             'purpose' => ['required', 'string'],
             'creation_prompt' => ['required', 'string'],
-            'categories' => ['required', 'array'],
-            'data_points' => ['required', 'array'],
-            'summaries' => ['required', 'array'],
-            'publish_at' => ['required', 'string'],
+            'categories' => ['nullable', 'array'],
+            'data_points' => ['nullable', 'array'],
+            'summaries' => ['nullable', 'array'],
+            'publish_at' => ['nullable', 'string'],
         ];
     }
 

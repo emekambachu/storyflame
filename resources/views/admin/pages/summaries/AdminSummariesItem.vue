@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {ref, defineProps} from 'vue';
-import AdminDataPointsForm from '@/views/admin/pages/data-points/AdminDataPointsForm.vue'
+import AdminSummariesForm from '@/views/admin/pages/summaries/AdminSummariesForm.vue'
 
 const props = defineProps([
-    'datapoint',
+    'summary',
 ]);
 
-const datapoint = ref(props.datapoint);
+const summary = ref(props.summary);
 
 const isSlideoverOpen = ref(false);
 const openSlideover = () => {
@@ -15,8 +15,8 @@ const openSlideover = () => {
 const closeSlideover = () => {
     isSlideoverOpen.value = false;
 };
-const emittedDataPoint = (event) => {
-    datapoint.value = event;
+const emittedSummary = (event) => {
+    summary.value = event;
     // closeSlideover();
 }
 </script>
@@ -24,38 +24,35 @@ const emittedDataPoint = (event) => {
 <template>
     <tr class="bg-white border-b">
         <td class="px-6 py-4 text-center">
-            <p class="font-extrabold text-md text-black">{{ datapoint.name }}</p>
-            <p class="text-gray-400 text-md">ID: {{ datapoint.item_id }}</p>
+            <p class="font-extrabold text-md text-black">{{ summary.name }}</p>
+            <p class="text-gray-400 text-md">ID: {{ summary.item_id }}</p>
         </td>
 
         <td class="px-6 py-4 text-center">
-            {{ datapoint.achievement }}
+            {{ summary.location }}
         </td>
 
         <td class="px-6 py-4 text-center">
-            <div v-if="datapoint.categories?.length > 0" class="d-flex">
+            <div v-if="summary.categories?.length > 0" class="d-flex">
                 <span
-                    v-for="category in datapoint.categories"
+                    v-for="category in summary.categories"
                     :key="category.id"
-                    class="bg-stone-200 p-2 mr-2 text-[12px] rounded-md text-black">
+                    class="bg-stone-200 p-1 mr-2 text-[12px] rounded-md text-black mb-3">
                     {{ category.name }}
                 </span>
-<!--                <span class="mt-1">+3</span>-->
+                <!--                <span class="mt-1">+3</span>-->
             </div>
         </td>
 
         <td class="px-6 py-4 text-center">
-            {{ datapoint.dev_order }}
+            {{ summary.data_points_count }}
         </td>
         <td class="px-6 py-4 text-center">
-            {{ datapoint.impact_score }}
+            {{ summary.linked_sumamries }}
         </td>
         <td class="px-6 py-4 text-center">
-            {{ datapoint.summaries?.length > 0 ? datapoint.summaries.length : 0 }}
-        </td>
-        <td class="px-6 py-4 text-center">
-            <p class="text-black">{{ datapoint.updated_at }}</p>
-            <p>{{ datapoint.admin }}</p>
+            <p class="text-black">{{ summary.updated_at }}</p>
+            <p>{{ summary.admin }}</p>
         </td>
         <td class="px-6 py-4 text-center flex">
             <a href="" @click.prevent="openSlideover">
@@ -100,13 +97,13 @@ const emittedDataPoint = (event) => {
         </td>
     </tr>
 
-    <AdminDataPointsForm
+    <AdminSummariesForm
         :isOpen="isSlideoverOpen"
-        :datapoint="datapoint"
+        :summary="summary"
         @close="closeSlideover"
-        @formUpdated="emittedDataPoint"
+        @formUpdated="emittedSummary"
     >
-    </AdminDataPointsForm>
+    </AdminSummariesForm>
 </template>
 
 <style scoped>

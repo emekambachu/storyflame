@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Achievement;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class AdminUpdateAchievementRequest extends FormRequest
 {
@@ -27,7 +28,7 @@ class AdminUpdateAchievementRequest extends FormRequest
     {
         $itemId = $this->route('item_id');
         return [
-            'name' => ['required', 'string', 'unique:achievements,name,' . $itemId],
+            'name' => ['required', 'string', Rule::unique('achievements', 'name')->ignore($itemId, 'item_id')],
             'subtitle' => ['required', 'string'],
             'icon'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'color' => ['required', 'string'],
