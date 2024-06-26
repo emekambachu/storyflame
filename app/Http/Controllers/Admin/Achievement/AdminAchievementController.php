@@ -36,6 +36,20 @@ class AdminAchievementController extends Controller
         }
     }
 
+    public function indexMin(): JsonResponse
+    {
+        try {
+            $data = $this->achievement->dataPoint()->select('id', 'name')->orderBy('name')->get();
+            return response()->json([
+                'success' => true,
+                'achievement' => $data,
+            ]);
+
+        }catch (\Exception $e){
+            return BaseService::tryCatchException($e);
+        }
+    }
+
     public function store(AdminStoreAchievementRequest $request): JsonResponse
     {
         try {
@@ -46,9 +60,8 @@ class AdminAchievementController extends Controller
         }
     }
 
-    public function update(Request $request, $item_id): JsonResponse
+    public function update(AdminUpdateAchievementRequest $request, $item_id): JsonResponse
     {
-
         try {
             $data = $this->achievement->updateAchievement($request, $item_id);
             return response()->json($data, $data['status_code'] ?? 200);
@@ -57,10 +70,10 @@ class AdminAchievementController extends Controller
         }
     }
 
-    public function delete(Request $request, $item_id): JsonResponse
+    public function delete($item_id): JsonResponse
     {
         try {
-            $data = $this->achievement->deleteAchievement($request, $item_id);
+            $data = $this->achievement->deleteAchievement($item_id);
             return response()->json($data, $data['status_code'] ?? 200);
         }catch (\Exception $e){
             return BaseService::tryCatchException($e);

@@ -10,9 +10,7 @@ use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointAchievement;
 use App\Models\DataPoint\DataPointCategory;
 use App\Models\DataPoint\DataPointSummary;
-use App\Models\Summary\SummaryLink;
 use App\Services\Base\BaseService;
-use App\Services\Base\CrudService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -94,9 +92,9 @@ class DataPointService
         }
     }
 
-    public function updateDataPoint($request): array
+    public function updateDataPoint($request, $item_id): array
     {
-        $dataPoint = $this->dataPoint()->where('item_id', $request->item_id)->first();
+        $dataPoint = $this->dataPoint()->where('item_id', $item_id)->first();
 
         DB::beginTransaction();
         try {
@@ -110,10 +108,12 @@ class DataPointService
 
                 $existingCategories = $this->dataPointCategory()->where('data_point_id', $dataPoint->id)->get();
                 // remove deleted categories
-                foreach ($existingCategories as $category){
-                    if(!in_array($category->category_id, $inputs['categories'], true)){
-                        $category->delete();
-                    }
+               if($existingCategories?->count() > 0){
+                   foreach ($existingCategories as $category){
+                       if(!in_array($category->category_id, $inputs['categories'], true)){
+                           $category->delete();
+                       }
+                   }
                 }
 
                 $existingCategoriesIds = $existingCategories->pluck('category_id')->toArray();
@@ -158,7 +158,7 @@ class DataPointService
 
                 $existingSummaries = $this->dataPointSummary()->where('data_point_id', $dataPoint->id)->get();
                 // remove deleted categories
-                if($existingSummaries->count() > 0){
+                if($existingSummaries?->count() > 0){
                     foreach ($existingSummaries as $summary){
                         if(!in_array($summary->summary_id, $inputs['summaries'], true)){
                             $summary->delete();
@@ -197,17 +197,17 @@ class DataPointService
         }
     }
 
-    public function deleteDataPoint($request): array
+    public function deleteDataPoint($item_id): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $dataPoint = $this->dataPoint()->where('item_id', $request->item_id)->first();
+            $dataPoint = $this->dataPoint()->where('item_id', $item_id)->first();
             // Check if the achievement exists
             if (!$dataPoint) {
                 return [
                     'success' => false,
-                    'error_message' => 'Achievement not found'
+                    'error_message' => 'Data Point Not Found'
                 ];
             }
 
@@ -234,7 +234,7 @@ class DataPointService
 
             return [
                 'success' => true,
-                'message' => 'Achievement deleted successfully'
+                'message' => 'Data Point Deleted Successfully'
             ];
 
         } catch (\Exception $e) {
@@ -245,7 +245,7 @@ class DataPointService
 
             return [
                 'success' => false,
-                'error_message' => 'An error occurred while deleting the achievement'
+                'error_message' => 'An error occurred while deleting the Data Point'
             ];
         }
     }

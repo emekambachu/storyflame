@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AdminStoreDataPointRequest extends FormRequest
+class AdminUpdateDataPointRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,9 @@ class AdminStoreDataPointRequest extends FormRequest
      */
     public function rules()
     {
+        $itemId = $this->route('item_id');
         return [
-            'name' => ['required', 'string', 'unique:data_points,name'],
+            'name' => ['required', 'string', 'unique:data_points,name', $itemId],
             'type' => ['required', 'string'],
             'development_order' => ['required', 'integer'],
             'impact_score' => ['required', 'integer'],

@@ -90,9 +90,9 @@ class AchievementService
         }
     }
 
-    public function updateAchievement($request): array
+    public function updateAchievement($request, $item_id): array
     {
-        $achievement = $this->achievement()->where('item_id', $request->item_id)->first();
+        $achievement = $this->achievement()->where('item_id', $item_id)->first();
 
         DB::beginTransaction();
         try {
@@ -108,21 +108,21 @@ class AchievementService
 
             if(!empty($inputs['categories'])){
 
-                $categories = $this->achievementCategory()->where('achievement_id', $achievement->id)->get();
-                // remove deleted categories
-                foreach ($categories as $category){
-                    if(!in_array($category->category_id, $inputs['categories'], true)){
-                        $category->delete();
+                $existingCategories = $this->achievementCategory()->where('achievement_id', $achievement->id)->get();
+
+                if($existingCategories && $existingCategories->count() > 0){
+                    // remove categories that were not selected from the form
+                    foreach ($existingCategories as $category){
+                        if(!in_array($category->category_id, $inputs['categories'], true)){
+                            $category->delete();
+                        }
                     }
                 }
 
-                $existingCategories = $this->achievementCategory()
-                    ->select('category_id', 'achievement_id')
-                    ->where('achievement_id', $achievement->id)
-                    ->get()->pluck('category_id')->toArray();
+                $existingCategoriesIds = $existingCategories->pluck('category_id')->toArray();
 
                 foreach ($inputs['categories'] as $categoryId){
-                    if(!in_array($categoryId, $existingCategories, true)){
+                    if(!in_array($categoryId, $existingCategoriesIds, true)){
                         $this->achievementCategory()->create([
                             'category_id' => $categoryId,
                             'achievement_id' => $achievement->id,
@@ -133,21 +133,20 @@ class AchievementService
             }
 
             if(!empty($inputs['data_points'])){
-                $dataPoints = $this->dataPoint()->where('achievement_id', $achievement->id)->get();
+                $existingDataPoints = $this->dataPointAchievement()->where('achievement_id', $achievement->id)->get();
                 // remove deleted categories
-                foreach ($dataPoints as $data){
-                    if(!in_array($data->data_point_id, $inputs['data_points'], true)){
-                        $data->delete();
+                if($existingDataPoints && $existingDataPoints->count() > 0){
+                    foreach ($existingDataPoints as $dataPoint){
+                        if(!in_array($dataPoint->data_point_id, $inputs['data_points'], true)){
+                            $dataPoint->delete();
+                        }
                     }
                 }
 
-                $existingDataPoints = $this->dataPointAchievement()
-                    ->select('data_point_id', 'achievement_id')
-                    ->where('achievement_id', $achievement->id)
-                    ->get()->pluck('data_point_id')->toArray();
+                $existingDataPointsIds = $existingDataPoints->pluck('data_point_id')->toArray();
 
                 foreach ($inputs['data_points'] as $dataPointId){
-                    if(!in_array($dataPointId, $existingDataPoints, true)){
+                    if(!in_array($dataPointId, $existingDataPointsIds, true)){
                         $this->dataPointAchievement()->create([
                             'data_point_id' => $dataPointId,
                             'achievement_id' => $achievement->id,
@@ -175,12 +174,12 @@ class AchievementService
         }
     }
 
-    public function deleteAchievement($request): array
+    public function deleteAchievement($item_id): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $achievement = $this->achievement()->where('item_id', $request->item_id)->first();
+            $achievement = $this->achievement()->where('item_id', $item_id)->first();
             // Check if the achievement exists
             if (!$achievement) {
                 return [
@@ -197,6 +196,11 @@ class AchievementService
             // Detach the categories
             if ($achievement->categories && $achievement->categories->count() > 0) {
                 $achievement->categories()->detach();
+            }
+
+            // Detach the data points
+            if ($achievement->dataPoints && $achievement->dataPoints->count() > 0) {
+                $achievement->dataPoints()->detach();
             }
 
             // Delete the achievement
@@ -222,7 +226,6 @@ class AchievementService
             ];
         }
     }
-
 
 
     public const ACHIEVEMENTS = [
