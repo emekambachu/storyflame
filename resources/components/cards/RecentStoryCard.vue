@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
 
 defineProps({

@@ -1,12 +1,14 @@
 <template>
     <div
-        :class="[{
-            'text-red-600': priority == 1,
-            'text-amber-500': priority == 2,
-            'text-yellow-400': priority == 3,
-            'text-slate-300': priority == 4,
-        },
-        `bg-white p-1 shrink-0 rounded-full flex items-center justify-center ${size}`]"
+        :class="[
+            {
+                'text-red-600': progress > 90,
+                'text-amber-500': progress > 60,
+                'text-yellow-400': progress > 30,
+                'text-slate-300': progress > 0,
+            },
+            `flex shrink-0 items-center justify-center rounded-full bg-white p-1 ${size}`,
+        ]"
     >
         <svg
             class="shrink-0"
@@ -27,7 +29,7 @@
 
 <script setup lang="ts">
 const props = defineProps({
-    priority: {
+    progress: {
         type: Number,
         default: 1,
     },

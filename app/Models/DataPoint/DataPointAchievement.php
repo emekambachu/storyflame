@@ -4,7 +4,6 @@ namespace App\Models\DataPoint;
 
 use App\Models\Achievement;
 use App\Models\DataPoint;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPointAchievement extends Pivot
 {
-    use HasUuids, HasFactory;
+    use SoftDeletes, HasFactory;
 
     protected $table = 'data_point_achievements';
 

@@ -14,15 +14,16 @@ from langchain_core.messages import AIMessage
 from langchain_core.runnables import RunnablePassthrough
 from openai import OpenAI
 
+from processing.middleware.RequestStateMiddleware import RequestStateMiddleware
 from processing.parser.convert import convert
 from processing.api.main import api_router
 
 app = FastAPI()
 
 load_dotenv()
-# langchain.debug = True
 
 app.include_router(api_router, prefix="/api")
+app.add_middleware(RequestStateMiddleware)
 
 
 @app.get("/")

@@ -12,7 +12,7 @@
             </div>
 
             <flame-icon
-                :priority="card.readiness"
+                :progress="card.progress"
                 class="!w-8 !h-8"
                 flameClass="w-6 h-6"
             />
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 
 const props = defineProps({
     card: {

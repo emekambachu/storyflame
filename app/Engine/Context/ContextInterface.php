@@ -19,13 +19,13 @@ interface ContextInterface
 
     public function getModel();
 
-    public function stories(): HasMany;
+    public function stories(): ?HasMany;
 
-    public function characters(): HasMany;
+    public function characters(): ?HasMany;
 
-    public function plots(): HasMany;
+    public function plots(): ?HasMany;
 
-    public function sequences(): HasMany;
+    public function sequences(): ?HasMany;
 
     /**
      * @param string $elementType

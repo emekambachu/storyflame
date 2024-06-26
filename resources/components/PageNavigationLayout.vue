@@ -7,13 +7,13 @@
                     'bg-white bg-opacity-75 backdrop-blur': !transparent,
                 },
             ]"
-            class="-top-[1px] z-[15] py-3"
+            class="-top-[1px] z-[15] pt-8"
         >
             <button
-                class="flex items-center text-lg capitalize"
+                class="flex items-center text-lg capitalize px-4 py-2"
                 @click="goBack"
             >
-                <chevron-icon class="h-7" />
+                <chevron-icon class="h-4" />
                 <template v-if="!noBackText">
                     {{ backRouteTitle }}
                 </template>

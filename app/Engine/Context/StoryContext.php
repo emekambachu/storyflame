@@ -3,18 +3,21 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\StoryEngineConfig;
-use App\Engine\Context\ContextInterface;
 use App\Models\Character;
 use App\Models\Story;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
  * @template-extends BaseContext<Story>
  */
 class StoryContext extends BaseContext implements ContextInterface
 {
+    function getContextClass(): ?string
+    {
+        return Story::class;
+    }
+
+
     public function __construct($model = null)
     {
         parent::__construct($model);
@@ -34,33 +37,6 @@ class StoryContext extends BaseContext implements ContextInterface
         return $this->getModel()->user->stories();
     }
 
-
-    /**
-     * @inheritDoc
-     */
-    public function getStories(): array
-    {
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCharacters(): array
-    {
-        return $this->getModel()->characters()->get()->all();
-    }
-
-    public function addStory(Story $story): Story
-    {
-        // TODO: Implement addStory() method.
-    }
-
-    public function addCharacter(array $character): Character
-    {
-        return $this->getModel()->characters()->create($character);
-    }
-
     public function characters(): HasMany
     {
         return $this->getModel()->characters();
@@ -75,5 +51,30 @@ class StoryContext extends BaseContext implements ContextInterface
     {
     }
 
+    protected function getCurrentData(): array
+    {
+        return [
+            'Story' => [
+                [
+                    $this->getModel()
+                        ->dataPointsToArray()
+                ]
+            ],
+            'Character' => [
+                $this->characters()
+                    ->get()
+                    ->map(fn($item) => $item->dataPointsToArray())
+            ]
+        ];
+    }
 
+    protected function getContextName(): string
+    {
+        return $this->getModel()->name ?? 'New Story';
+    }
+
+    protected function getContextGoal(): string
+    {
+        return 'Learn more about the story and its characters.';
+    }
 }

@@ -4,9 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Summary\Summary;
-use App\Models\Summary\SummaryCategory;
-use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class SummarySeeder extends Seeder
 {
@@ -15,135 +14,50 @@ class SummarySeeder extends Seeder
      */
     public function run(): void
     {
-        $summaries = [
-            [
-                'name' => 'Logline',
-                'slug' => 'logline'.BaseService::randomCharacters(5, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => 'Story Detail Page',
-                'purpose' => 'Provide a concise, compelling summary of the main story concept to guide development and pitch to others.',
-                'creation_prompt' => 'Provide a concise, compelling summary of the main story concept to guide development and pitch to others',
-                'example_summary' => 'Provide a concise, compelling summary of the main story concept to guide development and pitch to others',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Impact One-Liner',
-                'slug' => 'impact-one-liner'.BaseService::randomCharacters(5, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Summarize the most important way this achievement helps develop the story, to motivate the writer.',
-                'creation_prompt' => 'Summarize the most important way this achievement helps develop the story, to motivate the writer.',
-                'example_summary' => 'Summarize the most important way this achievement helps develop the story, to motivate the writer.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => '[Per Category] Impact Summary',
-                'slug' => 'per-category-impact-summary'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Explain how this achievement contributes to the development of its specific category (character, plot, etc.), to help the writer understand its value.',
-                'creation_prompt' => 'Explain how this achievement contributes to the development of its specific category (character, plot, etc.), to help the writer understand its value',
-                'example_summary' => 'Explain how this achievement contributes to the development of its specific category (character, plot, etc.), to help the writer understand its value',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Title',
-                'slug' => 'title'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'creation_prompt' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'example_summary' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Discrepancy',
-                'slug' => 'discrepancy'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Describe what needs to be resolved and why, to maintain story integrity.',
-                'creation_prompt' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'example_summary' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Bio',
-                'slug' => 'bio'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => 'User Profile',
-                'purpose' => 'Showcase a writer\'s unique differentiators, interests, experience, and perspective, to facilitate professional opportunities and connections.',
-                'creation_prompt' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'example_summary' => 'Highlight key subject and details for clarification, to ensure accuracy and consistency.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Writing Goals',
-                'slug' => 'writing-goals'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => 'User Profile',
-                'purpose' => 'Articulate the writer\'s aspirations and target audience, to guide project choice and development.',
-                'creation_prompt' => 'Articulate the writer\'s aspirations and target audience, to guide project choice and development.',
-                'example_summary' => 'Articulate the writer\'s aspirations and target audience, to guide project choice and development.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Character Card Summary',
-                'slug' => 'character-card-summary'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Encapsulate the character\'s key traits and role, to provide a quick reference.',
-                'creation_prompt' => 'Encapsulate the character\'s key traits and role, to provide a quick reference',
-                'example_summary' => 'Encapsulate the character\'s key traits and role, to provide a quick reference',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Plot Card Title',
-                'slug' => 'plot-card-title'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Name the main event or turning point of the plot point, to orient the writer.',
-                'creation_prompt' => 'Name the main event or turning point of the plot point, to orient the writer',
-                'example_summary' => 'Name the main event or turning point of the plot point, to orient the writer',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Plot Card Summary',
-                'slug' => 'plot-card-summary'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Summarize the key event and its impact on the story, to trace the narrative arc.',
-                'creation_prompt' => 'Name the primary location or time period of the setting, to establish the story world.',
-                'example_summary' => 'Name the primary location or time period of the setting, to establish the story world.',
-                'published_at' => now(),
-            ],
-            [
-                'name' => 'Setting Card Title',
-                'slug' => 'setting-card-title'.BaseService::randomCharacters(2, '0123456789'),
-                'item_id' => BaseService::randomCharacters(5, '0123456789'),
-                'location' => '-',
-                'purpose' => 'Name the primary location or time period of the setting, to establish the story world.',
-                'creation_prompt' => 'Name the primary location or time period of the setting, to establish the story world.',
-                'example_summary' => 'Name the primary location or time period of the setting, to establish the story world.',
-                'published_at' => now(),
-            ],
-        ];
+        Summary::all()->each->forceDelete();
 
-        foreach ($summaries as $summary) {
-            $sum = Summary::create($summary);
+        // open csv file
+        $file = fopen(database_path('csv/summaries.csv'), 'r');
 
-            // Categories
-            SummaryCategory::create([
-                'summary_id' => $sum->id,
-                'category_id' => Category::inRandomOrder()->first()->id,
-            ]);
+        // skip the first row
+        $columns = fgetcsv($file);
 
-            SummaryCategory::create([
-                'summary_id' => $sum->id,
-                'category_id' => Category::inRandomOrder()->first()->id,
-            ]);
+        $data = [];
+        // read the rest of the file
+        while ($row = fgetcsv($file)) {
+            if (empty($row[0]) || empty($row[1])) {
+                continue;
+            }
 
+            $rowData = [];
+            // replace column index with column name
+            foreach ($row as $key => $value) {
+                $rowData[$columns[$key]] = $value;
+            }
 
+            $data[] = [
+                'name' => $rowData['Name'],
+                'slug' => Str::slug($rowData['Name'], '_'),
+                'item_id' => $rowData['Summary ID'],
+                'location' => $rowData['Page'] . ' - ' . $rowData['Component'],
+                'purpose' => $rowData['Purpose'],
+                'creation_prompt' => $rowData['Creation Prompt'] ?? '-',
+                'example_summary' => $rowData['Example'],
+                'published_at' => now()->format('Y-m-d H:i:s'),
+
+                'category' => $rowData['Category'],
+            ];
         }
 
+        // close the file
+        fclose($file);
+
+        foreach ($data as $row) {
+            $category = Category::firstOrCreate(['name' => $row['category']], ['slug' => Str::slug($row['category'])]);
+            unset($row['category']);
+
+            $summary = Summary::create($row);
+            $summary->categories()->attach($category);
+        }
     }
 }

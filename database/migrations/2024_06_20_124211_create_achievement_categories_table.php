@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::dropIfExists('achievement_categories');
 
         Schema::create('achievement_categories', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('category_id')->nullable();
-            $table->foreignUuid('achievement_id')->nullable();
+            $table->id();
+            $table->foreignId('category_id')->nullable();
+            $table->foreignId('achievement_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

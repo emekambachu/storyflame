@@ -80,8 +80,5 @@ class AchievementSeeder extends Seeder
 //                'category_id' => Category::inRandomOrder()->first()->id,
 //            ]);
         }
-
-        // seed data points
-        $this->call(AchievementDataPointsSeeder::class);
     }
 }

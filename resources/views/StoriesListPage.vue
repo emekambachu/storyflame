@@ -1,121 +1,130 @@
 <template>
-    <lists-hero-section :data="data" />
+    <page-navigation-layout fixed no-back-text transparent>
+        <lists-hero-section :data="data" />
 
-    <list-wrapper
-        title="My Stories"
-        :enableFilter="true"
-        placeholder="Enter keyword"
-        :search-value="searchValue"
-        @update:search-value="searchValue = $event"
-    >
-        <template #modal>
-            <div class="px-1 flex flex-col">
-                <h6 class="text-stone-800 text-base font-semibold">
-                    Filter by
-                </h6>
-                <span class="mt-4 text-stone-500 text-sm font-semibold">
-                    Readiness
-                </span>
-                <div class="flex gap-2 mt-3">
-                    <div
-                        :class="
-                            selectedOptions.includes(0)
-                                ? 'text-stone-50 bg-stone-800'
-                                : 'text-stone-500 bg-stone-100'
-                        "
-                        class="max-w-14 w-full rounded-lg p-2 flex flex-col items-center gap-2 text-sm font-bold"
-                        @click="toggleOption(0)"
-                    >
-                        All
-                        <span class="text-xs font-normal">
-                            {{ data.stories?.length }}
-                        </span>
-                    </div>
-                    <div
-                        v-for="(option, optionID) in filter"
-                        :key="optionID"
-                        :class="
-                            selectedOptions.includes(option)
-                                ? 'text-stone-50 bg-stone-800'
-                                : 'text-stone-500 bg-stone-100'
-                        "
-                        class="max-w-14 w-full rounded-lg p-2 flex flex-col items-center gap-2 text-xs"
-                        @click="toggleOption(option)"
-                    >
-                        <flame-icon
-                            :priority="option"
-                            class="!w-6 !bg-white"
-                        />
-                        {{ counts[optionID] }}
+        <list-wrapper
+            :enableFilter="true"
+            :search-value="searchValue"
+            placeholder="Enter keyword"
+            title="My Stories"
+            @update:search-value="searchValue = $event"
+        >
+            <template #modal>
+                <div class="flex flex-col px-1">
+                    <h6 class="text-base font-semibold text-stone-800">
+                        Filter by
+                    </h6>
+                    <span class="mt-4 text-sm font-semibold text-stone-500">
+                        Readiness
+                    </span>
+                    <div class="mt-3 flex gap-2">
+                        <div
+                            :class="
+                                selectedOptions.includes(0)
+                                    ? 'bg-stone-800 text-stone-50'
+                                    : 'bg-stone-100 text-stone-500'
+                            "
+                            class="flex w-full max-w-14 flex-col items-center gap-2 rounded-lg p-2 text-sm font-bold"
+                            @click="toggleOption(0)"
+                        >
+                            All
+                            <span class="text-xs font-normal">
+                                {{ data.stories?.length }}
+                            </span>
+                        </div>
+                        <div
+                            v-for="(option, optionID) in filter"
+                            :key="optionID"
+                            :class="
+                                selectedOptions.includes(option)
+                                    ? 'bg-stone-800 text-stone-50'
+                                    : 'bg-stone-100 text-stone-500'
+                            "
+                            class="flex w-full max-w-14 flex-col items-center gap-2 rounded-lg p-2 text-xs"
+                            @click="toggleOption(option)"
+                        >
+                            <flame-icon
+                                :priority="option"
+                                class="!w-6 !bg-white"
+                            />
+                            {{ counts[optionID] }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </template>
-        <template #closeButton1>
-            <button
-                class="bg-black rounded-full py-4 w-full text-stone-50 text-base text-medium text-center mt-6 hover:opacity-80"
-                @click="applyFilters"
-            >
-                Show {{ totalFilteredStories }} results
-            </button>
-        </template>
-        <template #closeButton2>
-            <button
-                class="text-center text-black text-base text-medium -mt-3 mx-auto"
-                @click="resetFilters"
-            >
-                Reset
-            </button>
-        </template>
+            </template>
+            <template #closeButton1>
+                <button
+                    class="text-medium mt-6 w-full rounded-full bg-black py-4 text-center text-base text-stone-50 hover:opacity-80"
+                    @click="applyFilters"
+                >
+                    Show {{ totalFilteredStories }} results
+                </button>
+            </template>
+            <template #closeButton2>
+                <button
+                    class="text-medium mx-auto -mt-3 text-center text-base text-black"
+                    @click="resetFilters"
+                >
+                    Reset
+                </button>
+            </template>
 
-        <template #content>
-            <div class="mt-4 flex flex-col gap-4">
-                <div v-if="selectedOptions.includes(0)">
-                    <div
-                        v-for="(stories, index) in filteredStories"
-                        :key="index"
-                        class="flex flex-col gap-4"
-                    >
-                        <h6 class="text-sm text-gray-500 font-semibold mt-4">
-                            {{ titles[filter[index]] }}: {{ stories.length }}
-                        </h6>
-                        <story-card
-                            v-for="story in stories"
-                            :key="story.title"
-                            :card="story"
-                        />
+            <template #content>
+                <div class="mt-4 flex flex-col gap-4">
+                    <div v-if="selectedOptions.includes(0)">
+                        <div
+                            v-for="(stories, index) in filteredStories"
+                            :key="index"
+                            class="flex flex-col gap-4"
+                        >
+                            <h6
+                                class="mt-4 text-sm font-semibold text-gray-500"
+                            >
+                                {{ titles[filter[index]] }}:
+                                {{ stories.length }}
+                            </h6>
+                            <story-card
+                                v-for="story in stories"
+                                :key="story.title"
+                                :card="story"
+                            />
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div
+                            v-for="(stories, index) in filteredStories"
+                            v-show="selectedOptions.includes(filter[index])"
+                            :key="index"
+                            class="flex flex-col gap-4"
+                        >
+                            <h6
+                                class="mt-4 text-sm font-semibold text-gray-500"
+                            >
+                                {{ titles[filter[index]] }}:
+                                {{ stories.length }}
+                            </h6>
+                            <story-card
+                                v-for="story in stories"
+                                :key="story.title"
+                                :card="story"
+                            />
+                        </div>
                     </div>
                 </div>
-                <div v-else>
-                    <div
-                        v-for="(stories, index) in filteredStories"
-                        :key="index"
-                        class="flex flex-col gap-4"
-                        v-show="selectedOptions.includes(filter[index])"
-                    >
-                        <h6 class="text-sm text-gray-500 font-semibold mt-4">
-                            {{ titles[filter[index]] }}: {{ stories.length }}
-                        </h6>
-                        <story-card
-                            v-for="story in stories"
-                            :key="story.title"
-                            :card="story"
-                        />
-                    </div>
-                </div>
-            </div>
-        </template>
-    </list-wrapper>
+            </template>
+        </list-wrapper>
+    </page-navigation-layout>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue'
+<script lang="ts" setup>
+import { computed, ref } from 'vue'
 import ListWrapper from '@/components/ListWrapper.vue'
 import ListsHeroSection from '@/components/ListsHeroSection.vue'
 
 import StoryCard from '@/components/cards/StoryCard.vue'
 
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 
 const searchValue = ref('')
 const selectedOptions = ref([0])

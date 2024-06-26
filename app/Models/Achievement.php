@@ -6,7 +6,6 @@ use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
 use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint\DataPointAchievement;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory, HasCategories;
+    use SoftDeletes, HasFactory, HasCategories;
 
     protected $fillable = [
         'slug',
@@ -70,9 +69,10 @@ class Achievement extends Model
     public function toProcessingArray(array $except_data_points = []): array
     {
         return [
-            'name' => $this->slug,
-            'title' => $this->name,
-            'description' => $this->extraction_description,
+            'id' => $this->slug,
+            'name' => $this->name,
+            'extraction_description' => $this->extraction_description,
+            'category' => $this->element,
             'data_points' => $this->dataPoints
                 ->filter(fn($data_point) => !in_array($data_point->slug, $except_data_points))
                 ->map

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         if(!Schema::hasTable('data_point_summaries')) {
             Schema::create('data_point_summaries', function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->foreignUuid('data_point_id')->nullable();
-                $table->foreignUuid('summary_id')->nullable();
+                $table->id();
+                $table->foreignId('data_point_id')->nullable();
+                $table->foreignId('summary_id')->nullable();
                 $table->timestamps();
                 $table->engine = 'InnoDB';
             });

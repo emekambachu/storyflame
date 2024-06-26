@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AchievementSeeder::class,
+            AchievementDataPointsSeeder::class,
+            SummarySeeder::class,
             StoriesSeeder::class,
         ]);
     }

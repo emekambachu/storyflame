@@ -1,0 +1,77 @@
+<template>
+    <div
+        :class="[
+            {
+                'text-red-600': progress > 90,
+                'text-amber-500': progress > 60,
+                'text-yellow-400': progress > 30,
+                'text-slate-400': progress > 0,
+            },
+            `flex shrink-0 items-center justify-center rounded-full p-0.5 ${size}`,
+        ]"
+    >
+        <svg
+            class="shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 40 40"
+            fill="none"
+        >
+            <circle
+                cx="20"
+                cy="20"
+                r="18"
+                fill="none"
+                stroke="#d9d9d9"
+                stroke-width="4"
+            />
+
+            <circle
+                class="shrink-0"
+                cx="20"
+                cy="20"
+                r="18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-linecap="round"
+                :style="circleStyle"
+            />
+
+            <!-- Transforming and scaling the flame path to fit 20 pixels size within the SVG -->
+            <path
+                d="M11.7734 7.46667C11.62 7.26667 11.4334 7.09333 11.26 6.92C10.8134 6.52 10.3067 6.23333 9.88003 5.81333C8.8867 4.84 8.6667 3.23333 9.30003 2C8.6667 2.15333 8.11337 2.5 7.64003 2.88C5.91337 4.26667 5.23337 6.71333 6.0467 8.81333C6.07337 8.88 6.10003 8.94667 6.10003 9.03333C6.10003 9.18 6.00003 9.31333 5.8667 9.36667C5.71337 9.43333 5.55337 9.39333 5.4267 9.28667C5.38886 9.25497 5.35722 9.21655 5.33337 9.17333C4.58003 8.22 4.46003 6.85333 4.9667 5.76C3.85337 6.66667 3.2467 8.2 3.33337 9.64667C3.37337 9.98 3.41337 10.3133 3.5267 10.6467C3.62003 11.0467 3.80003 11.4467 4.00003 11.8C4.72003 12.9533 5.9667 13.78 7.3067 13.9467C8.73337 14.1267 10.26 13.8667 11.3534 12.88C12.5734 11.7733 13 10 12.3734 8.48L12.2867 8.30667C12.1467 8 11.7734 7.46667 11.7734 7.46667ZM9.6667 11.6667C9.48003 11.8267 9.17337 12 8.93337 12.0667C8.1867 12.3333 7.44003 11.96 7.00003 11.52C7.79337 11.3333 8.2667 10.7467 8.4067 10.1533C8.52003 9.62 8.3067 9.18 8.22003 8.66667C8.14003 8.17333 8.15337 7.75333 8.33337 7.29333C8.46003 7.54667 8.59337 7.8 8.75337 8C9.2667 8.66667 10.0734 8.96 10.2467 9.86667C10.2734 9.96 10.2867 10.0533 10.2867 10.1533C10.3067 10.7 10.0667 11.3 9.6667 11.6667Z"
+                fill="currentColor"
+                transform="translate(8 8) scale(1.5)"
+            />
+        </svg>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps({
+    progress: {
+        type: Number,
+        default: 1,
+    },
+    size: {
+        type: String,
+        default: 'w-8 h-8 ',
+    },
+})
+
+const radius = 18
+const circumference = 2 * Math.PI * radius
+
+const circleStyle = computed(() => {
+    const offset = circumference - (props.progress / 100) * circumference
+    return {
+        strokeDasharray: `${circumference} ${circumference}`,
+        strokeDashoffset: offset.toString(),
+        transition: 'stroke-dashoffset 0.5s ease 0s, stroke 0.5s ease',
+    }
+})
+</script>
+
+<style scoped></style>

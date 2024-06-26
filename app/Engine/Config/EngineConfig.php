@@ -19,4 +19,6 @@ abstract class EngineConfig
      */
     public const PREDEFINED_QUESTIONS = [];
     public const ALLOW_ACHIEVEMENT_SWITCH = true;
+
+    public const ENDPOINT_KEY = '';
 }

@@ -3,10 +3,17 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\CharacterEngineConfig;
+use App\Models\Character;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CharacterContext extends BaseContext implements ContextInterface
 {
+    function getContextClass(): ?string
+    {
+        return Character::class;
+    }
+
+
     public function __construct($model = null)
     {
         parent::__construct($model);
@@ -32,4 +39,21 @@ class CharacterContext extends BaseContext implements ContextInterface
     {
         // TODO: Implement sequences() method.
     }
+
+    protected function getCurrentData(): array
+    {
+        // TODO: Implement getCurrentData() method.
+    }
+
+    protected function getContextName(): string
+    {
+        // TODO: Implement getContextName() method.
+    }
+
+    protected function getContextGoal(): string
+    {
+        // TODO: Implement getContextGoal() method.
+    }
+
+
 }

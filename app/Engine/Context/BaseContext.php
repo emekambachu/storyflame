@@ -3,7 +3,6 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\EngineConfig;
-use App\Engine\Config\StoryEngineConfig;
 use App\Models\Achievement;
 use App\Models\Character;
 use App\Models\Chat;
@@ -14,9 +13,11 @@ use App\Models\DataPoint;
 use App\Models\Story;
 use App\Models\User;
 use App\Models\UserAchievement;
+use App\Models\UserDataPoint;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @template T of ModelWIthRelatedChats
@@ -26,25 +27,52 @@ abstract class BaseContext implements ContextInterface
     protected EngineConfig $config;
 
     /**
-     * @param T $model
+     * @return class-string<T>|null
+     */
+    abstract function getContextClass(): ?string;
+
+    /**
+     * @param ModelWIthRelatedChats|null $model
      */
     public function __construct(
-        protected $model = null
+        protected ?Model $model = null
     )
     {
+        if (!$this->model) {
+            if ($c = $this->getContextClass()) {
+                $this->model = $c::create([
+                    'user_id' => auth()->id(),
+                ]);
+            }
+        }
     }
 
     public function getChat(): Chat
     {
         // TODO: change this to latest session chat
-        if ($this->getModel()->chats()->count() === 0) {
-            $chat = Chat::create([
-                'type' => 'conversation',
-                'sender_id' => auth()->id(),
-            ]);
-            $this->getModel()->chats()->save($chat);
+        if ($model = $this->getModel()) {
+            if ($model->exists) {
+                if ($this->getModel()->chats()->count() === 0) {
+                    $chat = Chat::create([
+                        'type' => 'conversation',
+                        'sender_id' => auth()->id(),
+                    ]);
+                    $this->getModel()->chats()->save($chat);
+                }
+                return $this->getModel()->chats()->first();
+            } else {
+                if (session()->has('temp_chat_id')) {
+                    return Chat::find(session()->get('temp_chat_id'));
+                }
+                $tempChat = Chat::create([
+                    'type' => 'temp',
+                    'sender_id' => auth()->id(),
+                ]);
+                session()->put('temp_chat_id', $tempChat->id);
+                return $tempChat;
+            }
         }
-        return $this->getModel()->chats()->first();
+        throw new Exception('Model is not set');
     }
 
 
@@ -74,11 +102,11 @@ abstract class BaseContext implements ContextInterface
     public static function make($model): BaseContext
     {
         return (match (get_class($model)) {
-            Story::class => new StoryContext(),
-            User::class => new UserContext(),
-            Character::class => new CharacterContext(),
+            Story::class => new StoryContext($model),
+            User::class => new UserContext($model),
+            Character::class => new CharacterContext($model),
             default => throw new Exception('Unknown model type ' . $model::class)
-        })->setModel($model);
+        });
     }
 
     public function withConfig(EngineConfig $config): static
@@ -90,20 +118,23 @@ abstract class BaseContext implements ContextInterface
     public function getElements(string $elementType): array
     {
         return match ($elementType) {
-            'Character' => $this->getCharacters(),
+            'Character' => $this->characters()?->get()->all(),
+            'Story' => $this->stories()?->get()->all(),
+            'Plot' => $this->plots()?->get()->all(),
+//            'Sequence' => $this->sequences()->get()->all(),
             default => []
-        };
+        } ?? [];
     }
 
     public function addElement(string $elementType, array $elementData): ?ModelWithComparableNames
     {
         return match ($elementType) {
-            'Story' => $this->stories()->create($elementData),
-            'Character' => $this->characters()->create($elementData),
-            'Plot' => $this->plots()->create($elementData),
-            'Sequence' => $this->sequences()->create($elementData),
+            'Story' => $this->stories()?->create($elementData),
+            'Character' => $this->characters()?->create($elementData),
+            'Plot' => $this->plots()?->create($elementData),
+//            'Sequence' => $this->sequences()->create($elementData),
             default => null
-        };
+        } ?? null;
     }
 
     protected function onDataPointSaved(string $key, mixed $value): void
@@ -113,11 +144,13 @@ abstract class BaseContext implements ContextInterface
 
     public function saveExtractedData(ChatMessage $answer, array $data): void
     {
+        unset($data['usage']);
+        unset($data['confidence']);
         $target = $this->getModel();
         $user = auth()->user();
         foreach ($data as $key => $value) {
             $dataPoint = DataPoint::firstWhere('slug', $key);
-            if ($dataPoint->exists()) {
+            if ($dataPoint?->exists()) {
                 $achievement = UserAchievement::firstOrCreate([
                     'user_id' => $user->id,
                     'achievement_id' => $dataPoint->achievement_id,
@@ -126,7 +159,8 @@ abstract class BaseContext implements ContextInterface
                 ], [
                     'progress' => 0,
                 ]);
-                $dataPoint = $user->dataPoints()->create([
+                $dataPoint = UserDataPoint::create([
+                    'user_id' => $user->id,
                     'data_point_id' => $dataPoint->id,
                     'target_type' => get_class($target),
                     'target_id' => $target->id,
@@ -161,19 +195,44 @@ abstract class BaseContext implements ContextInterface
      */
     public function saveOrUpdateElements(ChatMessage $answer, array $category): Collection
     {
+        // if model is new, save it first
+        if ($this->getModel()->exists === false) {
+            $this->model->user_id = auth()->id();
+            $this->model->save();
+            $this->model->chats()->save($this->getChat());
+        }
+
         $otherModels = collect();
         foreach ($category as $categoryType => $categoryElements) {
+            if (empty($categoryElements)) {
+                continue;
+            }
             foreach ($categoryElements as $elementData) {
-                // todo: add update logic
-                if ($newModel = $this->getSimilarElement($categoryType, $elementData)) {
+                Log::debug('element', $elementData);
+                if (!isset($elementData['confidence']) || $elementData['confidence'] < 0.5) {
+                    continue;
+                }
 
-                } else
-                    $newModel = $this->addElement($categoryType, $elementData, $answer);
-                $innerElements = $elementData['elements'] ?? [];
-                unset($elementData['elements']);
+                // todo: add update logic
+                try {
+                    if ($newModel = $this->getSimilarElement($categoryType, $elementData)) {
+                        Log::debug('update', $elementData);
+                    } else {
+                        $newModel = $this->addElement($categoryType, $elementData, $answer);
+                        $newModel?->chats()?->save($this->getChat());
+                    }
+                } catch (Exception $e) {
+                    Log::debug($e->getMessage(), $elementData);
+                    continue;
+                }
+                $innerElements = $elementData['categories'] ?? [];
+                unset($elementData['categories']);
                 // if there are inner elements,
                 // we need to switch to that context and save them
+
+                // check if we have a model
                 if ($newModel) {
+                    // check if we are in same context
                     if ($newModel->id === $this->model->id && get_class($newModel) === get_class($this->model)) {
                         $context = $this;
                     } else {
@@ -305,8 +364,39 @@ abstract class BaseContext implements ContextInterface
 
     public function getIdentifier()
     {
-        return match (get_class($this->config)) {
-            StoryEngineConfig::class => 'stories',
-        } . '_' . $this->getModel()->id;
+        return $this->getModel()?->id ?? 'new';
     }
+
+    protected abstract function getCurrentData(): array;
+
+    protected abstract function getContextName(): string;
+
+    protected abstract function getContextGoal(): string;
+
+    public function getCurrentContext(string|null $question = null, string|null $answer = null): array
+    {
+        $c = [
+            'processing_type' => 'live',
+            'conversation_mode' => 'development',
+            'focus' => [
+                'type' => $this->getElementName(),
+                'name' => $this->getContextName(),
+                'current_data' => $this->getCurrentData(),
+            ],
+            'goal' => $this->getContextGoal(),
+        ];
+        if ($question) {
+            $c['question_asked'] = $question;
+        }
+        if ($answer) {
+            $c['writer_response'] = $answer;
+        }
+        return $c;
+    }
+
+    public function getEndpointKey(): string
+    {
+        return $this->config::ENDPOINT_KEY;
+    }
+
 }

@@ -65,4 +65,16 @@ interface ProcessingInterface
      * @return ModelWithComparableNames|null
      */
     public function getSimilarElement(array $elementData, array $relatedElements): ?ModelWithComparableNames;
+
+    public function generateContextSwitchQuestion(array $elements, array $history);
+
+    /**
+     * Check if user's response is positive confirmation
+     * additionally, user can select from a list of elements
+     * @param string $question
+     * @param string $answer
+     * @param array|null $selectElements
+     * @return array
+     */
+    public function isPositiveConfirmation(string $question, string $answer, array|null $selectElements = null): array;
 }

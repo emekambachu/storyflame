@@ -3,13 +3,20 @@ from typing import List, Optional
 from fastapi import APIRouter, Response
 from pydantic import BaseModel
 
-from processing.chains.extraction import extract_properties, DataPoint
+from processing.chains.extraction import extract_properties, DataPoint, extract_categories_chain
 from processing.chains.generation import generate_next_question, generate_title_chain, generate_bio_chain
-from processing.chains.rating import rate_response, rate_topics, rate_data_points, rate_data_points_next, \
+from processing.chains.rating import rate_response_chain, rate_topics, rate_data_points, rate_data_points_next, \
     rate_generated_data
 from processing.pusher_client import pusher_client
+from processing.api.conversation.ratings import router as rating_router
+from processing.api.conversation.extractors import router as extract_router
+from processing.api.conversation.generators import router as generator_router
 
 router = APIRouter()
+
+router.include_router(rating_router)
+router.include_router(extract_router)
+router.include_router(generator_router)
 
 
 class ExtractionGroup(BaseModel):
@@ -41,10 +48,9 @@ class NextRequest(BaseModel):
     available_data_points: List[DataPoint]
 
 
-@router.post('/rate')
 def rate(request: DialogRequest):
     print(request.dict())
-    rate_response_chain = rate_response()
+    rate_response_chain = rate_response_chain()
     ratings = rate_response_chain.invoke({
         "question": request.question,
         "answer": request.answer
@@ -59,9 +65,10 @@ def rate(request: DialogRequest):
     }
 
 
-@router.post("/extract")
+# @router.post("/extract")
 def extract(request: ExtractionRequest, response: Response):
 
+    extract_categories_chain = extract_categories_chain()
 
     return dict()
     groups = request.groups

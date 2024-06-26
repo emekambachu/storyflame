@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasSchemalessAttributes;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ChatMessage extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory, HasSchemalessAttributes;
+    use SoftDeletes, HasFactory, HasSchemalessAttributes;
 
     protected $fillable = [
         'type',
@@ -56,11 +55,19 @@ class ChatMessage extends Model
 
     public function expectsConfirmation()
     {
-        return str_starts_with($this->type, 'confirm');
+        return str_starts_with($this->type, 'confirm_');
     }
 
     public function dataPoints()
     {
         return $this->belongsToMany(DataPoint::class, 'chat_message_data_point');
+    }
+
+    public function toProcessingArray()
+    {
+        return [
+            'agent' => $this->user_id ? 'user' : 'assistant',
+            'content' => $this->content,
+        ];
     }
 }

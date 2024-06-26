@@ -52,29 +52,27 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('achievements', function (Blueprint $table) {
-            // Drop columns
-            $columnsToDrop = [
-                'slug',
-                'extraction_description',
-                'subtitle',
-                'purpose',
-                'color',
-                'icon',
-                'icon_path',
-                'example',
-                'item_id',
-                'publish_at',
-            ];
 
-            foreach ($columnsToDrop as $column) {
+            foreach ($this->columns as $column) {
                 if (Schema::hasColumn('achievements', $column)) {
                     $table->dropColumn($column);
                 }
             }
-
-            // Add back the original columns
-            $table->integer('progress')->default(0);
-            $table->timestamp('completed_at')->nullable();
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
+
+    private array $columns = [
+        'slug',
+        'item_id',
+        'progress',
+        //'element',
+        'extraction_description',
+        'subtitle',
+        'purpose',
+        'color',
+        'icon',
+//        'icon_path',
+        'publish_at'
+    ];
 };

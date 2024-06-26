@@ -6,7 +6,6 @@ use App\Models\DataPoint\DataPointAchievement;
 use App\Models\DataPoint\DataPointCategory;
 use App\Models\DataPoint\DataPointSummary;
 use App\Models\Summary\Summary;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,13 +14,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPoint extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'slug',
         'name',
         'type',
-        //'category',
         'development_order',
         'impact_score',
         'estimated_seconds',
@@ -29,7 +27,6 @@ class DataPoint extends Model
         'example',
         'purpose',
         'admin_id',
-        //'achievement_id',
     ];
 
     protected $casts = [
@@ -78,10 +75,10 @@ class DataPoint extends Model
     public function toProcessingArray(): array
     {
         return [
-            'name' => $this->slug,
-            'title' => $this->name,
+            'id' => $this->slug,
+            'name' => $this->name,
+            'extraction_description' => $this->extraction_description,
             'type' => $this->type ?? 'text',
-            'description' => $this->extraction_description,
         ];
     }
 }

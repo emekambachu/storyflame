@@ -10,11 +10,11 @@ return new class extends Migration {
     {
         if (!Schema::hasTable('data_points')) {
             Schema::create('data_points', function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->uuid('achievement_id')->nullable();
-                $table->string('slug')->unique();
-                $table->unsignedBigInteger('item_id')->unique();
+                $table->id();
+                $table->foreignId('achievement_id')->nullable();
+                $table->string('slug');
                 $table->string('name');
+                $table->unsignedBigInteger('item_id')->unique();
                 $table->string('type')->default('text');
                 $table->text('extraction_description')->nullable();
                 $table->json('example')->nullable();

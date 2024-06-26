@@ -83,7 +83,7 @@ import PlotCharactersTab from '@/components/tabs/PlotCharactersTab.vue'
 import PlotAchievementsTab from '@/components/tabs/PlotAchievementsTab.vue'
 import CallToActionCardsList from '@/components/CallToActionCardsList.vue'
 
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 
 const items = [
     {
@@ -145,7 +145,7 @@ const data = {
     ],
     themes: [
         {
-            readiness: 1,
+            progress: 100,
             type: 'major',
             title: 'Power',
             description:

@@ -139,88 +139,102 @@ class StoryConversationEngineTest extends TestCase
         $engine = ConversationEngineV2::make(new StoryContext($user->stories->first()));
 
 
-        $engine = ConversationEngineV2::make()
-            ->setProcessing(
-                MockProcessing::make()
-                    ->addResponse('rateResponse', [
-                        'answer_rating' => true,
-                        'topic_change' => false,
-                        'is_skipped' => false,
-                        'user_not_understand' => false,
-                        'user_dont_know' => false,
-                    ])
-                    ->addResponse('extractData', [
-                        'elements' => [
-                            'Writer' => [
-                                [
-                                    'name' => 'John Doe',
-                                ]
-                            ],
-                            'Story' => [
-                                [
-                                    'setting' => 'Galactic war between aliens and humans',
-                                    'elements' => [
+        $engine = ConversationEngineV2::make();
+//            ->setProcessing(
+//                MockProcessing::make()
+//                    ->addResponse('rateResponse', [
+//                        'answer_rating' => true,
+//                        'topic_change' => false,
+//                        'is_skipped' => false,
+//                        'user_not_understand' => false,
+//                        'user_dont_know' => false,
+//                    ])
+//                    ->addResponse('extractData', [
+//                        'elements' => [
+//                            'Writer' => [
+//                                [
+//                                    'name' => 'John Doe',
+//                                ]
+//                            ],
+//                            'Story' => [
+//                                [
+//                                    'setting' => 'Galactic war between aliens and humans',
+//                                    'elements' => [
+////                                        'Character' => [
+////                                            [
+////                                                'name' => 'Lucy',
+////                                            ],
+////                                            [
+////                                                'name' => 'Jabu',
+////                                            ],
+////                                            [
+////                                                'name' => 'Aliens',
+////                                            ],
+////                                            [
+////                                                'name' => 'Humans',
+////                                            ],
+////                                            [
+////                                                'name' => 'Rebels',
+////                                            ],
+////                                            [
+////                                                'name' => 'Corrupted government',
+////                                            ]
+////                                        ]
+//                                    ]
+//                                ]
+//                            ],
+//                        ]
+//                    ])
+//                    ->addResponse('generateNextQuestion', [
+//                        'question' => 'some question',
+//                        'title' => 'new question',
+//                        'data_points' => [
+//                            'name'
+//                        ],
+//                    ])
+//                    ->addResponse('extractData', [
+//                        'elements' => [
+//                            'Character' => [
+//                                [
+//                                    'name' => 'Lucy',
+//                                ],
+//                                [
+//                                    'name' => 'Jabu',
+//                                ],
+//                                [
+//                                    'name' => 'Aliens',
+//                                ],
+//                                [
+//                                    'name' => 'Humans',
+//                                ],
+//                                [
+//                                    'name' => 'Rebels',
+//                                ],
+//                                [
+//                                    'name' => 'Corrupted government',
+//                                ]
+//                            ]
+//                        ]
+//                    ])
+//                    ->addResponse('generateContextSwitchQuestion', [
+//                        'question' => 'You mentioned some characters, do you want to talk about them?',
+//                        'title' => 'Context switch question',
+//                    ])
+//                ->addResponse('isPositiveConfirmation', function ($attributes) {
+//                    return [
+//                        'is_positive' => true,
+//                        'is_selected' => true,
+//                        'selected_type' => $attributes['selectElements'][0]['type'],
+//                        'selected_id' => $attributes['selectElements'][0]['id'],
+//                        'selected_name' => $attributes['selectElements'][0]['name'],
+//                    ];
+//                })
+//            );
 
-                                    ]
-                                ]
-                            ],
-                            'Character' => [
-                                [
-                                    'name' => 'Lucy',
-                                ],
-                                [
-                                    'name' => 'Jabu',
-                                ],
-                                [
-                                    'name' => 'Aliens',
-                                ],
-                                [
-                                    'name' => 'Humans',
-                                ],
-                                [
-                                    'name' => 'Rebels',
-                                ],
-                                [
-                                    'name' => 'Corrupted government',
-                                ]
-                            ]
-                        ]
-                    ])
-                    ->addResponse('generateNextQuestion', [
-                        'question' => 'some question',
-                        'title' => 'new question',
-                        'data_points' => [
-                            'name'
-                        ],
-                    ])
-                    ->addResponse('extractData', [
-                        'elements' => [
-                            'Character' => [
-                                [
-                                    'name' => 'Lucy',
-                                ],
-                                [
-                                    'name' => 'Jabu',
-                                ],
-                                [
-                                    'name' => 'Aliens',
-                                ],
-                                [
-                                    'name' => 'Humans',
-                                ],
-                                [
-                                    'name' => 'Rebels',
-                                ],
-                                [
-                                    'name' => 'Corrupted government',
-                                ]
-                            ]
-                        ]
-                    ])
-            );
-
-        $engine->process('answer 1 start');
+        dd($engine->process('answer 1 start'));
 
         $engine->process('answer 2');
+
+        dd($engine->process('yes'));
     }
 }

@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('aliases', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
             $table->string('name');
-            $table->uuidMorphs('aliasable');
+            $table->morphs('aliasable');
 
             $table->softDeletes();
             $table->timestamps();

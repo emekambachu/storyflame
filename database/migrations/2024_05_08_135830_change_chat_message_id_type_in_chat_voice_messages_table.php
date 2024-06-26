@@ -13,7 +13,7 @@ return new class extends Migration {
         });
 
         Schema::table('chat_voice_messages', function (Blueprint $table) {
-            $table->foreignUuid('chat_message_id')->constrained()->onDelete('cascade');
+            $table->foreignId('chat_message_id')->constrained()->onDelete('cascade');
         });
     }
 

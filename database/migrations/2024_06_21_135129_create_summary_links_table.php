@@ -19,9 +19,9 @@ return new class extends Migration
 
         // Create the table
         Schema::create('summary_links', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('summary_id')->nullable();
-            $table->foreignUuid('linked_summary_id')->nullable();
+            $table->id();
+            $table->foreignId('summary_id')->nullable();
+            $table->foreignId('linked_summary_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::dropIfExists('data_point_achievements');
 
         Schema::create('data_point_achievements', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('data_point_id')->nullable();
-            $table->foreignUuid('achievement_id')->nullable();
+            $table->id();
+            $table->foreignId('data_point_id')->nullable();
+            $table->foreignId('achievement_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

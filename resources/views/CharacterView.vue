@@ -1,76 +1,57 @@
 <template>
-    <div class="flex flex-col gap-4 pb-8">
-        <div class="bg-zinc-900 flex flex-col gap-8 py-8 px-4">
-            <p
-                v-if="character?.quote"
-                class="font-semibold font-decorative italic text-2m text-center text-slate-500"
+    <page-navigation-layout
+        class="text-slate-400"
+        fixed
+        no-back-text
+        transparent
+    >
+        <div class="flex flex-col gap-4 pb-8">
+            <tab-layout
+                :tabs="[
+                    { title: 'About', template: 'about' },
+                    { title: 'Progress', template: 'progress' },
+                    { title: 'Dialogue', template: 'dialogue' },
+                    { title: 'Achievements', template: 'achievements' },
+                ]"
             >
-                “{{ character.quote }}”
-            </p>
-
-            <div class="flex flex-col gap-1">
-                <span class="text-sm text-slate-500 font-normal">
-                    {{ character.role }}
-                </span>
-                <div class="flex items-center justify-between w-full">
-                    <h1 class="text-2xl text-pure-white font-bold">
-                        {{ character.name }}
-                    </h1>
-
-                    <flame-icon :priority="character.progress" />
-                </div>
-                <p class="w-full flex items-center gap-2">
-                    <span
-                        v-for="(feature, featureID) in character.features"
-                        :key="featureID"
-                        class="text-sm text-slate-500 font-normal flex items-center gap-2"
-                    >
-                        <point-icon v-if="featureID !== 0" />
-                        {{ feature }}
-                    </span>
-                </p>
-
-                <p
-                    v-if="character?.description"
-                    class="text-sm text-slate-400 font-normal mt-1"
+                <header-animated
+                    collapse-header-height="68"
+                    header-height="260"
                 >
-                    {{ character.description }}
-                </p>
-            </div>
-        </div>
+                    <character-header :character="character" />
+                    <template #sticky>
+                        <tab-layout-tabs />
+                    </template>
+                </header-animated>
 
-        <tab-layout
-            :tabs="[
-                { title: 'About', template: 'about' },
-                { title: 'Progress', template: 'progress' },
-                { title: 'Dialogue', template: 'dialogue' },
-                { title: 'Achievements', template: 'achievements' },
-            ]"
-        >
-            <template #about>
-                <character-about-tab :character="character" />
-            </template>
-            <template #progress>
-                <div>Nothing here, please check tab later</div>
-            </template>
-            <template #dialog>
-                <div>Nothing here, please check tab later</div>
-            </template>
-            <template #achievements>
-                <achievements-tab :achievements="character.achievements" />
-            </template>
-        </tab-layout>
-    </div>
+                <template #about>
+                    <character-about-tab :character="character" />
+                </template>
+                <template #progress>
+                    <div>Nothing here, please check tab later</div>
+                </template>
+                <template #dialog>
+                    <div>Nothing here, please check tab later</div>
+                </template>
+                <template #achievements>
+                    <achievements-tab :achievements="character.achievements" />
+                </template>
+            </tab-layout>
+        </div>
+    </page-navigation-layout>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import FlameIcon from '@/components/icons/FlameIcon.vue'
+<script lang="ts" setup>
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import AchievementsTab from '@/components/AchievementsTab.vue'
 import CharacterAboutTab from '@/components/CharacterAboutTab.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import CharacterHeader from '@/components/headers/CharacterHeader.vue'
 
 const character = {
     name: 'Tyrion Lannister',

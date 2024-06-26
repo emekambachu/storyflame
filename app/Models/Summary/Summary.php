@@ -6,16 +6,14 @@ use App\Models\Category;
 use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointSummary;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Summary extends Model
 {
-    use SoftDeletes, HasUuids, HasFactory, HasCategories;
+    use HasFactory, HasCategories;
 
     protected $fillable = [
         'name',

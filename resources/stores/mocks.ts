@@ -457,6 +457,23 @@ export const useMockStore = defineStore(
                     }
                 },
             },
+            {
+                name: 'Sequence',
+                mocks: {
+                    'sequence details': {
+                        url: '/api/v1/stories/test/sequences/test',
+                        method: 'GET',
+                        response: {
+                            id: 'test',
+                            name: 'Test sequence',
+                            story_id: 'test',
+                            description: 'This is a test sequence',
+                            type: 'Action',
+                            genres: ['Action', 'Comedy'],
+                        },
+                    },
+                }
+            }
         ] as Array<{
             name: string
             mocks: {

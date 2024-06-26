@@ -3,64 +3,34 @@ from typing import List, Dict
 import langchain
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import AIMessage
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, validator
 
-
-def validate_format(field: str) -> str:
-    if field not in ["no confidence", "low confidence", "high confidence", "very high confidence"]:
-        raise ValueError("Field should be one of [no confidence, low confidence, high confidence, very high confidence]")
-    return field
-
-
-class AnswerEvaluation(BaseModel):
-    """
-    Evaluation of the answer to the question.
-    """
-
-    answer_rating: str
-    topic_change: str
-    is_skipped: str
-    user_not_understand: str
-    user_dont_know: str
-
-    _validated_answer_rating = validator("answer_rating", allow_reuse=True)(validate_format)
-    _validated_topic_change = validator("topic_change", allow_reuse=True)(validate_format)
-    _validated_is_skipped = validator("is_skipped", allow_reuse=True)(validate_format)
-    _validated_user_understood = validator("user_not_understand", allow_reuse=True)(validate_format)
-    _validated_user_dont_know = validator("user_dont_know", allow_reuse=True)(validate_format)
+from processing.models.DynamicModel import DynamicModel
+from processing.parsing.xml_tag_parser import XMLOutputParser
+from processing.templates.rating import answer_rating_template
+from processing.types.answer_rating import AnswerEvaluation
 
 
-def rate_response():
+def rate_response_chain():
     """
     Rate a response based on the question and answer.
-    Get following outputs:
-    - answer_rating: rating of the answer to the question
-    - topic_change: whether the answer changes the topic
-    - is_skipped: whether user wants to skip the question
     """
     prompt = PromptTemplate(
-        template="Act as evaluator and rate the user's response to the question."
-                 "Based on the question and answer, give a rating to the answer for following criteria:"
-                 "- Answer rating: rating of the answer to the question"
-                 "- Topic change: whether the answer changes the topic"
-                 "- Is skipped: whether user wants to skip the question"
-                 "- User not understand: whether the user indicates that they don't understand the question"
-                 "- User don't know: whether the user indicates that they don't know the answer"
-                 "All ratings should be on a scale [no confidence, low confidence, high confidence, very high confidence]."
-                 "Question: {question}"
-                 "Answer: {answer}",
-        input_variables=["question", "answer"],
+        template=answer_rating_template,
+        input_variables=["current_context"],
     )
 
-    parser = PydanticToolsParser(tools=[AnswerEvaluation])
+    parser = PydanticOutputParser(pydantic_object=AnswerEvaluation)
+    xml_parser = XMLOutputParser.from_tag("json_response")
     # temperature=0 for deterministic outputs
-    model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0).bind_tools([AnswerEvaluation])
+    # model = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0).bind_tools([AnswerEvaluation])
+    model = DynamicModel.default_rating()
 
-    chain = prompt | model | parser
+    chain = prompt | model | xml_parser | parser
 
     return chain
 
@@ -73,7 +43,8 @@ def parse_ratings(ai_message: AIMessage) -> List[str]:
     return [
         line.split(":")[0].strip()
         for line in ai_message.content.split("\n")
-        if line.strip() and ":" in line and line.split(":")[1].strip().lower() in ["high confidence", "very high confidence"]
+        if line.strip() and ":" in line and line.split(":")[1].strip().lower() in ["high confidence",
+                                                                                   "very high confidence"]
     ]
 
 
@@ -87,14 +58,6 @@ def parse_ratings_new(ai_message: AIMessage) -> List[str]:
             and line.split(":")[1].strip().lower() in ["high confidence",
                                                        "absolute confidence"])
     ]
-
-
-confidence_template = (
-    "You should rate the following on a scale of [absolute confidence, high confidence, low confidence, no confidence]."
-    "If you are absolutely sure that the topic is being discussed, rate it as 'absolute confidence'."
-    "If there are strong indications that the topic is being discussed, rate it as 'high confidence'."
-    "If you are not sure, rate it as 'low confidence'."
-    "If you are sure that the topic is not being discussed, rate it as 'no confidence'.")
 
 
 def rate_topics(limit: int = 3):

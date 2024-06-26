@@ -4,14 +4,13 @@ namespace App\Models\DataPoint;
 
 use App\Models\DataPoint;
 use App\Models\Summary\Summary;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class DataPointSummary extends Pivot
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
     protected $table = 'data_point_summaries';
 

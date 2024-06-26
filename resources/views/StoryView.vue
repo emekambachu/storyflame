@@ -7,8 +7,6 @@
     >
         <div class="flex flex-col gap-6 pb-6">
             <tab-layout
-                header-height="300"
-                collapse-header-height="100"
                 :tabs="[
                     {
                         title: 'About',
@@ -27,9 +25,18 @@
                         template: 'drafts',
                     },
                 ]"
-                animate-translate-y="190px"
             >
-                <story-header :story="story" />
+                <!--                <story-header :story="story" />-->
+                <header-animated
+                    collapse-header-height="80"
+                    header-height="478"
+                >
+<!--                    <default-element-header height="478px" />-->
+                    <story-header v-if="story" :story="story"/>
+                    <template #sticky>
+                        <tab-layout-tabs />
+                    </template>
+                </header-animated>
                 <template #about>
                     <story-about-tab :story="story" />
                 </template>
@@ -37,48 +44,23 @@
                     <story-drafts-tab :drafts="story.drafts" />
                 </template>
             </tab-layout>
-
-            <!--            <div class="relative flex items-center">-->
-            <!--                <div-->
-            <!--                    v-for="(tab, tabID) in tabs"-->
-            <!--                    :key="tabID"-->
-            <!--                    :class="-->
-            <!--                        tabID == selectedTab-->
-            <!--                            ? 'border-red-600 text-red-600'-->
-            <!--                            : 'border-neutral-300 text-neutral-500'-->
-            <!--                    "-->
-            <!--                    class="relative z-10 mx-4 border-b-2 text-base font-normal"-->
-            <!--                    @click="selectedTab = tabID"-->
-            <!--                >-->
-            <!--                    {{ tab }}-->
-            <!--                </div>-->
-            <!--                <div-->
-            <!--                    class="z-5 absolute bottom-0 h-[2px] w-full bg-neutral-300"-->
-            <!--                />-->
-            <!--            </div>-->
-
-            <!--            <story-about-tab-->
-            <!--                v-if="selectedTab == 0"-->
-            <!--                :story="story"-->
-            <!--            />-->
-            <!--            <story-drafts-tab-->
-            <!--                v-if="selectedTab == 3"-->
-            <!--                :drafts="story.drafts"-->
-            <!--            />-->
         </div>
     </page-navigation-layout>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import StoryAboutTab from '@/components/StoryAboutTab.vue'
 import StoryDraftsTab from '@/components/StoryDraftsTab.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import TabLayout from '@/components/TabLayout.vue'
-import StoryHeader from '@/components/StoryHeader.vue'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { getStory } from '@/utils/endpoints'
+import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+import StoryHeader from '@/components/StoryHeader.vue'
 
 const route = useRoute()
 const storyId = computed(() => route.params.story)
@@ -90,31 +72,6 @@ const { data: story } = useQuery({
         return data.data
     },
 })
-
-// const story = {
-//     image: { path: 'https://picsum.photos/900' },
-//     name: 'Game of Thrones',
-//     genre: 'TV Show, MA-16',
-//     percent: 80,
-//     genres: ['Fantasy', 'Drama', 'Adventure', 'Political Intrigue'],
-//     description:
-//         'In a world where summers span decades and winters can last a lifetime, the noble houses of Westeros battle for control of the Seven Kingdoms, while an ancient enemy awakens in the North, threatening the realm with destruction.',
-//     goals: [
-//         'Explore a Unique Setting',
-//         'Develop Complex Character Arcs',
-//         'Craft a Cliffhanger Ending',
-//     ],
-//     market_comps: [
-//         { image: { path: 'https://picsum.photos/300' } },
-//         { image: null },
-//         { image: { path: 'https://picsum.photos/600' } },
-//     ],
-//
-// }
-
-const tabs = ['About', 'Progress', 'Elements', 'Drafts']
-
-const selectedTab = ref(0)
 </script>
 
 <style scoped></style>

@@ -8,11 +8,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_achievements', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('achievement_id')->constrained()->cascadeOnDelete();
-            $table->uuidMorphs('target');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
+            $table->morphs('target');
             $table->unsignedTinyInteger('progress')->default(0);
             $table->timestamp('completed_at')->nullable();
 

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_point_categories', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('data_point_id')->nullable();
-            $table->foreignUuid('category_id')->nullable();
+            $table->id();
+            $table->foreignId('data_point_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

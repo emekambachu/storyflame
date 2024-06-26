@@ -17,3 +17,7 @@ export function getStories() {
 export function getStory(id: string) {
     return api.get<Story>(`/api/v1/stories/${id}`)
 }
+
+export function getSequence(storyId: string, id: string) {
+    return api.get<Sequence>(`/api/v1/stories/${storyId}/sequences/${id}`)
+}
