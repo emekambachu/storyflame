@@ -27,7 +27,7 @@ class AdminDataPointController extends Controller
                 ->latest()->get();
             return response()->json([
                 'success' => true,
-                'achievements' => AdminDataPointResource::collection($data),
+                'data_points' => AdminDataPointResource::collection($data),
                 'total' => $data->count(),
             ]);
 

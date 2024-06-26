@@ -70,13 +70,9 @@ onBeforeMount(() => {
             <button @click="openSlideover" class="px-4 py-2 bg-black text-white rounded-full">Create new data point</button>
         </div>
 
-        <AdminDataPointForm :isOpen="isSlideoverOpen" @close="closeSlideover">
-            <!--            <template v-slot:title>-->
-            <!--                Slideover Title-->
-            <!--            </template>-->
-            <!--            <template v-slot:content>-->
-            <!--                <p>Slideover content goes here.</p>-->
-            <!--            </template>-->
+        <AdminDataPointForm
+            :isOpen="isSlideoverOpen"
+            @close="closeSlideover">
         </AdminDataPointForm>
 
         <div class="relative overflow-x-auto mt-4">

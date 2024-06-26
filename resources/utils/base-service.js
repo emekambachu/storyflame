@@ -10,11 +10,6 @@ let baseService = {
         return user ? user.token : null;
     },
 
-    // Install moment.js to work
-    fullDate (value){
-        return moment(value).format('MMMM Do YYYY, h:mm:ss a');
-    },
-
     roundDecimal(num){
        return Math.round(num * 100) / 100
     },

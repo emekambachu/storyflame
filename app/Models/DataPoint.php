@@ -19,10 +19,10 @@ class DataPoint extends Model
     protected $fillable = [
         'slug',
         'name',
-        'type',
         'development_order',
         'impact_score',
         'estimated_seconds',
+        'type',
         'extraction_description',
         'example',
         'purpose',

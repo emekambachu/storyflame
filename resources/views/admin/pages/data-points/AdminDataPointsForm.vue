@@ -227,11 +227,26 @@
                                             Extraction Type
                                         </label>
                                         <select
+                                            v-model="type"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
                                             <option>Select Extraction Type</option>
                                             <option value="">Type name</option>
                                             <option value="">Type name</option>
                                         </select>
+                                    </div>
+
+                                    <div class="w-full">
+                                        <label
+                                            class="block text-sm font-medium text-gray-700">
+                                            Extraction Example
+                                        </label>
+                                        <textarea
+                                            v-model="form.example"
+                                            id="extractionDescription"
+                                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"></textarea>
+                                        <p v-if="errors.extraction_description" class="text-red-500 text-sm">
+                                            {{ errors.extraction_description[0] }}
+                                        </p>
                                     </div>
 
                                     <hr class="my-4">
@@ -240,31 +255,31 @@
                                         <label
                                             for="category"
                                             class="block text-sm font-medium text-gray-700">
-                                            Data Points
+                                            Linked Summaries
                                         </label>
                                         <select
-                                            @change.prevent="selectDataPoints"
+                                            @change.prevent="selectSummary"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
-                                            <option>Select Data Point</option>
+                                            <option>Select</option>
                                             <option
                                                 class="text-black"
-                                                v-for="data in dataPoints"
-                                                :key="data.id"
-                                                :value="data.id"
+                                                v-for="summary in summaries"
+                                                :key="summary.id"
+                                                :value="summary.id"
                                             >
-                                                {{ data.name }}
+                                                {{ summary.name }}
                                             </option>
                                         </select>
-                                        <div v-if="form.data_points?.length > 0" class="mt-1">
+                                        <div v-if="form.summaries?.length > 0" class="mt-1">
                                             <div
-                                                v-for="(data, index) in form.data_points"
+                                                v-for="(summary, index) in form.summaries"
                                                 :key="index"
                                                 class="w-full flex justify-center mb-1"
                                             >
                                                 <span class="w-11/12 mr-1 p-1 bg-stone-200 text-black rounded-sm">
-                                                    {{ data.name }}
+                                                    {{ summary.name }}
                                                 </span>
-                                                <span @click="deleteDataPoint" class="w-1/12">
+                                                <span @click="deleteSummary" class="w-1/12">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                         <g clip-path="url(#clip0_1946_18183)">
                                                         <path d="M3.33337 5.83331H16.6667" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -278,16 +293,14 @@
                                                         <rect width="20" height="20" fill="white"/>
                                                         </clipPath>
                                                         </defs>
-                                                        </svg>
+                                                    </svg>
                                                 </span>
                                             </div>
                                         </div>
-                                        <p v-if="errors.data_points" class="text-red-500 text-sm">
+                                        <p v-if="errors.summaries" class="text-red-500 text-sm">
                                             {{ errors.data_points[0] }}
                                         </p>
                                     </div>
-
-                                    <button type="button" class="text-blue-600">+ Create new Data Point</button>
                                 </div>
 
                             </div>
@@ -311,7 +324,7 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
-    achievement: {
+    datapoint: {
         type: Object,
         required: false,
         default: null,
@@ -332,6 +345,9 @@ const loading = ref(false);
 const submitted = ref(false);
 
 const categories = computed(() => store.state.categories);
+const achievements = computed(() => store.state.achievements);
+const summaries = computed(() => store.state.summaries);
+
 const selectCategory = (e) => {
     if(e.target.value !== 'Select Category' && !form.categories.includes(e.target.value)) {
         form.categories.push({
@@ -346,52 +362,48 @@ const deleteCategory = (index) => {
     form.categories.splice(index, 1);
 };
 
-const dataPoints = computed(() => store.state.dataPoints);
-
-const selectDataPoints = (e) => {
-    if(e.target.value !== 'Select Data Point' && !form.data_points.includes(e.target.value)) {
-        form.data_points.push({
+const selectAchievement = (e) => {
+    if(e.target.value !== 'Select' && !form.achievements.includes(e.target.value)) {
+        form.achievements.push({
             id: e.target.value,
             name: e.target.options[e.target.selectedIndex].text,
         });
     }
-
-    console.log("Data points", form.data_points);
+};
+const deleteAchievement = (index) => {
+    form.achievements.splice(index, 1);
 };
 
-const deleteDataPoint = (index) => {
-    form.data_points.splice(index, 1);
+const selectSummary = (e) => {
+    if(e.target.value !== 'Select' && !form.summaries.includes(e.target.value)) {
+        form.summaries.push({
+            id: e.target.value,
+            name: e.target.options[e.target.selectedIndex].text,
+        });
+    }
+};
+const deleteSummary = (index) => {
+    form.summaries.splice(index, 1);
 };
 
-const getDataPoints = async () => {
-    await axios.get('/api/admin/data-points/min', {
-        headers: {
-            'Accept' : 'application/json',
-        }
-    }).then((response) => {
-        if (response.data.success){
-            dataPoints.value = response.data.data_points;
-        }
-    }).catch((error) => {
-        console.log(error);
-    });
-}
 
 const form = reactive({
-    name: props.achievement !== null ? props.achievement.name : '',
-    color: props.achievement !== null ? props.achievement.color : '#000000',
-    subtitle: props.achievement !== null ? props.achievement.subtitle : '',
-    icon: null,
-    publish_at: props.achievement !== null ? props.achievement.publish_at : '',
-    categories: props.achievement !== null && props.achievement.categories.length > 0 ? props.achievement.categories : [],
-    data_points: props.achievement !== null && props.achievement.data_points.length > 0 ? props.achievement.data_points : [],
-    purpose: props.achievement !== null ? props.achievement.purpose : '',
-    example: props.achievement !== null ? props.achievement.example : '',
-    extraction_description: props.achievement !== null ? props.achievement.extraction_description : '',
-    openEndedQuestions: props.achievement !== null ? props.achievement.open_ended_questions : '',
+    name: props.datapoint !== null ? props.datapoint.name : '',
+    development_order: props.datapoint !== null ? props.datapoint.development_order : '',
+    impact_score: props.datapoint !== null ? props.datapoint.impact_score : '',
+    estimated_seconds: props.datapoint !== null ? props.datapoint.estimated_seconds : '',
+    type: props.datapoint !== null ? props.datapoint.type : '',
+
+    categories: props.datapoint !== null ? props.datapoint.categories : [],
+    achievements: props.datapoint !== null ? props.datapoint.achievements : [],
+    summaries: props.datapoint !== null ? props.datapoint.summaries : [],
+
+    extraction_description: props.datapoint !== null ? props.datapoint.extraction_description : '',
+    example: props.datapoint !== null ? props.datapoint.example : '',
+    purpose: props.datapoint !== null ? props.datapoint.purpose : '',
 });
 
-const submitAchievement = async () => {
+const submitDataPoint = async () => {
 
     // Delete all errors
     Object.keys(errors.value).forEach(function(key) {
@@ -410,9 +422,13 @@ const submitAchievement = async () => {
                 form[key].forEach((category) => {
                     formData.append('categories[]', category.id);
                 });
-            } else if(key === 'data_points'){
+            } else if(key === 'achievements'){
                 form[key].forEach((data) => {
-                    formData.append('data_points[]', data.id);
+                    formData.append('achievements[]', data.id);
+                });
+            } else if(key === 'summaries'){
+                form[key].forEach((data) => {
+                    formData.append('summaries[]', data.id);
                 });
             } else {
                 formData.append(key, form[key]);
@@ -420,7 +436,7 @@ const submitAchievement = async () => {
         }
     });
 
-    await axios.post('/api/admin/achievements/store', formData, {
+    await axios.post('/api/admin/summaries/store', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',
@@ -466,7 +482,7 @@ const submitAchievement = async () => {
     loading.value = false;
 }
 
-const updateAchievement = async () => {
+const updateDataPoint = async () => {
 
     // Delete all errors
     Object.keys(errors.value).forEach(function(key) {
@@ -485,9 +501,13 @@ const updateAchievement = async () => {
                 form[key].forEach((category) => {
                     formData.append('categories[]', category.id);
                 });
-            } else if(key === 'data_points'){
+            } else if(key === 'achievements'){
                 form[key].forEach((data) => {
-                    formData.append('data_points[]', data.id);
+                    formData.append('achievements[]', data.id);
+                });
+            } else if(key === 'summaries'){
+                form[key].forEach((data) => {
+                    formData.append('summaries[]', data.id);
                 });
             } else {
                 formData.append(key, form[key]);
@@ -495,7 +515,7 @@ const updateAchievement = async () => {
         }
     });
 
-    await axios.post('/api/admin/achievements/'+props.achievement.item_id+'/update', formData, {
+    await axios.post('/api/admin/achievements/'+props.datapoint.item_id+'/update', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',
@@ -528,29 +548,6 @@ const updateAchievement = async () => {
     loading.value = false;
 }
 
-const iconPreview = ref(null);
-
-const uploadIcon = (event) => {
-    let validateFileType = validationService.validateFileType(event.target.files[0], ['jpg', 'jpeg', 'png']);
-    if(!validateFileType){
-        errors.value['icon'] = ['Incorrect file format. allowed: jpg, jpeg, png'];
-        form.icon = null;
-        return false;
-    }
-
-    let validateFileSize = validationService.validateFileSize(event.target.files[0], 1000000);
-    if(!validateFileSize){
-        errors.value['icon'] = ['File too large, 1mb max'];
-        form.icon = null;
-        return false;
-    }
-
-    //Assign image and path to this variable
-    form.icon = event.target.files[0];
-    iconPreview.value = URL.createObjectURL(event.target.files[0]);
-    errors.value['icon'] = [];
-}
-
 </script>
 
 <style scoped>
@@ -564,53 +561,4 @@ const uploadIcon = (event) => {
     transform: translateX(100%);
 }
 
-.file-input::file-selector-button {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23000000" width="800px" height="800px" viewBox="0 0 24 24" id="image-frame" data-name="Flat Color" class="icon flat-color"><rect id="primary" x="2" y="3" width="20" height="18" rx="2" style="fill: rgb(0, 0, 0);"/><path id="secondary" d="M2.29,17,7,12.29a1,1,0,0,1,1.42,0l2.09,2.1,4.07-4.08a1,1,0,0,1,1.42,0L21.71,16a1,1,0,0,1,.29.71V19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17.71A1,1,0,0,1,2.29,17ZM7.5,7.5A1.5,1.5,0,1,0,9,6,1.5,1.5,0,0,0,7.5,7.5Z" style="fill: rgb(44, 169, 188);"/></svg>');
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 115px;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    color: transparent;
-}
-
-.file-input::-ms-browse {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23000000" width="800px" height="800px" viewBox="0 0 24 24" id="image-frame" data-name="Flat Color" class="icon flat-color"><rect id="primary" x="2" y="3" width="20" height="18" rx="2" style="fill: rgb(0, 0, 0);"/><path id="secondary" d="M2.29,17,7,12.29a1,1,0,0,1,1.42,0l2.09,2.1,4.07-4.08a1,1,0,0,1,1.42,0L21.71,16a1,1,0,0,1,.29.71V19a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V17.71A1,1,0,0,1,2.29,17ZM7.5,7.5A1.5,1.5,0,1,0,9,6,1.5,1.5,0,0,0,7.5,7.5Z" style="fill: rgb(44, 169, 188);"/></svg>');
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 115px;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    color: transparent;
-}
-
-.color-picker {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    padding: 0;
-    overflow: hidden;
-}
-
-.color-picker::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-.color-picker::-webkit-color-swatch {
-    border: none;
-    border-radius: 50%;
-}
-
-.color-picker::-moz-color-swatch {
-    border: none;
-    border-radius: 50%;
-}
 </style>

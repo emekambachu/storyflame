@@ -6,6 +6,7 @@ export default {
     adminAuthenticated: false,
 
     categories: [],
-
     dataPoints: [],
+    achievements: [],
+    summaries: [],
 }

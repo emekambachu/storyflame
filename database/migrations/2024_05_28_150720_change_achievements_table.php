@@ -30,7 +30,6 @@ return new class extends Migration {
                 'purpose' => 'string',
                 'color' => 'string',
                 'icon' => 'string',
-                'icon_path' => 'string',
                 'example' => 'string',
                 'item_id' => 'unsignedBigInteger',
                 'publish_at' => 'timestamp',
@@ -71,7 +70,6 @@ return new class extends Migration {
         'purpose',
         'color',
         'icon',
-        'icon_path',
         'publish_at'
     ];
 };

@@ -15,16 +15,17 @@ return new class extends Migration {
                 $table->string('slug');
                 $table->string('name');
                 $table->unsignedBigInteger('item_id')->unique();
-                $table->string('type')->default('text');
-                $table->text('extraction_description')->nullable();
-                $table->json('example')->nullable();
                 $table->string('purpose');
                 $table->unsignedBigInteger('development_order');
                 $table->unsignedSmallInteger('impact_score');
-                $table->unsignedSmallInteger('estimated_seconds');
-                $table->foreignId('admin_id')->nullable()->constrained()->cascadeOnDelete();
+                $table->text('extraction_description')->nullable();
+                $table->json('example')->nullable();
+                $table->string('type')->default('text');
+                $table->unsignedSmallInteger('estimated_seconds')->nullable()->default(0);
+                $table->foreignId('admin_id')->nullable();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();
+                $table->engine = 'InnoDB';
             });
         }
     }

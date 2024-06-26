@@ -13,8 +13,8 @@ return new class extends Migration {
 
             $table->string('name');
             $table->string('icon_path')->nullable();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('admin_id')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
@@ -24,9 +24,11 @@ return new class extends Migration {
 
     public function down(): void
     {
-        //Schema::dropIfExists('achievements');
-
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::table('achievements', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['admin_id']);
+        });
         Schema::dropIfExists('achievements');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
