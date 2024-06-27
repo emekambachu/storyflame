@@ -69,3 +69,4 @@ Route::put('/categories', [CategoryController::class, 'update']);
 Route::delete('/categories', [CategoryController::class, 'destroy']);
 
 include __DIR__ . '/admin/api.php';
+include __DIR__ . '/user/api.php';
