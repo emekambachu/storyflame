@@ -12,7 +12,7 @@ import { PropType } from 'vue'
 import { Story } from '@/types/story'
 import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
 
-defineProps({
+const props = defineProps({
     story: {
         type: Object as PropType<Story>,
         required: true,

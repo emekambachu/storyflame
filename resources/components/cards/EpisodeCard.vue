@@ -2,24 +2,21 @@
     <div class="flex flex-col gap-2 rounded-lg bg-stone-100 p-4">
         <div class="flex w-full items-start justify-between">
             <div class="flex flex-col gap-0.5">
-                <span
-                    v-if="card?.story"
-                    class="text-xs font-normal text-stone-500"
+                <p
+                    v-if="card?.episode || card?.story"
+                    class="flex items-center gap-1 text-[8px] font-bold uppercase text-stone-500"
                 >
+                    {{ card?.episode }}
+                    <point-icon
+                        v-if="card?.episode && card?.story"
+                        class="h-1 w-1"
+                    />
                     {{ card?.story }}
-                </span>
+                </p>
 
                 <h5 class="text-sm font-bold text-stone-800">
                     {{ card.title }}
                 </h5>
-
-                <p
-                    class="flex items-center gap-1 text-xs font-medium text-stone-500"
-                >
-                    Episode {{ card?.episode ?? 0 }}
-                    <point-icon />
-                    {{ card?.sequences ?? 0 }} Sequences
-                </p>
             </div>
 
             <flame-icon
@@ -28,8 +25,10 @@
                 flameClass="w-6 h-6"
             />
         </div>
-        <hr class="w-full text-stone-500" />
-        <p class="text-sm text-stone-600">{{ card.description }}</p>
+        <template v-if="card?.description">
+            <hr class="w-full text-stone-500" />
+            <p class="text-sm text-stone-600">{{ card.description }}</p>
+        </template>
     </div>
 </template>
 

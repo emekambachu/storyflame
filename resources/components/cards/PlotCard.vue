@@ -1,23 +1,23 @@
 <template>
-    <div class="flex flex-col bg-stone-100 rounded-lg p-4">
-        <div class="w-full flex items-center justify-between">
+    <div class="flex flex-col rounded-lg bg-stone-100 p-4">
+        <div class="flex w-full items-center justify-between">
             <div class="flex flex-col gap-0.5">
-                <span class="text-[8px] text-stone-400 font-bold uppercase">
+                <span class="text-[8px] font-bold uppercase text-stone-500">
                     {{ card?.subtitle }}
                 </span>
 
-                <h5 class="text-sm text-stone-800 font-bold">
+                <h5 class="text-sm font-bold text-stone-800">
                     {{ card.title }}
                 </h5>
             </div>
 
             <flame-icon
                 :progress="card.progress"
-                class="!w-8 !h-8"
+                class="!h-8 !w-8"
                 flameClass="w-6 h-6"
             />
         </div>
-        <p class="text-sm text-stone-600 mt-2">{{ card.description }}</p>
+        <p class="mt-2 text-sm text-stone-600">{{ card.description }}</p>
     </div>
 </template>
 
