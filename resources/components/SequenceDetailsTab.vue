@@ -1,51 +1,108 @@
 <template>
-    <div class="flex flex-col px-4">
-        <div class="py-5">
-            <p class="text-sm text-zinc-800 font-normal">
-                {{ data.kickstart }}
-            </p>
-        </div>
-        <div class="py-2 rounded-lg">
-            <div class="py-5 flex flex-col gap-3 px-2 rounded-lg bg-slate-200">
-                <h5 class="text-base text-zinc-800 font-bold">
-                    Who drives the scene
-                </h5>
-                <p class="text-xs text-zinc-700 font-normal">
-                    {{ data.drives_scene }}
-                </p>
-            </div>
-        </div>
-
-        <div class="py-5 flex flex-col gap-3">
-            <h5 class="text-base text-zinc-800 font-bold">Sequence Goals</h5>
-            <div class="flex flex-col gap-2">
-                <sequence-card
-                    v-for="(goal, goalID) in data.goals"
-                    :key="goalID"
-                    :goal="goal"
+    <div class="flex flex-col gap-2 bg-stone-100">
+        <title-section
+            title="Goals"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <subtitle-section
+                    v-for="(goal, goalId) in data.details_goals"
+                    :key="goalId"
+                    :title="goal.title"
+                    :description="goal.description"
                 />
             </div>
-        </div>
-        <div class="py-5 flex flex-col gap-3">
-            <h5 class="font-bold text-sm text-slate-500">Source of conflict</h5>
-            <ul>
-                <li
-                    v-for="(reason, reasonID) in data.conflict_sources"
-                    :key="reasonID"
-                    class="font-normal text-xs text-slate-500 flex items-start gap-2"
-                >
-                    <point-icon class="w-3 h-3 mt-1" />
-                    {{ reason }}
-                </li>
-            </ul>
-        </div>
+        </title-section>
+
+        <title-section
+            title="Obstacles & Conflict"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <subtitle-section
+                    v-for="(item, itemId) in data.details_obtacles"
+                    :key="itemId"
+                    :title="item.title"
+                    :description="item.description"
+                />
+            </div>
+        </title-section>
+
+        <title-section
+            title="Major Choices"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <moment-card
+                    v-for="(item, itemID) in data.moments"
+                    :key="itemID"
+                    :card="item"
+                />
+            </div>
+        </title-section>
+
+        <title-section
+            title="Favorite Moments"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <moment-card
+                    v-for="(item, itemID) in data.moments"
+                    :key="itemID"
+                    :card="item"
+                />
+            </div>
+        </title-section>
+
+        <title-section
+            title="Plot Impact"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <subtitle-section :description="data.details_plot" />
+        </title-section>
+
+        <title-section
+            title="Character Impact"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <subtitle-section
+                    v-for="(item, itemId) in data.details_characters"
+                    :key="itemId"
+                    :title="item.title"
+                    :description="item.description"
+                />
+            </div>
+        </title-section>
+
+        <title-section
+            title="The Audience Learns"
+            class="bg-white px-3 py-5"
+            title-class="text-lg text-black font-bold"
+        >
+            <div class="flex flex-col gap-4">
+                <subtitle-section
+                    v-for="(item, itemId) in data.details_audience_learns"
+                    :key="itemId"
+                    :title="item.title"
+                    :description="item.description"
+                />
+            </div>
+        </title-section>
     </div>
 </template>
 
 <script setup lang="ts">
-import PointIcon from '@/components/icons/PointIcon.vue'
+import MomentCard from '@/components/cards/MomentCard.vue'
 
-import SequenceCard from '@/components/cards/SequenceGoalCard.vue'
+import TitleSection from '@/components/TitleSection.vue'
+import SubtitleSection from '@/components/cards/SubtitleSection.vue'
 
 const props = defineProps({
     data: {
