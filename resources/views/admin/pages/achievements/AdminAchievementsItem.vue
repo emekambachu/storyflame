@@ -27,9 +27,17 @@ const emittedAchievement = (event) => {
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
             <img :src="achievement.icon" width="60">
         </th>
-        <td class="px-6 py-4 text-center">
-            <p class="font-extrabold text-md text-black">{{ achievement.name }}</p>
-            <p class="text-gray-400 text-md">ID: {{ achievement.item_id }}</p>
+        <td class="px-6 py-4 text-left">
+            <p class="font-extrabold text-md text-black">
+                {{ achievement.name }}
+            </p>
+            <div class="flex">
+                <p class="color-circle my-auto mr-2"
+                   :style="{ backgroundColor: achievement.color }"></p>
+                <p class="text-gray-400 text-md">
+                    ID: {{ achievement.item_id }}
+                </p>
+            </div>
         </td>
         <td class="px-6 py-4 text-center">
             <div v-if="achievement.categories?.length > 0" class="d-flex">
@@ -94,5 +102,10 @@ const emittedAchievement = (event) => {
 </template>
 
 <style scoped>
-
+.color-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
 </style>
