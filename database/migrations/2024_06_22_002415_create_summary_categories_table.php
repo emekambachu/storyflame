@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('summary_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('summary_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('summary_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
     }
 

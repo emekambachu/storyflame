@@ -5,5 +5,8 @@ export default {
     adminToken: '',
     adminAuthenticated: false,
 
-    categories: []
+    categories: [],
+    dataPoints: [],
+    achievements: [],
+    summaries: [],
 }

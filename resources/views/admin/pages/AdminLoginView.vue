@@ -1,6 +1,9 @@
 <template>
     <div class="flex items-center justify-center h-screen bg-stone-100">
         <div class="bg-white rounded-lg shadow-lg p-8">
+
+            <img src="/images/logo.svg">
+
             <h2 class="text-2xl font-bold mb-6">Log In</h2>
 
             <p class="text-red-500 text-xs italic" v-if="errors.error_message">

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('data_point_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('data_point_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('data_point_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

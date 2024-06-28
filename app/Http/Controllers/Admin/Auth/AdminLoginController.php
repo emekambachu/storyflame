@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Auth\AdminLoginRequest;
 use App\Services\Admin\AdminService;
 use App\Services\Auth\LoginService;
 use App\Services\Base\BaseService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
@@ -20,10 +21,10 @@ class AdminLoginController extends Controller
         $this->admin = $admin;
     }
 
-    public function adminLogin(AdminLoginRequest $request): \Illuminate\Http\JsonResponse
+    public function login(AdminLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $data = $this->login->adminLoginWithToken(
+            $data = $this->login->loginWithToken(
                 $request,
                 'admin',
                 'admin-api',
@@ -36,16 +37,11 @@ class AdminLoginController extends Controller
         }
     }
 
-    public function login(AdminLoginRequest $request): \Illuminate\Http\JsonResponse
+    public function authenticate(Request $request): JsonResponse
     {
         try {
-            $data = $this->login->loginWithToken(
-                $request,
-                'admin',
-                'admin-api',
-                $this->admin->admin()
-            );
-            return response()->json($data);
+            $data = $this->login->authenticateUserWithToken($request->token);
+            return response()->json($data, Response::HTTP_OK);
 
         } catch (\Exception $e) {
             return BaseService::tryCatchException($e);

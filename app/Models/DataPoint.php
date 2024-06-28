@@ -6,6 +6,7 @@ use App\Models\DataPoint\DataPointAchievement;
 use App\Models\DataPoint\DataPointCategory;
 use App\Models\DataPoint\DataPointSummary;
 use App\Models\Summary\Summary;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,20 +14,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPoint extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'item_id',
         'slug',
         'name',
-        'type',
-        //'category',
         'development_order',
         'impact_score',
+        'estimated_seconds',
+        'type',
         'extraction_description',
         'example',
         'purpose',
-        //'achievement_id',
+        'admin_id',
     ];
 
     protected $casts = [

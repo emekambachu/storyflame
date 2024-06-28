@@ -3,13 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
-use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AchievementSeeder extends Seeder
@@ -43,13 +41,16 @@ class AchievementSeeder extends Seeder
                 'name' => $rowData['Achievement Title'],
                 'item_id' => $rowData['Achievement ID'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
-                'category' => $rowData['Element'],
+                'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
+                'category' => $rowData['Element'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
                 'color' => $rowData['Color'],
+                'dev_order' => $rowData['Order'],
+                'total_impact' => $rowData['Total Impact'],
                 'icon' => $rowData['Final Icon Image'] . '.png',
-                'icon_path' => null,
+                'icon_path' => '/uploads/achievements/icons/',
                 'publish_at' => now()->format('Y-m-d H:i:s'),
                 'admin_id' => Admin::first()->id,
                 'user_id' => User::factory()->create()->id,

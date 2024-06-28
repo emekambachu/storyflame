@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPointAchievement extends Pivot
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory;
 
     protected $table = 'data_point_achievements';
 

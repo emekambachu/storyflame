@@ -24,48 +24,12 @@ class LoginService
         $queryBuilder
     ): array
     {
-        if(Auth::guard($webGuard)->attempt([
-            'email' => trim($request->email),
-            'password' => trim($request->password),
-        ])){
-            // get Session
-            $user = Auth::guard($webGuard)->user();
-
-            // Create new token
-            $token = $user->createToken($request->email, [$apiGuard])->plainTextToken;
-            // Last login
-            $queryBuilder->where('email', $request->email)->update([
-                'last_login' => Carbon::now()->format('Y-m-d h:i:s'),
-            ]);
-
-            return [
-                'success' => true,
-                'user' => $user,
-                'token' => $token,
-            ];
-        }
-
-        return [
-            'success' => false,
-            'errors' => ['Incorrect credentials'],
-        ];
-    }
-
-    public function adminLoginWithToken(
-        $request,
-        String $webGuard,
-        String $apiGuard,
-        $queryBuilder
-    ): array
-    {
         $credentials = $request->only('email', 'password');
         if(Auth::guard('admin')->attempt($credentials)){
             // get Session
             $user = Auth::guard($webGuard)->user();
 
             // Get Token
-            // Create Token with UUID
-            //$uuid = Str::uuid()->toString();
             $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
             $token = $user->createToken($request->email, [$apiGuard], $expiresAt)->plainTextToken;
 

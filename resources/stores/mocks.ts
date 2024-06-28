@@ -393,6 +393,7 @@ export const useMockStore = defineStore(
                                 type: 'text',
                                 content: 'Mocked question',
                                 title: 'Mocked title',
+                                audio: '/audio/question.mp3',
                             },
                         },
                     },

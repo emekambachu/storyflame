@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('data_point_achievements');
+
         Schema::create('data_point_achievements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('data_point_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('data_point_id')->nullable();
+            $table->foreignId('achievement_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

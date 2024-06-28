@@ -20,9 +20,10 @@ return new class extends Migration
         // Create the table
         Schema::create('summary_links', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('summary_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('linked_summary_id');
+            $table->foreignId('summary_id')->nullable();
+            $table->foreignId('linked_summary_id')->nullable();
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
     }
 

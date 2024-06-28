@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Achievement;
+namespace App\Http\Resources\Admin\DataPoint;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminAchievementResource extends JsonResource
+class AdminDataPointResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,19 +17,20 @@ class AdminAchievementResource extends JsonResource
         return [
             'id' => $this->id,  // Try both id and uuid
             'name' => $this->name,
-            'icon' => $this->icon ? '/images/achievements/' . $this->icon : null,
-            'title' => $this->name,
+            'slug' => $this->slug,
             'item_id' => $this->item_id,
-            'subtitle' => $this->subtitle ?? null,
+            'type' => $this->type,
+            'development_order' => $this->development_order,
+            'impact_score' => $this->impact_score,
             'extraction_description' => $this->extraction_description ?? null,
-            'categories' => $this->categories ?? null,
-            'data_points' => $this->dataPoints ?? null,
             'example' => $this->example ?? null,
             'purpose' => $this->purpose ?? null,
-            'color' => $this->color ?? null,
-            'icon_path' => $this->icon_path ?? null,
+
+            'categories' => $this->categories && count($this->categories) > 0 ? $this->categories : [],
+            'summaries' => $this->summaries && count($this->summaries) > 0 ? $this->summaries : [],
+            'achievement' => $this->achievements && count($this->achievements) > 0 ? $this->achievements->first()->name : null,
+
             'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
-            'publish_at' => $this->publish_at ?? null,
             'updated_at' => $this->updated_at->format('F d Y'),
 
             'progress' => $this->when(isset($this->pivot), function () {

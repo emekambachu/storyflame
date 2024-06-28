@@ -12,19 +12,21 @@ return new class extends Migration {
             Schema::create('data_points', function (Blueprint $table) {
                 $table->id();
 
-                $table->unsignedBigInteger('item_id')->unique();
                 $table->foreignId('achievement_id')->nullable();
                 $table->string('slug')->unique();
                 $table->string('name');
-                $table->string('type')->default('text');
-                //$table->string('category');
+                $table->unsignedBigInteger('item_id')->unique();
+                $table->string('purpose');
+                $table->unsignedBigInteger('development_order');
+                $table->unsignedSmallInteger('impact_score');
                 $table->text('extraction_description')->nullable();
                 $table->json('example')->nullable();
-                $table->string('purpose');
-                $table->unsignedSmallInteger('development_order');
-                $table->unsignedSmallInteger('impact_score');
+                $table->string('type')->default('text');
+                $table->bigInteger('estimated_seconds')->default(0);
+                $table->foreignId('admin_id')->nullable();
                 $table->timestamp('deleted_at')->nullable();
                 $table->timestamps();
+                $table->engine = 'InnoDB';
             });
         }
     }
@@ -33,6 +35,7 @@ return new class extends Migration {
     {
         // temporarily disable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('data_point_achievements');
         Schema::dropIfExists('data_points');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }

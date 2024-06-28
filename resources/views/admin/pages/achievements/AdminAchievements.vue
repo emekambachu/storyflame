@@ -4,8 +4,10 @@ import axios from 'axios'
 
 import AdminAchievementsForm from './AdminAchievementsForm.vue';
 import AdminAchievementsItem from '@/views/admin/pages/achievements/AdminAchievementsItem.vue'
+import baseService from '@/utils/base-service'
+import store from '@/store'
 
-const user = computed(() => JSON.parse(localStorage.getItem('story-flame-admin')));
+const user = ref(baseService.getUserFromLocalStorage());
 
 // Slide over
 const isSlideoverOpen = ref(false);
@@ -34,7 +36,7 @@ const getAchievements = async () => {
             achievements.value = response.data.achievements;
             total.value = response.data.total;
         }else{
-            console.log(users.value);
+            console.log(achievements.value);
         }
         console.log(achievements.value);
     }).catch((error) => {
@@ -42,8 +44,23 @@ const getAchievements = async () => {
     });
 }
 
+const emittedAchievement = (event) => {
+    achievements.value.unshift(event);
+    total.value++;
+    // closeSlideover();
+}
+
 onBeforeMount(() => {
     getAchievements();
+    store.dispatch('getData', {
+        url: '/api/categories',
+        commit_name: 'SET_CATEGORIES',
+    });
+
+    store.dispatch('getData', {
+        url: '/api/admin/data-points/min',
+        commit_name: 'SET_MIN_DATA_POINTS',
+    });
 });
 
 </script>
@@ -55,7 +72,11 @@ onBeforeMount(() => {
             <button @click="openSlideover" class="px-4 py-2 bg-black text-white rounded-full">Create new achievement</button>
         </div>
 
-        <AdminAchievementsForm :isOpen="isSlideoverOpen" @close="closeSlideover">
+        <AdminAchievementsForm
+            :isOpen="isSlideoverOpen"
+            @close="closeSlideover"
+            @formSubmitted="emittedAchievement"
+        >
 <!--            <template v-slot:title>-->
 <!--                Slideover Title-->
 <!--            </template>-->

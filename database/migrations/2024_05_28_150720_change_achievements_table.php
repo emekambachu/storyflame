@@ -8,24 +8,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
-        DB::table('achievements')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
-
         Schema::table('achievements', function (Blueprint $table) {
+            // Drop foreign key constraint if it exists
+//            if (DB::getSchemaBuilder()->hasTable('achievements') && Schema::hasColumn('achievements', 'user_id')) {
+//                $table->dropForeign(['user_id']);
+//            }
+
             // Drop columns if they exist
-            $columnsToDrop = ['user_id', 'progress', 'completed_at'];
+            $columnsToDrop = ['progress', 'completed_at'];
             foreach ($columnsToDrop as $column) {
                 if (Schema::hasColumn('achievements', $column)) {
-
-                    if(in_array($column, ['user_id', 'admin_id'])) {
-                        if (DB::getSchemaBuilder()->getColumnType('achievements', $column) === 'uuid') {
-                            $table->dropForeign([$column]); // use this if the foreign key is named 'user_id'
-                        }
-                    }else{
-                        $table->dropColumn($column);
-                    }
-
+                    $table->dropColumn($column);
                 }
             }
 
@@ -37,14 +30,16 @@ return new class extends Migration {
                 'purpose' => 'string',
                 'color' => 'string',
                 'icon' => 'string',
-//                'icon_path' => 'string',
+                'example' => 'string',
                 'item_id' => 'unsignedBigInteger',
                 'publish_at' => 'timestamp',
+                'dev_order' => 'float',
+                'total_impact' => 'unsignedBigInteger',
             ];
 
             foreach ($columnsToAdd as $column => $type) {
                 if (!Schema::hasColumn('achievements', $column)) {
-                    $table->$type($column);
+                    $table->$type($column)->nullable();
                 }
             }
 
@@ -52,46 +47,11 @@ return new class extends Migration {
             if (Schema::hasColumn('achievements', 'item_id')) {
                 $table->unique('item_id');
             }
-
-//            if (Schema::hasColumn('achievements', 'icon_path')) {
-//                $table->string('icon_path')->nullable();
-//            }
-
-            if (Schema::hasColumn('achievements', 'publish_at')) {
-                $table->timestamp('publish_at')->nullable();
-            }
-
-            // Add foreign key constraint to 'user_id'
-
         });
-
-//        Schema::table('achievements', function (Blueprint $table) {
-//            $table->dropConstrainedForeignId('user_id');
-//            $table->dropColumn('progress');
-//            $table->dropColumn('completed_at');
-//
-//            $table->string('slug')->after('id');
-//            //$table->string('element')->after('name');
-//            //$table->text('extraction_description')->nullable()->after('element');
-//            $table->text('extraction_description')->nullable();
-//            //$table->string('subtitle')->after('element');
-//            $table->string('subtitle');
-//            $table->string('purpose')->after('subtitle');
-//            $table->string('color')->after('purpose');
-//            $table->string('icon')->after('color');
-//            $table->string('icon_path')->nullable();
-//            $table->unsignedBigInteger('item_id')->unique();
-//            $table->timestamp('publish_at')->nullable();
-//        });
     }
 
     public function down(): void
     {
-        // temporarily disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        DB::table('achievements')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
-
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::table('achievements', function (Blueprint $table) {
 
@@ -106,15 +66,14 @@ return new class extends Migration {
 
     private array $columns = [
         'slug',
-        'item_id',
         'progress',
-        //'element',
         'extraction_description',
         'subtitle',
         'purpose',
         'color',
         'icon',
-//        'icon_path',
-        'publish_at'
+        'publish_at',
+        'dev_order',
+        'total_impact',
     ];
 };
