@@ -96,6 +96,26 @@ const router = createRouter({
                     },
                 },
                 {
+                    path: '/profile/edit',
+                    name: 'ProfileEdit',
+                    component: () => import('../views/user/profile/UserEditProfileView.vue'),
+                    meta: {
+                        transition: 'slide',
+                        back: 'home',
+                    },
+                },
+
+                {
+                    path: '/profile/edit/password',
+                    name: 'ProfileEditPassword',
+                    component: () => import('../views/user/profile/UserEditProfilePasswordView.vue'),
+                    meta: {
+                        transition: 'slide',
+                        back: 'home',
+                    },
+                },
+
+                {
                     path: 'stories/',
                     children: [
                         {
@@ -274,6 +294,35 @@ const router = createRouter({
             path: '/dashboard',
             name: 'dashboard',
             component: () => import('../views/HomeView.vue'),
+        },
+
+        {
+            path: '/theme-detail',
+            name: 'ThemeDetailLayout',
+            // beforeEnter: checkAuth,
+            component: () => import('../views/user/layouts/ThemeDetailLayout.vue'),
+            children: [
+                {
+                    path: '/overview',
+                    name: 'ThemeDetailOverview',
+                    component: () => import('../views/user/theme-details/ThemeDetailOverview.vue'),
+                    meta: {
+                        transition: 'slide',
+                        back: 'home',
+                    },
+                },
+
+                {
+                    path: '/develop',
+                    name: 'ThemeDetailDevelop',
+                    component: () => import('../views/user/theme-details/ThemeDetailDevelop.vue'),
+                    meta: {
+                        transition: 'slide',
+                        back: 'home',
+                    },
+                },
+
+            ],
         },
 
         {

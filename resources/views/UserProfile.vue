@@ -1,8 +1,6 @@
 <template>
     <page-navigation-layout fixed transparent>
-        <div
-            class="mx-auto flex h-full grow w-full max-w-md flex-col items-center"
-        >
+        <div class="mx-auto flex h-full grow w-full max-w-md flex-col items-center">
             <!--            <button class="text-orange-500 mr-0 ml-auto">Edit</button>-->
             <div
                 v-if="user"

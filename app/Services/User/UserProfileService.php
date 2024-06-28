@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProfileService
 {
-    protected $photoPath = 'uploads/photos';
+    protected string $avatarPath = 'uploads/avatars';
 
     public function user(): User
     {
@@ -20,8 +20,14 @@ class UserProfileService
         $inputs = $request->all();
         $user = $this->user()->find(Auth::id());
 
-        $inputs['photo'] = CrudService::uploadAndCompressImage($request, $this->photoPath, null, null, 'photo');
-        $inputs['photo_path'] = '/'.$this->photoPath.'/';
+        $inputs['avatar'] = CrudService::uploadAndCompressImage(
+            $request,
+            $this->avatarPath,
+            null,
+            null,
+            'avatar'
+        );
+        $inputs['photo_path'] = '/'.$this->avatarPath.'/';
 
         $user->update($inputs);
 

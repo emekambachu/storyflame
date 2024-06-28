@@ -26,6 +26,11 @@ class User extends Authenticatable implements ModelWithId
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
+        'avatar',
+        'avatar_path',
+        'bio',
         'email',
         'password',
         'attributes',
