@@ -37,7 +37,7 @@ class UserProfileService
         if(!empty($user->password) && !Hash::check($inputs['current_password'], $user->password)){
             return [
                 'success' => false,
-                'errors' => ['password' => ['Current password is incorrect!']],
+                'errors' => ['current_password' => ['Current password is incorrect!']],
             ];
         }
 

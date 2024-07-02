@@ -26,7 +26,6 @@ class UserProfileUpdatePasswordRequest extends FormRequest
         return [
             'current_password' => 'nullable|string',
             'new_password' => 'required|string|min:8|confirmed',
-            'new_password_confirmation' => 'required|string',
         ];
     }
 

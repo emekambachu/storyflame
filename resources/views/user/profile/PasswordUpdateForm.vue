@@ -14,7 +14,7 @@ const props = defineProps({
 const form = reactive({
     current_password: '',
     new_password: '',
-    new_password_confirm: '',
+    new_password_confirmation: '',
 });
 
 const submitted = ref(false);
@@ -74,7 +74,7 @@ onMounted(() => {
             <div class="flex flex-col gap-6 w-full mb-auto mt-0">
 
                 <Alert :classes="'bg-green-100 border-green-400 text-green-700'" v-if="submitted">
-                    Submitted
+                    Password Updated
                 </Alert>
 
                 <div v-if="user.password !== '' && user.password !== null">
@@ -124,7 +124,7 @@ onMounted(() => {
                     </label>
                     <input
                         id="password"
-                        v-model="form.new_password_confirm"
+                        v-model="form.new_password_confirmation"
                         :type="showPassword ? 'text' : 'password'"
                         class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
                         required
