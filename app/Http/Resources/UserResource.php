@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'avatar' => !empty($this->avatar) ? config('app.url') . $this->avatar_path . $this->avatar : null,
             'bio' => $this->bio,
+            'password' => $this->password,
 
             'achievements' => AchievementResource::collection($this->achievements ?? []),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,

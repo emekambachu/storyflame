@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\Profile\UserProfileUpdateAvatarRequest;
+use App\Http\Requests\User\Profile\UserProfileUpdateBioRequest;
+use App\Http\Requests\User\Profile\UserProfileUpdatePasswordRequest;
 use App\Services\Base\BaseService;
 use App\Services\User\UserProfileService;
 use Illuminate\Http\JsonResponse;
@@ -17,10 +20,32 @@ class UserProfileController extends Controller
         $this->user = $user;
     }
 
-    public function updateBio(Request $request): JsonResponse
+    public function updateBio(UserProfileUpdateBioRequest $request): JsonResponse
     {
         try {
             $data = $this->user->updateUserBio($request);
+            return response()->json($data);
+
+        } catch(\Exception $e){
+            return BaseService::tryCatchException($e);
+        }
+    }
+
+    public function updatePassword(UserProfileUpdatePasswordRequest $request): JsonResponse
+    {
+        try {
+            $data = $this->user->updateUserPassword($request);
+            return response()->json($data);
+
+        } catch(\Exception $e){
+            return BaseService::tryCatchException($e);
+        }
+    }
+
+    public function updateAvatar(UserProfileUpdateAvatarRequest $request): JsonResponse
+    {
+        try {
+            $data = $this->user->updateUserAvatar($request);
             return response()->json($data);
 
         } catch(\Exception $e){

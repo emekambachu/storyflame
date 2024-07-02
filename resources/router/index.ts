@@ -109,16 +109,6 @@ const router = createRouter({
                 },
 
                 {
-                    path: '/profile/edit/password',
-                    name: 'ProfileEditPassword',
-                    component: () => import('../views/user/profile/UserEditProfilePasswordView.vue'),
-                    meta: {
-                        transition: 'slide',
-                        back: 'home',
-                    },
-                },
-
-                {
                     path: 'stories/',
                     children: [
                         {

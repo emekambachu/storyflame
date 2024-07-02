@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Models\User;
 use App\Services\Base\CrudService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserProfileService
 {
@@ -18,7 +19,8 @@ class UserProfileService
     public function updateUserBio($request): array
     {
         $inputs = $request->all();
-        $user = $this->user()->find(Auth::guard('api')->id());
+        $user = $this->user()->find(Auth::id());
+
         $user->update($inputs);
 
         return [
@@ -32,27 +34,26 @@ class UserProfileService
         $inputs = $request->all();
         $user = $this->user()->find(Auth::id());
 
-        $inputs['avatar'] = CrudService::uploadAndCompressImage(
-            $request,
-            $this->avatarPath,
-            null,
-            null,
-            'avatar'
-        );
-        $inputs['avatar_path'] = '/'.$this->avatarPath.'/';
+        if(!empty($user->password) && !Hash::check($inputs['current_password'], $user->password)){
+            return [
+                'success' => false,
+                'errors' => ['password' => ['Current password is incorrect!']],
+            ];
+        }
 
+        $inputs['password'] = Hash::make($inputs['new_password']);
         $user->update($inputs);
 
         return [
             'success' => true,
-            'message' => 'Profile updated successfully',
+            'message' => 'password updated successfully',
         ];
     }
 
     public function updateUserAvatar($request): array
     {
         $inputs = $request->all();
-        $user = $this->user()->find(Auth::id());
+        $user = $this->user()->with('avatar')->find(Auth::id());
 
         $inputs['avatar'] = CrudService::uploadAndCompressImage(
             $request,
@@ -63,11 +64,15 @@ class UserProfileService
         );
         $inputs['avatar_path'] = '/'.$this->avatarPath.'/';
 
-        $user->update($inputs);
+        $user->avatar->updateOrCreate([
+            'imageable_id' => $user->id,
+            'name' => $inputs['avatar'],
+            'path' => $inputs['avatar_path']
+        ]);
 
         return [
             'success' => true,
-            'message' => 'Profile updated successfully',
+            'message' => 'Avatar updated successfully',
         ];
     }
 }

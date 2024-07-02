@@ -12,14 +12,14 @@
                     </button>
                     <button
                         class="px-4 py-2 rounded-md"
-                        :class="[activeTab === 'bio' ? 'bg-orange-600 text-white' : 'bg-stone-200 text-black']"
+                        :class="[activeTab === 'password' ? 'bg-orange-600 text-white' : 'bg-stone-200 text-black']"
                         @click="activeTab = 'password'"
                     >
                         Password
                     </button>
                     <button
                         class="px-4 py-2 rounded-md"
-                        :class="[activeTab === 'bio' ? 'bg-orange-600 text-white' : 'bg-stone-200 text-black']"
+                        :class="[activeTab === 'avatar' ? 'bg-orange-600 text-white' : 'bg-stone-200 text-black']"
                         @click="activeTab = 'avatar'"
                     >
                         Avatar
@@ -28,15 +28,21 @@
 
                 <div class="w-full">
                     <div v-if="activeTab === 'bio'">
-                        <bio-update-form />
+                        <bio-update-form
+                            :user="user ?? ''"
+                        />
                     </div>
 
                     <div v-if="activeTab === 'password'">
-                        <password-update-form />
+                        <password-update-form
+                            :user="user ?? ''"
+                        />
                     </div>
 
                     <div v-if="activeTab === 'avatar'">
-                        <avatar-update-form />
+                        <avatar-update-form
+                            :avatar="user.avatar ?? ''"
+                        />
                     </div>
                 </div>
             </div>
@@ -54,7 +60,7 @@ import PasswordUpdateForm from './PasswordUpdateForm.vue'
 import AvatarUpdateForm from './AvatarUpdateForm.vue'
 
 const activeTab = ref('bio');
-const { user, getUser } = useAuthStore()
+const { user, getUser } = useAuthStore();
 
 onBeforeMount(() => {
    console.log("Logged User", user);
