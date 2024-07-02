@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasSchemalessAttributes;
 use App\Models\Concerns\ModelWithId;
+use App\Models\Role\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -63,6 +64,11 @@ class User extends Authenticatable implements ModelWithId
     public function avatar(): HasOne
     {
         return $this->hasOne(Image::class, 'imageable_id', 'id');
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_id', 'id');
     }
 
     public function chats(): HasMany

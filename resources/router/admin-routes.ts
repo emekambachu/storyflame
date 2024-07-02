@@ -40,6 +40,11 @@ const router = createRouter({
                     name: 'admin-summaries',
                     component: () => import('../views/admin/pages/summaries/AdminSummaries.vue'),
                 },
+                {
+                    path: 'llm-prompts',
+                    name: 'admin-llm-prompts',
+                    component: () => import('../views/admin/pages/llm-prompts/AdminLlmPromptsView.vue'),
+                },
             ],
         },
 
