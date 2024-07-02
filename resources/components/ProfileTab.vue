@@ -99,7 +99,7 @@
             </template>
             <items-list
                 v-slot="{ item }"
-                :items="user.achievements.filter((item) => item.progress)"
+                :items="user?.achievements.filter((item) => item.progress)"
                 class="gap-8"
             >
                 <achievement-card

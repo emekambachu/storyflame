@@ -15,7 +15,19 @@ class UserProfileService
         return new User();
     }
 
-    public function updateUserProfile($request): array
+    public function updateUserBio($request): array
+    {
+        $inputs = $request->all();
+        $user = $this->user()->find(Auth::guard('api')->id());
+        $user->update($inputs);
+
+        return [
+            'success' => true,
+            'message' => 'Bio updated successfully',
+        ];
+    }
+
+    public function updateUserPassword($request): array
     {
         $inputs = $request->all();
         $user = $this->user()->find(Auth::id());
@@ -27,7 +39,29 @@ class UserProfileService
             null,
             'avatar'
         );
-        $inputs['photo_path'] = '/'.$this->avatarPath.'/';
+        $inputs['avatar_path'] = '/'.$this->avatarPath.'/';
+
+        $user->update($inputs);
+
+        return [
+            'success' => true,
+            'message' => 'Profile updated successfully',
+        ];
+    }
+
+    public function updateUserAvatar($request): array
+    {
+        $inputs = $request->all();
+        $user = $this->user()->find(Auth::id());
+
+        $inputs['avatar'] = CrudService::uploadAndCompressImage(
+            $request,
+            $this->avatarPath,
+            null,
+            null,
+            'avatar'
+        );
+        $inputs['avatar_path'] = '/'.$this->avatarPath.'/';
 
         $user->update($inputs);
 

@@ -17,10 +17,10 @@ class UserProfileController extends Controller
         $this->user = $user;
     }
 
-    public function updateProfile(Request $request): JsonResponse
+    public function updateBio(Request $request): JsonResponse
     {
         try {
-            $data = $this->user->updateUserProfile($request);
+            $data = $this->user->updateUserBio($request);
             return response()->json($data);
 
         } catch(\Exception $e){

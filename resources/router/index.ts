@@ -79,7 +79,10 @@ const router = createRouter({
         {
             path: '/onboard',
             name: 'onboarding',
-            beforeEnter: [checkAuth, checkNotOnboarded],
+            beforeEnter: [
+                checkAuth,
+                //checkNotOnboarded
+            ],
             component: () => import('../views/Onboarding.vue'),
         },
         {
@@ -294,35 +297,6 @@ const router = createRouter({
             path: '/dashboard',
             name: 'dashboard',
             component: () => import('../views/HomeView.vue'),
-        },
-
-        {
-            path: '/theme-detail',
-            name: 'ThemeDetailLayout',
-            // beforeEnter: checkAuth,
-            component: () => import('../views/user/layouts/ThemeDetailLayout.vue'),
-            children: [
-                {
-                    path: '/overview',
-                    name: 'ThemeDetailOverview',
-                    component: () => import('../views/user/theme-details/ThemeDetailOverview.vue'),
-                    meta: {
-                        transition: 'slide',
-                        back: 'home',
-                    },
-                },
-
-                {
-                    path: '/develop',
-                    name: 'ThemeDetailDevelop',
-                    component: () => import('../views/user/theme-details/ThemeDetailDevelop.vue'),
-                    meta: {
-                        transition: 'slide',
-                        back: 'home',
-                    },
-                },
-
-            ],
         },
 
         {
