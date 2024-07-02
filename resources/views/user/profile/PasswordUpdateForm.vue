@@ -129,8 +129,8 @@ onMounted(() => {
                         class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
                         required
                     />
-                    <p class="text-red-500 text-center text-sm" v-if="errors.new_password_confirm">
-                        {{ errors.new_password_confirm[0] }}
+                    <p class="text-red-500 text-center text-sm" v-if="errors.new_password_confirmation">
+                        {{ errors.new_password_confirmation[0] }}
                     </p>
                 </div>
 
