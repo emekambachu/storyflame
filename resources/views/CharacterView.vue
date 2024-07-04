@@ -45,7 +45,7 @@
                     <character-overview-tab :data="character" />
                 </template>
                 <template #develop>
-                    <develop-tab :data="character" />
+                    <character-develop-tab :data="character" />
                 </template>
                 <template #details>
                     <character-details-tab :data="character" />
@@ -77,7 +77,7 @@ import PointIcon from '@/components/icons/PointIcon.vue'
 import TabLayout from '@/components/TabLayout.vue'
 import AchievementsTab from '@/components/AchievementsTab.vue'
 import CharacterOverviewTab from '@/components/CharacterOverviewTab.vue'
-import DevelopTab from '@/components/DevelopTab.vue'
+import CharacterDevelopTab from '@/components/CharacterDevelopTab.vue'
 import CharacterDetailsTab from '@/components/CharacterDetailsTab.vue'
 import CharacterArcsTab from '@/components/CharacterArcsTab.vue'
 import CharacterRelationalTab from '@/components/CharacterRelationalTab.vue'
@@ -101,7 +101,7 @@ const character = {
 
     features: ['The Patriarch', 'Noble Top Enforcer'],
 
-    progress_description:
+    progress:
         'Your characters and themes are looking great, but your story could use some world building development.',
 
     discrepancies: [
