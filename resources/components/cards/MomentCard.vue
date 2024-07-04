@@ -5,7 +5,7 @@
         <header class="flex flex-col justify-center">
             <h2
                 v-if="card.headerTitle"
-                class="text-xs font-bold uppercase text-stone-500"
+                class="text-[8px] font-bold uppercase text-stone-500"
             >
                 {{ card.headerTitle }}
             </h2>
@@ -15,6 +15,7 @@
             <p class="leading-5 text-stone-700">{{ card.description }}</p>
         </header>
         <section
+            v-if="card.dialogues?.length"
             class="mt-1 flex flex-col border-t border-solid border-stone-300 text-xs leading-4 text-stone-700"
         >
             <div
@@ -31,14 +32,31 @@
             </div>
         </section>
         <footer
+            v-if="card?.visual"
             class="mt-1 flex flex-col pl-3 text-xs font-medium leading-4 text-stone-800"
         >
-            <h4 class="text-ellipsis">{{ card.visual.title }}</h4>
-            <p class="font-normal leading-4 text-stone-700">
+            <h4
+                v-if="card?.visual?.title"
+                class="text-ellipsis"
+            >
+                {{ card.visual.title }}
+            </h4>
+            <p
+                v-if="card?.visual?.description"
+                class="font-normal leading-4 text-stone-700"
+            >
                 {{ card.visual.description }}
             </p>
-            <h4 class="mt-2 text-ellipsis">{{ card.emotional.title }}</h4>
-            <p class="font-normal text-stone-700">
+            <h4
+                v-if="card?.emotional?.title"
+                class="mt-2 text-ellipsis"
+            >
+                {{ card.emotional.title }}
+            </h4>
+            <p
+                v-if="card?.emotional?.description"
+                class="font-normal text-stone-700"
+            >
                 {{ card.emotional.description }}
             </p>
         </footer>

@@ -45,14 +45,20 @@
                     collapse-header-height="80"
                     header-height="478"
                 >
-<!--                    <default-element-header height="478px" />-->
-                    <story-header v-if="story" :story="story"/>
+                    <!--                    <default-element-header height="478px" />-->
+                    <story-header
+                        v-if="story"
+                        :story="story"
+                    />
                     <template #sticky>
                         <tab-layout-tabs />
                     </template>
                 </header-animated>
                 <template #develop>
-                    <story-develop-tab :story="story" />
+                    <develop-tab
+                        :data="story"
+                        startSmthNew
+                    />
                 </template>
                 <template #progress>
                     <story-progress-tab :story="story" />
@@ -74,7 +80,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import StoryStoryTab from '@/components/StoryStoryTab.vue'
-import StoryDevelopTab from '@/components/StoryDevelopTab.vue'
+import DevelopTab from '@/components/DevelopTab.vue'
 import StoryProgressTab from '@/components/StoryProgressTab.vue'
 import StoryElementsTab from '@/components/StoryElementsTab.vue'
 import StoryMarketingTab from '@/components/StoryMarketingTab.vue'
