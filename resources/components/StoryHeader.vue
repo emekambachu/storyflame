@@ -1,10 +1,10 @@
 <template>
     <default-element-header
-        :detail="story.description"
+        :detail="story.logline"
         :genres="story.genres"
         :tags="['TV Show', 'MA-16']"
         :title="story.name"
-        background="https://picsum.photos/1920/1080"
+        :background="story.image?.path"
     />
 </template>
 <script lang="ts" setup>

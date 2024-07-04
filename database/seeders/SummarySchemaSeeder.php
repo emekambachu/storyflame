@@ -68,14 +68,16 @@ class SummarySchemaSeeder extends Seeder
                 $schemaable = $class::firstWhere('item_id', $row['schemaable_id']);
                 if (!$schemaable || !$schemaable->exists())
                     throw new \Exception('Schemaable not found for ID: ' . $row['schemaable_id']);
-                $schemaable = collect([]);
+                $schemaable = collect([$schemaable]);
             } else if ($row['schemaable_id'] === '-') {
                 // if schemaable_id is a dash, all schemaable of that type will be selected
                 $schemaable = $class::all();
+            } else {
+                throw new \Exception('Invalid schemaable ID ' . $row['schemaable_id']);
             }
 
             if (empty($schemaable)) {
-                continue;
+                throw new \Exception('Schemaable not found for ID: ' . $row['schemaable_id']);
             }
 
             $schemaable->each(function ($schemaable) use ($summary, $class, $row) {

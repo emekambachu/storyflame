@@ -1,14 +1,18 @@
 <template>
     <div :class="cardClass">
-        <h6 class="text-xs text-gray-500">{{ item.title }}</h6>
-        <p :class="valueClass">{{ item.value }}</p>
+        <h6 class="text-xs text-gray-500">{{ title }}</h6>
+        <p :class="valueClass">{{ value }}</p>
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 const props = defineProps({
-    item: {
-        type: Object,
+    title: {
+        type: String,
+        required: true,
+    },
+    value: {
+        type: [String, Number],
         required: true,
     },
     cardClass: {

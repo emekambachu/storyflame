@@ -7,7 +7,6 @@ use App\Engine\Context\BaseContext;
 use App\Engine\Processing\BaseProcessing;
 use App\Engine\Processing\LocalPythonProcessing;
 use App\Engine\Processing\MockProcessing;
-use App\Jobs\DeepElementAnalysisJob;
 use App\Models\Achievement;
 use App\Models\Character;
 use App\Models\ChatMessage;
@@ -101,6 +100,8 @@ final class ConversationEngineV2
     private function createFirstQuestion(): ChatMessage
     {
         $firstQuestion = $this->context->createFirstQuestion();
+        $firstQuestion->content = $this->context->replaceTemplate($firstQuestion->content);
+        $firstQuestion->extra_attributes->put('title', $this->context->replaceTemplate($firstQuestion->extra_attributes->get('title', '')));
         if (!$firstQuestion) {
             dd('Implement first question generation');
         }
@@ -109,35 +110,37 @@ final class ConversationEngineV2
 
     private function generateNextQuestion(string $type, Collection $achievements): ChatMessage
     {
+        Log::info('excluding', $this->context->getAskedDataPoints() ?? []);
+        $dps = $achievements
+            ->map
+            ->toProcessingArray(array_keys($this->context->getAskedDataPoints()))
+            ->toArray();
+        Log::info('generate next question', [$type, $dps]);
         $nextQuestion = $this->processing->generateNextQuestion(
             $this->context->getModel(),
-            $this->context->getChat()->chatMessages()->notSystem()->oldest()->get()->map->toProcessingArray()->toArray(),
-            $achievements
-                ->map
-                ->toProcessingArray()
-                ->toArray(),
+            $this->context->getHistory(),
+            $dps,
             $type
         );
-        return $this->context->getChat()->chatMessages()->create([
-            'content' => $nextQuestion['question'],
-            'type' => 'text',
-            'extra_attributes' => [
-                'title' => $nextQuestion['title'],
-                'data_points' => $nextQuestion['data_points'] ?? [],
+        Log::debug('next question', [$nextQuestion]);
+        return ChatMessage::makeAiMessage(
+            'text',
+            $nextQuestion['question'],
+            $nextQuestion['title'],
+            $nextQuestion['data_points'] ?? [],
+            [
                 'examples' => $nextQuestion['examples'] ?? [],
-                'tooltip' => $nextQuestion['tooltip'] ?? '',
+                'tooltip' => $nextQuestion['tooltip'] ?? ''
             ]
-        ]);
+        );
     }
 
     private function switchAchievement(): ChatMessage
     {
         $nextAchievement = $this->context->getNextAchievement();
+        Log::debug('next achievement', [$nextAchievement]);
         if (!$nextAchievement) {
-            return $this->context->getChat()->chatMessages()->create([
-                'type' => 'system',
-                'content' => 'finish'
-            ]);
+            return ChatMessage::makeSystemMessage('finish');
         }
         $nextQuestion = $this->generateNextQuestion(
             'switch',
@@ -146,6 +149,11 @@ final class ConversationEngineV2
         $nextQuestion->achievement()->attach($nextAchievement);
         $nextQuestion->save();
         return $nextQuestion;
+    }
+
+    public function getModel()
+    {
+        return $this->context->getModel() ?? null;
     }
 
     /**
@@ -163,17 +171,17 @@ final class ConversationEngineV2
         })->toArray();
         $q = $this->processing->generateContextSwitchQuestion(
             $selectElements,
-            $this->context->getChat()->chatMessages()->notSystem()->oldest()->get()->toArray(),
+            $this->context->getHistory(),
         );
-        return $this->context->getChat()->chatMessages()->create([
-            'content' => $q['question'],
-            'type' => 'confirm_switch_context',
-            'extra_attributes' => [
-                'title' => $q['title'],
-                'data_points' => $q['data_points'] ?? [],
+        return ChatMessage::makeAiMessage(
+            'confirm_switch_context',
+            $q['question'],
+            $q['title'],
+            $q['data_points'],
+            [
                 'select_elements' => $selectElements
             ]
-        ]);
+        );
     }
 
     /**
@@ -201,7 +209,9 @@ final class ConversationEngineV2
             $this->context->getGroupedDataPoints()
         );
 
-        $this->context->saveExtractedData(
+        Log::debug('extracted data', $extractedData);
+
+        $savedCount = $this->context->saveExtractedData(
             $answer,
             collect($extractedData)
                 ->flatMap(fn($data) => $data['data_points'])
@@ -209,17 +219,20 @@ final class ConversationEngineV2
                 ->mapWithKeys(fn($item) => [$item['data_point_id'] => $item['data_point_value']])
                 ->toArray()
         );
+        if ($savedCount === 0) {
+//            $sessionChat = $this->context->();
+        }
 
         // if we have other categories extracted
         // we'll extract all the data for them
         // in background
         if (count($otherElements)) {
-            DeepElementAnalysisJob::dispatch(
-                $otherElements->toArray(),
-                $this->processing,
-                $question,
-                $answer
-            );
+//            DeepElementAnalysisJob::dispatch(
+//                $otherElements->toArray(),
+//                $this->processing,
+//                $question,
+//                $answer
+//            );
         }
 
 //        // if user mentioned some other elements
@@ -243,7 +256,6 @@ final class ConversationEngineV2
 
         // check if the current achievement is finished
         if ($achievement = $this->context->isCurrentAchievementFinished()) {
-            dd('achievement finished');
             // switch to the next achievement
             return $this->switchAchievement();
         }
@@ -332,33 +344,27 @@ final class ConversationEngineV2
     public function process(string $message): ChatMessage
     {
         $lastQuestion = $this->context->getLastQuestion();
-        Log::debug('last question', [$this->context->getIdentifier(), $lastQuestion->content]);
         if (!$lastQuestion) {
             $lastQuestion = $this->createFirstQuestion();
+            $this->context->saveMessage($lastQuestion);
             if ($this->processing instanceof MockProcessing) {
                 $this->processing->simulateDelay();
             }
         }
-        $answer = $this->context->getChat()->chatMessages()->create([
-            'content' => $message,
-            'user_id' => auth()->id(),
-            'type' => 'text',
-        ]);
+        Log::debug('last question', [$this->context->getIdentifier(), $lastQuestion->content]);
+        $answer = $this->context->saveMessage(ChatMessage::makeUserMessage($message));
         if ($this->processing instanceof MockProcessing) {
             $this->processing->simulateDelay();
         }
 
-        $nextQuestion = $this->processConversation($lastQuestion, $answer);
-        $this->context->getChat()->chatMessages()->save(
-            $nextQuestion
+        return $this->context->saveMessage(
+            $this->processConversation($lastQuestion, $answer)
         );
-
-        return $nextQuestion;
     }
 
-    public function getLastQuestion(): ChatMessage
+    public function getLastQuestion($includingSystem = false): ChatMessage
     {
-        return $this->context->getLastQuestion() ?? $this->createFirstQuestion();
+        return $this->context->getLastQuestion($includingSystem) ?? $this->createFirstQuestion();
     }
 
     public function getEndpoint()
@@ -371,13 +377,18 @@ final class ConversationEngineV2
         $achievement = $this->context->getCurrentAchievement();
         $model = $this->context->getModel();
         if (!$model || !$achievement || !$model->id) return 0;
-        $data_points_count = $achievement->dataPoints->count();
-        $user_data_points_count = UserDataPoint::where('user_id', auth()->id())
-            ->whereIn('data_point_id', $achievement->dataPoints->pluck('id'))
+//        dd($this->context->getAskedDataPoints());
+        $dataPoints = $achievement->dataPoints()->whereNotIn('slug', array_keys($this->context->getAskedDataPoints()))->get();
+//        dd($dataPoints->pluck('slug'));
+        $data_points_count = $dataPoints->count();
+        $user_data_points = UserDataPoint::where('user_id', auth()->id())
+            ->whereIn('data_point_id', $dataPoints->pluck('id'))
             ->where('is_latest', true)
             ->where('target_id', $model->id)
             ->where('target_type', get_class($model))
-            ->count();
+            ->get();
+        $user_data_points_count = $user_data_points->count();
+//        dd($user_data_points->count());
         return $data_points_count > 0 ? ($user_data_points_count / $data_points_count) * 100 : 0;
     }
 }

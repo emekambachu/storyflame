@@ -76,7 +76,7 @@
             </template>
 
             <discrepancies-card
-                v-for="(card, cardID) in story.discrepancies"
+                v-for="(card, cardID) in story?.discrepancies"
                 :key="cardID"
                 :card="card"
             />

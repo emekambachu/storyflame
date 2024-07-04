@@ -1,33 +1,12 @@
 <template>
     <div
         ref="comp"
-        class="flex w-full grow flex-col items-center gap-8"
+        class="flex w-full grow flex-col items-center"
+        :style="{
+        minHeight: `calc(100dvh + ${headerHeight - collapseHeaderHeight}px)`,
+        }"
     >
         <slot />
-        <template v-if="!scrollToPageSection">
-            <div class="w-full grow">
-                <slot :name="activeTab">
-                    {{ activeTab }}
-                </slot>
-            </div>
-        </template>
-
-        <div
-            v-else
-            :class="tabsContentClass"
-        >
-            <div
-                v-for="tab in tabs"
-                :id="tab.template"
-                :key="tab.template"
-                :class="tabContentClass"
-                class="scroll-section"
-            >
-                <slot :name="tab.template">
-                    {{ tab.template }}
-                </slot>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -72,6 +51,18 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    tabsOnePage: {
+        type: Boolean,
+        default: false,
+    },
+    headerHeight: {
+        type: [Number, String],
+        default: 400,
+    },
+    collapseHeaderHeight: {
+        type: [Number, String],
+        default: 100,
+    },
 })
 
 const activeTab = ref(props.tabs[0].template)
@@ -80,6 +71,8 @@ const comp = ref<HTMLDivElement | undefined>(undefined)
 
 provide(tabLayoutTabsInjection, props.tabs)
 provide(tabLayoutActiveTabInjection, activeTab)
+provide('headerHeight', props.headerHeight)
+provide('collapseHeaderHeight', props.collapseHeaderHeight)
 
 watch(
     () => activeTab.value,

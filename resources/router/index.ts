@@ -101,6 +101,9 @@ const router = createRouter({
                         {
                             path: '',
                             name: 'stories',
+                            meta: {
+                                transition: 'slide',
+                            },
                             component: () =>
                                 import('../views/StoriesListPage.vue'),
                         },
@@ -124,7 +127,15 @@ const router = createRouter({
                                         import('../views/StoryView.vue'),
                                     meta: {
                                         transition: 'slide',
-                                        back: 'home'
+                                    },
+                                },
+                                {
+                                    path: 'develop/',
+                                    name: 'story-develop',
+                                    component: () => import('../views/story/StoryDevelopment.vue'),
+                                    meta: {
+                                        transition: 'slide',
+                                        back: 'story'
                                     },
                                 },
                                 {

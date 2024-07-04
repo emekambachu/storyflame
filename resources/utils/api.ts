@@ -23,7 +23,7 @@ function submit<T>(
     return axios<SuccessResponse<T>>({
         method,
         url,
-        data,
+        ...data,
     })
         .then((response) => {
             return {
@@ -54,7 +54,7 @@ function post<T>(
     config: AxiosRequestConfig | null = null
 ): Promise<ApiSuccessResponse<T>> {
     console.log(data ? { ...config, data } : config)
-    return submit<T>('POST', url, data)
+    return submit<T>('POST', url, data ? { ...config, data } : config)
 }
 
 function put<T>(

@@ -1,8 +1,13 @@
 <template>
     <div class="flex flex-col w-full gap-8">
-        <title-section title="About">
+        <title-section v-if="user?.bio" title="About">
             <p class="text-neutral-950 text-sm font-normal px-4">
-                {{ user.data?.bio }}
+                {{ user?.bio }}
+            </p>
+        </title-section>
+        <title-section v-if="user?.bio" title="Writing Goals">
+            <p class="text-neutral-950 text-sm font-normal px-4">
+                {{ user?.writing_goals }}
             </p>
         </title-section>
 
@@ -55,13 +60,14 @@
         <title-section>
             <template #title>
                 <title-with-link
-                    title="Your Stories"
                     @see-all="activeTab = 'stories'"
-                />
+                >
+                    <h4>Your Stories</h4>
+                </title-with-link>
             </template>
             <div
                 v-if="stories?.length"
-                class="flex flex-col gap-4 w-full"
+                class="flex flex-col gap-4 w-full px-4"
             >
                 <story-card
                     v-for="(story, storyID) in stories"
@@ -124,6 +130,7 @@ import PlusIcon from '@/components/icons/PlusIcon.vue'
 import featureFlags from '@/types/featureFlags'
 import { useQuery } from '@tanstack/vue-query'
 import { getStories } from '@/utils/endpoints'
+import { tabLayoutActiveTabInjection } from '@/types/injection'
 
 const props = defineProps({
     user: {
@@ -140,5 +147,5 @@ const { data: stories } = useQuery({
     },
 })
 
-const activeTab = inject<string>('activeTab')
+const activeTab = inject<string>(tabLayoutActiveTabInjection)
 </script>

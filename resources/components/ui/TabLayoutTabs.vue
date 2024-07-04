@@ -2,7 +2,7 @@
     <div class="mx-auto max-w-full overflow-x-auto">
         <div
             ref="container"
-            class="z-10 flex w-full flex-nowrap px-4"
+            class="z-10 flex w-full justify-between flex-nowrap px-4"
         >
             <button
                 v-for="tab in tabs"

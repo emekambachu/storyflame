@@ -16,8 +16,9 @@ class ConversationEngineController extends Controller
         return $this->successResponse($message, [
             'identifier' => $engine->getIdentifier(),
             'endpoint' => $engine->getEndpoint(),
-            'question' => ChatMessageResource::make($engine->getLastQuestion()),
+            'question' => ChatMessageResource::make($engine->getLastQuestion(true)),
             'progress' => $engine->getProgress(),
+            'data' => $engine->getModel(),
 //            'data' => [
 //                'extracted' => $engine->getStorage()->getExtractedData(),
 //                'branches' => $engine->getStorage()->getBranches(),
@@ -30,7 +31,8 @@ class ConversationEngineController extends Controller
     public function index(Request $request, string $engine): JsonResponse
     {
         $validated = $request->validate([
-            'identifier' => ['nullable', 'string'],
+            'identifier' => ['nullable', 'numeric'],
+            'achievement_id' => ['nullable']
         ]);
 
         // create new engine with session storage

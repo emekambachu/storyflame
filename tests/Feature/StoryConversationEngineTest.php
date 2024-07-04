@@ -6,6 +6,8 @@ use App\Engine\Context\StoryContext;
 use App\Engine\ConversationEngine;
 use App\Engine\ConversationEngineV2;
 use App\Engine\Processing\MockProcessing;
+use App\Jobs\SummarizeSessionJob;
+use App\Models\Chat\SessionChat;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Attributes\Group;
@@ -139,124 +141,109 @@ class StoryConversationEngineTest extends TestCase
         $engine = ConversationEngineV2::make(new StoryContext($user->stories->first()));
 
 
-        $engine = ConversationEngineV2::make();
-//            ->setProcessing(
-//                MockProcessing::make()
-//                    ->addResponse('rateResponse', [
-//                        'answer_rating' => true,
-//                        'topic_change' => false,
-//                        'is_skipped' => false,
-//                        'user_not_understand' => false,
-//                        'user_dont_know' => false,
-//                    ])
-//                    ->addResponse('extractCategories', [
-//                        'categories' => [
-//                            'Writer' => [
-//                                [
-//                                    'name' => 'John Doe',
-//                                ]
-//                            ],
-//                            'Story' => [
-//                                [
-//                                    'setting' => 'Galactic war between aliens and humans',
-//                                    'elements' => [
-////                                        'Character' => [
-////                                            [
-////                                                'name' => 'Lucy',
-////                                            ],
-////                                            [
-////                                                'name' => 'Jabu',
-////                                            ],
-////                                            [
-////                                                'name' => 'Aliens',
-////                                            ],
-////                                            [
-////                                                'name' => 'Humans',
-////                                            ],
-////                                            [
-////                                                'name' => 'Rebels',
-////                                            ],
-////                                            [
-////                                                'name' => 'Corrupted government',
-////                                            ]
-////                                        ]
-//                                    ]
-//                                ]
-//                            ],
-//                        ]
-//                    ])
-//                    ->addResponse('generateNextQuestion', [
-//                        'question' => 'some question',
-//                        'title' => 'new question',
-//                        'data_points' => [
-//                            'name'
-//                        ],
-//                    ])
-//                    ->addResponse('extractCategories', [
-//                        'categories' => [
-//                            'Character' => [
-//                                [
-//                                    'name' => 'Lucy',
-//                                ],
-//                                [
-//                                    'name' => 'Jabu',
-//                                ],
-//                                [
-//                                    'name' => 'Aliens',
-//                                ],
-//                                [
-//                                    'name' => 'Humans',
-//                                ],
-//                                [
-//                                    'name' => 'Rebels',
-//                                ],
-//                                [
-//                                    'name' => 'Corrupted government',
-//                                ]
-//                            ]
-//                        ]
-//                    ])
-//                    ->addResponse('extractCategories', [
-//                        'categories' => [
-//                        ]
-//                    ], null, true)
-//                    ->addResponse('extractData', [
-//                        [
-//                            'data_points' => [
-//                                [
-//                                    'data_point_id' => 'writer_name',
-//                                    'data_point_value' => 'John Doe'
-//                                ],
-//                                [
-//                                    'data_point_id' => 'origin_story',
-//                                    'data_point_value' => 'Galactic war between aliens and humans'
-//                                ]
-//                            ]
-//                        ]
-//                    ], [
-//                        'answer' => 'answer 3'
-//                    ])
-//                    ->addResponse('extractData', [
-//                    ], null, true)
-//                    ->addResponse('generateContextSwitchQuestion', [
-//                        'question' => 'You mentioned some characters, do you want to talk about them?',
-//                        'title' => 'Context switch question',
-//                    ])
-//                    ->addResponse('isPositiveConfirmation', function ($attributes) {
-//                        return [
-//                            'is_positive' => true,
-//                            'is_selected' => true,
-//                            'selected_type' => $attributes['selectElements'][0]['type'],
-//                            'selected_id' => $attributes['selectElements'][0]['id'],
-//                            'selected_name' => $attributes['selectElements'][0]['name'],
-//                        ];
-//                    })
-//            );
+        $engine = ConversationEngineV2::make(new StoryContext())
+            ->setProcessing(
+                MockProcessing::make()
+                    ->addResponse('rateResponse', [
+                        'answer_rating' => true,
+                        'topic_change' => false,
+                        'is_skipped' => false,
+                        'user_not_understand' => false,
+                        'user_dont_know' => false,
+                    ])
+                    ->addResponse('extractCategories', [
+                        'categories' => [
+                            'Writer' => [
+                                [
+                                    'name' => 'John Doe',
+                                ]
+                            ],
+                            'Story' => [
+                                [
+                                    'name' => 'Test',
+                                    'setting' => 'Galactic war between aliens and humans'
+                                ]
+                            ],
+                        ]
+                    ])
+                    ->addResponse('generateNextQuestion', [
+                        'question' => 'some question',
+                        'title' => 'new question',
+                        'data_points' => [
+                            'name'
+                        ],
+                    ])
+                    ->addResponse('extractCategories', [
+                        'categories' => [
+                            'Character' => [
+                                [
+                                    'name' => 'Lucy',
+                                ],
+                                [
+                                    'name' => 'Jabu',
+                                ],
+                                [
+                                    'name' => 'Aliens',
+                                ],
+                                [
+                                    'name' => 'Humans',
+                                ],
+                                [
+                                    'name' => 'Rebels',
+                                ],
+                                [
+                                    'name' => 'Corrupted government',
+                                ]
+                            ]
+                        ]
+                    ])
+                    ->addResponse('extractCategories', [
+                        'categories' => [
+                        ]
+                    ], null, true)
+                    ->addResponse('extractData', [
+                    ], null, true)
+                    ->addResponse('extractData', [
+                        [
+                            'data_points' => [
+                                [
+                                    'data_point_id' => 'writer_name',
+                                    'data_point_value' => 'John Doe'
+                                ],
+                                [
+                                    'data_point_id' => 'origin_story',
+                                    'data_point_value' => 'Galactic war between aliens and humans'
+                                ]
+                            ]
+                        ]
+                    ], [
+                        'answer' => 'answer 3'
+                    ])
+                    ->addResponse('generateContextSwitchQuestion', [
+                        'question' => 'You mentioned some characters, do you want to talk about them?',
+                        'title' => 'Context switch question',
+                    ])
+                    ->addResponse('isPositiveConfirmation', function ($attributes) {
+                        return [
+                            'is_positive' => true,
+                            'is_selected' => true,
+                            'selected_type' => $attributes['selectElements'][0]['type'],
+                            'selected_id' => $attributes['selectElements'][0]['id'],
+                            'selected_name' => $attributes['selectElements'][0]['name'],
+                        ];
+                    })
+            );
 
-        dd($engine->process('answer 1'));
+        $engine->process('answer 1');
 
         $engine->process('answer 2');
 
         $engine->process('answer 3');
+    }
+
+    #[Test]
+    #[Group("test_summary")]
+    public function testSummary() {
+        SummarizeSessionJob::dispatch(SessionChat::firstOrFail());
     }
 }

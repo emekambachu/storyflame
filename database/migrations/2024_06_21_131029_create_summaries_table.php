@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->unsignedBigInteger('item_id')->unique();
             $table->string('location');
+            $table->string('length');
             $table->text('purpose');
             $table->text('creation_prompt');
             $table->text('example_summary');
@@ -27,6 +28,16 @@ return new class extends Migration
             $table->softDeletes();
             $table->engine = 'InnoDB';
         });
+
+        Schema::create('user_summaries', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('summary_id')->constrained()->cascadeOnDelete();
+            $table->morphs('target');
+            $table->text('summary')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -35,6 +46,7 @@ return new class extends Migration
     public function down(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('user_summaries');
         Schema::dropIfExists('data_point_summaries');
         Schema::dropIfExists('summaries');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');

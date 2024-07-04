@@ -8,6 +8,7 @@ use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasImages;
 use App\Models\Concerns\HasRelatedChats;
 use App\Models\Concerns\HasSchemalessAttributes;
+use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Concerns\ModelWithId;
 use App\Models\Concerns\ModelWIthRelatedChats;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy(StoryObserver::class)]
 class Story extends Model implements ModelWithComparableNames, ModelWIthRelatedChats, ModelWithId
 {
-    use SoftDeletes, HasFactory, HasRelatedChats, HasSchemalessAttributes, HasAchievements, HasImages, HasAliases, HasDataPoints;
+    use SoftDeletes, HasFactory, HasRelatedChats, HasSchemalessAttributes, HasAchievements, HasImages, HasAliases, HasDataPoints, HasSummaries;
 
     protected $fillable = [
         'name',

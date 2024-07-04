@@ -4,6 +4,7 @@ namespace App\Engine\Context;
 
 use App\Models\Achievement;
 use App\Models\Chat;
+use App\Models\Chat\SessionChat;
 use App\Models\ChatMessage;
 use App\Models\Concerns\ModelWithComparableNames;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,11 +12,6 @@ use Illuminate\Support\Collection;
 
 interface ContextInterface
 {
-    /**
-     * Get chat for the context
-     * @return Chat
-     */
-    public function getChat(): Chat;
 
     public function getModel();
 

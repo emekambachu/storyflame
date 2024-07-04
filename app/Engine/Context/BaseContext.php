@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Log;
  */
 abstract class BaseContext implements ContextInterface
 {
-    protected EngineConfig $config;
+    protected Chat\SessionChat $sessionChat;
 
     /**
      * @return class-string<T>|null
@@ -32,10 +32,11 @@ abstract class BaseContext implements ContextInterface
     abstract function getContextClass(): ?string;
 
     /**
-     * @param ModelWIthRelatedChats|null $model
+     * @param Model|null $model
      */
     public function __construct(
-        protected ?Model $model = null
+        protected ?Model $model = null,
+        protected ?EngineConfig $config = null
     )
     {
         if (!$this->model) {
@@ -45,34 +46,131 @@ abstract class BaseContext implements ContextInterface
                 ]);
             }
         }
+        $this->sessionChat = Chat\SessionChat::where('target_id', $this->getModel()->id)
+            ->where('target_type', get_class($this->getModel()))
+            ->where('finished_at', null)
+            ->firstOrCreate([
+                'target_id' => $this->getModel()->id,
+                'target_type' => get_class($this->getModel()),
+            ], [
+                'chat_id' => $this->getChat()->id,
+                'persistent' => $this->config ? $this->config::SESSION_CHAT_PERSISTENT : false
+            ]);
     }
 
     public function getChat(): Chat
     {
         // TODO: change this to latest session chat
-        if ($model = $this->getModel()) {
-            if ($model->exists) {
-                if ($this->getModel()->chats()->count() === 0) {
-                    $chat = Chat::create([
-                        'type' => 'conversation',
-                        'sender_id' => auth()->id(),
-                    ]);
-                    $this->getModel()->chats()->save($chat);
-                }
-                return $this->getModel()->chats()->first();
-            } else {
-                if (session()->has('temp_chat_id')) {
-                    return Chat::find(session()->get('temp_chat_id'));
-                }
-                $tempChat = Chat::create([
-                    'type' => 'temp',
+        if (!($model = $this->getModel())) throw new Exception('Model is not set');
+
+        if ($model->exists) {
+            if ($this->getModel()->chats()->count() === 0) {
+                $chat = Chat::create([
+                    'type' => 'conversation',
                     'sender_id' => auth()->id(),
                 ]);
-                session()->put('temp_chat_id', $tempChat->id);
-                return $tempChat;
+                $this->getModel()->chats()->save($chat);
+            }
+            return $this->getModel()->chats()->first();
+        } else {
+            if (session()->has('temp_chat_id')) {
+                return Chat::find(session()->get('temp_chat_id'));
+            }
+            $tempChat = Chat::create([
+                'type' => 'temp',
+                'sender_id' => auth()->id(),
+            ]);
+            session()->put('temp_chat_id', $tempChat->id);
+            return $tempChat;
+        }
+    }
+
+
+    protected function getSessionChat(): Chat\SessionChat
+    {
+        return $this->sessionChat;
+//        $chat = $this->getChat();
+//        return $chat->sessionChats()
+//            ->whereNull('finished_at')
+//            ->firstOrCreate([
+//                'target_id' => $this->getModel()->id,
+//                'target_type' => get_class($this->getModel()),
+//            ], [
+//                'persistent' => $this->config::SESSION_CHAT_PERSISTENT
+//            ]);
+    }
+
+    public function getHistory(): array
+    {
+        return $this->getSessionChat()
+            ->chatMessages()
+            ->notSystem()
+            ->oldest()
+            ->get()
+            ->map
+            ->toProcessingArray()
+            ->toArray();
+    }
+
+    private function arrayToKeyValues(string $prefix, array $array): array
+    {
+        $values = [];
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $values = array_merge($values, $this->arrayToKeyValues($prefix . '.' . $key, $value));
+            } else {
+                $values["{{$prefix}.{$key}}"] = $value;
             }
         }
-        throw new Exception('Model is not set');
+        return $values;
+    }
+
+    public function replaceTemplate(string $text): string
+    {
+        $replacements = array_merge(
+            [
+                '{app_name}' => config('app.name'),
+            ],
+            $this->arrayToKeyValues('extracted', $this->getModel()->dataPointsToArray()),
+        );
+        return str_replace(array_keys($replacements), array_values($replacements), $text);
+    }
+
+    public function getAskedDataPoints(): array
+    {
+        return $this->getSessionChat()->chatMessages()
+            ->notSystem()
+            ->fromAssistant()
+            ->get()
+            ->pluck('extra_attributes')
+            ->map
+            ->get('data_points', [])
+            ->flatten()
+            ->reduce(function ($carry, $item) {
+                $carry[$item] = ($carry[$item] ?? 0) + 1;
+                return $carry;
+            }, collect([]))
+            ->filter(fn($item) => $item > 3)
+            ->toArray();
+    }
+
+    public function saveMessage(ChatMessage $chatMessage): ChatMessage
+    {
+        $session = $this->getSessionChat();
+        $chatMessage->content = $this->replaceTemplate($chatMessage->content);
+        $chatMessage->extra_attributes->put('title', $this->replaceTemplate($chatMessage->extra_attributes->get('title', '')));
+        if ($chatMessage->extra_attributes->has('data_points') && count($messageDps = $chatMessage->extra_attributes->get('data_points')) > 0) {
+            $dps = $session->extra_attributes->get('data_points', []);
+            foreach ($messageDps as $dp) {
+                $dps[$dp] = ($dps[$dp] ?? 0) + 1;
+            }
+            $session->extra_attributes->put('data_points', $dps);
+            $session->save();
+        }
+        $chatMessage->chat_id = $session->chat_id;
+        $chatMessage = $session->chat->chatMessages()->save($chatMessage);
+        $session->chatMessages()->attach($chatMessage->id);
+        return $chatMessage;
     }
 
 
@@ -128,13 +226,22 @@ abstract class BaseContext implements ContextInterface
 
     public function addElement(string $elementType, array $elementData): ?ModelWithComparableNames
     {
-        return match ($elementType) {
+        $model = match ($elementType) {
             'Story' => $this->stories()?->create($elementData),
             'Character' => $this->characters()?->create($elementData),
             'Plot' => $this->plots()?->create($elementData),
 //            'Sequence' => $this->sequences()->create($elementData),
             default => null
         } ?? null;
+        if ($model) {
+            $this->getSessionChat()->sessionElements()->create([
+                'action' => 'create',
+                'element_type' => get_class($model),
+                'element_id' => $model->id,
+            ]);
+        }
+
+        return $model;
     }
 
     protected function onDataPointSaved(string $key, mixed $value): void
@@ -142,10 +249,11 @@ abstract class BaseContext implements ContextInterface
         // override this method to add custom logic
     }
 
-    public function saveExtractedData(ChatMessage $answer, array $data): void
+    public function saveExtractedData(ChatMessage $answer, array $data): int
     {
         unset($data['usage']);
         unset($data['confidence']);
+        $count = 0;
         $target = $this->getModel();
         $user = auth()->user();
         foreach ($data as $key => $value) {
@@ -153,24 +261,28 @@ abstract class BaseContext implements ContextInterface
             if ($dataPoint?->exists()) {
                 $achievement = UserAchievement::firstOrCreate([
                     'user_id' => $user->id,
-                    'achievement_id' => $dataPoint->achievement_id,
+                    'achievement_id' => $dataPoint->achievements()->firstOrFail()->id,
                     'target_type' => get_class($target),
                     'target_id' => $target->id,
                 ], [
                     'progress' => 0,
                 ]);
-                $dataPoint = UserDataPoint::create([
+                $dataPoint = UserDataPoint::firstOrCreate([
                     'user_id' => $user->id,
                     'data_point_id' => $dataPoint->id,
                     'target_type' => get_class($target),
                     'target_id' => $target->id,
-                    'data' => $value,
+                    'data' => json_encode($value),
                     'user_achievement_id' => $achievement->id,
+                    'is_latest' => true,
                 ]);
+                if ($dataPoint->wasRecentlyCreated)
+                    $count++;
                 $dataPoint->chatMessages()->attach($answer->id);
                 $this->onDataPointSaved($key, $value);
             }
         }
+        return $count;
     }
 
     private function getSimilarElement(string $type, array $elementData): ?Model
@@ -180,9 +292,10 @@ abstract class BaseContext implements ContextInterface
         $elements = $this->getElements($type);
         foreach ($elements as $element) {
             // todo: replace this
-            if ($element->getComparableNameAttribute() === $elementData['name']) {
-                return $element;
-            }
+            if (isset($elementData['name']))
+                if ($element->getComparableNameAttribute() === $elementData['name']) {
+                    return $element;
+                }
         }
         return null;
     }
@@ -199,7 +312,10 @@ abstract class BaseContext implements ContextInterface
         if ($this->getModel()->exists === false) {
             $this->model->user_id = auth()->id();
             $this->model->save();
-            $this->model->chats()->save($this->getChat());
+            $this->sessionChat->target_id = $this->model->id;
+            $this->sessionChat->target_type = get_class($this->model);
+            $this->sessionChat->save();
+//            $this->model->chats()->save($this->getSessionChat());
         }
 
         $otherModels = collect();
@@ -208,8 +324,8 @@ abstract class BaseContext implements ContextInterface
                 continue;
             }
             foreach ($categoryElements as $elementData) {
-                Log::debug('element', $elementData);
-                if (!isset($elementData['confidence']) || $elementData['confidence'] < 0.5) {
+                Log::debug('element', [$categoryType, $elementData]);
+                if (isset($elementData['confidence']) && $elementData['confidence'] < 0.5) {
                     continue;
                 }
 
@@ -250,9 +366,14 @@ abstract class BaseContext implements ContextInterface
         return $otherModels;
     }
 
-    public function getLastQuestion(): ?ChatMessage
+    public function getLastQuestion($includingSystem = false): ?ChatMessage
     {
-        return $this->getChat()->chatMessages()->notSystem()->fromAssistant()->latest()->first();
+        if (!$this->getModel()?->exists) return null;
+        $q = $this->getSessionChat()->chatMessages()->fromAssistant();
+        if (!$includingSystem) {
+            $q = $q->notSystem();
+        }
+        return $q->latest()->first();
     }
 
     private function getInitialAchievement(): Achievement
@@ -260,13 +381,22 @@ abstract class BaseContext implements ContextInterface
         return Achievement::firstWhere('slug', $this->config::INITIAL_ACHIEVEMENT_SLUG);
     }
 
-    public function getCurrentAchievement(): Achievement
+    public function getCurrentAchievement(): ?Achievement
     {
-        $lastQuestion = $this->getChat()->chatMessages()->notSystem()->fromAssistant()->whereHas('achievement')->latest()->first();
-        if ($lastQuestion) {
-            return $lastQuestion->achievement->first();
+        if (!$this->model?->exists) return null;
+        $latestUa = $this->getSessionChat()->userAchievements()->latest()->first();
+        if (!$latestUa) {
+            Log::debug('Session dont have achievement attached, adding initial achievement');
+            $latestUa = UserAchievement::create([
+                'user_id' => auth()->id(),
+                'achievement_id' => $this->getInitialAchievement()->id,
+                'target_id' => $this->getModel()->id,
+                'target_type' => get_class($this->getModel()),
+                'progress' => 0,
+            ]);
+            $this->getSessionChat()->userAchievements()->attach($latestUa);
         }
-        return $this->getInitialAchievement();
+        return $latestUa?->achievement;
     }
 
     private function userAchievements()
@@ -279,10 +409,32 @@ abstract class BaseContext implements ContextInterface
     public function isCurrentAchievementFinished(): Achievement|bool
     {
         $target = $this->getModel();
+        if (!$target)
+            throw new Exception('No model to get achievements for');
+        $currentAchievement = $this->getCurrentAchievement();
+        if (!$currentAchievement) {
+            Log::debug('No current achievement');
+            return false;
+        }
         return $this->userAchievements()
-            ->where('achievement_id', $this->getCurrentAchievement()->id)
+            ->where('target_id', $target)
+            ->where('target_type', get_class($target))
+            ->where('achievement_id', $currentAchievement->id)
             ->where('progress', 100)
-            ->first()?->achievement ?? false;
+            ->first()?->achievement
+            ?? (
+            (
+            $currentAchievement->dataPoints()
+                ->whereNotIn('slug', array_keys($this->getAskedDataPoints()))
+                ->whereNotIn('data_points.id',
+                    UserDataPoint::where('user_id', auth()->id())
+                        ->where('target_id', $target->id)
+                        ->where('target_type', get_class($target))
+                        ->pluck('data_point_id')
+                )
+                ->count()
+            ) === 0 ? $currentAchievement : false
+            );
     }
 
     public function getNextAchievement(): ?Achievement
@@ -307,24 +459,19 @@ abstract class BaseContext implements ContextInterface
     {
         if (!empty($this->config::PREDEFINED_QUESTIONS)) {
             $firstQuestion = $this->config::PREDEFINED_QUESTIONS[array_key_first($this->config::PREDEFINED_QUESTIONS)];
-            $chatMessage = $this->getChat()->chatMessages()->create([
-                'type' => 'text',
-                'content' => $firstQuestion['question'],
-                'extra_attributes' => [
-                    'title' => $firstQuestion['title'],
-                    'data_points' => $firstQuestion['data_points'] ?? [],
-                ]
-            ]);
-            $chatMessage->achievement()->attach($this->getInitialAchievement());
-            $chatMessage->save();
-            return $chatMessage;
+            return ChatMessage::makeAiMessage(
+                'text',
+                $firstQuestion['question'],
+                $firstQuestion['title'],
+                $firstQuestion['data_points'] ?? []
+            );
         }
         return null;
     }
 
     public function getGroupedDataPoints(array $except_topics = [], array $except_data_points = []): array
     {
-        return Achievement::where('element', $this->config::ELEMENT_NAME)
+        return Achievement::whereCategory($this->config::ELEMENT_NAME)
             ->whereNotIn('slug', $except_topics)
             ->with(['dataPoints'])
             ->get()
@@ -341,17 +488,15 @@ abstract class BaseContext implements ContextInterface
     public function getNextPredefinedQuestion(ChatMessage $question): ?ChatMessage
     {
         $predefinedQuestions = $this->config::PREDEFINED_QUESTIONS;
-        $askedQuestions = $this->getChat()->chatMessages()->notSystem()->fromAssistant()->get();
+        $askedQuestions = $this->getSessionChat()->chatMessages()->notSystem()->fromAssistant()->get();
         foreach ($predefinedQuestions as $predefinedQuestion) {
             if (!$askedQuestions->contains('content', $predefinedQuestion['question'])) {
-                return $this->getChat()->chatMessages()->create([
-                    'type' => 'text',
-                    'content' => $predefinedQuestion['question'],
-                    'extra_attributes' => [
-                        'title' => $predefinedQuestion['title'],
-                        'data_points' => $predefinedQuestion['data_points'] ?? [],
-                    ]
-                ]);
+                return ChatMessage::makeAiMessage(
+                    'text',
+                    $predefinedQuestion['question'],
+                    $predefinedQuestion['title'],
+                    $predefinedQuestion['data_points'] ?? []
+                );
             }
         }
         return null;
