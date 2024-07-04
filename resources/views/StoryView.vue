@@ -46,7 +46,10 @@
             </header-animated>
             <tab-layout-view v-if="story">
                 <template #develop>
-                    <story-develop-tab :story="story" />
+                    <develop-tab
+                        :data="story"
+                        startSmthNew
+                    />
                 </template>
                 <template #progress>
                     <story-progress-tab :story="story" />
@@ -68,7 +71,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import StoryStoryTab from '@/components/StoryStoryTab.vue'
-import StoryDevelopTab from '@/components/StoryDevelopTab.vue'
+import DevelopTab from '@/components/DevelopTab.vue'
 import StoryProgressTab from '@/components/StoryProgressTab.vue'
 import StoryElementsTab from '@/components/StoryElementsTab.vue'
 import StoryMarketingTab from '@/components/StoryMarketingTab.vue'

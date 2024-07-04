@@ -1,16 +1,16 @@
 <template>
-    <div class="mx-auto max-w-full overflow-x-auto">
+    <div :class="menuWrapperClass">
         <div
             ref="container"
-            class="z-10 flex w-full justify-between flex-nowrap px-4"
+            :class="menuContainerClass"
         >
             <button
                 v-for="tab in tabs"
                 :key="tab.template"
                 :class="[
-                    activeTab === tab.template
-                        ? 'border-red-600 text-red-600'
-                        : 'border-neutral-300 text-neutral-500',
+                    activeTab == tab.template
+                        ? menuBtnSelectedClass
+                        : menuBtnClass,
                 ]"
                 :data-key="tab.template"
                 class="select-none whitespace-nowrap border-b py-1 text-sm font-medium [&:not(:first-child)]:pl-5 [&:not(:last-child)]:pr-5"
@@ -46,6 +46,25 @@ function handleTabClick(template: string) {
     //     activeTab.value = template
     // }
 }
+
+const props = defineProps({
+    menuWrapperClass: {
+        type: String,
+        default: 'mx-auto max-w-full overflow-x-auto ',
+    },
+    menuContainerClass: {
+        type: String,
+        default: 'z-10 flex w-full flex-nowrap px-4',
+    },
+    menuBtnSelectedClass: {
+        type: String,
+        default: 'border-red-600 text-red-600',
+    },
+    menuBtnClass: {
+        type: String,
+        default: 'border-neutral-300 text-neutral-500',
+    },
+})
 </script>
 
 <style scoped></style>

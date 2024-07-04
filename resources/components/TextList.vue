@@ -1,22 +1,22 @@
 <template>
-    <ul class="flex flex-col gap-1">
+    <ul
+        class="flex flex-col gap-1"
+        :class="listClass"
+    >
         <li
             v-for="(item, itemID) in items"
             :key="itemID"
-            class="text-slate-600 flex items-start gap-2"
+            class="flex items-start gap-2"
         >
-            <point-icon class="mt-2" />
+            <point-icon :class="pointClass" />
             <p
                 v-if="item.title || item.description"
-                class="text-sm text-slate-600 font-normal"
+                class="font-normal"
             >
                 <span class="font-bold">{{ item?.title }}</span>
                 {{ item?.description }}
             </p>
-            <p
-                v-else
-                class="text-sm text-slate-600 font-normal"
-            >
+            <p v-else>
                 {{ item }}
             </p>
         </li>
@@ -30,6 +30,14 @@ const props = defineProps({
     items: {
         type: Array,
         required: true,
+    },
+    pointClass: {
+        type: String,
+        default: 'mt-2',
+    },
+    listClass: {
+        type: String,
+        defatul: 'text-slate-600 text-sm font-normal',
     },
 })
 </script>

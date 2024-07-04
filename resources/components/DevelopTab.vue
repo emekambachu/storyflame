@@ -1,13 +1,38 @@
 <template>
     <div class="flex w-full flex-col gap-2 bg-slate-100">
-        <div class="flex flex-col gap-4 bg-white px-4 pb-4">
-            <h5 class="text-lg font-bold text-zinc-800">Current Progress</h5>
-
-            <p
-                class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
+        <div class="flex flex-col bg-white">
+            <title-section
+                v-if="data?.progress_list?.length"
+                class="px-3 py-3"
             >
-                {{ data.progress }}
-            </p>
+                <template #title>
+                    <title-with-link
+                        class="!p-0"
+                        title="Progress Report"
+                        title-class="text-lg text-black font-bold"
+                        button-text="All Reports"
+                    />
+                </template>
+                <div class="flex w-full flex-wrap gap-2">
+                    <progress-card
+                        v-for="(item, itemID) in data?.progress_list"
+                        :key="itemID"
+                        :item="item"
+                    />
+                </div>
+            </title-section>
+            <title-section
+                class="px-3 py-4"
+                title="Current Progress"
+                title-class="text-lg font-bold text-zinc-800"
+            >
+                <p
+                    v-if="data?.progress_description"
+                    class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
+                >
+                    {{ data.progress_description }}
+                </p>
+            </title-section>
         </div>
         <title-section class="!gap-6 bg-white px-4 py-6">
             <template #title>
@@ -54,7 +79,7 @@
             </template>
 
             <discrepancies-card
-                v-for="(card, cardID) in data.discrepancies"
+                v-for="(card, cardID) in story?.discrepancies"
                 :key="cardID"
                 :card="card"
             />
@@ -68,6 +93,7 @@
                     title-class="text-lg text-black font-bold"
                 />
             </template>
+            <start-something-new v-if="startSmthNew" />
             <template v-if="data?.achievements_in_progress">
                 <achievement-in-progress-card
                     v-for="(
@@ -82,22 +108,24 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref } from 'vue'
+import { PropType } from 'vue'
+
+import ProgressCard from '@/components/cards/ProgressCard.vue'
+import StartSomethingNew from '@/components/StartSomethingNew.vue'
 import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
 import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 
-import ItemsList from '@/components/ItemsList.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
-
-import ImageComponent from '@/components/ImageComponent.vue'
-
-import PointIcon from '@/components/icons/PointIcon.vue'
 
 const props = defineProps({
     data: {
         type: Object,
         required: true,
+    },
+    startSmthNew: {
+        type: Boolean,
+        default: false,
     },
 })
 </script>

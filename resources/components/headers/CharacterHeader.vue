@@ -2,7 +2,7 @@
     <default-element-header :tags="['Protagonist', 'Main Character']">
         <template #title>
             <h1 class="line-clamp-1 font-inter text-xl">
-                {{ character.name }}1
+                {{ character.name }}
             </h1>
         </template>
         <template #detail>
