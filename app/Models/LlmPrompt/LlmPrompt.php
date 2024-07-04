@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LlmPrompt extends Model
 {
@@ -16,7 +15,7 @@ class LlmPrompt extends Model
         'name',
         'slug',
         'current_prompt_version_id',
-        'updated_by_id',
+        'updated_by_user_id',
     ];
 
     public function versions(): HasMany
@@ -24,13 +23,13 @@ class LlmPrompt extends Model
         return $this->hasMany(LlmPromptVersion::class, 'llm_prompt_id', 'id');
     }
 
-    public function currentVersion(): BelongsTo
+    public function current_version(): BelongsTo
     {
-        return $this->belongsTo(LlmPromptVersion::class, 'id', 'current_prompt_version_id');
+        return $this->belongsTo(LlmPromptVersion::class, 'current_prompt_version_id', 'id');
     }
 
-    public function updatedBy(): BelongsTo
+    public function updated_by(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'updated_by_id');
+        return $this->belongsTo(User::class, 'updated_by_user_id', 'id');
     }
 }

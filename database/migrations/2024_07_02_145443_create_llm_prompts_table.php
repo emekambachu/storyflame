@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('current_prompt_version_id')->nullable();
-            $table->timestamp('updated_by_id')->nullable();
+            $table->timestamp('updated_by_user_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

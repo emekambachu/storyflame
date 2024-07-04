@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Achievement\AdminAchievementController;
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DataPoint\AdminDataPointController;
+use App\Http\Controllers\Admin\LlmPrompt\AdminLlmPromptController;
 use App\Http\Controllers\Admin\Summary\AdminSummaryController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,14 @@ Route::middleware('auth:admin-api')->group(static function (){
     Route::post('/admin/summaries/store', [AdminSummaryController::class, 'store']);
     Route::post('/admin/summaries/{item_id}/update', [AdminSummaryController::class, 'update']);
     Route::delete('/admin/summaries/{item_id}/delete', [AdminSummaryController::class, 'destroy']);
+
+    // LLM Prompts
+    Route::get('/admin/llm-prompts', [AdminLlmPromptController::class, 'index']);
+    Route::post('/admin/llm-prompts/store', [AdminLlmPromptController::class, 'store']);
+    Route::post('/admin/llm-prompts/version/{slug}', [AdminLlmPromptController::class, 'version']);
+    Route::post('/admin/llm-prompts/assign-current/{slug}/{id}', [AdminLlmPromptController::class, 'currentVersion']);
+    Route::post('/admin/llm-prompts/{slug}/update', [AdminLlmPromptController::class, 'update']);
+    Route::delete('/admin/llm-prompts/{slug}/delete', [AdminLlmPromptController::class, 'destroy']);
 
     // Logout
     Route::get('/admin/logout', [AdminLoginController::class, 'logout']);

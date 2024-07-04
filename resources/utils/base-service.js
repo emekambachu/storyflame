@@ -7,7 +7,7 @@ let baseService = {
 
     getTokenFromLocalStorage(){
         let user = JSON.parse(localStorage.getItem('story-flame-admin'));
-        return user ? user.token : null;
+        return user && user.token ? user.token : null;
     },
 
     roundDecimal(num){
