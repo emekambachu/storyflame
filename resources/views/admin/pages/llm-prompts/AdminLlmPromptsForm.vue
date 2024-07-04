@@ -130,7 +130,7 @@ const submitted = ref(false);
 
 const form = reactive({
     name: props.prompt !== null ? props.prompt.name : '',
-    prompt_value: props.prompt !== null ? props.prompt.prompt_value : '',
+    prompt_value: props.prompt !== null ? props.prompt.current_prompt_value : '',
 });
 
 const submitPrompt = async () => {
@@ -151,6 +151,10 @@ const submitPrompt = async () => {
         if (response.data.success){
             errors.value = []; // Empty error messages
             submitted.value = true;
+            // Empty form fields
+            Object.keys(form).forEach(function(key) {
+                form[key] = '';
+            });
             // Emit the submitted data to the parent component
             emit('formSubmitted', response.data.prompt);
         }

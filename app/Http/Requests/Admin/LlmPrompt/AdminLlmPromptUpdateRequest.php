@@ -14,7 +14,7 @@ class AdminLlmPromptUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -31,7 +31,7 @@ class AdminLlmPromptUpdateRequest extends FormRequest
                 'string',
                 Rule::unique('llm_prompts', 'name')->ignore($slug, 'slug')
             ],
-            'prompt_value' => ['required', 'json'],
+            'prompt_value' => ['required'],
         ];
     }
 

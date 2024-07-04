@@ -30,12 +30,14 @@ class LlmPromptService
             $inputs['updated_by_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
 
+            $promptValue = $this->checkAndConvertToString($inputs['prompt_value']);
+
             $prompt = $this->llm_prompt()->create($inputs);
 
             $promptVersion = $this->llmPromptVersions()->create([
                 'llm_prompt_id' => $prompt->id,
                 'name' => $inputs['name'],
-                'prompt_value' => $inputs['prompt_value'],
+                'prompt_value' => $this->removeDoubleQuotesWithoutDamagingStructure($promptValue),
                 'updated_by_id' => Auth::id(),
                 'slug' => $prompt->slug
             ]);
@@ -47,7 +49,7 @@ class LlmPromptService
             DB::commit();
             return [
                 'success' => true,
-                'llm_prompt' => new AdminLlmPromptResource($promptVersion)
+                'prompt' => new AdminLlmPromptResource($prompt)
             ];
 
         }catch (\Exception $e){
@@ -62,6 +64,32 @@ class LlmPromptService
         }
     }
 
+    private function checkAndConvertToString($input): false|array|string
+    {
+        if (is_string($input) || json_decode($input, false, 512, JSON_THROW_ON_ERROR) !== null) {
+            $output = $input;
+
+        } else if (is_array($input) || is_object($input)) {
+            $output = json_encode($input, JSON_THROW_ON_ERROR);
+
+        } else {
+            $output = [
+                'success' => false,
+                'errors' => [
+                    'prompt_value' => ['Invalid prompt value']
+                ]
+            ];
+        }
+
+        return $output;
+    }
+
+    private function removeDoubleQuotesWithoutDamagingStructure($input): array|string|null
+    {
+        $pattern = '/(?<!:)\"(?=[^\"]*\"[^\"]*(?:\"[^\"]*\"[^\"]*)*$)/';
+        return preg_replace($pattern, '', $input);
+    }
+
     public function updateLlmPrompt($request, $slug): array
     {
         $prompt = $this->llm_prompt()->where('slug', $slug)->first();
@@ -70,13 +98,15 @@ class LlmPromptService
         try {
             $inputs = $request->all();
 
+            $promptValue = $this->checkAndConvertToString($inputs['prompt_value']);
+
             $inputs['updated_by_user_id'] = Auth::id();
             $this->llm_prompt()->update($inputs);
 
             $promptVersion = $this->llmPromptVersions()->create([
                 'llm_prompt_id' => $prompt->id,
                 'name' => $inputs['name'],
-                'prompt_value' => $inputs['prompt_value'],
+                'prompt_value' => $this->removeDoubleQuotesWithoutDamagingStructure($promptValue),
                 'updated_by_user_id' => Auth::id(),
                 'slug' => $prompt->slug
             ]);
@@ -88,7 +118,7 @@ class LlmPromptService
             DB::commit();
             return [
                 'success' => true,
-                'llm_prompt' => new AdminLlmPromptResource($promptVersion)
+                'prompt' => new AdminLlmPromptResource($prompt)
             ];
 
         }catch (\Exception $e){
@@ -146,11 +176,11 @@ class LlmPromptService
         }
     }
 
-    public function assignCurrentPromptVersion($id){
-
+    public function assignCurrentPromptVersion($versionId): array
+    {
         $promptVersion = $this->llmPromptVersions()
             ->with('llmPrompt:id,slug')
-            ->where('id', $id)->first();
+            ->where('id', $versionId)->first();
 
         if (!$promptVersion || !$promptVersion->llmPrompt) {
             return [

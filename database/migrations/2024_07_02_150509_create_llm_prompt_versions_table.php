@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->text('slug');
-            $table->json('prompt_value');
+            $table->longText('prompt_value');
             $table->unsignedBigInteger('llm_prompt_id')->nullable();
             $table->foreign('llm_prompt_id')->references('id')->on('llm_prompts')->onDelete('cascade');
             $table->unsignedBigInteger('updated_by_user_id')->nullable();

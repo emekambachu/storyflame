@@ -25,7 +25,7 @@ class AdminLlmPromptStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'unique:llm_prompts,name'],
-            'prompt_value' => ['required', 'json'],
+            'prompt_value' => ['required'],
         ];
     }
 

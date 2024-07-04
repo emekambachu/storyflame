@@ -7,6 +7,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminLlmPromptResource extends JsonResource
 {
+    // attempt to decode to json string, if not return as string
+    private function filterStringOrJson($string) {
+        $decoded = json_decode($string, true);
+        return $decoded ?? $string;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -18,10 +24,11 @@ class AdminLlmPromptResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'current_version' => $this->current_version ? $this->current_version : null,
+            'current_prompt_value' => !empty($this->current_version) ? $this->filterStringOrJson($this->current_version->prompt_value) : null,
+            'current_version' => $this->current_version ?: null,
             'current_prompt_version_id' => $this->current_prompt_version_id,
-            'versions' => $this->versions && count($this->versions) > 0 ? $this->versions : null,
-            'updated_by' => $this->updated_by ? $this->updated_by->only(['id', 'name', 'first_name', 'last_name']) : null,
+            'versions' => $this->versions ? AdminLlmPromptVersionResource::collection($this->versions) : null,
+            //'updated_by' => $this->updated_by ? $this->updated_by->only(['id', 'name', 'first_name', 'last_name']) : null,
             'updated_at' => $this->updated_at->format('F d Y'),
         ];
     }
