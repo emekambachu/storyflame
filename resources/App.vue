@@ -14,7 +14,7 @@
                 />
             </transition>
         </router-view>
-        <mock-popup />
+<!--        <mock-popup />-->
     </main>
     <!-- <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer> -->
 </template>
