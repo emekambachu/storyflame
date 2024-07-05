@@ -17,11 +17,16 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
+            'first_name' => 'Test',
+            'last_name' => 'User',
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+            'email_verified_at' => now()->format('Y-m-d H:i:s'),
         ]);
 
         $this->call([
+            UserSeeder::class,
             AchievementSeeder::class,
             AchievementDataPointsSeeder::class,
             SummarySeeder::class,

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/admin/login', [AdminLoginController::class, 'login']);
 
 // Custom sanctum admin guard authentication for Learning Portal
-Route::middleware('auth:admin-api')->group(static function (){
+Route::middleware('auth:sanctum')->group(static function (){
 
     // Authentication
     Route::get('/admin/authenticate', [AdminLoginController::class, 'authenticate']);
