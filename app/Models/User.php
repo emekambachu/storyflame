@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasSchemalessAttributes;
+use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements ModelWithId
 {
-    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints;
+    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints, HasSummaries;
 
     /**
      * The attributes that are mass assignable.

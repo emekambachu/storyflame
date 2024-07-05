@@ -15,7 +15,7 @@ trait HasDataPoints
     public function dataPointsToArray(): array
     {
         return $this->dataPoints()->with('dataPoint')->get()->mapWithKeys(fn($item) => [
-            $item->dataPoint->key => $item->data
+            $item->dataPoint->slug => $item->data
         ])->toArray();
     }
 }

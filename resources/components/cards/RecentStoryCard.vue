@@ -8,7 +8,7 @@
     >
         <div class="relative h-fit w-fit">
             <image-component
-                :src="story.poster.path"
+                :src="story.poster?.path"
                 alt="poster"
                 class="h-24 w-24 shrink-0 rounded-lg object-cover"
             />
@@ -27,10 +27,12 @@
 <script lang="ts" setup>
 import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
+import { PropType } from 'vue'
+import { Story } from '@/types/story'
 
 defineProps({
     story: {
-        type: Object,
+        type: Object as PropType<Story>,
         required: true,
     },
 })

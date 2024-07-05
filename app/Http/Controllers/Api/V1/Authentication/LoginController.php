@@ -88,7 +88,7 @@ class LoginController extends Controller
 
         if ($user) {
             $otp_sent = false;
-            if ($user->password === null || $credentials['use_code']) {
+            if ($user->password === null || (isset($credentials['use_code']) && $credentials['use_code'])) {
                 $verificationCode = $this->getVerificationCode($user);
                 Mail::to($user)->send(new AuthCodeMail($verificationCode->otp));
                 $otp_sent = true;

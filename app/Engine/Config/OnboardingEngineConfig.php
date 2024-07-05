@@ -15,7 +15,7 @@ class OnboardingEngineConfig extends EngineConfig
         ],
         [
             'question' => 'Tell us about yourself as a writer.',
-            'title' => 'Nice to meet up, {extracted.name}!',
+            'title' => 'Nice to meet up, {extracted.writer_name}!',
             'data_points' => [
                 'writing_motivation' // todo: not sure if this is the right data point, but it's only maters if we generate follow-up or brainstorming questions
             ]
@@ -29,4 +29,6 @@ class OnboardingEngineConfig extends EngineConfig
     public const ALLOW_ACHIEVEMENT_SWITCH = false;
 
     public const ENDPOINT_KEY = 'onboarding';
+
+    public const SESSION_CHAT_PERSISTENT = true;
 }

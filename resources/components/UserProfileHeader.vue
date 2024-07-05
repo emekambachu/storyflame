@@ -1,7 +1,7 @@
 <template>
     <div
         ref="container"
-        class="flex flex-col items-end gap-3 pt-10"
+        class="flex flex-col items-end gap-3 pt-6"
     >
         <div class="h-28 w-full">
             <div
@@ -105,7 +105,7 @@ onMounted(() => {
         animate(userInfo.value?.children, {
             left: ['50%', '100px'],
             translateX: ['-50%', '0%'],
-            translateY: ['0%', '-10px'],
+            translateY: ['0%', '-30px'],
         }),
         {
             offset: ['start start', '100px'],

@@ -24,18 +24,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, provide, ref } from 'vue'
+import { inject, onMounted, provide, ref } from 'vue'
 import { animate, scroll } from 'motion'
 
 const props = defineProps({
-    headerHeight: {
-        type: [Number, String],
-        default: 400,
-    },
-    collapseHeaderHeight: {
-        type: [Number, String],
-        default: 100,
-    },
     noAnimation: {
         type: Boolean,
         default: false,
@@ -46,7 +38,9 @@ const header = ref<HTMLDivElement | null>(null)
 const headerContent = ref<HTMLDivElement | null>(null)
 const headerContentHidden = ref<HTMLDivElement | null>(null)
 
-const scrollHeight = +props.headerHeight - +props.collapseHeaderHeight
+const headerHeight = inject('headerHeight') as number
+const collapseHeaderHeight = inject('collapseHeaderHeight') as number
+const scrollHeight = +headerHeight - +collapseHeaderHeight
 provide('scrollHeight', scrollHeight)
 
 onMounted(() => {
@@ -55,7 +49,7 @@ onMounted(() => {
             return
         headerContentHidden.value?.style.setProperty(
             'height',
-            `${props.headerHeight}px`
+            `${headerHeight}px`
         )
 
         const outerHeight = header.value?.getBoundingClientRect()
@@ -65,7 +59,7 @@ onMounted(() => {
             animate(header.value, {
                 translateY: [
                     '0',
-                    `${+props.collapseHeaderHeight - +props.headerHeight}px`,
+                    `${+collapseHeaderHeight - +headerHeight}px`,
                 ],
                 easing: 'linear',
             }),
@@ -77,8 +71,8 @@ onMounted(() => {
         scroll(
             animate(headerContent.value, {
                 height: [
-                    `${props.headerHeight}px`,
-                    `${props.collapseHeaderHeight}px`,
+                    `${headerHeight}px`,
+                    `${collapseHeaderHeight}px`,
                 ],
                 easing: 'linear',
             }),

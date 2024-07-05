@@ -21,4 +21,6 @@ abstract class EngineConfig
     public const ALLOW_ACHIEVEMENT_SWITCH = true;
 
     public const ENDPOINT_KEY = '';
+
+    public const SESSION_CHAT_PERSISTENT = false;
 }

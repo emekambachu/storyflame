@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointSummary;
+use App\Models\SummarySchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -61,5 +62,10 @@ class Summary extends Model
         )
             ->using(SummaryLink::class)
             ->withTimestamps();
+    }
+
+    public function schemas(): HasMany
+    {
+        return $this->hasMany(SummarySchema::class);
     }
 }

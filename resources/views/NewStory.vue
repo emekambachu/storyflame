@@ -10,15 +10,6 @@
                     <div
                         class="h-11 w-11 shrink-0 rounded-lg bg-gray-400"
                     ></div>
-                    <!--                    <div-->
-                    <!--                        class="grow line-clamp-1 text-start font-fjalla text-xl"-->
-                    <!--                    >-->
-                    <!--                        Lorem ipsum dolor sit amet, consectetur adipisicing-->
-                    <!--                        elit. Autem cum cupiditate dicta eaque earum eligendi,-->
-                    <!--                        eum, illum ipsa laudantium molestiae molestias, numquam-->
-                    <!--                        pariatur possimus quasi qui quidem repellat repudiandae-->
-                    <!--                        tenetur?-->
-                    <!--                    </div>-->
                     <staggered-text-animation
                         v-memo="newStoryTitle"
                         :texts="[
@@ -43,7 +34,9 @@ import VButton from '@/components/VButton.vue'
 import { ref } from 'vue'
 import StaggeredTextAnimation from '@/components/StaggeredTextAnimation.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const newStoryTitle = ref('New Story')
 
 function onFinish() {
@@ -51,8 +44,12 @@ function onFinish() {
 }
 
 function onExtract(data: any) {
-    if (data.title) {
-        newStoryTitle.value = data.title
+    if (data.id) {
+        window.location.replace(`/stories/${data.id}/develop`)
+        // router.push({
+        //     name: 'story-develop',
+        //     params: { story: data.id },
+        // })
     }
 }
 </script>

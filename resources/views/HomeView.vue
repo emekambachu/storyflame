@@ -4,164 +4,154 @@
             :tabs="[
                 { title: 'Progress', template: 'stories' },
                 { title: 'Continue', template: 'continue' },
-                { title: 'Clarify', template: 'clarify' },
+                // { title: 'Clarify', template: 'clarify' },
                 { title: 'New', template: 'new' },
                 { title: 'Transcripts', template: 'transcripts' },
             ]"
-            class="!gap-0"
-            no-animation
-            scroll-to-page-section
-            tab-content-class="pb-6 w-full bg-white"
             tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
         >
-            <div class="flex w-full flex-col gap-3 bg-neutral-950 px-4 py-8">
-                <div class="flex w-full items-center justify-between">
-                    <logo-icon />
+            <header-animated no-animation>
+                <home-header />
+                <tab-layout-tabs />
+            </header-animated>
+            <tab-layout-view
+                class="w-full bg-white pb-6"
+                one-line
+            >
+                <template #stories>
+                    <title-section class="!gap-6 py-6">
+                        <template #title>
+                            <title-with-link
+                                :to="{
+                                    name: 'stories',
+                                }"
+                            >
+                                <h4 class="text-lg font-bold text-black">
+                                    Recent Stories
+                                </h4>
+                            </title-with-link>
+                        </template>
+                        <horizontal-list :items="stories">
+                            <template #item="{ item }">
+                                <recent-story-card :story="item" />
+                            </template>
+                            <template #new>
+                                <new-story-card class="h-24 shrink-0" />
+                            </template>
+                        </horizontal-list>
+                    </title-section>
+                </template>
+                <template #continue>
+                    <title-section class="py-6">
+                        <template #title>
+                            <title-with-link>
+                                <h4 class="text-lg font-bold text-black">
+                                    Continue where you left off
+                                </h4>
+                            </title-with-link>
+                        </template>
+                        <div class="px-4 gap-6 flex flex-col">
+                            <achievement-completed-card
+                                v-for="(
+                                    achievement, achievementID
+                                ) in data.achievements_completed"
+                                :key="achievementID"
+                                :card="achievement"
+                            />
+                            <achievement-in-progress-card
+                                v-for="(
+                                    achievement, achievementID
+                                ) in data.achievements_in_progress"
+                                :key="achievementID"
+                                :card="achievement"
+                            />
+                        </div>
+                    </title-section>
+                </template>
+                <template #clarify>
+                    <title-section
+                        v-if="false"
+                        class="!gap-6 px-4 py-6"
+                        style="
+                            background: linear-gradient(
+                                    180deg,
+                                    rgba(0, 0, 0, 0) 0%,
+                                    #000 100%
+                                ),
+                                linear-gradient(
+                                    0deg,
+                                    rgba(0, 0, 0, 0.3) 0%,
+                                    rgba(0, 0, 0, 0.3) 100%
+                                ),
+                                linear-gradient(0deg, #404040 0%, #404040 100%),
+                                #fff;
+                        "
+                    >
+                        <template #title>
+                            <title-with-link
+                                class="!p-0"
+                                title="Clarify discrepancies"
+                                title-class="text-lg text-white font-bold"
+                            />
+                        </template>
 
-                    <router-link :to="{
-                        name: 'profile',
-
-                    }" class="h-8 w-8 shrink-0 rounded-full bg-white"></router-link>
-                </div>
-
-                <p class="text-sm font-medium uppercase text-slate-400">
-                    {{ data.smth }}
-                </p>
-
-                <div class="flex items-center justify-between gap-3">
-                    <achievement-summary-card
-                        v-for="(card, cardID) in data.achievements_summary"
-                        :key="cardID"
-                        :item="card"
-                        card-class="flex flex-col gap-2 p-2 rounded-lg bg-neutral-800 w-full max-w-28"
-                        value-class="text-sm text-pure-white font-bold"
-                    />
-                </div>
-            </div>
-            <template #stories>
-                <title-section class="!gap-6 px-4 py-6">
-                    <template #title>
-                        <h4 class="text-lg font-bold text-black">
-                            Recent Stories
-                        </h4>
-                    </template>
-                    <div class="flex w-full max-w-full gap-4 overflow-scroll">
-                        <recent-story-card
-                            v-for="(story, storyID) in data.stories"
-                            :key="storyID"
-                            :story="story"
+                        <discrepancies-card
+                            v-for="(card, cardID) in data.discrepancies"
+                            :key="cardID"
+                            :card="card"
                         />
-                        <new-story-card class="h-24" />
-                    </div>
-                </title-section>
-            </template>
-            <template #continue>
-                <title-section class="!gap-6 px-4 py-6">
-                    <template #title>
-                        <title-with-link
-                            class="!p-0"
-                            title="Continue where you left off"
-                            title-class="text-lg text-black font-bold"
-                        />
-                    </template>
-                    <achievement-completed-card
-                        v-for="(
-                            achievement, achievementID
-                        ) in data.achievements_completed"
-                        :key="achievementID"
-                        :card="achievement"
-                    />
-                    <achievement-in-progress-card
-                        v-for="(
-                            achievement, achievementID
-                        ) in data.achievements_in_progress"
-                        :key="achievementID"
-                        :card="achievement"
-                    />
-                </title-section>
-            </template>
-            <template #clarify>
-                <title-section
-                    class="!gap-6 px-4 py-6"
-                    style="
-                        background: linear-gradient(
-                                180deg,
-                                rgba(0, 0, 0, 0) 0%,
-                                #000 100%
-                            ),
-                            linear-gradient(
-                                0deg,
-                                rgba(0, 0, 0, 0.3) 0%,
-                                rgba(0, 0, 0, 0.3) 100%
-                            ),
-                            linear-gradient(0deg, #404040 0%, #404040 100%),
-                            #fff;
-                    "
-                >
-                    <template #title>
-                        <title-with-link
-                            class="!p-0"
-                            title="Clarify discrepancies"
-                            title-class="text-lg text-white font-bold"
-                        />
-                    </template>
+                    </title-section>
+                </template>
 
-                    <discrepancies-card
-                        v-for="(card, cardID) in data.discrepancies"
-                        :key="cardID"
-                        :card="card"
-                    />
-                </title-section>
-            </template>
-
-            <template #new>
-                <title-section class="!gap-6 px-4 py-6">
-                    <template #title>
-                        <title-with-link
-                            class="!p-0"
-                            title="Starting Something New"
-                            title-class="text-lg text-black font-bold"
-                        />
-                        <div
-                            class="flex w-full max-w-full items-center gap-3 overflow-scroll"
-                        >
+                <template #new>
+                    <title-section class="!gap-6 px-4 py-6">
+                        <template #title>
+                            <title-with-link
+                                class="!p-0"
+                                title="Starting Something New"
+                                title-class="text-lg text-black font-bold"
+                            />
                             <div
-                                v-for="(item, itemID) in createNew"
-                                :key="itemID"
-                                class="flex w-full flex-col items-center gap-1 text-center"
+                                class="flex w-full max-w-full items-center gap-3 overflow-scroll"
                             >
                                 <div
-                                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-stone-100 font-normal"
+                                    v-for="(item, itemID) in createNew"
+                                    :key="itemID"
+                                    class="flex w-full flex-col items-center gap-1 text-center"
                                 >
-                                    <component
-                                        :is="item?.icon"
-                                        class="text-stone-400"
-                                    />
+                                    <div
+                                        class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-stone-100 font-normal"
+                                    >
+                                        <component
+                                            :is="item?.icon"
+                                            class="text-stone-400"
+                                        />
+                                    </div>
+                                    <span
+                                        class="text-xs font-semibold text-stone-500"
+                                    >
+                                        {{ item.title }}
+                                    </span>
                                 </div>
-                                <span
-                                    class="text-xs font-semibold text-stone-500"
-                                >
-                                    {{ item.title }}
-                                </span>
                             </div>
-                        </div>
-                        <hr class="mx-auto my-1 w-48 text-stone-300" />
-                        <achievement-in-progress-card
-                            v-for="(
-                                achievement, achievementID
-                            ) in data.achievements_in_progress"
-                            :key="achievementID"
-                            :card="achievement"
-                        />
-                    </template>
-                </title-section>
-            </template>
-            <template #transcripts>
-                <home-statistic-component
-                    :statistic="data.statistic"
-                    class="!py-6"
-                />
-            </template>
+                            <hr class="mx-auto my-1 w-48 text-stone-300" />
+                            <achievement-in-progress-card
+                                v-for="(
+                                    achievement, achievementID
+                                ) in data.achievements_in_progress"
+                                :key="achievementID"
+                                :card="achievement"
+                            />
+                        </template>
+                    </title-section>
+                </template>
+                <template #transcripts>
+                    <home-statistic-component
+                        :statistic="data.statistic"
+                        class="!py-6"
+                    />
+                </template>
+            </tab-layout-view>
         </tab-layout>
         <!--        <div-->
         <!--            v-if="showDiscuss"-->
@@ -188,15 +178,19 @@ import TitleSection from '@/components/TitleSection.vue'
 import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
 import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
 import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
-import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
-import LogoIcon from '@/components/icons/LogoIcon.vue'
 import NewStoryCard from '@/components/cards/NewStoryCard.vue'
-
-// const appName = import.meta.env.VITE_APP_NAME
-
-// const { logout, isLoggedIn } = useAuthStore()
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import HomeHeader from '@/views/HomeHeader.vue'
+import { useStories } from '@/composables/query/story'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+import HorizontalList from '@/components/ui/HorizontalList.vue'
+import { useUser } from '@/composables/query/user'
 
 const showDiscuss = ref(true)
+
+const { data: user } = useUser()
+const { data: stories } = useStories()
 
 const createNew = [
     { icon: SeriesIcon, title: 'Series' },

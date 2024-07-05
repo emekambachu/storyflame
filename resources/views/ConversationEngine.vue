@@ -2,7 +2,7 @@
     <main
         class="relative flex h-full grow flex-col items-center justify-between px-4 pb-10 pt-8 text-center"
     >
-        <div class="flex flex-col w-full">
+        <div class="flex flex-col items-center w-full">
             <slot name="header">
                 <a
                     class="mb-8"
@@ -36,11 +36,13 @@
                         modelValue: question?.title,
                         class: 'text-neutral-950 opacity-60 text-sm font-normal mb-2',
                         is: 'h3',
+                        speed: 10,
                     },
                     {
                         modelValue: question?.content,
                         class: 'text-neutral-700 text-3xl font-bold',
                         is: 'h1',
+                        speed: 20,
                     },
                 ]"
             />
@@ -104,7 +106,7 @@
                 class="mt-auto flex w-full flex-col items-center justify-center gap-3"
             >
                 <button
-                    v-if="!isSpeakingMode || !ua.isMobile"
+                    v-if="!isSpeakingMode && !ua.isMobile"
                     :class="[
                         selectedOptions.length || testInput.length
                             ? 'bg-red-600 text-white'
@@ -152,6 +154,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    identifier: {
+        type: Number,
+        default: null,
+    },
 })
 
 const testInput = ref('')
@@ -190,7 +196,7 @@ const { show } = useModal()
 //     }
 // )
 
-const _identifier = ref<string | null>(null)
+const _identifier = ref<string | null>(props.identifier ?? null)
 const loading = ref(true)
 const question = ref<ChatMessage | null>(null)
 const progress = ref(0)
@@ -212,6 +218,7 @@ type ConversationData = {
 function extractData(answer: string | string[] | Blob) {
     console.log(answer)
     const formData = new FormData()
+    console.log('identifier', _identifier.value)
     formData.append('identifier', ''+_identifier.value)
     console.log(_identifier.value)
     if (Array.isArray(answer)) {
@@ -231,7 +238,7 @@ function extractData(answer: string | string[] | Blob) {
     testInput.value = ''
     selectedOptions.value = []
 
-    // console.log(formData)
+    console.log(formData)
     // return
     loading.value = true
     api.post<ConversationData>(props.endpoint, formData)
@@ -240,7 +247,7 @@ function extractData(answer: string | string[] | Blob) {
             _identifier.value = response.data.identifier
             progress.value = response.data.progress
             setMessage(response.data.question)
-            emit('extract', response.data.data.extracted)
+            emit('extract', response.data.data)
         })
         .finally(() => {
             loading.value = false
@@ -249,6 +256,7 @@ function extractData(answer: string | string[] | Blob) {
 
 onMounted(() => {
     loading.value = true
+    console.log('identifier', _identifier.value)
     api.get<ConversationData>(props.endpoint, {
         params: {
             identifier: _identifier.value ?? null,

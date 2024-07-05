@@ -5,6 +5,7 @@
     >
         <animated-text
             :is="text.is"
+            :speed="text.speed"
             v-if="index <= visibleIndex"
             :class="text.class"
             :model-value="text.modelValue"
@@ -23,6 +24,7 @@ const props = withDefaults(
             modelValue: string
             class: string
             is: string
+            speed?: number
         }[]
     }>(),
     {}

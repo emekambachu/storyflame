@@ -5,54 +5,51 @@
         no-back-text
         transparent
     >
-        <div class="flex flex-col gap-6 pb-6">
-            <!--
-                animate-translate-y="190px"
-                 -->
-            <tab-layout
-                :tabs="[
-                    {
-                        title: 'Develop',
-                        template: 'develop',
-                    },
-                    {
-                        title: 'Progress',
-                        template: 'progress',
-                    },
-                    {
-                        title: 'Arcs',
-                        template: 'arcs',
-                    },
-                    {
-                        title: 'Elements',
-                        template: 'elements',
-                    },
-                    {
-                        title: 'References',
-                        template: 'references',
-                    },
-                ]"
-                class="!gap-0"
-                header-height="400"
-                collapse-header-height="200"
-                menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
-                menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
-                menu-container-class="w-full flex gap-2"
-                menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
-            >
-                <!--                <story-header :story="story" />-->
-                <header-animated
-                    collapse-header-height="80"
-                    header-height="478"
-                >
-<!--                    <default-element-header height="478px" />-->
-                    <story-header v-if="story" :story="story"/>
-                    <template #sticky>
-                        <tab-layout-tabs />
-                    </template>
-                </header-animated>
+        <tab-layout
+            :tabs="[
+                {
+                    title: 'Develop',
+                    template: 'develop',
+                },
+                {
+                    title: 'Progress',
+                    template: 'progress',
+                },
+                {
+                    title: 'Arcs',
+                    template: 'arcs',
+                },
+                {
+                    title: 'Elements',
+                    template: 'elements',
+                },
+                {
+                    title: 'References',
+                    template: 'references',
+                },
+            ]"
+            collapse-header-height="80"
+            header-height="478"
+            menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
+            menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
+            menu-container-class="w-full flex gap-2"
+            menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
+        >
+            <header-animated>
+                <story-header
+                    v-if="story"
+                    :story="story"
+                />
+                <template #sticky>
+                    <tab-layout-tabs />
+                </template>
+            </header-animated>
+            <tab-layout-view v-if="story">
                 <template #develop>
-                    <story-develop-tab :story="story" />
+                    <develop-tab
+                        :data="story"
+                        startSmthNew
+                    />
                 </template>
                 <template #progress>
                     <story-progress-tab :story="story" />
@@ -66,15 +63,15 @@
                 <template #references>
                     <story-marketing-tab :story="story" />
                 </template>
-            </tab-layout>
-        </div>
+            </tab-layout-view>
+        </tab-layout>
     </page-navigation-layout>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
 import StoryStoryTab from '@/components/StoryStoryTab.vue'
-import StoryDevelopTab from '@/components/StoryDevelopTab.vue'
+import DevelopTab from '@/components/DevelopTab.vue'
 import StoryProgressTab from '@/components/StoryProgressTab.vue'
 import StoryElementsTab from '@/components/StoryElementsTab.vue'
 import StoryMarketingTab from '@/components/StoryMarketingTab.vue'
@@ -83,23 +80,23 @@ import TabLayout from '@/components/TabLayout.vue'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { getStory } from '@/utils/endpoints'
-import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 import StoryHeader from '@/components/StoryHeader.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
 
 const route = useRoute()
-// const storyId = computed(() => route.params.story)
+const storyId = computed(() => route.params.story)
 
-// const { data: story } = useQuery({
-//     queryKey: ['story', storyId.value],
-//     queryFn: () => getStory(storyId.value),
-//     select(data) {
-//         return data.data
-//     },
-// })
+const { data: story} = useQuery({
+    queryKey: ['story', storyId.value],
+    queryFn: () => getStory(storyId.value),
+    select(data) {
+        return data.data
+    },
+})
 
-const story = {
+const story1 = {
     id: 'test',
     name: 'Test story',
     image: {
@@ -444,14 +441,8 @@ const story = {
                 progress: 0,
             },
         ],
-
-const { data: story } = useQuery({
-    queryKey: ['story', storyId.value],
-    queryFn: () => getStory(storyId.value),
-    select(data) {
-        return data.data
     },
-})
+}
 </script>
 
 <style scoped></style>
