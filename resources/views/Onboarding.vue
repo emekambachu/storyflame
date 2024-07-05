@@ -18,12 +18,12 @@ const auth = useAuthStore()
 const modal = useModal()
 
 function onFinish() {
-    const modalId = modal.show('full-screen-loader', {})
-    getOnboardingSummary().then((res) => {
-        auth.updateUser(res.data)
-        router.push({ name: 'profile' })
-        close(modalId)
-    })
+    // const modalId = modal.show('full-screen-loader', {})
+    router.push({ name: 'profile' })
+    // getOnboardingSummary().then((res) => {
+    //     auth.updateUser(res.data)
+    //     close(modalId)
+    // })
 }
 
 onMounted(() => {

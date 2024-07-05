@@ -32,23 +32,24 @@ class StoryContext extends BaseContext implements ContextInterface
         return $this->model;
     }
 
-    public function stories(): HasMany
+    public function stories(): ?HasMany
     {
         return $this->getModel()->user->stories();
     }
 
-    public function characters(): HasMany
+    public function characters(): ?HasMany
     {
         return $this->getModel()->characters();
     }
 
-    public function plots(): HasMany
+    public function plots(): ?HasMany
     {
-        // TODO: Implement plots() method.
+        return null;
     }
 
-    public function sequences(): HasMany
+    public function sequences(): ?HasMany
     {
+        return null;
     }
 
     protected function getCurrentData(): array

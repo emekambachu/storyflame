@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex items-center gap-2 justify-between pt-8 pb-5 px-4"
+        class="flex items-center gap-2 justify-between pt-8 pb-5 px-4 pl-10"
         style="
             background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 100%),
                 linear-gradient(
@@ -11,7 +11,6 @@
                 #404040;
         "
     >
-        <chevron-icon class="text-stone-500 w-4 h-4" />
         <img
             :src="data.image.path"
             class="w-[44px] h-[44px] rounded-lg backdrop-grayscale-[50%]"

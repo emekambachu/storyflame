@@ -5,7 +5,7 @@ export type Story = {
     name: string
     description: string
     type: string
-    image: Image
+    image: Image|null
     format: string
     genres: Array<string>
     percent: number

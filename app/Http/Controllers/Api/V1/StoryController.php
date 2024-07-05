@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatMessageResource;
+use App\Http\Resources\StoryResource;
 use App\Models\Story;
 use App\Services\StoryCreatingService;
 use App\Services\StoryService;
@@ -22,7 +23,7 @@ class StoryController extends Controller
     {
         Gate::authorize('viewAny', Story::class);
 
-        return auth()->user()->stories;
+        return $this->successResponse('success', StoryResource::collection(auth()->user()->stories));
     }
 
     public function store(Request $request, StoryService $storyService)
@@ -53,7 +54,7 @@ class StoryController extends Controller
     {
         Gate::authorize('view', $story);
 
-        return $story;
+        return $this->successResponse('success', StoryResource::make($story));
     }
 
     public function update(Request $request, Story $story)

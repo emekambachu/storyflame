@@ -1,7 +1,10 @@
 <template>
     <div class="flex w-full flex-col gap-2 bg-slate-100">
         <div class="flex flex-col bg-white">
-            <title-section class="px-3 py-3">
+            <title-section
+                v-if="data?.progress_list?.length"
+                class="px-3 py-3"
+            >
                 <template #title>
                     <title-with-link
                         class="!p-0"
@@ -12,7 +15,7 @@
                 </template>
                 <div class="flex w-full flex-wrap gap-2">
                     <progress-card
-                        v-for="(item, itemID) in story?.progress_list"
+                        v-for="(item, itemID) in data?.progress_list"
                         :key="itemID"
                         :item="item"
                     />
@@ -24,10 +27,10 @@
                 title-class="text-lg font-bold text-zinc-800"
             >
                 <p
-                    v-if="story?.progress_description"
+                    v-if="data?.progress_description"
                     class="rounded-lg border border-stone-200 bg-stone-100 p-2 font-main text-sm text-stone-800"
                 >
-                    {{ story.progress_description }}
+                    {{ data.progress_description }}
                 </p>
             </title-section>
         </div>
@@ -40,11 +43,11 @@
                 />
             </template>
 
-            <template v-if="story?.achievements_in_progress">
+            <template v-if="data?.achievements_in_progress">
                 <achievement-in-progress-card
                     v-for="(
                         achievement, achievementID
-                    ) in story.achievements_in_progress"
+                    ) in data.achievements_in_progress"
                     :key="achievementID"
                     :card="achievement"
                 />
@@ -76,7 +79,7 @@
             </template>
 
             <discrepancies-card
-                v-for="(card, cardID) in story.discrepancies"
+                v-for="(card, cardID) in story?.discrepancies"
                 :key="cardID"
                 :card="card"
             />
@@ -90,12 +93,12 @@
                     title-class="text-lg text-black font-bold"
                 />
             </template>
-            <start-something-new />
-            <template v-if="story?.achievements_in_progress">
+            <start-something-new v-if="startSmthNew" />
+            <template v-if="data?.achievements_in_progress">
                 <achievement-in-progress-card
                     v-for="(
                         achievement, achievementID
-                    ) in story.achievements_in_progress"
+                    ) in data.achievements_in_progress"
                     :key="achievementID"
                     :card="achievement"
                 />
@@ -115,12 +118,14 @@ import AchievementInProgressCard from '@/components/cards/AchievementInProgressC
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 
-import { Story } from '@/types/story'
-
 const props = defineProps({
-    story: {
-        type: Object as PropType<Story>,
+    data: {
+        type: Object,
         required: true,
+    },
+    startSmthNew: {
+        type: Boolean,
+        default: false,
     },
 })
 </script>

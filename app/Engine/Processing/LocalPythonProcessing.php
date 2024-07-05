@@ -26,6 +26,17 @@ class LocalPythonProcessing extends BaseProcessing implements ProcessingInterfac
         return $response;
     }
 
+    public function generateSummary(string $name, string $length, string $purpose, string $example, array $dataPoints): string
+    {
+        return $this->sendRequest('post', '/api/generate/summary', [
+            'name' => $name,
+            'length' => $length,
+            'purpose' => $purpose,
+            'example' => $example,
+            'data_points' => $dataPoints
+        ])->json()["summary"];
+    }
+
     public function rateResponse(string $question, string $answer): array
     {
         return $this->sendRequest('post', '/api/conversation/rate', [

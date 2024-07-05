@@ -17,14 +17,20 @@ class UserResource extends JsonResource
             'last_name' => $this->last_name,
             'name' => $this->name,
             'email' => $this->email,
+            'completed_achievements' => $this->userAchievements->where('completed', true)->count(),
+            'progress_achievements' => $this->userAchievements->where('completed', false)->count(),
+            'next_achievements' => 0,
+
+            'bio' => $this->getSummary('bio')?->summary,
+            'writing_goals' => $this->getSummary('writing_goals')?->summary,
+
             'avatar' => !empty($this->avatar) ? config('app.url') . $this->avatar_path . $this->avatar : null,
-            'bio' => $this->bio,
             'password' => $this->password,
 
             'achievements' => AchievementResource::collection($this->achievements ?? []),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,
             'data' => $this->when($this->extra_attributes['onboarded'] ?? false, [
-                'media' => MediaResource::collection($this->favoriteMovies ?? []),
+                'media' => MediaResource::collection($this->favoriteMovies),
                 ...$this->extra_attributes ?? []
             ])
         ];

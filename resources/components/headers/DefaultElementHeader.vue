@@ -2,7 +2,7 @@
     <header
         ref="container"
         :style="backgroundStyle"
-        class="relative mt-auto flex h-full flex-col justify-end gap-5 bg-cover bg-center bg-no-repeat px-2 py-2 text-white"
+        class="relative mt-auto flex h-full flex-col justify-end gap-5 px-2 py-2 text-white"
     >
         <div class="animate-move sticky top-4">
             <div
@@ -34,10 +34,13 @@
                 {{ genre }}
             </span>
         </div>
-        <div class="animate-hide sticky">
+        <div
+            v-if="detail?.length || $slots.detail"
+            class="animate-hide sticky"
+        >
             <slot name="detail">
                 <p
-                    v-if="detail.length"
+                    v-if="detail?.length"
                     class="text-sm opacity-75"
                 >
                     {{ detail }}
@@ -93,15 +96,15 @@ const props = defineProps({
 })
 
 const container = ref<HTMLElement | null>(null)
-const scrollHeight = inject('scrollHeight')
+const scrollHeight = inject('scrollHeight') as number
 
 const backgroundStyle = computed(() => {
     return {
         background: props.background
-            ? `url(${props.background})`
+            ? `url(${props.background}) no-repeat center center/cover`
             : 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), ' +
-            'linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), ' +
-            '#404040',
+              'linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), ' +
+              '#404040',
     }
 })
 
@@ -125,19 +128,21 @@ onMounted(() => {
                     height: [`${height}px`, '0'],
                 }),
                 {
-                    offset: [`${scrollHeight/2}px`, `${scrollHeight}px`],
+                    offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
                 }
             )
         })
     }
-    scroll(
-        animate(moveElements, {
-            paddingLeft: ['0', '2rem'],
-        }),
-        {
-            offset: ['start start', `${scrollHeight/4}px`],
-        }
-    )
+    if (moveElements)
+        scroll(
+            animate(moveElements, {
+                paddingLeft: ['0', '2rem'],
+                width: ['100%', 'calc(100% - 50px)'],
+            }),
+            {
+                offset: ['start start', `${scrollHeight / 4}px`],
+            }
+        )
 })
 </script>
 

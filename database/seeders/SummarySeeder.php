@@ -40,6 +40,7 @@ class SummarySeeder extends Seeder
                 'slug' => Str::slug($rowData['Name'], '_'),
                 'item_id' => $rowData['Summary ID'],
                 'location' => $rowData['Page'] . ' - ' . $rowData['Component'],
+                'length' => $rowData['Length'],
                 'purpose' => $rowData['Purpose'],
                 'creation_prompt' => $rowData['Creation Prompt'] ?? '-',
                 'example_summary' => $rowData['Example'],

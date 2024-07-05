@@ -7,10 +7,6 @@
         <tab-layout
             :tabs="[
                 {
-                    title: 'Elements',
-                    template: 'elements',
-                },
-                {
                     title: 'Develop',
                     template: 'develop',
                 },
@@ -22,6 +18,10 @@
                 {
                     title: 'Details',
                     template: 'details',
+                },
+                {
+                    title: 'Elements',
+                    template: 'elements',
                 },
             ]"
             class="!gap-0"
@@ -41,7 +41,7 @@
                 class="pb-5 pt-20"
             />
             <template #develop>
-                <sequence-develop-tab :data="sequence" />
+                <develop-tab :data="sequence" />
             </template>
             <template #arc>
                 <sequence-arc-tab :data="sequence" />
@@ -58,7 +58,7 @@
 
 <script lang="ts" setup>
 import SequenceArcTab from '@/components/SequenceArcTab.vue'
-import SequenceDevelopTab from '@/components/SequenceDevelopTab.vue'
+import DevelopTab from '@/components/DevelopTab.vue'
 import SequenceDetailsTab from '@/components/SequenceDetailsTab.vue'
 import SequenceElementsTab from '@/components/SequenceElementsTab.vue'
 
@@ -74,7 +74,7 @@ const sequence = {
     name: 'Arrival of King Robert and the Royal Family',
     description:
         'Kickstart the main political plot by bringing the royal family to Winterfell, highlighting the close yet strained relationship between the Starks and the Baratheons.',
-    progress:
+    progress_description:
         'Your characters and themes are looking great, but your story could use some world building development.',
     story: {
         name: 'Game of Thrones',
