@@ -39,10 +39,10 @@ class AdminAchievementController extends Controller
     public function indexMin(): JsonResponse
     {
         try {
-            $data = $this->achievement->dataPoint()->select('id', 'name')->orderBy('name')->get();
+            $data = $this->achievement->achievement()->select('id', 'name')->orderBy('name')->get();
             return response()->json([
                 'success' => true,
-                'achievement' => $data,
+                'achievements' => $data,
             ]);
 
         }catch (\Exception $e){

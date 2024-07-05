@@ -42,9 +42,7 @@ class AdminSummaryController extends Controller
     public function indexMin(): JsonResponse
     {
         try {
-            $data = $this->summary->summary()
-                ->select('id', 'name')->orderBy('name')
-                ->get();
+            $data = $this->summary->summary()->select('id', 'name')->orderBy('name')->get();
             return response()->json([
                 'success' => true,
                 'summaries' => $data,
