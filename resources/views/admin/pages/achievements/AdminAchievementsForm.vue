@@ -42,9 +42,14 @@
                                     </button>
 
                                 </div>
+
                                 <div v-if="submitted" class="flex items-center justify-center bg-emerald-400 p-2 text-stone-600">
                                     {{ achievement !== null ? 'Achievement updated successfully' : 'Achievement created successfully' }}
                                 </div>
+
+                                <Alert v-if="errors.role" class="text-center p-2 bg-rose-100 border-rose-400 text-rose-700">
+                                    {{ errors.role[0] }}
+                                </Alert>
 
                                 <div class="space-y-6 bg-white p-6 rounded-lg">
 
@@ -510,7 +515,6 @@ const updateAchievement = async () => {
         }
 
     }).catch((error) => {
-
         if(error.response && [401, 402, 422].includes(error.response.status)){
             console.log(error.response);
 

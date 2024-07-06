@@ -35,7 +35,7 @@ const routeService = {
                 window.location.href = logout;
             }
         }).catch((error) => {
-            if([401, 403, 422].includes(error.response.status)){
+            if(error.response){
                 window.location.href = logout;
             }
         });

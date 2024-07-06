@@ -4,6 +4,7 @@ namespace App\Services\Auth;
 
 use App\Http\Resources\Admin\AdminUserResource;
 use App\Http\Resources\UserResource;
+use App\Models\Role\Role;
 use App\Services\Admin\AdminService;
 use App\Services\Base\BaseService;
 use Carbon\Carbon;
@@ -63,8 +64,10 @@ class LoginService
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            $roles = Role::get()->pluck('slug')->toArray();
+
             // Check if the user has an admin role
-            if ($user->roles->whereIn('slug', ['admin', 'super-admin'])->count() > 0) {
+            if ($user->roles->whereIn('slug', $roles)->count() > 0) {
                 // Get Token
                 $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
                 $token = $user->createToken($request->email, ['*'], $expiresAt)->plainTextToken;

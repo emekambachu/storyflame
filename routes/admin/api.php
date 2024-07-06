@@ -21,8 +21,11 @@ Route::middleware('auth:sanctum')->group(static function (){
     Route::get('/admin/achievements/min', [AdminAchievementController::class, 'indexMin']);
     Route::get('/admin/achievement/{item_id}/categories', [AdminAchievementController::class, 'achievementCategories']);
     Route::post('/admin/achievements/store', [AdminAchievementController::class, 'store']);
-    Route::post('/admin/achievements/{item_id}/update', [AdminAchievementController::class, 'update']);
-    Route::delete('/admin/achievements/{item_id}/delete', [AdminAchievementController::class, 'destroy']);
+
+    Route::middleware(['admin-role:super-admin'])->group(function () {
+        Route::post('/admin/achievements/{item_id}/update', [AdminAchievementController::class, 'update']);
+        Route::delete('/admin/achievements/{item_id}/delete', [AdminAchievementController::class, 'destroy']);
+    });
 
     // Data Points
     Route::get('/admin/data-points', [AdminDataPointController::class, 'index']);
@@ -51,5 +54,5 @@ Route::middleware('auth:sanctum')->group(static function (){
     Route::delete('/admin/llm-prompts/{slug}/delete', [AdminLlmPromptController::class, 'destroy']);
 
     // Logout
-    Route::get('/admin/logout', [AdminLoginController::class, 'logout']);
+    Route::post('/admin/logout', [AdminLoginController::class, 'logout']);
 });

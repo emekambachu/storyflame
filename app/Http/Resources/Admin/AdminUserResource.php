@@ -21,8 +21,8 @@ class AdminUserResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'password' => $this->password,
-            'role' => $this->role?->name,
-            'last_login_at' => Carbon::parse($this->last_login_at)->format('jS F Y'),
+            'roles' => $this->roles->pluck('name'),
+            'last_login_at' => Carbon::parse($this->last_login_at)->format('jS F Y: h:i A'),
         ];
     }
 }

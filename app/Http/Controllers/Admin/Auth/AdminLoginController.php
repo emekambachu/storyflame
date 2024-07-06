@@ -65,13 +65,9 @@ class AdminLoginController extends Controller
     public function logout(): JsonResponse
     {
         try {
-            Auth::guard('admin')->logout();
-            if(Auth::user()){
-                Auth::user()->tokens()->delete();
-            }
+            Auth::user()?->tokens()?->delete();
             return response()->json([
                 'success' => true,
-                'message' => 'Logged Out',
             ]);
 
         } catch (\Exception $e) {

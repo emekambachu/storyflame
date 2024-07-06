@@ -18,7 +18,7 @@ class AdminRoleMiddleware
         if (!$request->user() || !$request->user()->roles->contains('slug', $role)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
+                'errors' => ['role' => ['Unauthorized']],
             ], Response::HTTP_UNAUTHORIZED);
         }
 
