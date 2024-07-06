@@ -1,13 +1,44 @@
 <script setup lang="ts">
-import {ref, defineProps} from 'vue';
+import { ref, defineProps, computed } from 'vue'
 import AdminLlmPromptsForm from '@/views/admin/pages/llm-prompts/AdminLlmPromptsForm.vue';
 import VersionIcon from '@/components/icons/VersionIcon.vue'
+import UpdateIcon from '@/components/icons/UpdateIcon.vue'
+import axios from 'axios'
+import baseService from '@/utils/base-service'
 
 const props = defineProps([
     'prompt',
 ]);
 
 const prompt = ref(props.prompt);
+const loading = ref(false);
+const token = computed(() => baseService.getTokenFromLocalStorage());
+const updated = ref(false);
+
+const makeCurrentVersion = async (versionId) => {
+    loading.value = true;
+    updated.value = false;
+    try {
+        const response = await axios.post('/api/admin/llm-prompts/version/'+versionId+'/current',{
+            headers: {
+                'Authorization': 'Bearer ' + token.value
+            },
+        });
+        if(response.data.success){
+            prompt.value = response.data.prompt;
+            updated.value = true;
+            console.log("PROMPT UPDATED");
+        }
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error occurred 1:', error.response?.data);
+        } else {
+            console.error('Error occurred 2:', error);
+        }
+    }
+    loading.value = false;
+};
 
 const showVersions = ref(false);
 const toggleShowVersions = () => {
@@ -111,23 +142,21 @@ const emittedPrompt = (event) => {
                                 {{ version.name }}
                             </td>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                <p>{{ version.updated_by }}</p>
                                 <p class="text-black">{{ version.updated_at }}</p>
-                                <p>{{ version.updated_by?.name }}</p>
                             </td>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                                <svg class="mr-2"
-                                     xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                                    <g clip-path="url(#clip0_1940_1784)">
-                                        <path d="M8 10.5001L13.59 4.89007C13.8526 4.62751 14.0001 4.27139 14.0001 3.90007C14.0001 3.52875 13.8526 3.17264 13.59 2.91007C13.3274 2.64751 12.9713 2.5 12.6 2.5C12.2287 2.5 11.8726 2.64751 11.61 2.91007L6 8.50007V10.5001H8Z" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M10.6667 3.83333L12.6667 5.83333" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M6.0006 5.21321C4.83113 5.37984 3.76836 5.98378 3.02668 6.9032C2.28499 7.82263 1.91959 8.98911 2.00417 10.1674C2.08876 11.3456 2.61703 12.448 3.48244 13.252C4.34785 14.0561 5.48598 14.502 6.66727 14.4999C7.78953 14.5 8.87425 14.0957 9.72265 13.3611C10.571 12.6264 11.1263 11.6106 11.2866 10.4999" stroke="#C1BCB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_1940_1784">
-                                            <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
-                                        </clipPath>
-                                    </defs>
-                                </svg>
+                                <div class="flex">
+                                    <a href="" @click.prevent="makeCurrentVersion(version.id)">
+                                        <UpdateIcon
+                                            :width="'18px'"
+                                            :height="'18px'"
+                                            class="mr-2"
+                                            :loading="loading"
+                                        />
+                                    </a>
+                                    <small>Make Current</small>
+                                </div>
                             </td>
                         </tr>
                         </tbody>

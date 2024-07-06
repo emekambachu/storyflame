@@ -24,7 +24,7 @@
                                 <div class="flex items-center justify-between bg-stone-300 p-3 sticky top-0">
 
                                     <h2 class="text-md font-bold text-black">
-                                        {{ prompt !== null ? 'Edit Prompt' : 'Create New Prompt' }}
+                                        {{ prompt !== null ? 'Update Prompt' : 'Create New Prompt' }}
                                     </h2>
                                     <button
                                         @click.prevent="prompt !== null ? updatePrompt() : submitPrompt()"
@@ -52,7 +52,7 @@
                                             <div class="mb-3">
                                                 <label
                                                     class="block text-sm font-medium text-gray-700">
-                                                    Prompt Name
+                                                    Version Purpose
                                                 </label>
                                                 <input
                                                     v-model="form.name"

@@ -49,7 +49,9 @@ Route::middleware('auth:sanctum')->group(static function (){
     Route::get('/admin/llm-prompts', [AdminLlmPromptController::class, 'index']);
     Route::post('/admin/llm-prompts/store', [AdminLlmPromptController::class, 'store']);
     Route::post('/admin/llm-prompts/version/{slug}', [AdminLlmPromptController::class, 'version']);
+
     Route::post('/admin/llm-prompts/version/{id}/current', [AdminLlmPromptController::class, 'currentVersion']);
+
     Route::post('/admin/llm-prompts/{slug}/update', [AdminLlmPromptController::class, 'update']);
     Route::delete('/admin/llm-prompts/{slug}/delete', [AdminLlmPromptController::class, 'destroy']);
 
