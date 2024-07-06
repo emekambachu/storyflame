@@ -31,12 +31,11 @@ class User extends Authenticatable implements ModelWithId
         'name',
         'first_name',
         'last_name',
-        'avatar',
-        'avatar_path',
         'bio',
         'email',
         'password',
         'attributes',
+        'last_login'
     ];
 
     /**
@@ -69,7 +68,7 @@ class User extends Authenticatable implements ModelWithId
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'user_id', 'id');
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     public function chats(): HasMany

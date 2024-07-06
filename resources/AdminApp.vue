@@ -1,12 +1,22 @@
 <template>
     <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
     <section class="bg-white h-screen flex flex-col">
-        <router-view></router-view>
+        <router-view
+            :auth_user="auth_user"
+        ></router-view>
     </section>
     <!-- <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer> -->
 </template>
 
 <script lang="ts" setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+   auth_user: {
+     type: Object,
+     required: true,
+   }
+});
 
 </script>
 

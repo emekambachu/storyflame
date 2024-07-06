@@ -7,7 +7,6 @@ import routeService from '@/utils/route-service'
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-
         {
             path: '/admin/login',
             name: 'admin-login',
@@ -24,6 +23,7 @@ const router = createRouter({
                     '/admin/login',
                 )
             },
+            //props: route => ({ auth_user: route.params.auth_user }),
             children: [
                 {
                     path: 'achievements',

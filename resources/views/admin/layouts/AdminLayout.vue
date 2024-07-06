@@ -47,7 +47,7 @@
                                 type="button"
                                 class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                                <ProfileImage />
                             </button>
                             <div
                                 v-show="showUserDropDown"
@@ -56,24 +56,29 @@
                             >
                                 <div class="px-4 py-3" role="none">
                                     <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                        Neil Sims
+                                        {{ user.first_name }} {{ user.last_name }}
                                     </p>
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                        neil.sims@flowbite.com
+                                        {{ user.email }}
                                     </p>
                                 </div>
                                 <ul class="py-1" role="none">
                                     <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
-                                    </li>
-                                    <li>
                                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
                                     </li>
                                     <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                                        <a v-if="!loading" href="#" @click.prevent="logout"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                           role="menuitem">Sign out</a>
+
+                                        <a v-else
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                           role="menuitem">
+                                            <div class="flex justify-center items-center">
+                                                <div class="animate-spin rounded-full w-8 h-8 border-t-2 border-b-2 border-gray-900"></div>
+                                            </div>
+                                        </a>
+
                                     </li>
                                 </ul>
                             </div>
@@ -254,7 +259,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue'
+import axios from 'axios';
+import router from '@/router'
+import baseService from '@/utils/base-service'
+import ProfileImage from '@/components/images/ProfileImage.vue'
+
+declare global {
+    interface Window {
+        authUser: any;
+    }
+}
+
+const user = ref(window.authUser);
+const loading = ref(false);
+const token = computed(() => baseService.getTokenFromLocalStorage());
+
+const logout = async () => {
+    loading.value = true;
+    try {
+        const response = await axios.post('/api/admin/logout',{
+            headers: {
+                'Authorization': 'Bearer ' + token.value
+            },
+        });
+        if(response.data.success){
+            localStorage.removeItem('story-flame-admin');
+            console.log("USER DELETED");
+        }
+
+        // Redirect to the login page
+        router.push({ name: 'admin-login' });
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Logout failed:', error.response?.data.message);
+        } else {
+            console.error('Logout failed:', error);
+        }
+    }
+    loading.value = false;
+};
+
+onMounted(() => {
+    console.log("AUTH USER", user.value);
+});
 
 const showUserDropDown = ref(false);
 const toggleShowSideBar = () => {

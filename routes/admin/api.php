@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/admin/login', [AdminLoginController::class, 'login']);
 
 // Custom sanctum admin guard authentication for Learning Portal
-Route::middleware('auth:admin-api')->group(static function (){
+Route::middleware('auth:sanctum')->group(static function (){
 
     // Authentication
     Route::get('/admin/authenticate', [AdminLoginController::class, 'authenticate']);
@@ -21,8 +21,11 @@ Route::middleware('auth:admin-api')->group(static function (){
     Route::get('/admin/achievements/min', [AdminAchievementController::class, 'indexMin']);
     Route::get('/admin/achievement/{item_id}/categories', [AdminAchievementController::class, 'achievementCategories']);
     Route::post('/admin/achievements/store', [AdminAchievementController::class, 'store']);
-    Route::post('/admin/achievements/{item_id}/update', [AdminAchievementController::class, 'update']);
-    Route::delete('/admin/achievements/{item_id}/delete', [AdminAchievementController::class, 'destroy']);
+
+    Route::middleware(['admin-role:super-admin'])->group(function () {
+        Route::post('/admin/achievements/{item_id}/update', [AdminAchievementController::class, 'update']);
+        Route::delete('/admin/achievements/{item_id}/delete', [AdminAchievementController::class, 'destroy']);
+    });
 
     // Data Points
     Route::get('/admin/data-points', [AdminDataPointController::class, 'index']);
@@ -46,10 +49,12 @@ Route::middleware('auth:admin-api')->group(static function (){
     Route::get('/admin/llm-prompts', [AdminLlmPromptController::class, 'index']);
     Route::post('/admin/llm-prompts/store', [AdminLlmPromptController::class, 'store']);
     Route::post('/admin/llm-prompts/version/{slug}', [AdminLlmPromptController::class, 'version']);
+
     Route::post('/admin/llm-prompts/version/{id}/current', [AdminLlmPromptController::class, 'currentVersion']);
+
     Route::post('/admin/llm-prompts/{slug}/update', [AdminLlmPromptController::class, 'update']);
     Route::delete('/admin/llm-prompts/{slug}/delete', [AdminLlmPromptController::class, 'destroy']);
 
     // Logout
-    Route::get('/admin/logout', [AdminLoginController::class, 'logout']);
+    Route::post('/admin/logout', [AdminLoginController::class, 'logout']);
 });

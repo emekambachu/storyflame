@@ -28,8 +28,8 @@ class AdminLlmPromptResource extends JsonResource
             'current_version' => $this->current_version ?: null,
             'current_prompt_version_id' => $this->current_prompt_version_id,
             'versions' => $this->versions ? AdminLlmPromptVersionResource::collection($this->versions) : null,
-            //'updated_by' => $this->updated_by ? $this->updated_by->only(['id', 'name', 'first_name', 'last_name']) : null,
-            'updated_at' => $this->updated_at->format('F d Y'),
+            'updated_by' => $this->updated_by ? $this->updated_by->first_name.' '.$this->updated_by->last_name : null,
+            'updated_at' => $this->updated_at->format('F d Y h:i A'),
         ];
     }
 }

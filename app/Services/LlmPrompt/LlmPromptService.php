@@ -179,22 +179,23 @@ class LlmPromptService
     public function assignCurrentPromptVersion($versionId): array
     {
         $promptVersion = $this->llmPromptVersions()
-            ->with('llmPrompt:id,slug')
+            ->with('llm_prompt:id,slug')
             ->where('id', $versionId)->first();
 
-        if (!$promptVersion || !$promptVersion->llmPrompt) {
+        if (!$promptVersion || !$promptVersion->llm_prompt) {
             return [
                 'success' => false,
                 'error_message' => 'Prompt Not Found'
             ];
         }
 
-        $prompt = $this->llm_prompt()->where('id', $promptVersion->llmPrompt->id)->first();
+        $prompt = $this->llm_prompt()->where('id', $promptVersion->llm_prompt->id)->first();
         $prompt->current_prompt_version_id = $promptVersion->id;
         $prompt->save();
 
         return [
             'success' => true,
+            'prompt' => new AdminLlmPromptResource($prompt),
             'message' => 'Current Prompt Version Assigned Successfully'
         ];
 

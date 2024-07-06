@@ -60,7 +60,7 @@ class AdminLlmPromptController extends Controller
         }
     }
 
-    public function currentVersion($promptSlug, $versionId): JsonResponse
+    public function currentVersion($versionId): JsonResponse
     {
         try {
             $data = $this->prompt->assignCurrentPromptVersion($versionId);

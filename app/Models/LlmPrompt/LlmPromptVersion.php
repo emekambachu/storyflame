@@ -20,11 +20,11 @@ class LlmPromptVersion extends Model
 
     public function llm_prompt(): BelongsTo
     {
-        return $this->belongsTo(LlmPrompt::class, 'id', 'llm_prompt_id');
+        return $this->belongsTo(LlmPrompt::class, 'llm_prompt_id', 'id');
     }
 
     public function updated_by(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'updated_by_user_id');
+        return $this->belongsTo(User::class, 'updated_by_user_id', 'id');
     }
 }

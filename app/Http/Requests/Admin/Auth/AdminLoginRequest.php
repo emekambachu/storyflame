@@ -26,7 +26,7 @@ class AdminLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|exists:admins,email',
+            'email' => 'required|string|exists:users,email',
             'password' => 'required|string',
         ];
     }

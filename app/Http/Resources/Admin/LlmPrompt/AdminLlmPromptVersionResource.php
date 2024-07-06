@@ -27,8 +27,8 @@ class AdminLlmPromptVersionResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'prompt_value' => !empty($this->prompt_value) ? $this->filterStringOrJson($this->prompt_value) : null,
-            //'updated_by' => $this->updated_by ? $this->updated_by->only(['id', 'name', 'first_name', 'last_name']) : null,
-            'updated_at' => Carbon::parse($this->updated_at)->format('F d Y'),
+            'updated_by' => $this->updated_by ? $this->updated_by->first_name.' '.$this->updated_by->last_name : null,
+            'updated_at' => $this->updated_at->format('F d Y h:i A'),
         ];
     }
 }
