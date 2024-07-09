@@ -1,11 +1,11 @@
 <template>
-    <div class="px-4 pb-6 w-full bg-white">
+    <div class="w-full bg-white px-4 pb-6">
         <div
-            class="pb-5 w-full gap-6 rounded-lg bg-slate-50 border border-gray-100 flex flex-col"
+            class="flex w-full flex-col gap-6 rounded-lg border border-gray-100 bg-slate-50 pb-5"
         >
             <statistic-card />
 
-            <h3 class="text-base text-black font-semibold px-2">
+            <h3 class="px-2 text-base font-semibold text-black">
                 What we learned about you
             </h3>
             <title-section
@@ -15,7 +15,7 @@
             >
                 <template #title>
                     <div class="flex flex-col">
-                        <h4 class="text-sm text-slate-400 font-semibold">
+                        <h4 class="text-sm font-semibold text-slate-400">
                             {{ item.title }}
                         </h4>
                     </div>
@@ -23,17 +23,18 @@
 
                 <p
                     v-if="item?.description"
-                    class="text-sm text-neutral-950 font-normal"
+                    class="text-sm font-normal text-neutral-950"
                 >
                     {{ item.description }}
                 </p>
                 <div
-                    class="flex items-start gap-3 w-full max-w-full overflow-auto"
+                    class="flex w-full max-w-full items-start gap-3 overflow-auto"
                 >
-                    <movie-card
+                    <image-component
                         v-for="(movie, movieID) in item.inspiration"
                         :key="movieID"
-                        :media="movie"
+                        :src="movie?.poster"
+                        class="h-36 w-24 shrink-0 rounded-lg object-cover"
                     />
                 </div>
             </title-section>
@@ -42,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import MovieCard from '@/components/cards/MovieCard.vue'
+import ImageComponent from '@/components/ImageComponent.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import StatisticCard from '@/components/cards/StatisticCard.vue'
 

@@ -2,12 +2,12 @@
     <header
         ref="container"
         :style="backgroundStyle"
-        class="relative mt-auto flex h-full flex-col justify-end gap-5 px-2 py-2 text-white"
+        class="relative mt-auto flex h-full flex-col justify-end px-2 py-2 text-white"
     >
-        <div class="animate-move sticky top-4">
+        <div class="animate-move sticky top-4 mb-3">
             <div
                 v-if="tags.length"
-                class="flex gap-1"
+                class="mb-2 flex gap-1"
             >
                 <tag-pill v-for="tag in tags">
                     {{ tag }}
@@ -24,48 +24,70 @@
         </div>
         <div
             v-if="genres.length"
-            class="animate-hide line-clamp-1 flex gap-1 text-sm opacity-50"
+            class="animate-hide mb-3 line-clamp-1 flex min-h-4 gap-1 text-sm text-stone-400"
         >
             <span
-                v-for="(genre, index) in genres"
+                v-for="(genre, genreID) in genres"
+                :key="genreID"
                 class="flex items-center gap-1 whitespace-nowrap"
             >
-                <point-icon v-if="index !== 0" />
+                <point-icon v-if="genreID !== 0" />
                 {{ genre }}
             </span>
         </div>
         <div
             v-if="detail?.length || $slots.detail"
-            class="animate-hide sticky"
+            class="animate-hide sticky mb-3"
         >
             <slot name="detail">
                 <p
-                    v-if="detail?.length"
-                    class="text-sm opacity-75"
+                    v-if="detail.length"
+                    class="text-sm text-stone-300"
                 >
                     {{ detail }}
                 </p>
             </slot>
         </div>
-        <div class="sticky top-32">
+        <div
+            class="animate-hide flex w-full items-center justify-between rounded-lg px-3 py-2"
+            style="background: rgba(40, 37, 36, 0.8)"
+        >
             <div
+                v-if="achievements?.length"
+                class="flex w-full items-center gap-2"
+            >
+                <achievements-list-card :achievements="achievements" />
+                <span class="text-[8px] font-bold text-stone-500">
+                    {{
+                        `${completedAchievements?.length}/${achievements?.length ?? 0}`
+                    }}
+                </span>
+            </div>
+            <flame-icon
+                v-if="progress"
+                :progress="progress"
+                class="!w-8 w-full rounded-full bg-white"
+            />
+        </div>
+
+        <!-- <div
                 class="animate-hide flex h-[48px] items-center justify-between bg-stone-500 px-3"
             >
                 achievements
             </div>
             <progress-bar-circle
-                :percent="80"
+                :percent="progress"
                 class="absolute bottom-6 right-3 translate-y-1/2 opacity-100"
-            />
-        </div>
+            /> -->
     </header>
 </template>
 
 <script lang="ts" setup>
 import TagPill from '@/components/TagPill.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
+import AchievementsListCard from '@/components/cards/AchievementsListCard.vue'
 import { computed, inject, onMounted, ref } from 'vue'
-import ProgressBarCircle from '@/components/ProgressBarCircle.vue'
+import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import { animate, scroll } from 'motion'
 
 const props = defineProps({
@@ -81,9 +103,17 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    progress: {
+        type: Number,
+        default: 80,
+    },
     detail: {
         type: String,
         default: '',
+    },
+    achievements: {
+        type: Array,
+        default: () => [],
     },
     background: {
         type: String,
@@ -99,17 +129,26 @@ const container = ref<HTMLElement | null>(null)
 const scrollHeight = inject('scrollHeight') as number
 
 const backgroundStyle = computed(() => {
-    return {
-        background: props.background
-            ? `url(${props.background}) no-repeat center center/cover`
-            : 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), ' +
-              'linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%), ' +
-              '#404040',
+    if (props.background) {
+        return {
+            backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(${props.background})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }
+    } else {
+        return {
+            background:
+                'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, #000 100%), ' +
+                'linear-gradient(0deg, rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.30)), ' +
+                '#404040',
+        }
     }
 })
 
 onMounted(() => {
     const hideElements = container.value?.querySelectorAll('.animate-hide')
+    const showElements = container.value?.querySelectorAll('.animate-show')
     const moveElements = container.value?.querySelectorAll('.animate-move')
 
     if (hideElements) {
@@ -133,16 +172,47 @@ onMounted(() => {
             )
         })
     }
-    if (moveElements)
+
+    if (showElements) {
+        scroll(
+            animate(showElements, {
+                opacity: [0, 1],
+            }),
+            {
+                offset: ['start start', `${scrollHeight / 2}px`],
+            }
+        )
+        showElements.forEach((element) => {
+            scroll(
+                animate(element, {
+                    opacity: [0, 1],
+                }),
+                {
+                    offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
+                }
+            )
+        })
+    }
+
+    if (moveElements) {
         scroll(
             animate(moveElements, {
                 paddingLeft: ['0', '2rem'],
-                width: ['100%', 'calc(100% - 50px)'],
             }),
             {
                 offset: ['start start', `${scrollHeight / 4}px`],
             }
         )
+    }
+})
+const completedAchievements = computed(() => {
+    if (props?.achievements) {
+        return props.achievements.filter(
+            (achievement: Object) => achievement?.progress == 100
+        )
+    } else {
+        return []
+    }
 })
 </script>
 

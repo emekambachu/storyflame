@@ -7,10 +7,10 @@
                     'bg-white bg-opacity-75 backdrop-blur': !transparent,
                 },
             ]"
-            class="-top-[1px] z-[15] pt-8"
+            class="-top-[1px] z-[15] pt-12"
         >
             <button
-                class="flex items-center text-lg capitalize px-4 py-2"
+                class="flex items-center px-4 text-lg capitalize"
                 @click="goBack"
             >
                 <chevron-icon class="h-4" />

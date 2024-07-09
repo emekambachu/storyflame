@@ -6,7 +6,7 @@
         transparent
     >
         <div class="flex flex-col gap-4 pb-8">
-            <!-- 
+            <!--
                     { title: 'Overview', template: 'overview' },
              -->
             <tab-layout
@@ -20,11 +20,9 @@
                     { title: 'References', template: 'references' },
                 ]"
                 class="!gap-0"
-                header-height="260"
-                collapse-header-height="200"
             >
                 <header-animated
-                    collapse-header-height="68"
+                    collapse-header-height="120"
                     header-height="260"
                 >
                     <character-header
@@ -45,7 +43,7 @@
                     <character-overview-tab :data="character" />
                 </template>
                 <template #develop>
-                    <character-develop-tab :data="character" />
+                    <develop-tab :data="character" />
                 </template>
                 <template #details>
                     <character-details-tab :data="character" />
@@ -75,15 +73,14 @@ import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
-import AchievementsTab from '@/components/AchievementsTab.vue'
-import CharacterOverviewTab from '@/components/CharacterOverviewTab.vue'
-import CharacterDevelopTab from '@/components/CharacterDevelopTab.vue'
-import CharacterDetailsTab from '@/components/CharacterDetailsTab.vue'
-import CharacterArcsTab from '@/components/CharacterArcsTab.vue'
-import CharacterRelationalTab from '@/components/CharacterRelationalTab.vue'
-import CharacterBackstoryTab from '@/components/CharacterBackstoryTab.vue'
-import CharacterSpeechTab from '@/components/CharacterSpeechTab.vue'
-import CharacterReferencesTab from '@/components/CharacterReferencesTab.vue'
+import CharacterOverviewTab from '@/components/character/CharacterOverviewTab.vue'
+import DevelopTab from '@/components/DevelopTab.vue'
+import CharacterDetailsTab from '@/components/character/CharacterDetailsTab.vue'
+import CharacterArcsTab from '@/components/character/CharacterArcsTab.vue'
+import CharacterRelationalTab from '@/components/character/CharacterRelationalTab.vue'
+import CharacterBackstoryTab from '@/components/character/CharacterBackstoryTab.vue'
+import CharacterSpeechTab from '@/components/character/CharacterSpeechTab.vue'
+import CharacterReferencesTab from '@/components/character/CharacterReferencesTab.vue'
 
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
@@ -101,7 +98,7 @@ const character = {
 
     features: ['The Patriarch', 'Noble Top Enforcer'],
 
-    progress:
+    progress_description:
         'Your characters and themes are looking great, but your story could use some world building development.',
 
     discrepancies: [
