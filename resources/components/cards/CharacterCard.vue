@@ -26,13 +26,22 @@
             </div>
 
             <flame-icon
+                v-if="card?.progress"
                 :progress="card.progress"
                 class="!h-8 !w-8"
                 flameClass="w-6 h-6"
             />
         </div>
-        <hr class="w-full text-stone-500" />
-        <p class="text-sm text-stone-600">{{ card.description }}</p>
+        <hr
+            v-if="showLine"
+            class="w-full text-stone-500"
+        />
+        <p
+            v-if="card?.description"
+            class="text-sm text-stone-600"
+        >
+            {{ card.description }}
+        </p>
     </div>
 </template>
 
@@ -44,6 +53,10 @@ const props = defineProps({
     card: {
         type: Object,
         required: true,
+    },
+    showLine: {
+        type: Boolean,
+        default: true,
     },
 })
 

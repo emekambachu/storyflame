@@ -2,38 +2,25 @@
     <header
         ref="container"
         :style="backgroundStyle"
-        class="relative mt-auto flex h-full flex-col justify-end bg-cover bg-center bg-no-repeat px-4 py-[76px] pb-5 text-white"
+        class="relative mt-auto flex h-full flex-col justify-end px-2 py-2 text-white"
     >
-        <div
-            class="animate-move sticky top-6 mb-2 flex w-full items-center justify-between"
-        >
-            <div>
-                <div
-                    v-if="tags.length"
-                    class="mb-2 flex gap-1"
-                >
-                    <tag-pill
-                        v-for="(tag, tagID) in tags"
-                        :key="tagID"
-                    >
-                        {{ tag }}
-                    </tag-pill>
-                </div>
-                <slot name="title">
-                    <h1
-                        v-if="title.length"
-                        class="line-clamp-1 font-fjalla text-[32px]"
-                    >
-                        {{ title }}
-                    </h1>
-                </slot>
+        <div class="animate-move sticky top-4 mb-3">
+            <div
+                v-if="tags.length"
+                class="mb-2 flex gap-1"
+            >
+                <tag-pill v-for="tag in tags">
+                    {{ tag }}
+                </tag-pill>
             </div>
-
-            <flame-icon
-                v-if="progress"
-                :progress="progress"
-                class="animate-show !w-8 w-full rounded-full bg-white"
-            />
+            <slot name="title">
+                <h1
+                    v-if="title.length"
+                    class="line-clamp-1 font-fjalla text-[32px]"
+                >
+                    {{ title }}
+                </h1>
+            </slot>
         </div>
         <div
             v-if="genres.length"
@@ -48,7 +35,10 @@
                 {{ genre }}
             </span>
         </div>
-        <div class="animate-hide mb-3">
+        <div
+            v-if="detail?.length || $slots.detail"
+            class="animate-hide sticky mb-3"
+        >
             <slot name="detail">
                 <p
                     v-if="detail.length"
