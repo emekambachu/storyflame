@@ -79,6 +79,7 @@ const updateAvatar = async () => {
             }
         }
         console.log(error);
+        loading.value = false;
     });
     loading.value = false;
 }
@@ -99,17 +100,17 @@ onMounted(() => {
                     v-if="user.avatar && !avatarPreview"
                     :src="user.avatar"
                     alt="avatar"
-                    class="rounded-full w-2/3 mx-auto"
+                    class="rounded-full w-2/3 mx-auto object-cover object-center"
                 />
                 <img
                     v-else-if="avatarPreview"
                     :src="avatarPreview"
                     alt="avatar"
-                    class="rounded-full w-2/3 mx-auto"
+                    class="rounded-full w-2/3 mx-auto object-cover object-center"
                 />
                 <user-icon
                     v-else-if="!user.avatar && !avatarPreview"
-                    class="text-neutral-400 w-2/3 mx-auto"
+                    class="text-neutral-400 w-2/3 mx-auto object-cover object-center"
                 />
             </label>
             <div class="relative">

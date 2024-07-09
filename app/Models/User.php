@@ -9,6 +9,7 @@ use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithId;
 use App\Models\Role\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -61,9 +62,9 @@ class User extends Authenticatable implements ModelWithId
         ];
     }
 
-    public function avatar(): HasOne
+    public function avatar(): BelongsTo
     {
-        return $this->hasOne(Image::class, 'imageable_id', 'id');
+        return $this->belongsTo(Image::class, 'id', 'imageable_id');
     }
 
     public function roles(): BelongsToMany

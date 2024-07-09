@@ -127,6 +127,9 @@ class UserProfileService
         $inputs = $request->all();
         $user = $this->user()->with('avatar')->find(Auth::id());
 
+        // store current avatar in session
+        Session::put('current_avatar', $user->avatar->name ?? null);
+
         $inputs['avatar'] = CrudService::uploadAndCompressImage(
             $request,
             $this->avatarPath,
@@ -135,12 +138,20 @@ class UserProfileService
             'avatar'
         );
 
-        $user->avatar()->updateOrCreate([
-            'imageable_id' => $user->id,
-            'imageable_type' => pathinfo($inputs['avatar'], PATHINFO_EXTENSION),
-            'name' => $inputs['avatar'],
-            'path' => '/'.$this->avatarPath.'/'
-        ]);
+        $updatedAvatar = $user->avatar()->updateOrCreate(
+            ['imageable_id' => $user->id],
+            [
+                'imageable_type' => pathinfo($inputs['avatar'], PATHINFO_EXTENSION),
+                'name' => $inputs['avatar'],
+                'path' => '/' . $this->avatarPath . '/'
+            ]
+        );
+
+        // delete current image if new one has been uploaded
+        if(!empty(Session::get('current_avatar')) && Session::get('current_avatar') !== $updatedAvatar->name){
+            CrudService::deleteFile(Session::get('current_avatar'), $this->avatarPath);
+            Session::forget('current_avatar');
+        }
 
         return [
             'success' => true,
