@@ -13,7 +13,7 @@ const props = defineProps({
 
 const form = reactive({
     email: '',
-    email_confirmation: '',
+    // email_confirmation: '',
 });
 
 const submitted = ref(false);
@@ -42,6 +42,9 @@ const updateEmail = async () => {
 
     }).catch((error) => {
 
+        console.log("AXIOS ERROR", error);
+        return false;
+
         if(error.response){
             console.log(error.response);
 
@@ -68,7 +71,10 @@ const confirmEmailToken = async () => {
     tokenSubmitted.value = false;
     loading.value = true;
 
-    await axios.post('/api/user/email/token', emailToken.value, {
+    await axios.post('/api/user/email/token',
+        {
+                token: emailToken.value,
+    }, {
         headers: {
             'Accept' : 'application/json',
         }
@@ -103,11 +109,11 @@ const confirmEmailToken = async () => {
         <form>
             <div class="flex flex-col gap-6 w-full mb-auto mt-0">
 
-                <Alert :classes="'bg-green-100 border-green-400 text-green-700'" v-if="submitted && !tokenSubmitted">
+                <Alert :classes="'bg-green-100 border-green-400 text-green-700 text-center'" v-if="submitted && !tokenSubmitted">
                     Email update request sent, please check your email for the confirmation code.
                 </Alert>
 
-                <Alert :classes="'bg-green-100 border-green-400 text-green-700'" v-if="submitted && tokenSubmitted">
+                <Alert :classes="'bg-green-100 border-green-400 text-green-700 text-center'" v-if="submitted && tokenSubmitted">
                     Email Successfully Updated.
                 </Alert>
 
@@ -128,25 +134,6 @@ const confirmEmailToken = async () => {
                         />
                         <p class="text-red-500 text-center text-sm" v-if="errors.email">
                             {{ errors.email[0] }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <label
-                            class="text-black text-base font-bold w-full"
-                            for="email"
-                        >
-                            Confirm new email
-                        </label>
-                        <input
-                            id="email"
-                            v-model="form.email_confirmation"
-                            type="email"
-                            class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
-                            required
-                        />
-                        <p class="text-red-500 text-center text-sm" v-if="errors.email_confirmation">
-                            {{ errors.email_confirmation[0] }}
                         </p>
                     </div>
                 </div>

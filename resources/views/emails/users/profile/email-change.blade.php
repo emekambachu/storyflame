@@ -1,16 +1,8 @@
-@component('mail::message')
-    # Your Email Update Token
+@extends('emails.layout')
 
-    @component('mail::panel')
-        {{ $token }}
-    @endcomponent
+@section('title', 'Welcome to Flame')
 
-    {{--    This code will expire in {{config('auth.otp_minutes')}} minutes.--}}
-
-    @component('mail::subcopy')
-        Please do not reply to this email. If you did not request this code, please ignore this email.
-    @endcomponent
-
-    Thanks,<br>
-    {{ config('app.name') }}
-@endcomponent
+@section('content')
+    <p>{{ $name ? 'Dear '.$name : 'Hello' }},</p>
+    <p>{{ $token }}</p>
+@endsection

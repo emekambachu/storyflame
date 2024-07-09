@@ -61,7 +61,7 @@ class UserProfileService
 
         Session::put('new_email', $inputs['email']);
 
-        $token = Str::random(6);
+        $token = BaseService::randomCharacters(6,'0123456789');
 
         TokenUsage::create([
             'key' => $token,
@@ -74,13 +74,14 @@ class UserProfileService
         $emailData = [
             'token' => $token,
             'name' => $user->name ?? $user->first_name.' '.$user->last_name,
+            'email' => $user->email,
         ];
 
         BaseService::sendEmailGeneral(
             $emailData,
             'emails.users.profile.email-change',
             'Email Change Confirmation',
-            $inputs['email'],
+            $emailData['email'],
             $emailData['name']
         );
 

@@ -13,7 +13,7 @@ class UserProfileUpdateEmailRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,14 +24,14 @@ class UserProfileUpdateEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|string|min:8|confirmed',
+            'email' => 'required|email|string|min:8',
         ];
     }
 
     public function messages()
     {
         return [
-            'email.confirmed' => 'Passwords do not match',
+//            'email.confirmed' => 'Passwords do not match',
             'email.min' => 'Password must be at least 8 characters',
         ];
     }
