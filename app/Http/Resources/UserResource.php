@@ -15,6 +15,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            'full_name' => $this->first_name .' '. $this->last_name,
             'name' => $this->name,
             'email' => $this->email,
             'completed_achievements' => $this->userAchievements->where('completed', true)->count(),
@@ -24,7 +25,7 @@ class UserResource extends JsonResource
             'bio' => $this->getSummary('bio')?->summary,
             'writing_goals' => $this->getSummary('writing_goals')?->summary,
 
-            'avatar' => !empty($this->avatar) ? config('app.url') . $this->avatar_path . $this->avatar : null,
+            'avatar' => $this->avatar && !empty($this->avatar->name) ? $this->avatar->path.$this->avatar->name : null,
             'password' => $this->password,
 
             'achievements' => AchievementResource::collection($this->achievements ?? []),

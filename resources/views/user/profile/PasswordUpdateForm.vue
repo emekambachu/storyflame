@@ -6,10 +6,10 @@ import Alert from '@/components/forms/Alert.vue'
 
 const props = defineProps({
     user: {
-        type: String,
+        type: Object,
         required: true,
     },
-})
+});
 
 const form = reactive({
     current_password: '',

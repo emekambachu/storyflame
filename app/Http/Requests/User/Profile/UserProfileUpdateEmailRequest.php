@@ -6,14 +6,14 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserProfileUpdateBioRequest extends FormRequest
+class UserProfileUpdateEmailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,18 +24,15 @@ class UserProfileUpdateBioRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
+            'email' => 'required|email|string|min:8|confirmed',
         ];
     }
 
     public function messages()
     {
         return [
-            'first_name.required' => 'First name is required!',
-            'first_name.string' => 'First name must be a string!',
-            'last_name.required' => 'Last name is required!',
-            'last_name.string' => 'Last name must be a string!',
+            'email.confirmed' => 'Passwords do not match',
+            'email.min' => 'Password must be at least 8 characters',
         ];
     }
 

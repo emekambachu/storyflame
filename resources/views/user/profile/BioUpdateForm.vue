@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, defineProps, ref } from 'vue'
 import axios from 'axios'
 import ButtonWithLoader from '@/components/forms/ButtonWithLoader.vue'
 import Alert from '@/components/forms/Alert.vue'
 
 const props = defineProps({
     user: {
-        type: String,
+        type: Object,
         required: true,
     },
 })
@@ -14,7 +14,6 @@ const props = defineProps({
 const form = reactive({
     first_name: props.user ? props.user.first_name : '',
     last_name: props.user ? props.user.last_name : '',
-    bio:    props.user ? props.user.bio : '',
 });
 
 const submitted = ref(false);
@@ -115,26 +114,6 @@ onMounted(() => {
                 </p>
             </div>
 
-            <div>
-                <label
-                    class="text-black text-base font-bold w-full"
-                    for="bio"
-                >
-                    Bio
-                </label>
-                <textarea
-                    id="bio"
-                    v-model="form.bio"
-                    class="mt-1 bg-white font-normal text-xl text-neutral-950 block w-full px-3 py-3 border-b border-gray-400 focus:outline-none"
-                    placeholder="Enter your bio"
-                    required
-                >
-                </textarea>
-                <p class="text-red-500 text-center text-sm" v-if="errors.bio">
-                    {{ errors.bio[0] }}
-                </p>
-            </div>
-
         </div>
 
         <div class="flex flex-col items-center w-full mt-2 mb-0">
@@ -142,7 +121,7 @@ onMounted(() => {
                :class="'text-white bg-orange-600 hover:bg-orange-700'"
                @click="updateBio"
                :loading="loading">
-               Update Bio
+               Update
               </ButtonWithLoader>
         </div>
     </form>

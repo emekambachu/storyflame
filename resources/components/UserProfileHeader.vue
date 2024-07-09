@@ -9,10 +9,10 @@
                 class="absolute flex aspect-square h-28 shrink-0 origin-top items-center justify-center rounded-full bg-gray-200"
             >
                 <img
-                    v-if="user.avatar?.path"
-                    :src="user.avatar?.path"
+                    v-if="user.avatar"
+                    :src="user.avatar"
                     alt="avatar"
-                    class="rounded-full"
+                    class="rounded-full w-full h-full object-cover object-center"
                 />
                 <user-icon
                     v-else
@@ -32,7 +32,7 @@
         >
             <div class="flex justify-center mx-auto">
                 <h2 class="text-2xl sticky font-bold text-neutral-700 mr-2">
-                    {{ user.name ?? 'No name' }}
+                    {{ getNames() }}
                 </h2>
                 <span class="my-auto text-sm">
                     <router-link
@@ -77,8 +77,9 @@ import { onMounted, PropType, ref } from 'vue'
 import User from '@/types/user'
 import { animate, scroll } from 'motion'
 import EditIconSquare from '@/components/icons/EditIconSquare.vue'
+import { defineProps } from 'vue'
 
-defineProps({
+const props = defineProps({
     user: {
         type: Object as PropType<User>,
         required: true,
@@ -90,7 +91,20 @@ const verifiedIcon = ref<InstanceType<typeof UserIcon> | null>(null)
 const container = ref<HTMLDivElement | null>(null)
 const userInfo = ref<HTMLDivElement | null>(null)
 
+const getNames = () => {
+    let name = "No Name";
+    if(props.name){
+        name = props.name;
+    }else if(props.full_name && props.full_name !== ""){
+        name = props.full_name;
+    }else{
+        name = "No Name";
+    }
+    return name;
+}
+
 onMounted(() => {
+
     scroll(
         animate(userIcon.value, {
             scale: 0.4,

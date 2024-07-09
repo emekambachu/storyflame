@@ -36,7 +36,6 @@ const validationService = {
     },
 
     validateFileType(file, allowedExtensions = []) {
-      console.log("inside validation service", file, allowedExtensions);
       const fileName = file.name;
       const fileExtension = fileName.split('.').pop().toLowerCase();
 

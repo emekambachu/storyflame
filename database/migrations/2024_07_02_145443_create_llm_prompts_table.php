@@ -20,8 +20,8 @@ return new class extends Migration
             $table->timestamps();
             $table->engine = 'InnoDB';
 
-            $table->foreign('current_prompt_version_id')->references('id')->on('llm_prompt_versions')->onDelete('set null');
-            $table->foreign('updated_by_user_id')->references('id')->on('users')->onDelete('set null');
+//            $table->foreign('current_prompt_version_id')->references('id')->on('llm_prompt_versions')->onDelete('set null');
+//            $table->foreign('updated_by_user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
