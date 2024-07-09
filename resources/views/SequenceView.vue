@@ -57,10 +57,10 @@
 </template>
 
 <script lang="ts" setup>
-import SequenceArcTab from '@/components/SequenceArcTab.vue'
+import SequenceArcTab from '@/components/sequence/SequenceArcTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
-import SequenceDetailsTab from '@/components/SequenceDetailsTab.vue'
-import SequenceElementsTab from '@/components/SequenceElementsTab.vue'
+import SequenceDetailsTab from '@/components/sequence/SequenceDetailsTab.vue'
+import SequenceElementsTab from '@/components/sequence/SequenceElementsTab.vue'
 
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import TabLayout from '@/components/TabLayout.vue'
@@ -315,7 +315,7 @@ const sequence = {
 
     plot: {
         title: 'Plot',
-        readiness: 4,
+        progress: 4,
         achievements: [
             { image: { path: 'https://picsum.photos/900' } },
             { image: { path: 'https://picsum.photos/900' } },
@@ -368,7 +368,7 @@ const sequence = {
 
     characters_list: {
         title: 'Characters',
-        readiness: 2,
+        progress: 2,
         achievements: [
             { image: { path: 'https://picsum.photos/900' } },
             { image: { path: 'https://picsum.photos/900' } },
@@ -421,7 +421,7 @@ const sequence = {
 
     sequences: {
         title: 'Sequences',
-        readiness: 1,
+        progress: 20,
         achievements: [
             { image: { path: 'https://picsum.photos/900' } },
             { image: { path: 'https://picsum.photos/900' } },

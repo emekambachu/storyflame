@@ -15,8 +15,8 @@
         </div>
 
         <flame-icon
-            v-if="item?.readiness"
-            :priority="item.readiness"
+            v-if="item?.progress"
+            :priority="item.progress"
             class="!h-8 !w-8"
             flameClass="w-6 h-6"
         />

@@ -6,7 +6,7 @@
         transparent
     >
         <div class="flex flex-col gap-4 pb-8">
-            <!-- 
+            <!--
                     { title: 'Overview', template: 'overview' },
              -->
             <tab-layout
@@ -16,11 +16,9 @@
                     { title: 'References', template: 'references' },
                 ]"
                 class="!gap-0"
-                header-height="260"
-                collapse-header-height="200"
             >
                 <header-animated
-                    collapse-header-height="68"
+                    collapse-header-height="120"
                     header-height="260"
                 >
                     <theme-header
@@ -56,10 +54,10 @@
 
 <script lang="ts" setup>
 import TabLayout from '@/components/TabLayout.vue'
-import ThemeOverviewTab from '@/components/ThemeOverviewTab.vue'
+import ThemeOverviewTab from '@/components/theme/ThemeOverviewTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
-import ThemeProgressionTab from '@/components/ThemeProgressionTab.vue'
-import ThemeReferencesTab from '@/components/ThemeReferencesTab.vue'
+import ThemeProgressionTab from '@/components/theme/ThemeProgressionTab.vue'
+import ThemeReferencesTab from '@/components/theme/ThemeReferencesTab.vue'
 
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
