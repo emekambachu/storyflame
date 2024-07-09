@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'fankind.test:81,localhost:81,localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,127.0.0.1:81,::1',
+        'fankind.test:81,localhost:83,localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,127.0.0.1:81,::1',
         Sanctum::currentApplicationUrlWithPort()
     ))),
 

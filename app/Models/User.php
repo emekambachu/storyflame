@@ -14,11 +14,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Paddle\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements ModelWithId
 {
-    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints, HasSummaries;
+    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints, HasSummaries, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +31,12 @@ class User extends Authenticatable implements ModelWithId
         'email',
         'password',
         'attributes',
+        'paddle_id',
+        'trial_ends_at',
+    ];
+
+    protected $dates = [
+        'trial_ends_at',
     ];
 
     /**
@@ -101,4 +108,21 @@ class User extends Authenticatable implements ModelWithId
     {
         return $this->hasMany(UserAchievement::class);
     }
+
+    public function activeSubscriptions(){
+        return $this->subscriptions()
+            ->where('ends_at', '>', now())
+            ->orderBy('ends_at', 'asc')
+            ->get();
+    }
+
+//    public function createSubscription($name, $plan)
+//    {
+//        return $this->subscriptions()->create([
+//            'name' => $name,
+//            'plan' => $plan,
+//            'quantity' => 1,
+//            'ends_at' => now()->addDays(30),
+//        ]);
+//    }
 }

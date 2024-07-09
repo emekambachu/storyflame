@@ -13,6 +13,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'paddle_id' => $this->paddle_id,
             'name' => $this->name,
             'email' => $this->email,
             'achievements' => AchievementResource::collection($this->achievements),

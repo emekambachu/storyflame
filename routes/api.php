@@ -18,37 +18,44 @@ Route::group([
             Route::post('register', 'RegisterController@register');
             Route::post('login', 'LoginController@authenticate');
             Route::post('federate', 'LoginController@federate');
-            Route::middleware('auth:sanctum')->group(function () {
-                Route::get('user', 'LoginController@user');
-                Route::post('logout', 'LoginController@logout');
-            });
+            Route::get('user', 'LoginController@user');
+            Route::post('logout', 'LoginController@logout');
         });
 
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::group([
-                'prefix' => 'onboarding',
-            ], function () {
-                Route::get('/', 'OnboardingController@index');
-                Route::post('/', 'OnboardingController@store');
-                Route::get('summary', 'OnboardingController@summary');
-            });
-            Route::post('transcribe', 'TranscriptionController@transcribe');
+        Route::group([
+            'prefix' => 'onboarding',
+        ], function () {
+            Route::get('/', 'OnboardingController@index');
+            Route::post('/', 'OnboardingController@store');
+            Route::get('summary', 'OnboardingController@summary');
+        });
+        Route::post('transcribe', 'TranscriptionController@transcribe');
 
-            Route::group([
-                'prefix' => 'achievements',
-            ], function () {
-                Route::resource('achievements', 'AchievementController');
-            });
+        Route::group([
+            'prefix' => 'achievements',
+        ], function () {
+            Route::resource('achievements', 'AchievementController');
+        });
 
-            Route::resource('stories', 'StoryController');
+        Route::resource('stories', 'StoryController');
 
-            Route::group([
-                'prefix' => 'conversation',
-                'namespace' => 'Conversation',
-            ], function () {
-                Route::get('{engine}', 'ConversationEngineController@index');
-                Route::post('{engine}', 'ConversationEngineController@store');
-            });
+        Route::group([
+            'prefix' => 'conversation',
+            'namespace' => 'Conversation',
+        ], function () {
+            Route::get('{engine}', 'ConversationEngineController@index');
+            Route::post('{engine}', 'ConversationEngineController@store');
+        });
+
+        Route::group([
+            'prefix' => 'subscriptions',
+        ], function () {
+            Route::get('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'index']);
+            Route::post('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'store']);
+            Route::post('/customer', [\App\Http\Controllers\Api\SubscriptionController::class, 'createCustomer']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'destroy']);
+            Route::get('/invoices', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoices']);
         });
     });
 });

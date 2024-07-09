@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ChatMessageResource;
 use App\Http\Resources\StoryResource;
 use App\Models\Story;
+use App\Models\User;
 use App\Services\StoryCreatingService;
 use App\Services\StoryService;
 use Illuminate\Http\Request;
@@ -13,17 +14,19 @@ use Illuminate\Support\Facades\Gate;
 
 class StoryController extends Controller
 {
+    private $user;
     public function __construct(
         private readonly StoryCreatingService $creatingService
     )
     {
+        $user = User::find(38);
     }
 
     public function index()
     {
         Gate::authorize('viewAny', Story::class);
 
-        return $this->successResponse('success', StoryResource::collection(auth()->user()->stories));
+        return $this->successResponse('success', StoryResource::collection($this->user));
     }
 
     public function store(Request $request, StoryService $storyService)
@@ -36,9 +39,9 @@ class StoryController extends Controller
 
         return $this->successResponse('success', [
             'question' => ChatMessageResource::make(
-                $this->creatingService->getLastQuestion(auth()->user())
+                $this->creatingService->getLastQuestion($this->user)
             ),
-            'progress' => $this->creatingService->getProgress(auth()->user())
+            'progress' => $this->creatingService->getProgress($this->user)
         ]);
 
 //        return $storyService->process($validated['file']);
@@ -47,7 +50,7 @@ class StoryController extends Controller
 //            'name' => ['required'],
 //        ]);
 
-//        return auth()->user()->stories()->create($data);
+//        return $this->>user->stories()->create($data);
     }
 
     public function show(Story $story)

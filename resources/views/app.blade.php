@@ -50,8 +50,14 @@
                 y.parentNode.insertBefore(t, y)
             })(window, document, 'clarity', 'script', 'mq1nrqms1v')
         </script>
-
     @endif
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script type="text/javascript">
+        Paddle.Environment.set("sandbox");
+        Paddle.Initialize({
+            token: 'test_a80328e7467f6d2e32ee3131878',
+        });
+    </script>
 </head>
 <body>
 @vite('resources/app.ts')
