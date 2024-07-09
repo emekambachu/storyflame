@@ -27,29 +27,21 @@
                             template: 'achievements',
                         },
                     ]"
-                    class="gap-4"
                     collapse-header-height="100"
                     header-height="200"
                 >
-                    <header-animated>
-                        <user-profile-header :user="user" />
-                        <template #sticky>
-                            <tab-layout-tabs />
-                        </template>
-                    </header-animated>
-                    <tab-layout-view>
-                        <template #profile>
-                            <profile-tab :user="user" />
-                        </template>
-                        <template #stories>
-                            <stories-tab :user="user" />
-                        </template>
-                        <template #achievements>
-                            <achievements-tab
-                                :achievements="user.achievements"
-                            />
-                        </template>
-                    </tab-layout-view>
+                    <user-profile-header :user="user" />
+                    <template #profile>
+                        <profile-tab :user="user" />
+                    </template>
+                    <template #stories>
+                        <profile-stories-tab :user="user" />
+                    </template>
+                    <template #achievements>
+                        <profile-achievements-tab
+                            :achievements="user?.achievements"
+                        />
+                    </template>
                 </tab-layout>
             </div>
         </div>
@@ -57,11 +49,13 @@
 </template>
 
 <script lang="ts" setup>
-import ProfileTab from '@/components/ProfileTab.vue'
-import StoriesTab from '@/components/StoriesTab.vue'
-import AchievementsTab from '@/components/AchievementsTab.vue'
+import { onMounted, ref } from 'vue'
+import ProfileTab from '@/components/profile/ProfileTab.vue'
+import ProfileStoriesTab from '@/components/profile/ProfileStoriesTab.vue'
+import ProfileAchievementsTab from '@/components/profile/ProfileAchievementsTab.vue'
 import TabLayout from '@/components/TabLayout.vue'
-import UserProfileHeader from '@/components/UserProfileHeader.vue'
+import UserProfileHeader from '@/components/headers/UserProfileHeader.vue'
+import { useAuthStore } from '@/stores/auth'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'

@@ -15,6 +15,7 @@
         <text-list
             v-if="list?.length"
             :items="list"
+            list-class="text-sm text-stone-800"
         />
     </div>
 </template>

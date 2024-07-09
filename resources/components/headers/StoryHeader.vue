@@ -3,6 +3,7 @@
         :detail="story.logline"
         :genres="story.genres"
         :tags="['TV Show', 'MA-16']"
+        :achievements="story?.achievements"
         :title="story.name"
         :background="story.image?.path"
     />

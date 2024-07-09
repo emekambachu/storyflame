@@ -11,9 +11,9 @@
                     activeTab == tab.template
                         ? menuBtnSelectedClass
                         : menuBtnClass,
+                    mainBtnClass,
                 ]"
                 :data-key="tab.template"
-                class="select-none whitespace-nowrap border-b py-1 text-sm font-medium [&:not(:first-child)]:pl-5 [&:not(:last-child)]:pr-5"
                 @click="handleTabClick(tab.template)"
             >
                 {{ tab.title }}
@@ -50,19 +50,24 @@ function handleTabClick(template: string) {
 const props = defineProps({
     menuWrapperClass: {
         type: String,
-        default: 'mx-auto max-w-full overflow-x-auto ',
+        default: 'mx-auto w-full max-w-full overflow-x-auto px-2',
     },
     menuContainerClass: {
         type: String,
-        default: 'z-10 flex w-full flex-nowrap px-4',
+        default: 'z-10 flex w-full flex-nowrap pt-5',
+    },
+    mainBtnClass: {
+        type: String,
+        default:
+            'select-none whitespace-nowrap px-4 pb-2 text-base font-medium',
     },
     menuBtnSelectedClass: {
         type: String,
-        default: 'border-red-600 text-red-600',
+        default: 'border-b border-stone-950 text-stone-950',
     },
     menuBtnClass: {
         type: String,
-        default: 'border-neutral-300 text-neutral-500',
+        default: 'border-b border-stone-200 text-stone-400',
     },
 })
 </script>
