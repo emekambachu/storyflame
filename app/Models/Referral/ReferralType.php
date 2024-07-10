@@ -18,8 +18,14 @@ class ReferralType extends Model
         'description'
     ];
 
-    public function users(): BelongsToMany
+    public function referrers(): BelongsToMany
     {
-        return $this->BelongsToMany(User::class, 'user_referrals', 'referral_type_id', 'user_id');
+        return $this->BelongsToMany(User::class, 'user_referrals', 'referrer_id', 'user_id');
     }
+
+    public function recipients(): BelongsToMany
+    {
+        return $this->BelongsToMany(User::class, 'user_referrals', 'recipient_id', 'user_id');
+    }
+
 }
