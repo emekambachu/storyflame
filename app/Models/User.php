@@ -80,6 +80,11 @@ class User extends Authenticatable implements ModelWithId
         return $this->hasManyThrough(Character::class, Story::class);
     }
 
+    public function customer()
+    {
+        return $this->morphOne(Customer::class, 'billable');
+    }
+
     public function verificationCodes(): HasMany
     {
         return $this->hasMany(VerificationCode::class);
@@ -111,8 +116,9 @@ class User extends Authenticatable implements ModelWithId
 
     public function activeSubscriptions(){
         return $this->subscriptions()
-            ->where('ends_at', '>', now())
-            ->orderBy('ends_at', 'asc')
+            ->with('items.product', 'items.productPrice')
+            ->where('next_billed_at', '>', now())
+            ->orderBy('next_billed_at', 'asc')
             ->get();
     }
 

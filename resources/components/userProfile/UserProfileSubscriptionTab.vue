@@ -35,7 +35,10 @@
         <h2>Invoices</h2>
         <div v-for="invoice in invoices" :key="invoice.id" class="invoice-item">
             <span>{{ invoice.date }}</span>
-            <a :href="invoice.url" target="_blank">View</a>
+            <div
+                @click="loadInvoiceLinkInNewTab(invoice.transaction_id)"
+                class="cursor-pointer"
+            >View</div>
         </div>
     </div>
     <div v-else>
@@ -48,7 +51,7 @@
 
 <script lang="ts" setup>
 import {computed, ref, onMounted, PropType} from 'vue';
-import { createCustomer, getSubscriptions, changeSubscription, cancelSubscription, getInvoices } from '@/utils/endpoints';
+import { createCustomer, getSubscriptions, changeSubscription, cancelSubscription, getInvoices, getInvoiceLink } from '@/utils/endpoints';
 import User from "@/types/user.js";
 
 const props = defineProps({
@@ -79,6 +82,12 @@ const fetchInvoices = async () => {
     const response = await getInvoices();
     console.log('the invoices are ', response);
     invoices.value = response.invoices;
+};
+
+const loadInvoiceLinkInNewTab = async (transactionId) => {
+    const response = await getInvoiceLink(transactionId);
+    console.log('the invoice link response is ', response);
+    window.open(response.url, '_blank');
 };
 
 const toggleBilling = (cycle) => {
@@ -117,7 +126,7 @@ const selectPlan = async (plan) => {
         Paddle.Checkout.open({
             items: [
                 {
-                    price_id: "pri_01j2798w4jks9xccmxcg95ktkf",
+                    price_id: "pip install code2prompt\n",
                     quantity: 1,
                 },
             ],

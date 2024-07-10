@@ -50,6 +50,10 @@ export const getInvoices = async () => {
     return response.response.data;
 };
 
+export const getInvoiceLink = async (id) => {
+    const response = await api.get(`/api/v1/subscriptions/invoices/${id}`);
+    return response.response.data;
+}
 export const createCustomer = async () => {
     const response = await api.post('/api/v1/subscriptions/customer');
     return response.response.data;

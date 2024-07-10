@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Paddle\Cashier;
 use Laravel\Paddle\Concerns\Prorates;
 use Laravel\Paddle\Payment;
-use Laravel\Paddle\SubscriptionItem;
 
 class Subscription extends \Laravel\Paddle\Subscription
 {
@@ -19,6 +18,22 @@ class Subscription extends \Laravel\Paddle\Subscription
         'status',
         'trial_ends_at',
         'paused_at',
-        'ends_at'
+        'ends_at',
+        'next_billed_at'
     ];
+
+    protected $dates = [
+        'trial_ends_at',
+        'paused_at',
+        'ends_at',
+        'next_billed_at'
+    ];
+
+    /**
+     * Get the subscription items for the subscription.
+     */
+    public function items()
+    {
+        return $this->hasMany(SubscriptionItem::class);
+    }
 }

@@ -136,16 +136,30 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    // create a method to get the invoice PDF link using Cashier::api() for https://api.paddle.com/transactions/{transaction_id}
+    public function invoiceLink($id)
+    {
+        $user = Auth::user();
+        $user = User::find(38);
+        $transaction = $user->transactions()->findOrFail($id);
+
+        $pdf = $transaction->invoicePdf();
+
+        return response()->json(['url' => $pdf]);
+    }
+
     public function createCustomer(Request $request)
     {
         $user = Auth::user();
         $user = User::find(38);
 
         try {
-            $user = $user->createAsCustomer([
-                'email' => $user->email,
-                'name' => $user->name,
-            ]);
+            if(!$user->customer){
+                $user = $user->createAsCustomer([
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ]);
+            }
 
             return response()->json(['user' => $user], 201);
         } catch (\Exception $e) {

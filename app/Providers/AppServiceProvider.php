@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Customer;
 use App\Models\Subscription;
 use App\Models\Transaction;
 use App\Models\User;
@@ -24,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Cashier::useCustomerModel(User::class);
+        Cashier::useCustomerModel(Customer::class);
         Cashier::useSubscriptionModel(Subscription::class);
     }
 }

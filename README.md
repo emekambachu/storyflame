@@ -20,6 +20,37 @@ hookdeck listen http://localhost:83
 
 ---
 
+## Using Code2Prompt to Generate Prompts
+
+This is a useful tool to create a markdown file of our repository to improve prompting when working LLM's on our codebase.
+
+Install Code2Prompt
+```bash
+pip install code2prompt
+```
+
+Check usage at: https://github.com/raphaelmansuy/code2prompt
+
+### Popular Commands
+
+**Specific Folders**
+
+Required for use with Claude Projects. Includes only the specified folders and shows tokens.
+```bash
+code2prompt --path /path/to/project/storyflame --output /path/to/output/storyflame_app-v1.0.md --tokens --filter "app/**" /path/to/output/storyflame_codebase-v1.0.md --tokens --filter "app/**"
+```
+
+**Full Project with excludes**
+
+Includes all core project files and shows tokens.
+```bash
+code2prompt --path /path/to/project --output
+/path/to/output/storyflame_codebase-v1.0.md --tokens --exclude "**/vendor/**,**/node_modules/**,**/
+storage/**"
+```
+
+---
+
 ## Setup Guide for Hookdeck and Paddle Webhooks
 
 This guide will help you set up Hookdeck to receive Paddle.com staging webhooks for your Laravel 11 application running on Docker using Laravel Sail.

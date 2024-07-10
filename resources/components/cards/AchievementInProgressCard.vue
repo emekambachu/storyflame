@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import PointIcon from '@/components/icons/PointIcon.vue'
 import AchievementProgressCircle from '@/components/AchievementProgressCircle.vue'
+import { hexToRgba } from '@/utils/colorUtils'
 
 const props = defineProps({
     card: {
@@ -49,29 +50,6 @@ const props = defineProps({
     showStoryName: { type: Boolean, default: true },
 })
 
-function hexToRgba(hex, alpha = 10) {
-    // Remove the leading '#' if it is present
-    hex = hex.replace(/^#/, '')
-
-    // Convert 3-digit hex to 6-digit hex
-    if (hex.length === 3) {
-        hex = hex
-            .split('')
-            .map((char) => char + char)
-            .join('')
-    }
-
-    // Parse the r, g, b values
-    const intVal = parseInt(hex, 16)
-    const r = (intVal >> 16) & 255
-    const g = (intVal >> 8) & 255
-    const b = intVal & 255
-
-    // Convert alpha to the range [0, 1]
-    alpha = alpha / 100
-
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
-}
 </script>
 
 <style scoped></style>

@@ -56,6 +56,7 @@ Route::group([
             Route::put('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'update']);
             Route::delete('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'destroy']);
             Route::get('/invoices', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoices']);
+            Route::get('/invoices/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoiceLink']);
         });
     });
 });

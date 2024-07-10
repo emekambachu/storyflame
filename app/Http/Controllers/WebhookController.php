@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Product;
+use App\Models\ProductPrice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -38,14 +40,14 @@ class WebhookController extends Controller
     /**
      * Handle a Paddle webhook call.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function __invoke(Request $request)
     {
         $payload = $request->all();
 
-        $method = 'handle'.Str::studly(Str::replace('.', ' ', $payload['event_type']));
+        $method = 'handle' . Str::studly(Str::replace('.', ' ', $payload['event_type']));
 
         WebhookReceived::dispatch($payload);
 
@@ -63,7 +65,7 @@ class WebhookController extends Controller
     /**
      * Handle customer updated.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleCustomerUpdated(array $payload)
@@ -76,7 +78,7 @@ class WebhookController extends Controller
         // Attempt to find the customer by Paddle ID
         $customer = $this->findCustomer($data['id']);
 
-        if (! $customer) {
+        if (!$customer) {
             // Log the error if the customer is not found
             Log::error('Customer not found for Paddle ID: ' . $data['id']);
             return;
@@ -104,7 +106,7 @@ class WebhookController extends Controller
     /**
      * Handle transaction completed.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleTransactionCompleted(array $payload)
@@ -116,7 +118,7 @@ class WebhookController extends Controller
             return;
         }
 
-        if (! $billable = $this->findBillable($data['customer_id'])) {
+        if (!$billable = $this->findBillable($data['customer_id'])) {
             Log::error('Billable not found for Paddle ID: ' . $data['customer_id']);
             return;
         }
@@ -141,14 +143,14 @@ class WebhookController extends Controller
     /**
      * Handle transaction updated.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleTransactionUpdated(array $payload)
     {
         $data = $payload['data'];
 
-        if (! $transaction = $this->findTransaction($data['id'])) {
+        if (!$transaction = $this->findTransaction($data['id'])) {
             return;
         }
 
@@ -166,7 +168,7 @@ class WebhookController extends Controller
     /**
      * Handle subscription created.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleSubscriptionCreated(array $payload)
@@ -177,14 +179,17 @@ class WebhookController extends Controller
             return;
         }
 
-        if (! $billable = $this->findBillable($data['customer_id'])) {
+        if (!$billable = $this->findBillable($data['customer_id'])) {
             return;
         }
+
+        Log::info('Subscription data is ' . json_encode($data));
 
         $subscription = $billable->subscriptions()->create([
             'type' => $data['custom_data']['subscription_type'] ?? Subscription::DEFAULT_TYPE,
             'paddle_id' => $data['id'],
             'status' => $data['status'],
+            'next_billed_at' => Carbon::parse($data['next_billed_at'], 'UTC'),
             'trial_ends_at' => $data['status'] === Subscription::STATUS_TRIALING
                 ? Carbon::parse($data['next_billed_at'], 'UTC')
                 : null,
@@ -207,14 +212,14 @@ class WebhookController extends Controller
     /**
      * Handle subscription updated.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleSubscriptionUpdated(array $payload)
     {
         $data = $payload['data'];
 
-        if (! $subscription = $this->findSubscription($data['id'])) {
+        if (!$subscription = $this->findSubscription($data['id'])) {
             return;
         }
 
@@ -225,6 +230,8 @@ class WebhookController extends Controller
         } else {
             $subscription->trial_ends_at = null;
         }
+
+        $subscription->next_billed_at = Carbon::parse($data['next_billed_at'], 'UTC');
 
         if (isset($data['paused_at'])) {
             $subscription->paused_at = Carbon::parse($data['paused_at'], 'UTC');
@@ -267,14 +274,14 @@ class WebhookController extends Controller
     /**
      * Handle subscription paused.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleSubscriptionPaused(array $payload)
     {
         $data = $payload['data'];
 
-        if (! $subscription = $this->findSubscription($data['id'])) {
+        if (!$subscription = $this->findSubscription($data['id'])) {
             return;
         }
 
@@ -292,14 +299,14 @@ class WebhookController extends Controller
     /**
      * Handle subscription canceled.
      *
-     * @param  array  $payload
+     * @param array $payload
      * @return void
      */
     protected function handleSubscriptionCanceled(array $payload)
     {
         $data = $payload['data'];
 
-        if (! $subscription = $this->findSubscription($data['id'])) {
+        if (!$subscription = $this->findSubscription($data['id'])) {
             return;
         }
 
@@ -317,7 +324,7 @@ class WebhookController extends Controller
     /**
      * Get the customer instance by its Paddle customer ID.
      *
-     * @param  string  $customerId
+     * @param string $customerId
      * @return \Laravel\Paddle\Billable|null
      */
     protected function findBillable($customerId)
@@ -331,7 +338,7 @@ class WebhookController extends Controller
     /**
      * Find the first customer matching a Paddle customer ID.
      *
-     * @param  string  $customerId
+     * @param string $customerId
      * @return \Laravel\Paddle\Customer|null
      */
     protected function findCustomer(string $customerId)
@@ -345,7 +352,7 @@ class WebhookController extends Controller
     /**
      * Find the first subscription matching a Paddle subscription ID.
      *
-     * @param  string  $subscriptionId
+     * @param string $subscriptionId
      * @return \Laravel\Paddle\Subscription|null
      */
     protected function findSubscription(string $subscriptionId)
@@ -356,7 +363,7 @@ class WebhookController extends Controller
     /**
      * Determine if a subscription with a given Paddle ID already exists.
      *
-     * @param  string  $subscriptionId
+     * @param string $subscriptionId
      * @return bool
      */
     protected function subscriptionExists(string $subscriptionId)
@@ -367,7 +374,7 @@ class WebhookController extends Controller
     /**
      * Find the first transaction matching a Paddle transaction ID.
      *
-     * @param  string  $transactionId
+     * @param string $transactionId
      * @return \Laravel\Paddle\Transaction|null
      */
     protected function findTransaction(string $transactionId)
@@ -378,11 +385,120 @@ class WebhookController extends Controller
     /**
      * Determine if a transaction with a given ID already exists.
      *
-     * @param  string  $transactionId
+     * @param string $transactionId
      * @return bool
      */
     protected function transactionExists(string $transactionId)
     {
         return Cashier::$transactionModel::where('paddle_id', $transactionId)->count() > 0;
+    }
+
+    protected function handleProductCreated(array $payload)
+    {
+        $data = $payload['data'];
+        Log::info('handleProductCreated: ' . json_encode($data));
+
+        $product = $this->updateOrCreateProduct($data);
+    }
+
+    protected function handleProductUpdated(array $payload)
+    {
+        $data = $payload['data'];
+        Log::info('handleProductUpdated: ' . json_encode($data));
+
+        $product = $this->updateOrCreateProduct($data);
+    }
+
+    private function updateOrCreateProduct($data)
+    {
+        $type = null;
+
+        $benefits = [
+            'includes' => [],
+            'excludes' => [],
+        ];
+
+        if (isset($data['custom_data']['type']) && in_array($data['custom_data']['type'], ['subscription', 'one_time_purchase'])) {
+            $type = $data['custom_data']['type'];
+        }
+
+        if (isset($data['custom_data']['includes']) && is_string($data['custom_data']['includes'])) {
+            $benefits['includes'] = explode(',', $data['custom_data']['includes']);
+        }
+        if (isset($data['custom_data']['excludes']) && is_string($data['custom_data']['excludes'])) {
+            $benefits['excludes'] = array_merge($benefits, explode(',', $data['custom_data']['excludes']));
+        }
+
+        $product = Product::updateOrCreate(
+            [
+                'paddle_id' => $data['id']
+            ],
+            [
+                'name' => $data['name'],
+                'type' => $type,
+                'description' => $data['description'],
+                'benefits' => $benefits,
+                'status' => $data['status'] === 'active' ? 'active' : 'archived',
+            ]
+        );
+
+        Log::info('Product was ' . ($product->wasRecentlyCreated ? 'created' : 'updated') . ' with data: ' . json_encode($product));
+
+        return $product;
+    }
+
+    protected function handlePriceCreated(array $payload)
+    {
+        $data = $payload['data'];
+        Log::info('handlePriceCreated: ' . json_encode($data));
+
+        $productPrice = $this->updateOrCreateProductPrice($data);
+    }
+
+    protected function handlePriceUpdated(array $payload)
+    {
+        $data = $payload['data'];
+        Log::info('handlePriceUpdated: ' . json_encode($data));
+
+        $productPrice = $this->updateOrCreateProductPrice($data);
+    }
+
+    /**
+     * Update or create a product price.
+     *
+     * @param  array  $data
+     * @return \App\Models\ProductPrice
+     */
+    private function updateOrCreateProductPrice($data)
+    {
+        $product = Product::where('paddle_id', $data['product_id'])->first();
+
+        if (!$product) {
+            Log::error('Product not found for Paddle ID: ' . $data['product_id']);
+            return null;
+        }
+
+        $interval = $data['billing_cycle'] && $data['billing_cycle']['interval'] ? $data['billing_cycle']['interval'] : null;
+        $frequency = $data['billing_cycle'] && $data['billing_cycle']['frequency'] ? $data['billing_cycle']['frequency'] : null;
+
+        $productPrice = ProductPrice::updateOrCreate(
+            [
+                'paddle_id' => $data['id'],
+            ],
+            [
+                'product_id' => $product->id,
+                'name' => $data['name'],
+                'description' => $data['description'],
+                'interval' => $interval,
+                'interval_frequency' => $frequency,
+                'price' => $data['unit_price']['amount'],
+                'currency_code' => $data['unit_price']['currency_code'],
+                'status' => $data['status'] === 'active' ? 'active' : 'archived',
+            ]
+        );
+
+        Log::info('Product price was ' . ($productPrice->wasRecentlyCreated ? 'created' : 'updated') . ' with data: ' . json_encode($productPrice));
+
+        return $productPrice;
     }
 }
