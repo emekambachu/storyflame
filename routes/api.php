@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Membership\ReferralTypeController;
+use App\Http\Controllers\User\Auth\UserRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -49,6 +51,7 @@ Route::group([
                 Route::post('{engine}', 'ConversationEngineController@store');
             });
         });
+
     });
 });
 
@@ -66,6 +69,10 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/categories', [CategoryController::class, 'store']);
 Route::put('/categories', [CategoryController::class, 'update']);
 Route::delete('/categories', [CategoryController::class, 'destroy']);
+
+Route::get('/referral-types', [ReferralTypeController::class, 'index']);
+
+Route::get('/register/v2', [UserRegistrationController::class, 'register']);
 
 include __DIR__ . '/admin/api.php';
 include __DIR__ . '/user/api.php';

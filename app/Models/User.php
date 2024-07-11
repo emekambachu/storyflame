@@ -36,6 +36,9 @@ class User extends Authenticatable implements ModelWithId
         'email',
         'password',
         'attributes',
+        'referred_by_id', // the person that referred you
+        'referral_code', // your referral code
+        'is_verified',
         'last_login'
     ];
 
@@ -65,6 +68,11 @@ class User extends Authenticatable implements ModelWithId
     public function avatar(): BelongsTo
     {
         return $this->belongsTo(Image::class, 'id', 'imageable_id');
+    }
+
+    public function referred_by(): BelongsTo
+    {
+        return $this->belongsTo(__CLASS__, 'referred_by_id', 'id');
     }
 
     public function roles(): BelongsToMany
