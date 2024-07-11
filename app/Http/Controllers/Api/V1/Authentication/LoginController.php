@@ -60,7 +60,6 @@ class LoginController extends Controller
         Log::info('PUBLIC FUNCTION USER CALLED');
         Log::info('Request data: ', $request->all());
         $user = Auth::user();
-        $user = User::find(38);
         if ($user) {
             return $this->successResponse('User', UserResource::make($user));
         } else {

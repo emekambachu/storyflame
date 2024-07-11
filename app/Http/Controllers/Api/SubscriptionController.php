@@ -18,7 +18,6 @@ class SubscriptionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user = User::find(38);
 
         $subscriptionInfo = $user->getActiveSubscriptionInfo();
 
@@ -87,7 +86,6 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $user = User::find(38);
         $plan = $request->input('plan');
 
         $subscription = $user->checkout($plan);
@@ -100,7 +98,6 @@ class SubscriptionController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        $user = User::find(38);
 
         $newProductPricePaddleId = $request->input('productPricePaddleId');
 
@@ -142,7 +139,6 @@ class SubscriptionController extends Controller
     public function destroy($id)
     {
         $user = Auth::user();
-        $user = User::find(38);
         $subscription = $user->subscriptions()->findOrFail($id);
 
         $subscription->cancel();
@@ -158,7 +154,6 @@ class SubscriptionController extends Controller
     public function invoices()
     {
         $user = Auth::user();
-        $user = User::find(38);
         $invoices = $user->transactions()->get();
 
         // laravel log with the user id and invoices
@@ -173,7 +168,6 @@ class SubscriptionController extends Controller
     public function invoiceLink($id)
     {
         $user = Auth::user();
-        $user = User::find(38);
         $transaction = $user->transactions()->where('paddle_id', $id)->first();
 
         $pdf = $transaction->invoicePdf();
@@ -184,7 +178,6 @@ class SubscriptionController extends Controller
     public function createCustomer(Request $request)
     {
         $user = Auth::user();
-        $user = User::find(38);
 
         try {
             if(!$user->customer){
