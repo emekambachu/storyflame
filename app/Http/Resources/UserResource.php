@@ -16,6 +16,7 @@ class UserResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'full_name' => $this->first_name .' '. $this->last_name,
+            'paddle_id' => $this->paddle_id,
             'name' => $this->name,
             'email' => $this->email,
             'completed_achievements' => $this->userAchievements->where('completed', true)->count(),

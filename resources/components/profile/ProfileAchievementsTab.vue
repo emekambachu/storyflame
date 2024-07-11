@@ -1,13 +1,13 @@
 <template>
-    <div class="flex flex-col gap-8 w-full">
+    <div class="flex w-full flex-col gap-8">
         <title-section title="Earned achievements">
             <items-list
                 v-slot="{ item }"
                 :items="achievements.filter((item) => item.progress)"
                 class="gap-8"
             >
-                <achievement-card
-                    :item="item"
+                <achievement-in-progress-card
+                    :card="item"
                     class="h-full"
                 />
             </items-list>
@@ -18,8 +18,8 @@
                 v-slot="{ item }"
                 :items="achievements.filter((item) => !item.progress)"
             >
-                <achievement-card
-                    :item="item"
+                <achievement-in-progress-card
+                    :card="item"
                     class="h-full"
                 />
             </items-list>
@@ -30,7 +30,8 @@
 <script lang="ts" setup>
 import ItemsList from '@/components/ItemsList.vue'
 import TitleSection from '@/components/TitleSection.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
+// import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
+import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 
 const props = defineProps({
     achievements: {

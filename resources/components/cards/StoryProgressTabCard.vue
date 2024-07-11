@@ -9,7 +9,10 @@
                     title-class="text-sm text-stone-600 font-bold"
                 />
             </template>
-            <p class="text-sm font-normal text-stone-800">
+            <p
+                v-if="card?.effectiveness"
+                class="text-sm font-normal text-stone-800"
+            >
                 {{ card.effectiveness }}
             </p>
         </title-section>
@@ -21,7 +24,10 @@
                     title-class="text-sm text-stone-600 font-bold"
                 />
             </template>
-            <p class="text-sm font-normal text-stone-800">
+            <p
+                v-if="card.audience"
+                class="text-sm font-normal text-stone-800"
+            >
                 {{ card.audience }}
             </p>
         </title-section>
@@ -33,7 +39,10 @@
                     title-class="text-sm text-stone-600 font-bold"
                 />
             </template>
-            <p class="text-sm font-normal text-stone-800">
+            <p
+                v-if="card.market_comparisons"
+                class="text-sm font-normal text-stone-800"
+            >
                 {{ card.market_comparisons }}
             </p>
         </title-section>

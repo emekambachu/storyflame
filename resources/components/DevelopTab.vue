@@ -9,7 +9,7 @@
                     <title-with-link
                         class="!p-0"
                         title="Progress Report"
-                        title-class="text-lg text-black font-bold"
+                        title-class="text-lg text-stone-800 font-bold"
                         button-text="All Reports"
                     />
                 </template>
@@ -39,7 +39,7 @@
                 <title-with-link
                     title="Continue where you left off"
                     class="!p-0"
-                    title-class="text-lg text-black font-bold"
+                    title-class="text-lg text-stone-800 font-bold"
                 />
             </template>
 
@@ -79,7 +79,7 @@
             </template>
 
             <discrepancies-card
-                v-for="(card, cardID) in story?.discrepancies"
+                v-for="(card, cardID) in data?.discrepancies"
                 :key="cardID"
                 :card="card"
             />

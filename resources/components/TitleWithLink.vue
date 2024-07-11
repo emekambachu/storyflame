@@ -1,11 +1,11 @@
 <template>
     <div class="flex w-full items-center justify-between px-4">
         <slot>
-            <h4>{{ title }}</h4>
+            <h4 :class="titleClass">{{ title }}</h4>
         </slot>
 
         <button
-            class="font-normal text-slate-400"
+            :class="buttonClass"
             @click="handleClick"
         >
             {{ buttonText }}
@@ -22,9 +22,17 @@ const props = defineProps({
         type: String,
         default: () => undefined,
     },
+    titleClass: {
+        type: String,
+        default: '',
+    },
     buttonText: {
         type: String,
         default: 'See all',
+    },
+    buttonClass: {
+        type: String,
+        default: 'font-normal text-slate-400'
     },
     to: {
         type: [String, Object],

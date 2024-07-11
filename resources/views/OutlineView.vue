@@ -18,12 +18,22 @@
                     },
                 ]"
                 :no-animation="true"
-                menu-btn-class="w-full text-base text-stone-500 px-4 py-3 border-none"
-                menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-4 py-3 border-none"
-                menu-container-class="w-full flex rounded-lg bg-stone-100"
-                menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3"
             >
-                <outline-header :outline="outline" />
+                <header-animated
+                    collapse-header-height="120"
+                    header-height="235"
+                >
+                    <outline-header :outline="outline" />
+                    <template #sticky>
+                        <tab-layout-tabs
+                            menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
+                            menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
+                            menu-container-class="w-full flex gap-2"
+                            menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
+                        />
+                    </template>
+                </header-animated>
+
                 <template #expanded>
                     <div class="flex flex-col gap-3 px-3">
                         <sequence-card
@@ -54,7 +64,9 @@ import { useRoute } from 'vue-router'
 // import { getStory } from '@/utils/endpoints'
 // import { useQuery } from '@tanstack/vue-query'
 
-import OutlineHeader from '@/components/OutlineHeader.vue'
+import OutlineHeader from '@/components/headers/OutlineHeader.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
@@ -78,7 +90,7 @@ const outline = {
     title: 'Some title here',
     story: 'Game of Thrones',
     type: 'TV Pilot',
-    format: 'Outline',
+    format: ['Outline'],
 
     progress: 80,
     image: {
@@ -165,6 +177,40 @@ const outline = {
         },
     ],
     sequences: [
+        {
+            type: 'Turning point Sequence',
+            number: 1,
+            progress: 1,
+            title: 'Red Wedding',
+            description:
+                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
+            paragraphs: ['The audience should be surprised and shocked.'],
+        },
+        {
+            type: 'Turning point Sequence',
+            number: 2,
+            progress: 40,
+            title: 'Red Wedding',
+            description:
+                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
+        },
+        {
+            type: 'Turning point Sequence',
+            number: 1,
+            progress: 1,
+            title: 'Red Wedding',
+            description:
+                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
+            paragraphs: ['The audience should be surprised and shocked.'],
+        },
+        {
+            type: 'Turning point Sequence',
+            number: 2,
+            progress: 40,
+            title: 'Red Wedding',
+            description:
+                'A massacre at the wedding of Edmure Tully and Roslin Frey orchestrated by Walder Frey and Roose Bolton, leading to the deaths of key Stark family members.',
+        },
         {
             type: 'Turning point Sequence',
             number: 1,

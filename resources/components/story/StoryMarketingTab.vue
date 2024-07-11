@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { PropType, ref } from 'vue'
-import TargetAudienceCard from '@/components/TargetAudienceCard.vue'
+import TargetAudienceCard from '@/components/cards/TargetAudienceCard.vue'
 
 import ItemsList from '@/components/ItemsList.vue'
 import TitleSection from '@/components/TitleSection.vue'

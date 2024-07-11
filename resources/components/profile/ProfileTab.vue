@@ -26,36 +26,39 @@
         <!--            </items-list>-->
         <!--        </title-section>-->
 
-        <title-section
-            v-if="user.data?.media?.length"
-            title="Inspired by"
-        >
-            <items-list
-                v-slot="{ item }"
-                :items="user.data?.media"
-            >
-                <movie-card :media="item" />
-            </items-list>
-        </title-section>
+<!--        <title-section-->
+<!--            v-if="user.data?.media?.length"-->
+<!--            title="Inspired by"-->
+<!--        >-->
+<!--            <items-list-->
+<!--                v-slot="{ item }"-->
+<!--                :items="user.data?.media"-->
+<!--            >-->
+<!--                <image-component-->
+<!--                    :src="item?.path"-->
+<!--                    class="h-40 w-[108px] rounded-lg"-->
+<!--                />-->
+<!--            </items-list>-->
+<!--        </title-section>-->
 
-        <title-section
-            v-if="
-                user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS
-            "
-            title="Favorite characters"
-        >
-            <items-list
-                v-slot="{ item }"
-                :items="user.data?.characters"
-            >
-                <p
-                    class="text-slate-600 whitespace-nowrap text-xs font-normal px-3 py-2 rounded-full"
-                    style="background-color: rgba(96, 159, 255, 0.1)"
-                >
-                    {{ item }}
-                </p>
-            </items-list>
-        </title-section>
+<!--        <title-section-->
+<!--            v-if="-->
+<!--                user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS-->
+<!--            "-->
+<!--            title="Favorite characters"-->
+<!--        >-->
+<!--            <items-list-->
+<!--                v-slot="{ item }"-->
+<!--                :items="user.data?.characters"-->
+<!--            >-->
+<!--                <p-->
+<!--                    class="text-slate-600 whitespace-nowrap text-xs font-normal px-3 py-2 rounded-full"-->
+<!--                    style="background-color: rgba(96, 159, 255, 0.1)"-->
+<!--                >-->
+<!--                    {{ item }}-->
+<!--                </p>-->
+<!--            </items-list>-->
+<!--        </title-section>-->
 
         <title-section>
             <template #title>
@@ -96,24 +99,7 @@
             </router-link>
         </title-section>
 
-        <title-section>
-            <template #title>
-                <title-with-link
-                    title="Your Achievements"
-                    @see-all="activeTab = 'achievements'"
-                />
-            </template>
-            <items-list
-                v-slot="{ item }"
-                :items="user?.achievements.filter((item) => item.progress)"
-                class="gap-8"
-            >
-                <achievement-card
-                    :item="item"
-                    class="h-full"
-                />
-            </items-list>
-        </title-section>
+
     </div>
 </template>
 
@@ -122,15 +108,14 @@ import { inject, PropType } from 'vue'
 import User from '@/types/user'
 import TitleSection from '@/components/TitleSection.vue'
 import ItemsList from '@/components/ItemsList.vue'
-import MovieCard from '@/components/cards/MovieCard.vue'
 import StoryCard from '@/components/cards/StoryCard.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import PlusIcon from '@/components/icons/PlusIcon.vue'
 import featureFlags from '@/types/featureFlags'
 import { useQuery } from '@tanstack/vue-query'
 import { getStories } from '@/utils/endpoints'
 import { tabLayoutActiveTabInjection } from '@/types/injection'
+import ImageComponent from "@/components/ImageComponent.vue";
 
 const props = defineProps({
     user: {

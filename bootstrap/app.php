@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin-role' => AdminRoleMiddleware::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'paddle/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

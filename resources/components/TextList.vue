@@ -16,7 +16,10 @@
                 <span class="font-bold">{{ item?.title }}</span>
                 {{ item?.description }}
             </p>
-            <p v-else>
+            <p
+                v-else
+                class="text-sm text-slate-600 font-normal"
+            >
                 {{ item }}
             </p>
         </li>
