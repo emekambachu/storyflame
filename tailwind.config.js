@@ -24,6 +24,7 @@ export default {
             },
             fontSize: {
                 '2m': '22px',
+                '2xs': '11px',
             },
         },
     },

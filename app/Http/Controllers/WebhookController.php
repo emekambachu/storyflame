@@ -255,10 +255,12 @@ class WebhookController extends Controller
 
         foreach ($data['items'] as $item) {
             $prices[] = $item['price']['id'];
+            $priceId = $item['price']['id'];
 
             $subscription->items()->updateOrCreate([
                 'price_id' => $item['price']['id'],
             ], [
+                'price_id' => $priceId,
                 'product_id' => $item['price']['product_id'],
                 'status' => $item['status'],
                 'quantity' => $item['quantity'] ?? 1,
@@ -486,6 +488,7 @@ class WebhookController extends Controller
                 'paddle_id' => $data['id'],
             ],
             [
+                'paddle_id' => $data['id'],
                 'product_id' => $product->id,
                 'name' => $data['name'],
                 'description' => $data['description'],

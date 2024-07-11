@@ -35,8 +35,8 @@ export const getSubscriptions = async () => {
     return response.response.data;
 };
 
-export const changeSubscription = async (data) => {
-    const response = await api.post('/api/v1/subscriptions', data);
+export const changeSubscription = async (id, productPricePaddleId) => {
+    const response = await api.put(`/api/v1/subscriptions/${id}`, { productPricePaddleId });
     return response.data;
 };
 

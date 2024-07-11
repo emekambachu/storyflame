@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\Models\ProductPrice;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,32 +20,28 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         $user = User::find(38);
 
-        // get all user->subscriptions where the ends_at is in the future, sorted by ends_at asc
-        $subscriptions = $user->activeSubscriptions();
-
-        // if empty set subscriptions to the getPlans 'free' plan
-        if ($subscriptions->isEmpty()) {
-            $subscriptions = [
-                [
-                    'name' => 'Free Trial',
-                    'price' => 0,
-                    'features' => [
-                        '30-minutes of guided development',
-                        '1 Story per month',
-                        '0 Generated Reports'
-                    ]
-                ]
-            ];
-        }
+        $subscriptionInfo = $user->getActiveSubscriptionInfo();
 
         return response()->json([
-            'subscriptions' => $subscriptions,
+            'subscription' => $subscriptionInfo,
             'plans' => $this->getPlans()
         ]);
     }
 
     private function getPlans()
     {
+        // get products and product prices from the database where type="subscription" and status="active" ordered by products.order ASC
+        $products = Product::with('productPrices')
+            ->where('type', 'subscription')
+            ->where('status', 'active')
+            ->orderBy('order')
+            ->get();
+
+        Log::info('Products and ProductPrices are ' . $products->toJson());
+
+        // return the productresource with productPrices
+        return ProductResource::collection($products);
+
         return [
             [
                 'name' => 'Premium',
@@ -100,15 +99,44 @@ class SubscriptionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $user = User::find(38);
-        $subscription = $user->subscriptions()->findOrFail($id);
 
-        $plan = $request->input('plan');
+        $newProductPricePaddleId = $request->input('productPricePaddleId');
 
-        $subscription->swap($plan);
+        $productPrice = ProductPrice::with('product')
+            ->where('paddle_id', $newProductPricePaddleId)
+            ->first();
 
-        return response()->json(['subscription' => $subscription]);
+        if(!$productPrice){
+            return response()->json(['error' => 'Product price not found'], 404);
+        }
+
+        $subscription = $user->getActiveSubscription();
+        if (!$subscription) {
+            return response()->json(['error' => 'No active subscription found'], 404);
+        }
+
+        $subscriptionItem = $user->getActiveSubscriptionItem();
+        $isSameProduct = $subscriptionItem->product_id === $productPrice->product->paddle_id;
+        $isSameProductPrice = $subscriptionItem->price_id === $newProductPricePaddleId;
+
+        // if same product and same price, return
+        if ($isSameProduct && $isSameProductPrice) {
+            return response()->json(['subscription' => $subscription->fresh()]);
+        }
+
+        // By default, prorate immediately
+        $subscription->prorateImmediately();
+
+        Log::info('Swapping subscription to new ProductPrice.paddle_id: ' . $newProductPricePaddleId);
+
+        try {
+            $subscription->swap($newProductPricePaddleId);
+            return response()->json(['subscription' => $subscription->fresh()]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update subscription: ' . $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)
@@ -119,7 +147,12 @@ class SubscriptionController extends Controller
 
         $subscription->cancel();
 
-        return response()->json(null, 204);
+        try {
+            $subscription->cancel();
+            return response()->json(['subscription' => $subscription->fresh()]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to cancel subscription: ' . $e->getMessage()], 500);
+        }
     }
 
     public function invoices()
@@ -141,7 +174,7 @@ class SubscriptionController extends Controller
     {
         $user = Auth::user();
         $user = User::find(38);
-        $transaction = $user->transactions()->findOrFail($id);
+        $transaction = $user->transactions()->where('paddle_id', $id)->first();
 
         $pdf = $transaction->invoicePdf();
 

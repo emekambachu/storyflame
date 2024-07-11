@@ -122,6 +122,44 @@ class User extends Authenticatable implements ModelWithId
             ->get();
     }
 
+    public function getActiveSubscription()
+    {
+        return $this->activeSubscriptions()->first();
+    }
+
+    public function getActiveSubscriptionItem()
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if(!$subscription){
+            return null;
+        }
+
+        return $subscription->items->where('status', 'active')->first();
+    }
+
+    public function getActiveSubscriptionInfo()
+    {
+        $subscription = $this->getActiveSubscription();
+
+        if(!$subscription){
+            return null;
+        }
+
+        $subscriptionItem = $this->getActiveSubscriptionItem();
+
+        if(!$subscriptionItem){
+            return null;
+        }
+
+        return [
+            'subscription_id' => $subscription->paddle_id,
+            'next_billed_at' => $subscription->next_billed_at,
+            'product_id' => $subscriptionItem->product_id,
+            'price_id' => $subscriptionItem->price_id,
+        ];
+    }
+
 //    public function createSubscription($name, $plan)
 //    {
 //        return $this->subscriptions()->create([

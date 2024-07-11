@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('quantity');
             $table->timestamps();
 
-            $table->unique(['subscription_id', 'price_id']);
         });
     }
 

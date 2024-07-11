@@ -4,14 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SubscriptionItem extends \Laravel\Paddle\SubscriptionItem
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'price_id',
         'product_id',
         'product_price_id',
+        'status',
+        'quantity',
     ];
 
     public function product()

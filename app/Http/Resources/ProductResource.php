@@ -23,6 +23,9 @@ class ProductResource extends JsonResource
             'benefits' => $this->benefits,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'prices' => ProductPriceResource::collection(
+                $this->whenLoaded('productPrices')
+            ),
         ];
     }
 }
