@@ -1,5 +1,8 @@
 <template>
-    <default-element-header :tags="['Protagonist', 'Main Character']">
+    <default-element-header
+        :tags="['Protagonist', 'Main Character']"
+        :achievements="character?.achievements"
+    >
         <template #title>
             <h1 class="line-clamp-1 font-inter text-xl">
                 {{ character.name }}

@@ -2,6 +2,8 @@
     <default-element-header
         :tags="['Major theme']"
         :genres="['Game of Thrones', 'Ep 101: The Call North']"
+        :background="theme.image?.path"
+        :achievements="theme?.achievements"
     >
         <template #title>
             <h1 class="line-clamp-1 font-inter text-xl">{{ theme.name }}</h1>

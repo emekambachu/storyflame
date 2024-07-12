@@ -18,11 +18,10 @@
                     },
                 ]"
                 :no-animation="true"
+                collapse-header-height="120"
+                header-height="250"
             >
-                <header-animated
-                    collapse-header-height="120"
-                    header-height="235"
-                >
+                <header-animated>
                     <outline-header :outline="outline" />
                     <template #sticky>
                         <tab-layout-tabs
@@ -34,25 +33,31 @@
                     </template>
                 </header-animated>
 
-                <template #expanded>
-                    <div class="flex flex-col gap-3 px-3">
-                        <sequence-card
-                            v-for="(sequence, sequenceID) in outline.sequences"
-                            :key="sequenceID"
-                            :card="sequence"
-                        />
-                    </div>
-                </template>
-                <template #condensed>
-                    <div class="flex flex-col gap-3 px-3">
-                        <sequence-card
-                            v-for="(sequence, sequenceID) in outline.sequences"
-                            :key="sequenceID"
-                            :card="sequence"
-                            :expanded="false"
-                        />
-                    </div>
-                </template>
+                <tab-layout-view>
+                    <template #expanded>
+                        <div class="flex flex-col gap-3 px-3">
+                            <sequence-card
+                                v-for="(
+                                    sequence, sequenceID
+                                ) in outline.sequences"
+                                :key="sequenceID"
+                                :card="sequence"
+                            />
+                        </div>
+                    </template>
+                    <template #condensed>
+                        <div class="flex flex-col gap-3 px-3">
+                            <sequence-card
+                                v-for="(
+                                    sequence, sequenceID
+                                ) in outline.sequences"
+                                :key="sequenceID"
+                                :card="sequence"
+                                :expanded="false"
+                            />
+                        </div>
+                    </template>
+                </tab-layout-view>
             </tab-layout>
         </div>
     </page-navigation-layout>
@@ -64,13 +69,14 @@ import { useRoute } from 'vue-router'
 // import { getStory } from '@/utils/endpoints'
 // import { useQuery } from '@tanstack/vue-query'
 
-import OutlineHeader from '@/components/headers/OutlineHeader.vue'
-import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import SequenceCard from '@/components/cards/SequenceCard.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+import OutlineHeader from '@/components/headers/OutlineHeader.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
-import SequenceCard from '@/components/cards/SequenceCard.vue'
 
 // import OutlineExpandedTab from '@/components/OutlineExpandedTab.vue'
 // import OutlineCondensedTab from '@/components/OutlineCondensedTab.vue'

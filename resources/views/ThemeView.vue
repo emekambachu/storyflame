@@ -16,11 +16,10 @@
                     { title: 'References', template: 'references' },
                 ]"
                 class="!gap-0"
+                collapse-header-height="120"
+                header-height="283"
             >
-                <header-animated
-                    collapse-header-height="120"
-                    header-height="260"
-                >
+                <header-animated>
                     <theme-header
                         :theme="theme"
                         class="py-5"
@@ -35,18 +34,20 @@
                     </template>
                 </header-animated>
 
-                <template #overview>
-                    <theme-overview-tab :data="theme" />
-                </template>
-                <template #develop>
-                    <develop-tab :data="theme" />
-                </template>
-                <template #progression>
-                    <theme-progression-tab :data="theme" />
-                </template>
-                <template #references>
-                    <theme-references-tab :data="theme" />
-                </template>
+                <tab-layout-view>
+                    <template #overview>
+                        <theme-overview-tab :data="theme" />
+                    </template>
+                    <template #develop>
+                        <develop-tab :data="theme" />
+                    </template>
+                    <template #progression>
+                        <theme-progression-tab :data="theme" />
+                    </template>
+                    <template #references>
+                        <theme-references-tab :data="theme" />
+                    </template>
+                </tab-layout-view>
             </tab-layout>
         </div>
     </page-navigation-layout>
@@ -54,6 +55,8 @@
 
 <script lang="ts" setup>
 import TabLayout from '@/components/TabLayout.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+
 import ThemeOverviewTab from '@/components/theme/ThemeOverviewTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
 import ThemeProgressionTab from '@/components/theme/ThemeProgressionTab.vue'
@@ -67,6 +70,9 @@ import ThemeHeader from '@/components/headers/ThemeHeader.vue'
 const theme = {
     name: 'Power',
     readiness: 60,
+    image: {
+        path: 'https://placekeanu.com/600/400',
+    },
     description:
         'Has a deep-seated desire for love and acceptance, despite his cynical exterior',
 
@@ -92,6 +98,85 @@ const theme = {
             title: 'Setting for the Climax',
             description:
                 'We’re uncertain about how you want to handle the climax, is it in the future or in 1880’s Paris?',
+        },
+    ],
+    achievements: [
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 2,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 3,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 4,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
         },
     ],
     achievements_not_started: [

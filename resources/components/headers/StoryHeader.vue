@@ -1,6 +1,7 @@
 <template>
     <default-element-header
-        :detail="story.logline"
+        v-if="story"
+        :detail="story.description"
         :genres="story.genres"
         :tags="['TV Show', 'MA-16']"
         :achievements="story?.achievements"
@@ -15,7 +16,8 @@ import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
 
 const props = defineProps({
     story: {
-        type: Object as PropType<Story>,
+        type: Object,
+        // type: Object as PropType<Story>,
         required: true,
     },
 })

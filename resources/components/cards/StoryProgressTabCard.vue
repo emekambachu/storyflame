@@ -9,10 +9,7 @@
                     title-class="text-sm text-stone-600 font-bold"
                 />
             </template>
-            <p
-                v-if="card?.effectiveness"
-                class="text-sm font-normal text-stone-800"
-            >
+            <p class="text-sm font-normal text-stone-800">
                 {{ card.effectiveness }}
             </p>
         </title-section>

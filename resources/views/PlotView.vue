@@ -82,6 +82,85 @@ const data = {
     progress_description:
         'Your characters and themes are looking great, but your story could use some world building development.',
 
+    achievements: [
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 2,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 3,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 4,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+    ],
     discrepancies: [
         {
             story: 'Game of Thrones',

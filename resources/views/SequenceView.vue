@@ -25,33 +25,38 @@
                 },
             ]"
             class="!gap-0"
-            header-height="400"
-            collapse-header-height="200"
+            header-height="340"
+            collapse-header-height="130"
             menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
             menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
             menu-container-class="w-full flex gap-2"
             menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
         >
-            <default-element-header
-                :title="sequence.name"
-                :detail="sequence.description"
-                :genres="sequence.genres"
-                :tags="['TV Show', 'MA-16']"
-                background="https://picsum.photos/1920/1080"
-                class="pb-5 pt-20"
-            />
-            <template #develop>
-                <develop-tab :data="sequence" />
-            </template>
-            <template #arc>
-                <sequence-arc-tab :data="sequence" />
-            </template>
-            <template #details>
-                <sequence-details-tab :data="sequence" />
-            </template>
-            <template #elements>
-                <sequence-elements-tab :data="sequence" />
-            </template>
+            <header-animated>
+                <sequence-header :sequence="sequence" />
+                <template #sticky>
+                    <tab-layout-tabs
+                        menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
+                        menu-btn-selected-class="w-full text-base text-stone-50 bg-stone-800 rounded-lg px-3 py-2 border-none"
+                        menu-container-class="w-full flex gap-2"
+                        menu-wrapper-class="mx-auto max-w-full w-full overflow-x-auto py-4 px-3 bg-white"
+                    />
+                </template>
+            </header-animated>
+            <tab-layout-view>
+                <template #develop>
+                    <develop-tab :data="sequence" />
+                </template>
+                <template #arc>
+                    <sequence-arc-tab :data="sequence" />
+                </template>
+                <template #details>
+                    <sequence-details-tab :data="sequence" />
+                </template>
+                <template #elements>
+                    <sequence-elements-tab :data="sequence" />
+                </template>
+            </tab-layout-view>
         </tab-layout>
     </page-navigation-layout>
 </template>
@@ -62,9 +67,14 @@ import DevelopTab from '@/components/DevelopTab.vue'
 import SequenceDetailsTab from '@/components/sequence/SequenceDetailsTab.vue'
 import SequenceElementsTab from '@/components/sequence/SequenceElementsTab.vue'
 
-import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+
 import TabLayout from '@/components/TabLayout.vue'
-import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+import SequenceHeader from '@/components/headers/SequenceHeader.vue'
+
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -72,6 +82,7 @@ import { getSequence } from '@/utils/endpoints'
 
 const sequence = {
     name: 'Arrival of King Robert and the Royal Family',
+    progress: 80,
     description:
         'Kickstart the main political plot by bringing the royal family to Winterfell, highlighting the close yet strained relationship between the Starks and the Baratheons.',
     progress_description:
@@ -100,6 +111,85 @@ const sequence = {
             description:
                 'Introduce King Robert and the royal family to the audience.',
             priority: 2,
+        },
+    ],
+    achievements: [
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 2,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 3,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 4,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
         },
     ],
     conflict_sources: [

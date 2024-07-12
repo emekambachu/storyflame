@@ -35,7 +35,7 @@
 <script setup lang="ts">
 const props = defineProps({
     data: {
-        type: Array,
+        type: Object,
         default: null,
     },
 })

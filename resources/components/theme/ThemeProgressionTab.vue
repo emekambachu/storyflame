@@ -1,5 +1,5 @@
 <template>
-    <div class="flex w-full flex-col gap-2 bg-slate-100 py-2">
+    <div class="flex w-full flex-col gap-2 bg-slate-100 pt-2">
         <title-section
             v-if="data.progression?.character_embodiments"
             class="!gap-5 bg-white px-4 py-6"

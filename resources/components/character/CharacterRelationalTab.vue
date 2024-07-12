@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-2 bg-stone-100">
+    <div class="flex flex-col gap-2 bg-stone-100 pt-2">
         <title-section
             title="Relationships in Episode"
             class="bg-white px-3 py-5"

@@ -33,13 +33,10 @@
                     },
                 ]"
                 class="!gap-0"
+                collapse-header-height="120"
+                header-height="340"
             >
-                <!--                <story-header :story="story" />-->
-                <header-animated
-                    collapse-header-height="120"
-                    header-height="340"
-                >
-                    <!--                    <default-element-header height="478px" />-->
+                <header-animated>
                     <story-header
                         v-if="testStory"
                         :story="testStory"
@@ -53,49 +50,55 @@
                         />
                     </template>
                 </header-animated>
-                <template #develop>
-                    <develop-tab
-                        :data="testStory"
-                        startSmthNew
-                    />
-                </template>
-                <template #progress>
-                    <story-progress-tab :story="testStory" />
-                </template>
-                <template #arcs>
-                    <story-story-tab :story="testStory" />
-                </template>
-                <template #elements>
-                    <story-elements-tab :story="testStory" />
-                </template>
-                <template #references>
-                    <story-marketing-tab :story="testStory" />
-                </template>
-            </tab-layout-view>
-        </tab-layout>
+                <tab-layout-view>
+                    <template #develop>
+                        <develop-tab
+                            :data="testStory"
+                            startSmthNew
+                        />
+                    </template>
+                    <template #progress>
+                        <story-progress-tab :story="testStory" />
+                    </template>
+                    <template #arcs>
+                        <story-story-tab :story="testStory" />
+                    </template>
+                    <template #elements>
+                        <story-elements-tab :story="testStory" />
+                    </template>
+                    <template #references>
+                        <story-marketing-tab :story="testStory" />
+                    </template>
+                </tab-layout-view>
+            </tab-layout>
+        </div>
     </page-navigation-layout>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useQuery } from '@tanstack/vue-query'
+import { getStory } from '@/utils/endpoints'
+
 import StoryStoryTab from '@/components/story/StoryStoryTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
 import StoryProgressTab from '@/components/story/StoryProgressTab.vue'
 import StoryElementsTab from '@/components/story/StoryElementsTab.vue'
 import StoryMarketingTab from '@/components/story/StoryMarketingTab.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+
 import TabLayout from '@/components/TabLayout.vue'
-import { useRoute } from 'vue-router'
-import { useQuery } from '@tanstack/vue-query'
-import { getStory } from '@/utils/endpoints'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 import StoryHeader from '@/components/headers/StoryHeader.vue'
 
 const route = useRoute()
 const storyId = computed(() => route.params.story)
 
-const { data: story} = useQuery({
+const { data: story } = useQuery({
     queryKey: ['story', storyId.value],
     queryFn: () => getStory(storyId.value),
     select(data) {
@@ -369,6 +372,48 @@ const testStory = {
     plot: {
         title: 'Plot',
         progress: 30,
+        effectiveness:
+            'The plot sets up conflicts and power dynamics that have the potential to test the characters` morality, but the stakes and central tensions need to be heightened to fully realize the writer`s vision of exploring the cost of power in a gritty world.',
+        audience:
+            'The morally grey characters and their high-stakes conflicts should appeal to the target audience of mature fantasy drama fans. However, the characters need to be quickly established as compelling and relatable to fully engage viewers. Strengthening the sense of character perspective and ensuring each one has a clear goal will help audiences invest in their journeys.',
+        market_comparisons:
+            'Prospera`s characters have the complex moral shading and mix of noble and selfish motivations that define prestige fantasy drama protagonists. However, their distinct personalities and voices need to be sharpened to match the memorable characterization of market comp ensembles. The characters need to command the screen and leave the audience eager to follow them.',
+        potential_explorations: [
+            {
+                icon: {
+                    path: 'https://picsum.photos/90',
+                },
+                type: 'Character development',
+                time: '5 min',
+                percent: 20,
+                color: '#A516AD',
+
+                story: 'Game of thrones',
+                subtitle: 'Meeting the Wizard',
+
+                title: 'Unexpected Decisions',
+                description:
+                    'You established an unexpected twist that endears people towards Tyrion.',
+            },
+        ],
+        something_new: [
+            {
+                icon: {
+                    path: 'https://picsum.photos/90',
+                },
+                type: 'Character development',
+                time: '5 min',
+                percent: 20,
+                color: '#A516AD',
+
+                story: 'Game of thrones',
+                subtitle: 'Meeting the Wizard',
+
+                title: 'Unexpected Decisions',
+                description:
+                    'You established an unexpected twist that endears people towards Tyrion.',
+            },
+        ],
         achievements: [
             {
                 id: 1,

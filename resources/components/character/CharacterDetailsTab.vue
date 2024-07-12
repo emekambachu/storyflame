@@ -1,5 +1,5 @@
 <template>
-    <div class="flex w-full flex-col gap-2 bg-slate-100 py-2">
+    <div class="flex w-full flex-col gap-2 bg-slate-100 pt-2">
         <div
             v-if="data.images?.length"
             class="flex items-center gap-2 bg-white px-3 py-4"
