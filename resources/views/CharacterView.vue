@@ -20,11 +20,10 @@
                     { title: 'References', template: 'references' },
                 ]"
                 class="!gap-0"
+                collapse-header-height="120"
+                header-height="260"
             >
-                <header-animated
-                    collapse-header-height="120"
-                    header-height="260"
-                >
+                <header-animated>
                     <character-header
                         :character="character"
                         class="py-5"
@@ -38,31 +37,32 @@
                         />
                     </template>
                 </header-animated>
-
-                <template #overview>
-                    <character-overview-tab :data="character" />
-                </template>
-                <template #develop>
-                    <develop-tab :data="character" />
-                </template>
-                <template #details>
-                    <character-details-tab :data="character" />
-                </template>
-                <template #arcs>
-                    <character-arcs-tab :data="character" />
-                </template>
-                <template #relational>
-                    <character-relational-tab :data="character" />
-                </template>
-                <template #backstory>
-                    <character-backstory-tab :data="character" />
-                </template>
-                <template #speech>
-                    <character-speech-tab :data="character" />
-                </template>
-                <template #references>
-                    <character-references-tab :data="character" />
-                </template>
+                <tab-layout-view>
+                    <template #overview>
+                        <character-overview-tab :data="character" />
+                    </template>
+                    <template #develop>
+                        <develop-tab :data="character" />
+                    </template>
+                    <template #details>
+                        <character-details-tab :data="character" />
+                    </template>
+                    <template #arcs>
+                        <character-arcs-tab :data="character" />
+                    </template>
+                    <template #relational>
+                        <character-relational-tab :data="character" />
+                    </template>
+                    <template #backstory>
+                        <character-backstory-tab :data="character" />
+                    </template>
+                    <template #speech>
+                        <character-speech-tab :data="character" />
+                    </template>
+                    <template #references>
+                        <character-references-tab :data="character" />
+                    </template>
+                </tab-layout-view>
             </tab-layout>
         </div>
     </page-navigation-layout>
@@ -72,7 +72,14 @@
 import FlameIcon from '@/components/FlameInProgressCircle.vue'
 import PointIcon from '@/components/icons/PointIcon.vue'
 
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
+import CharacterHeader from '@/components/headers/CharacterHeader.vue'
+
 import TabLayout from '@/components/TabLayout.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+
 import CharacterOverviewTab from '@/components/character/CharacterOverviewTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
 import CharacterDetailsTab from '@/components/character/CharacterDetailsTab.vue'
@@ -81,11 +88,6 @@ import CharacterRelationalTab from '@/components/character/CharacterRelationalTa
 import CharacterBackstoryTab from '@/components/character/CharacterBackstoryTab.vue'
 import CharacterSpeechTab from '@/components/character/CharacterSpeechTab.vue'
 import CharacterReferencesTab from '@/components/character/CharacterReferencesTab.vue'
-
-import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
-import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
-import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
-import CharacterHeader from '@/components/headers/CharacterHeader.vue'
 
 const character = {
     name: 'Tyrion Lannister',
@@ -115,6 +117,85 @@ const character = {
             title: 'Setting for the Climax',
             description:
                 'We’re uncertain about how you want to handle the climax, is it in the future or in 1880’s Paris?',
+        },
+    ],
+    achievements: [
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 2,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: '2023-05-10',
+            progress: 100,
+        },
+        {
+            id: 3,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 4,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
+        },
+        {
+            id: 1,
+            icon: 'https://picsum.photos/900',
+            title: 'Achievement One',
+            completed_at: null,
+            progress: 0,
         },
     ],
     achievements_not_started: [

@@ -12,7 +12,7 @@
                 alt="poster"
                 class="h-24 w-24 shrink-0 rounded-lg object-cover"
             />
-            <flame-icon class="absolute bottom-1 right-1" />
+            <flame-icon class="absolute bottom-1 right-1 bg-white" />
         </div>
         <h4
             v-if="story.title"
