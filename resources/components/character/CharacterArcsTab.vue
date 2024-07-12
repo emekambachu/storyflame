@@ -1,5 +1,5 @@
 <template>
-    <div class="flex w-full flex-col gap-2 bg-slate-100 py-2">
+    <div class="flex w-full flex-col gap-2 bg-slate-100 pt-2">
         <title-section
             v-if="data.arcs.episod_arc"
             class="!gap-3 bg-white px-4 py-6"

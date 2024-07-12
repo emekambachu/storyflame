@@ -2,119 +2,14 @@
     <div class="flex w-full flex-col items-center">
         <tab-layout
             :tabs="[
-                { title: 'Progress', template: 'stories' },
                 { title: 'Continue', template: 'continue' },
-                // { title: 'Clarify', template: 'clarify' },
+                { title: 'Progress', template: 'progress' },
+                //{ title: 'Clarify', template: 'clarify' },
                 { title: 'New', template: 'new' },
                 { title: 'Transcripts', template: 'transcripts' },
             ]"
             tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
         >
-            <header-animated
-                collapse-header-height="200"
-                header-height="200"
-            >
-                <div
-                    class="flex w-full flex-col gap-3 bg-neutral-950 px-4 py-8"
-                >
-                    <div class="flex w-full items-center justify-between">
-                        <logo-icon />
-
-                        <router-link
-                            :to="{
-                                name: 'profile',
-                            }"
-                            class="h-8 w-8 shrink-0 rounded-full bg-white"
-                        ></router-link>
-                    </div>
-
-                    <p class="text-sm font-medium uppercase text-slate-400">
-                        {{ data.smth }}
-                    </p>
-
-                    <div class="flex items-center justify-between gap-3">
-                        <achievement-summary-card
-                            v-for="(card, cardID) in data.achievements_summary"
-                            :key="cardID"
-                            :item="card"
-                            card-class="flex flex-col gap-2 p-2 rounded-lg bg-neutral-800 w-full max-w-28"
-                            value-class="text-sm text-pure-white font-bold"
-                        />
-                    </div>
-                </div>
-                <template #sticky>
-                    <tab-layout-tabs />
-                </template>
-            </header-animated>
-            <template #stories>
-                <title-section class="!gap-6 px-4 py-6">
-                    <template #title>
-                        <h4 class="text-lg font-bold text-black">
-                            Recent Stories
-                        </h4>
-                    </template>
-                    <div class="flex w-full max-w-full gap-4 overflow-scroll">
-                        <recent-story-card
-                            v-for="(story, storyID) in data.stories"
-                            :key="storyID"
-                            :story="story"
-                        />
-                        <new-story-card class="h-24" />
-                    </div>
-                </title-section>
-            </template>
-            <template #continue>
-                <title-section class="!gap-6 px-4 py-6">
-                    <template #title>
-                        <title-with-link
-                            class="!p-0"
-                            title="Continue where you left off"
-                            title-class="text-lg text-black font-bold"
-                        />
-                    </template>
-                    <achievement-completed-card
-                        v-for="(
-                            achievement, achievementID
-                        ) in data.achievements_completed"
-                        :key="achievementID"
-                        :card="achievement"
-                    />
-                    <achievement-in-progress-card
-                        v-for="(
-                            achievement, achievementID
-                        ) in data.achievements_in_progress"
-                        :key="achievementID"
-                        :card="achievement"
-                    />
-                </title-section>
-            </template>
-            <template #clarify>
-                <title-section
-                    class="!gap-6 px-4 py-6"
-                    style="
-                        background: linear-gradient(
-                                180deg,
-                                rgba(0, 0, 0, 0) 0%,
-                                #000 100%
-                            ),
-                            linear-gradient(
-                                0deg,
-                                rgba(0, 0, 0, 0.3) 0%,
-                                rgba(0, 0, 0, 0.3) 100%
-                            ),
-                            linear-gradient(0deg, #404040 0%, #404040 100%),
-                            #fff;
-                    "
-                >
-                </title-section>
-            </template>
-            <template #title>
-                <title-with-link
-                    class="!p-0"
-                    title="Clarify discrepancies"
-                    title-class="text-lg text-white font-bold"
-                />
-            </template>
             <header-animated no-animation>
                 <home-header />
                 <tab-layout-tabs />
@@ -123,7 +18,7 @@
                 class="w-full bg-white pb-6"
                 one-line
             >
-                <template #stories>
+                <template #continue>
                     <title-section class="!gap-6 py-6">
                         <template #title>
                             <title-with-link
@@ -136,7 +31,7 @@
                                 </h4>
                             </title-with-link>
                         </template>
-                        <horizontal-list :items="stories">
+                        <horizontal-list :items="data?.stories">
                             <template #item="{ item }">
                                 <recent-story-card :story="item" />
                             </template>
@@ -146,7 +41,7 @@
                         </horizontal-list>
                     </title-section>
                 </template>
-                <template #continue>
+                <template #progress>
                     <title-section class="py-6">
                         <template #title>
                             <title-with-link>
@@ -155,7 +50,7 @@
                                 </h4>
                             </title-with-link>
                         </template>
-                        <div class="px-4 gap-6 flex flex-col">
+                        <div class="flex flex-col gap-6 px-4">
                             <achievement-completed-card
                                 v-for="(
                                     achievement, achievementID
@@ -277,6 +172,7 @@ import SequencesWithPlus from '@/components/icons/SequencesWithPlus.vue'
 
 import TabLayout from '@/components/TabLayout.vue'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import TabLayoutView from '@/components/ui/TabLayoutView.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 
 import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
@@ -287,11 +183,8 @@ import DiscrepanciesCard from '@/components/cards/DiscrepanciesCard.vue'
 import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
 import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
 import NewStoryCard from '@/components/cards/NewStoryCard.vue'
-import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
-import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
 import HomeHeader from '@/views/HomeHeader.vue'
 import { useStories } from '@/composables/query/story'
-import TabLayoutView from '@/components/ui/TabLayoutView.vue'
 import HorizontalList from '@/components/ui/HorizontalList.vue'
 import { useUser } from '@/composables/query/user'
 

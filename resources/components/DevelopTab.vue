@@ -1,5 +1,5 @@
 <template>
-    <div class="flex w-full flex-col gap-2 bg-slate-100">
+    <div class="flex w-full flex-col gap-2 bg-slate-100 pt-2">
         <div class="flex flex-col bg-white">
             <title-section
                 v-if="data?.progress_list?.length"

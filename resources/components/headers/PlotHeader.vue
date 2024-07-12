@@ -1,5 +1,5 @@
 <template>
-    <default-element-header :tags="plot?.tags">
+    <default-element-header :tags="plot?.tags" :achievements="plot?.achievements">
         <template #title>
             <h1 class="line-clamp-1 font-inter text-xl">{{ plot.title }}</h1>
         </template>

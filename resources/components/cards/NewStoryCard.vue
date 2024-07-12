@@ -1,12 +1,15 @@
 <template>
-    <router-link :to="{
-        name: 'new-story',
-    }" class="rounded-lg bg-stone-100 p-1">
+    <router-link
+        :to="{
+            name: 'new-story',
+        }"
+        class="rounded-lg bg-stone-100 p-1 hover:bg-stone-200"
+    >
         <div
-            class="h-full py-3 px-2 flex flex-col items-center justify-center rounded-lg border border-dashed border-stone-400"
+            class="flex h-full flex-col items-center justify-center rounded-lg border border-dashed border-stone-400 px-2 py-3"
         >
             <book-with-plus />
-            <p class="text-stone-400 text-sm font-normal">New Story</p>
+            <p class="text-sm font-normal text-stone-400">New Story</p>
         </div>
     </router-link>
 </template>

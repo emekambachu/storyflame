@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-2 bg-stone-100">
+    <div class="flex flex-col gap-2 bg-stone-100 pt-2">
         <div class="flex items-center gap-1 bg-white p-3">
             <image-component
                 v-for="(image, imageID) in data.arc_images"
