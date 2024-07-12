@@ -72,6 +72,20 @@ const validationService = {
       if(deleteAll === true && Object.keys(errors).length > 0) {
           errors = {};
       }
+  },
+
+  handleObjectErrors(error, errors){
+    if (error.response) {
+        console.log(error.response);
+
+        if (Object.keys(error.response?.data?.errors).length > 0) {
+            errors.value = error.response?.data?.errors;
+        }
+
+        if (error.response?.data?.server_error) {
+            errors.value.server_error = 'Server error. Please try again later or contact your admin.';
+        }
+    }
   }
 
 }

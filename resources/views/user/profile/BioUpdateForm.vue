@@ -41,7 +41,7 @@ const updateBio = async () => {
 
     }).catch((error) => {
 
-        if(error.response && [401, 402, 422].includes(error.response.status)){
+        if(error.response){
             console.log(error.response);
 
             if(Object.keys(error.response?.data?.errors).length > 0){

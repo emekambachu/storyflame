@@ -43,26 +43,28 @@ Route::group([
 
             Route::resource('stories', 'StoryController');
 
-        Route::group([
-            'prefix' => 'conversation',
-            'namespace' => 'Conversation',
-        ], function () {
-            Route::get('{engine}', 'ConversationEngineController@index');
-            Route::post('{engine}', 'ConversationEngineController@store');
+            Route::group([
+                'prefix' => 'conversation',
+                'namespace' => 'Conversation',
+            ], function () {
+                Route::get('{engine}', 'ConversationEngineController@index');
+                Route::post('{engine}', 'ConversationEngineController@store');
+            });
         });
     });
-});
 
-Route::middleware('auth:sanctum')->group(static function () {
-    Route::prefix('v1/subscriptions')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'index']);
-        Route::post('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'store']);
-        Route::post('/customer', [\App\Http\Controllers\Api\SubscriptionController::class, 'createCustomer']);
-        Route::put('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'update']);
-        Route::delete('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'destroy']);
-        Route::get('/invoices', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoices']);
-        Route::get('/invoices/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoiceLink']);
+    Route::middleware('auth:sanctum')->group(static function () {
+        Route::prefix('v1/subscriptions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'index']);
+            Route::post('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'store']);
+            Route::post('/customer', [\App\Http\Controllers\Api\SubscriptionController::class, 'createCustomer']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'destroy']);
+            Route::get('/invoices', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoices']);
+            Route::get('/invoices/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoiceLink']);
+        });
     });
+
 });
 
 # fallback route
@@ -82,7 +84,9 @@ Route::delete('/categories', [CategoryController::class, 'destroy']);
 
 Route::get('/referral-types', [ReferralTypeController::class, 'index']);
 
-Route::get('/register/v2', [UserRegistrationController::class, 'register']);
+Route::post('/register/v2', [UserRegistrationController::class, 'register']);
+Route::post('/register/verify', [UserRegistrationController::class, 'verify']);
+
 
 include __DIR__ . '/admin/api.php';
 include __DIR__ . '/user/api.php';

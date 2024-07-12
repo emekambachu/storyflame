@@ -67,11 +67,11 @@
                     <h6 class="text-sm text-gray-500 font-semibold mt-4">
                         {{ titles[index] }}: {{ achievements.length }}
                     </h6>
-                    <achievement-card
-                        v-for="achievement in achievements"
-                        :key="achievement.title"
-                        :item="achievement"
-                    />
+<!--                    <achievement-card-->
+<!--                        v-for="achievement in achievements"-->
+<!--                        :key="achievement.title"-->
+<!--                        :item="achievement"-->
+<!--                    />-->
                 </div>
             </div>
         </template>
@@ -84,7 +84,7 @@ import ListOption from '@/components/ListOption.vue'
 import ListWrapper from '@/components/ListWrapper.vue'
 
 import ListsHeroSection from '@/components/ListsHeroSection.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
+//import AchievementCard from '@/components/cards/AchievementCard.vue'
 
 const searchValue = ref('')
 const selectedOptions = ref(['Earned', 'In progress', 'Not Started'])

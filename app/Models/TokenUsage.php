@@ -15,6 +15,7 @@ class TokenUsage extends Model
         'model',
         'input_tokens',
         'output_tokens',
+        'is_active',
     ];
 
     public function user(): BelongsTo

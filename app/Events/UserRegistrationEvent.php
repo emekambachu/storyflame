@@ -17,9 +17,10 @@ class UserRegistrationEvent
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public array $eventData;
+    public function __construct($eventData)
     {
-        //
+        $this->eventData = $eventData;
     }
 
     /**

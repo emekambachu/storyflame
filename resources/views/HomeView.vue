@@ -106,13 +106,15 @@
                             #fff;
                     "
                 >
-                    <template #title>
-                        <title-with-link
-                            class="!p-0"
-                            title="Clarify discrepancies"
-                            title-class="text-lg text-white font-bold"
-                        />
-                    </template>
+                </title-section>
+            </template>
+            <template #title>
+                <title-with-link
+                    class="!p-0"
+                    title="Clarify discrepancies"
+                    title-class="text-lg text-white font-bold"
+                />
+            </template>
             <header-animated no-animation>
                 <home-header />
                 <tab-layout-tabs />

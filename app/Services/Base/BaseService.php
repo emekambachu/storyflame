@@ -142,7 +142,7 @@ class BaseService
     }
 
     public static function sendEmailGeneral(
-        Array $data, String $emailContent, String $subject, $mailTo, $mailToName, Array $recipients = null): void
+        Array $data, String $emailContent, String $subject, $mailTo, $mailToName = null, Array $recipients = null): void
     {
         Mail::send($emailContent, $data, static function ($message) use (
             $data, $subject, $mailTo, $mailToName, $recipients) {

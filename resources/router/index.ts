@@ -7,6 +7,20 @@ import {
 import { useAuthStore } from '@/stores/auth'
 import { useLogger } from 'vue-logger-plugin'
 
+// const checkAuth = (
+//     to: RouteLocationNormalized,
+//     from: RouteLocationNormalized,
+//     next: NavigationGuardNext
+// ) => {
+//     const logger = useLogger()
+//     const auth = useAuthStore()
+//     if (!auth.isLoggedIn) {
+//         logger.info('User is not logged in')
+//         return next({ name: 'login' })
+//     }
+//     return next()
+// }
+
 const checkAuth = (
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
@@ -14,6 +28,12 @@ const checkAuth = (
 ) => {
     const logger = useLogger()
     const auth = useAuthStore()
+
+    // Ignore authentication check for /register/v2
+    if (to.path === '/auth/register/v2') {
+        return next()
+    }
+
     if (!auth.isLoggedIn) {
         logger.info('User is not logged in')
         return next({ name: 'login' })
@@ -280,7 +300,7 @@ const router = createRouter({
             path: '/auth',
             redirect: '/auth/login',
             component: () => import('../views/AuthView.vue'),
-            beforeEnter: checkGuest,
+            //beforeEnter: checkGuest,
             children: [
                 {
                     path: 'login',
@@ -305,10 +325,24 @@ const router = createRouter({
             name: 'not-found',
             redirect: { name: 'home' },
         },
+
+        // New registration route
+        {
+            path: '/register/v2',
+            name: 'register-v2',
+            component: () => import('../views/user/auth/UserRegisterView.vue'),
+        },
+
     ],
 })
 
 router.beforeEach((to, from, next) => {
+
+    // for debugging routes
+    // console.log('Navigating to:', to.path)
+    // console.log('From:', from.path)
+    // console.log('Auth status:', useAuthStore().isLoggedIn)
+
     // scroll to top on route change
     window.scrollTo({
         top: 0,
