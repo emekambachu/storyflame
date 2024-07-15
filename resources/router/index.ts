@@ -328,9 +328,9 @@ const router = createRouter({
 
         // New registration route
         {
-            path: '/register/v2',
-            name: 'register-v2',
-            component: () => import('../views/user/auth/UserRegisterView.vue'),
+            path: '/sign-on',
+            name: 'sign-on',
+            component: () => import('../views/user/auth/UserSignOnView.vue'),
         },
 
     ],
