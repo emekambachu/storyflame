@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Auth\UserRegistrationRequest;
+use App\Http\Requests\User\Auth\UserSignOnRequest;
 use App\Services\Auth\RegistrationService;
 use App\Services\Base\BaseService;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +17,7 @@ class UserRegistrationController extends Controller
         $this->registration = $registration;
     }
 
-    public function register(UserRegistrationRequest $request): JsonResponse
+    public function signOn(UserSignOnRequest $request): JsonResponse
     {
         try {
             $response = $this->registration->userRegistration($request);
@@ -31,8 +31,8 @@ class UserRegistrationController extends Controller
     public function verify(Request $request): JsonResponse
     {
         try {
-            $response = $this->registration->userEmailVerification($request->token);
-            return response()->json($response);
+            $response = $this->registration->userEmailVerification($request);
+            return response()->json($response, isset($response['status_code']) && $response['status_code'] >= 400 ? $response['status_code'] : 200);
 
         }catch (\Exception $e){
             return BaseService::tryCatchException($e, $request->email);

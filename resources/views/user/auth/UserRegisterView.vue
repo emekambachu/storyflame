@@ -22,13 +22,13 @@
             </div>
         </div>
 
-        <Alert
-            v-if="Object.keys(errors).length > 0"
-            :classes="'bg-rose-100 border-rose-400 text-rose-700 px-4 tx-2'">
-            <p v-for="(error, index) in Object.keys(errors)" :key="index">
-                {{ error[0] }}
-            </p>
-        </Alert>
+<!--        <Alert-->
+<!--            v-if="Object.keys(errors).length > 0"-->
+<!--            :classes="'bg-rose-100 border-rose-400 text-rose-700 px-4 tx-2'">-->
+<!--            <p v-for="(error, index) in Object.keys(errors)" :key="index">-->
+<!--                {{ error[0] }}-->
+<!--            </p>-->
+<!--        </Alert>-->
 
         <Alert
             :classes="'bg-green-100 border-green-400 text-green-700 px-4 tx-2'"
@@ -64,10 +64,22 @@
                     class="w-full py-4 px-4 rounded-full text-base font-normal text-black bg-neutral-100 focus:outline-none"
                     type="text"
                     placeholder="Email Token"
-                    v-model="token"
+                    v-model="verifyEmailForm.email_token"
                 />
                 <p class="text-rose-600">
-                    {{ errors.token ? errors.token[0] : '' }}
+                    {{ errors.email_token ? errors.email_token[0] : '' }}
+                </p>
+            </div>
+
+            <div v-if="user && !user.is_verified">
+                <input
+                    class="w-full py-4 px-4 rounded-full text-base font-normal text-black bg-neutral-100 focus:outline-none"
+                    type="text"
+                    placeholder="Referral Code (Optional)"
+                    v-model="verifyEmailForm.referred_by_code"
+                />
+                <p class="text-rose-600">
+                    {{ errors.referred_by_code ? errors.referred_by_code[0] : '' }}
                 </p>
             </div>
         </div>
@@ -84,9 +96,9 @@
             <ButtonWithLoader
                 :class="'w-full flex justify-center py-4 px-4 rounded-full text-base font-semibold text-white bg-orange-600 hover:bg-orange-600'"
                 :loading="loading"
-                @click=" !submitted && !emailVerified ? register() : submitToken()"
+                @click=" !submitted && !emailVerified ? signOn() : submitEmailToken()"
             >
-                Register
+                {{ !submitted && !emailVerified ? 'Sign On' : 'Verify Email' }}
             </ButtonWithLoader>
 
             <p class="inline text-neutral-950 text-sm font-normal">
@@ -120,6 +132,7 @@ import Alert from '@/components/forms/Alert.vue'
 
 const referred_by_code = ref(router.currentRoute.value.query.referred_by_code);
 const membership = ref(router.currentRoute.value.query.membership);
+const user = ref(null);
 
 const form = reactive({
     email: '',
@@ -127,15 +140,17 @@ const form = reactive({
     membership: membership.value ? membership.value : '',
 });
 
-const token = ref('');
+const verifyEmailForm = reactive({
+    email_token: '',
+    referred_by_code: '',
+});
 
 const loading = ref(false);
 const errors = ref({});
 const submitted = ref(false);
 const emailVerified = ref(false);
 
-const register = async () => {
-
+const signOn = async () => {
     loading.value = true;
     console.log("FORM", form);
 
@@ -144,13 +159,14 @@ const register = async () => {
         delete errors.value[key];
     });
 
-    await axios.post('/api/register/v2', form, {
+    await axios.post('/api/sign-on', form, {
         headers: {
             'Accept' : 'application/json',
         }
     }).then((response) => {
         if (response.data.success){
             submitted.value = true;
+            user.value = response.data.user;
         }
 
     }).catch((error) => {
@@ -166,31 +182,31 @@ const register = async () => {
             }
         }
     });
-
     loading.value = false;
 }
 
-const submitToken = async () => {
+const submitEmailToken = async () => {
 
     loading.value = true;
-    console.log("EMAIL TOKEN", token.value);
+    console.log("EMAIL TOKEN", verifyEmailForm);
 
     // Delete all errors
     Object.keys(errors.value).forEach(function(key) {
         delete errors.value[key];
     });
 
-    await axios.post('/api/register/verify',
-        {
-            token: token.value
-
-        }, {
+    await axios.post('/api/sign-on/verify', verifyEmailForm, {
         headers: {
             'Accept' : 'application/json',
         }
     }).then((response) => {
         if (response.data.success){
             emailVerified.value = true;
+            if(user.value && !user.value.first_name){
+                window.location.href = '/profile/edit';
+            }else{
+                window.location.href = '/profile';
+            }
         }
 
     }).catch((error) => {

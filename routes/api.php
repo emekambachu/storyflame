@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Authentication\LoginController;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Membership\ReferralTypeController;
 use App\Http\Controllers\User\Auth\UserRegistrationController;
@@ -17,7 +18,7 @@ Route::group([
             'namespace' => 'Authentication',
         ], function () {
             Route::post('register', 'RegisterController@register');
-            Route::post('login', 'LoginController@authenticate');
+            Route::post('login', [LoginController::class, 'authenticate']);
             Route::post('federate', 'LoginController@federate');
             Route::middleware('auth:sanctum')->group(function () {
                 Route::get('user', 'LoginController@user');
@@ -84,8 +85,8 @@ Route::delete('/categories', [CategoryController::class, 'destroy']);
 
 Route::get('/referral-types', [ReferralTypeController::class, 'index']);
 
-Route::post('/register/v2', [UserRegistrationController::class, 'register']);
-Route::post('/register/verify', [UserRegistrationController::class, 'verify']);
+Route::post('/sign-on', [UserRegistrationController::class, 'signOn']);
+Route::post('/sign-on/verify', [UserRegistrationController::class, 'verify']);
 
 
 include __DIR__ . '/admin/api.php';

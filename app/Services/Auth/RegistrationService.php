@@ -9,6 +9,7 @@ use App\Services\Base\BaseService;
 use App\Services\Membership\ReferralService;
 use App\Services\Product\ProductService;
 use App\Services\User\UserProfileService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,12 +32,17 @@ class RegistrationService
     {
         $inputs = $request->all();
         $inputs['email_token'] = BaseService::randomCharacters(6, '0123456789');
-        $inputs['referral_code'] = BaseService::randomCharacters(8, 'abcdefghijklmnop0123456789');
 
         DB::beginTransaction();
         try{
             $inputs['referred_by'] = !empty($inputs['referred_by_code']) ? $this->getReferrerId($inputs['referred_by_code']) : null;
-            $user = $this->profile->user()->create($inputs);
+
+            $user = $this->profile->user()->firstOrCreate([
+                'email' => $inputs['email']
+            ], [
+                'email' => $inputs['email'],
+                'referred_by' => $inputs['referred_by'],
+            ]);
 
             if(!empty($inputs['referred_by'])){
                 $this->referral->addReferrerToReceiver($inputs['referred_by'], $user->id);
@@ -78,15 +84,17 @@ class RegistrationService
 
         return [
             'success' => true,
-            'message' => 'Registration Complete',
+            'message' => 'Sign On Complete, verify Email',
             'user' => new UserResource($user)
         ];
     }
 
-    public function userEmailVerification($token): array
+    public function userEmailVerification($request): array
     {
+        $inputs = $request->all();
+
         $tokenUsage = TokenUsage::where([
-            'key' => $token,
+            'key' => $inputs['email_token'],
             'target_type' => 'registration',
             'model' => 'App\Models\User'
         ])->first();
@@ -95,7 +103,8 @@ class RegistrationService
             return [
                 'success' => false,
                 'message' => 'Invalid Token',
-                'errors' => ['token' => ['Invalid Token']]
+                'errors' => ['email_token' => ['Invalid Token']],
+                'status_code' => 422
             ];
         }
 
@@ -104,20 +113,45 @@ class RegistrationService
             return [
                 'success' => false,
                 'message' => 'User not found',
-                'errors' => ['token' => ['No user associated with this token']]
+                'errors' => ['email_token' => ['No user associated with this token']],
+                'status_code' => 422
+            ];
+        }
+
+        $checkReferredByCode = $this->profile->user()->where('referral_code', $inputs['referred_by_code'])->first();
+        if(!empty($inputs['referred_by_code']) && !$checkReferredByCode){
+            return [
+                'success' => false,
+                'message' => 'Invalid Referral Code',
+                'errors' => ['referred_by_code' => ['Invalid Referral Code']],
+                'status_code' => 422
             ];
         }
 
         DB::beginTransaction();
         try {
+            if(!$user->is_verified){
+                $user->email_verified_at = now()->format('Y-m-d H:i:s');
+                $user->is_verified = true;
+                $user->referred_by = !empty($inputs['referred_by_code']) ? $this->getReferrerId($inputs['referred_by_code']) : null;
+                $user->referral_code = BaseService::randomCharacters(8, 'abcdefghijklmnop0123456789');
 
-            $user->email_verified_at = now()->format('Y-m-d H:i:s');
+                // Add referral to user
+                if(!empty($inputs['referred_by_code'])){
+                    $this->referral->addReferrerToReceiver($user->referred_by, $user->id);
+                }
+            }
+
+            $user->last_login = now()->format('Y-m-d H:i:s');
             $user->save();
 
             $tokenUsage->is_active = false;
             $tokenUsage->save();
 
             DB::commit();
+
+            Auth::login($user);
+            $request->session()->regenerate();
 
             return [
                 'success' => true,

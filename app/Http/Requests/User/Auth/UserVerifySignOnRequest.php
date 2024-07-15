@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\User\Profile;
+namespace App\Http\Requests\User\Auth;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserProfileUpdateBioRequest extends FormRequest
+class UserVerifySignOnRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,30 +21,22 @@ class UserProfileUpdateBioRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'first_name' => 'required|string',
-//            'last_name' => 'required|string',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'first_name.required' => 'First name is required!',
-            'first_name.string' => 'First name must be a string!',
-//            'last_name.required' => 'Last name is required!',
-//            'last_name.string' => 'Last name must be a string!',
+            'email_token' => ['required', 'string', 'max:6'],
+            'referral_code' => ['nullable', 'string', 'max:8'],
         ];
     }
 
     protected function failedValidation(Validator $validator){
         // return errors in json object/array
-        $message = $validator->errors()->messages();
+        //$message = $validator->errors()->all();
+        $message = $validator->errors()->getMessages();
         throw new HttpResponseException(response()->json([
             'success' => false,
             'errors' => $message
         ], 422));
     }
+
 }
