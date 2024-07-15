@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Referral\ReferralType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -58,5 +59,9 @@ class ReferralTypeSeeder extends Seeder
             ],
 
         ];
+
+        foreach ($referralTypes as $referralType) {
+            ReferralType::create($referralType);
+        }
     }
 }

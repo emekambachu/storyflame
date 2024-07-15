@@ -94,6 +94,16 @@ class User extends Authenticatable implements ModelWithId
             ->withTimestamps();
     }
 
+    public function referral_types(){
+        return $this->belongsToMany(ReferralType::class, 'user_referral_types', 'user_id', 'referral_type_id')
+            ->withPivot([
+                'start_date',
+                'end_date',
+                'is_active',
+            ])
+            ->withTimestamps();
+    }
+
     public function user_referrals()
     {
         return $this->belongsToMany(__CLASS__, 'user_referrals', 'referrer_id', 'receiver_id')
@@ -105,11 +115,6 @@ class User extends Authenticatable implements ModelWithId
                 'commission_ends_at',
             ])
             ->withTimestamps();
-    }
-
-    public function referrer_type(): BelongsTo
-    {
-        return $this->belongsTo(ReferralType::class, 'referral_type_id', 'id');
     }
 
     public function roles(): BelongsToMany

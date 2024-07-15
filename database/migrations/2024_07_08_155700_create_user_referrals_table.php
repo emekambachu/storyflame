@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_referrals', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('referrer_id')->nullable();
-            $table->unsignedBigInteger('recipient_id')->nullable();
-            $table->unsignedBigInteger('referral_type_id')->nullable();
+            $table->unsignedBigInteger('referrer_id');
+            $table->unsignedBigInteger('recipient_id');
+            $table->unsignedBigInteger('referral_type_id');
             $table->decimal('recipient_discount_amount', 10, 2)->nullable();
             $table->decimal('referrer_discount_amount', 10, 2)->nullable();
             $table->decimal('referrer_commission_amount', 10, 2)->nullable();
