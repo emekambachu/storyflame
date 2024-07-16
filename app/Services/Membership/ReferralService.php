@@ -5,9 +5,11 @@ namespace App\Services\Membership;
 use App\Models\Product\UserProduct;
 use App\Models\ProductPrice;
 use App\Models\Referral\ReferralType;
+use App\Models\Referral\UserDiscount;
 use App\Models\Referral\UserReferral;
 use App\Models\Referral\UserReferralType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class ReferralService
@@ -113,21 +115,23 @@ class ReferralService
     private function applyBetaTesterReferral($referrerId, $receiverId): void
     {
         $currentDate = now();
-        $augustFifteenth = $currentDate->copy()->setDate($currentDate->year, 8, 15);
+        $firstDeadline = Carbon::createFromDate(2024, 8, 15);
 
-        $userHasProduct = $this->userProduct()->where('user_id', $referrerId)->first();
+        $discount = 5;
+        $discountDuration = 1;
 
-        if ($currentDate <= $augustFifteenth) {
-            $receiverUser->update([
-                'membership_discount' => 10,
-                'membership_discount_duration' => 1,
-            ]);
-        } else {
-            $receiverUser->update([
-                'membership_discount' => 5,
-                'membership_discount_duration' => 1,
-            ]);
+        if ($currentDate <= $firstDeadline) {
+            $discount = 10;
         }
+
+        UserDiscount::create([
+            'referrer_id' => $referrerId,
+            'recipient_id' => $receiverId,
+            'amount' => $discount,
+            'type' => 'percentage',
+            'percentage' => $discount,
+            'discount_ends_at' => $currentDate->addMonths($discountDuration),
+        ]);
     }
 
     private function applyAffiliateProgram($referrerId, $receiverId): void
