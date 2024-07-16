@@ -31,8 +31,7 @@ class UserProfileUpdateEmailRequest extends FormRequest
     public function messages()
     {
         return [
-//            'email.confirmed' => 'Passwords do not match',
-            'email.min' => 'Password must be at least 8 characters',
+            'email.min' => 'Email must be at least 8 characters',
         ];
     }
 

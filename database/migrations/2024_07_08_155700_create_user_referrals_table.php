@@ -22,9 +22,9 @@ return new class extends Migration
             $table->timestamp('discount_ends_at')->nullable();
             $table->timestamp('commission_ends_at')->nullable();
 
-            $table->foreign('referrer_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('referral_type_id')->references('id')->on('referral_types')->onDelete('set null');
+//            $table->foreign('referrer_id')->references('id')->on('users')->onDelete('set null');
+//            $table->foreign('recipient_id')->references('id')->on('users')->onDelete('set null');
+//            $table->foreign('referral_type_id')->references('id')->on('referral_types')->onDelete('set null');
 
             $table->timestamps();
             $table->engine('InnoDB');

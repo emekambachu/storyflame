@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Membership;
+namespace App\Services\Referral;
 
 use App\Models\Product\UserProduct;
 use App\Models\ProductPrice;
@@ -9,6 +9,7 @@ use App\Models\Referral\UserDiscount;
 use App\Models\Referral\UserReferral;
 use App\Models\Referral\UserReferralType;
 use App\Models\User;
+use App\Services\Base\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
@@ -34,14 +35,21 @@ class ReferralService
         return new UserReferralType();
     }
 
-    public function userProduct(): UserProduct
-    {
-        return new UserProduct();
-    }
-
     public function productPrice(): ProductPrice
     {
         return new ProductPrice();
+    }
+
+    public function generateUniqueReferralCode(): string
+    {
+        $referralCode = BaseService::randomCharacters(8, 'abcdefghijklmnopgrst0123456789');
+        $referralCodeExists = $this->user()->where('referral_code', $referralCode)->exists();
+
+        if ($referralCodeExists) {
+            return $this->generateUniqueReferralCode();
+        }
+
+        return $referralCode;
     }
 
     public function storeReferralType($request): array

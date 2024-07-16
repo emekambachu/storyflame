@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Base\BaseService;
-use App\Services\Membership\ReferralService;
+use App\Services\Referral\ReferralService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

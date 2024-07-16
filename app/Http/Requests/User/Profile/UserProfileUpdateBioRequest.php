@@ -25,7 +25,7 @@ class UserProfileUpdateBioRequest extends FormRequest
     {
         return [
             'first_name' => 'required|string',
-//            'last_name' => 'required|string',
+            'last_name' => 'nullable|string',
         ];
     }
 
@@ -34,8 +34,6 @@ class UserProfileUpdateBioRequest extends FormRequest
         return [
             'first_name.required' => 'First name is required!',
             'first_name.string' => 'First name must be a string!',
-//            'last_name.required' => 'Last name is required!',
-//            'last_name.string' => 'Last name must be a string!',
         ];
     }
 

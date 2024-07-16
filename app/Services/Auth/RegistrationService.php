@@ -6,12 +6,11 @@ use App\Events\UserRegistrationEvent;
 use App\Http\Resources\UserResource;
 use App\Models\TokenUsage;
 use App\Services\Base\BaseService;
-use App\Services\Membership\ReferralService;
 use App\Services\Product\ProductService;
+use App\Services\Referral\ReferralService;
 use App\Services\User\UserProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class RegistrationService
 {
@@ -134,7 +133,7 @@ class RegistrationService
                 $user->email_verified_at = now()->format('Y-m-d H:i:s');
                 $user->is_verified = true;
                 $user->referred_by = !empty($inputs['referred_by_code']) ? $this->getReferrerId($inputs['referred_by_code']) : null;
-                $user->referral_code = BaseService::randomCharacters(8, 'abcdefghijklmnop0123456789');
+                $user->referral_code = $this->referral->generateUniqueReferralCode();
 
                 // Add referral to user
                 if(!empty($inputs['referred_by_code'])){
@@ -162,7 +161,7 @@ class RegistrationService
         } catch (\Exception $e){
 
             DB::rollBack();
-            BaseService::tryCatchException($e, $user->id);
+            BaseService::tryCatchException($e, $user->email);
 
             return [
                 'success' => false,
