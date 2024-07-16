@@ -43,7 +43,7 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    'vue-components': ['./components/**/*.vue'],
+                    // 'vue-components': ['./components/**/*.vue'],
                 },
             },
         },

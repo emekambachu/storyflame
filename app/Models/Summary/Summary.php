@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Concerns\HasCategories;
 use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointSummary;
+use App\Models\DevelopmentReport;
 use App\Models\SummarySchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -67,5 +68,16 @@ class Summary extends Model
     public function schemas(): HasMany
     {
         return $this->hasMany(SummarySchema::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function developmentReports(): BelongsToMany
+    {
+        return $this->belongsToMany(DevelopmentReport::class, 'development_report_summaries')
+            ->withPivot('order')
+            ->orderBy('development_report_summaries.order')
+            ->withTimestamps();
     }
 }

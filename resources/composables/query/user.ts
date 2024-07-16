@@ -4,7 +4,14 @@ import { useQuery } from '@tanstack/vue-query'
 export function useUser() {
     return useQuery({
         queryKey: ['user'],
-        queryFn: getAuthenticatedUser,
-        select: (data) => data.data,
-    })
+        queryFn: async () => {
+            const response = await getAuthenticatedUser();
+            console.log('Query Function Response:', response.data); // Log the query function response
+            return response;
+        },
+        select: (data) => {
+            console.log('Selected Data:', data.data); // Log the selected data
+            return data.data;
+        },
+    });
 }
