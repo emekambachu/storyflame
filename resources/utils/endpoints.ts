@@ -40,10 +40,15 @@ export const changeSubscription = async (id, productPricePaddleId) => {
     return response.data;
 };
 
-export const cancelSubscription = async (id) => {
-    const response = await api.delete(`/api/v1/subscriptions/${id}`);
+export const cancelSubscription = async (paddleId) => {
+    const response = await api.delete(`/api/v1/subscriptions/${paddleId}`);
     return response.data;
 };
+
+export const cancelSubscriptionChange = async (paddleId) => {
+    const response = await api.delete(`/api/v1/subscriptions/${paddleId}/change`);
+    return response.data;
+}
 
 export const getInvoices = async () => {
     const response = await api.get('/api/v1/subscriptions/invoices');

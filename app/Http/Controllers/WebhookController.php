@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductPrice;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -46,6 +47,8 @@ class WebhookController extends Controller
     public function __invoke(Request $request)
     {
         $payload = $request->all();
+
+        Log::info('Webhook payload:', $payload);
 
         $method = 'handle' . Str::studly(Str::replace('.', ' ', $payload['event_type']));
 
@@ -132,10 +135,16 @@ class WebhookController extends Controller
             'invoice_number' => $data['invoice_number'],
             'status' => $data['status'],
             'total' => $data['details']['totals']['total'],
+            'discount' => $data['details']['totals']['discount'],
+            'fee' => $data['details']['totals']['fee'],
             'tax' => $data['details']['totals']['tax'],
+            'earnings' => $data['details']['totals']['earnings'],
             'currency' => $data['currency_code'],
             'billed_at' => Carbon::parse($data['billed_at'], 'UTC'),
         ]);
+
+//        $transaction->createUserDevelopmentReports();
+        $this->handleProratedReports($transaction, $data);
 
         TransactionCompleted::dispatch($billable, $transaction, $payload);
     }
@@ -158,11 +167,46 @@ class WebhookController extends Controller
             'invoice_number' => $data['invoice_number'],
             'status' => $data['status'],
             'total' => $data['details']['totals']['total'],
+            'discount' => $data['details']['totals']['discount'],
+            'fee' => $data['details']['totals']['fee'],
             'tax' => $data['details']['totals']['tax'],
+            'earnings' => $data['details']['totals']['earnings'],
             'billed_at' => Carbon::parse($data['billed_at'], 'UTC'),
         ]);
 
         TransactionUpdated::dispatch($transaction->billable, $transaction, $payload);
+    }
+
+    protected function handleProratedReports(Transaction $transaction, array $data)
+    {
+        Log::info('Processing prorated reports for transaction: ' . $transaction->paddle_id);
+
+        $items = collect($data['items']);
+        $newItem = $items->firstWhere('quantity', 1);
+        $oldItem = $items->firstWhere('quantity', -1);
+
+        if (!$newItem || !$oldItem) {
+            Log::info('No new or old item found. Creating reports without proration.');
+            $transaction->createUserDevelopmentReports($newItem['price']['custom_data']['included_reports'] ?? 0);
+            return;
+        }
+
+        $oldTransaction = $transaction->subscription->transactions()
+            ->where('billed_at', '<', $transaction->billed_at)
+            ->latest('billed_at')
+            ->first();
+
+        if (!$oldTransaction) {
+            Log::info('No old transaction found. Creating reports without proration.');
+            $transaction->createUserDevelopmentReports($newItem['price']['custom_data']['included_reports'] ?? 0);
+            return;
+        }
+
+        $newReportsCount = $newItem['price']['custom_data']['included_reports'] ?? 0;
+        $oldReportsCount = $oldItem['price']['custom_data']['included_reports'] ?? 0;
+        $prorationRate = $oldItem['proration']['rate'];
+
+        $transaction->prorateUserDevelopmentReports($oldReportsCount, $newReportsCount, $prorationRate, $oldTransaction);
     }
 
     /**
@@ -218,6 +262,8 @@ class WebhookController extends Controller
     protected function handleSubscriptionUpdated(array $payload)
     {
         $data = $payload['data'];
+        Log::info('handleSubscriptionUpdated');
+        Log::info('Subscription updated data: ' . json_encode($data));
 
         if (!$subscription = $this->findSubscription($data['id'])) {
             return;
@@ -251,26 +297,65 @@ class WebhookController extends Controller
 
         $subscription->save();
 
-        $prices = [];
+        // Update subscription items
+        $this->updateSubscriptionItems($subscription, $data['items']);
 
-        foreach ($data['items'] as $item) {
-            $prices[] = $item['price']['id'];
-            $priceId = $item['price']['id'];
-
-            $subscription->items()->updateOrCreate([
-                'price_id' => $item['price']['id'],
-            ], [
-                'price_id' => $priceId,
-                'product_id' => $item['price']['product_id'],
-                'status' => $item['status'],
-                'quantity' => $item['quantity'] ?? 1,
-            ]);
-        }
-
-        // Delete items that aren't attached to the subscription anymore...
-        $subscription->items()->whereNotIn('price_id', $prices)->delete();
+        // Handle downgrade if applicable
+        $this->handleSubscriptionDowngrade($subscription, $data['items']);
 
         SubscriptionUpdated::dispatch($subscription, $payload);
+    }
+
+    /**
+     * @param Subscription $subscription
+     * @param array $items
+     * @return void
+     */
+    private function updateSubscriptionItems(Subscription $subscription, array $items)
+    {
+        $prices = [];
+
+        foreach ($items as $item) {
+            $priceId = $item['price']['id'];
+            $prices[] = $priceId;
+
+            $subscription->items()->updateOrCreate(
+                ['price_id' => $priceId],
+                [
+                    'product_id' => $item['price']['product_id'],
+                    'status' => $item['status'],
+                    'quantity' => $item['quantity'] ?? 1,
+                ]
+            );
+        }
+
+        // Delete items that aren't attached to the subscription anymore
+        $subscription->items()->whereNotIn('price_id', $prices)->delete();
+    }
+
+    /**
+     * @param Subscription $subscription
+     * @param array $items
+     * @return void
+     */
+    private function handleSubscriptionDowngrade(Subscription $subscription, array $items)
+    {
+        $newPriceId = $items[0]['price']['id'];
+
+        Log::info('The new price ID is ' . $newPriceId);
+
+        $downgrade = $subscription->getPendingDowngrade($newPriceId);
+
+        Log::info('The downgrade is ' . json_encode($downgrade));
+
+        if ($downgrade) {
+            $downgrade->update([
+                'is_ready_to_process' => false,
+                'downgraded_at' => now(),
+            ]);
+
+            Log::info("Subscription downgrade processed: Subscription ID {$subscription->id}, New Price ID {$newPriceId}");
+        }
     }
 
     /**
@@ -377,7 +462,7 @@ class WebhookController extends Controller
      * Find the first transaction matching a Paddle transaction ID.
      *
      * @param string $transactionId
-     * @return \Laravel\Paddle\Transaction|null
+     * @return Transaction|null
      */
     protected function findTransaction(string $transactionId)
     {
@@ -473,6 +558,7 @@ class WebhookController extends Controller
      */
     private function updateOrCreateProductPrice($data)
     {
+
         $product = Product::where('paddle_id', $data['product_id'])->first();
 
         if (!$product) {
@@ -494,6 +580,8 @@ class WebhookController extends Controller
                 'description' => $data['description'],
                 'interval' => $interval,
                 'interval_frequency' => $frequency,
+                'included_reports' => $data['custom_data']['included_reports'] ?? 0,
+                'included_images' => $data['custom_data']['included_images'] ?? 0,
                 'price' => $data['unit_price']['amount'],
                 'currency_code' => $data['unit_price']['currency_code'],
                 'status' => $data['status'] === 'active' ? 'active' : 'archived',

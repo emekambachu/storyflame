@@ -2,16 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Customer;
+use App\Models\Transaction;
 use App\Events\UserRegistrationEvent;
 use App\Listeners\RegistrationEmailListener;
-use App\Models\Customer;
-use App\Models\Subscription;
-use App\Models\Transaction;
-use App\Models\User;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Paddle\Cashier;
-use Illuminate\Support\Facades\Event;
+use Laravel\Paddle\Subscription;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Cashier::useCustomerModel(Customer::class);
         Cashier::useSubscriptionModel(Subscription::class);
+        Cashier::useTransactionModel(Transaction::class);
 
         Event::listen(
             UserRegistrationEvent::class,

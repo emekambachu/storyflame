@@ -9,4 +9,8 @@ Route::get('/{any}', function () {
 
 Route::post('/paddle/webhook', [\App\Http\Controllers\WebhookController::class, '__invoke']);
 
+Route::get('/test-env', function () {
+    dd(config('cashier.webhook_secret'));
+});
+
 include __DIR__ . '/admin/web.php';

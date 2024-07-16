@@ -32,9 +32,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {onMounted, ref, defineProps} from 'vue';
+import {PropType} from "vue/dist/vue";
+import User from "@/types/user";
 
-const selectedInterval = ref('year');
+const props = defineProps<{
+    initialInterval: 'month' | 'year';
+}>();
+
+const selectedInterval = ref<'month' | 'year'>(props.initialInterval);
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: 'month' | 'year'): void
@@ -44,4 +50,8 @@ const selectInterval = (interval: 'month' | 'year') => {
     selectedInterval.value = interval;
     emit('update:modelValue', interval);
 };
+
+onMounted(() => {
+    selectInterval(props.initialInterval ?? 'year');
+});
 </script>

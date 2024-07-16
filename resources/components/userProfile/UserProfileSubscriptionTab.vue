@@ -1,194 +1,34 @@
-<!--
-getSubscriptions() returns the following:
-
-{
-    "subscriptions": [
-        {
-            "id": 8,
-            "billable_type": "App\\Models\\User",
-            "billable_id": 38,
-            "type": "default",
-            "paddle_id": "sub_01j2cym5g2bgn8gwjbrk64arm2",
-            "status": "active",
-            "trial_ends_at": null,
-            "paused_at": null,
-            "ends_at": null,
-            "next_billed_at": "2024-08-09 23:52:52",
-            "created_at": "2024-07-09T23:52:55.000000Z",
-            "updated_at": "2024-07-09T23:52:55.000000Z",
-            "items": [
-                {
-                    "id": 7,
-                    "subscription_id": 8,
-                    "product_id": "pro_01j2796zwtbtyp4x1gphtjen2z",
-                    "price_id": "pri_01j2798w4jks9xccmxcg95ktkf",
-                    "status": "active",
-                    "quantity": 1,
-                    "created_at": "2024-07-09T23:52:55.000000Z",
-                    "updated_at": "2024-07-09T23:52:55.000000Z",
-                    "product": {
-                        "id": 4,
-                        "paddle_id": "pro_01j2796zwtbtyp4x1gphtjen2z",
-                        "name": "Premium Membership",
-                        "type": "subscription",
-                        "description": "Everything you need to develop your stories.",
-                        "benefits": {
-                            "includes": [
-                                "Unlimited Development",
-                                " 4 Stories per month",
-                                "1 Assessment Report \/ month"
-                            ],
-                            "excludes": []
-                        },
-                        "details": null,
-                        "status": "active",
-                        "order": 2,
-                        "created_at": "2024-07-10T01:34:20.000000Z",
-                        "updated_at": "2024-07-10T01:34:20.000000Z",
-                        "deleted_at": null
-                    },
-                    "product_price": {
-                        "id": 4,
-                        "paddle_id": "pri_01j2798w4jks9xccmxcg95ktkf",
-                        "product_id": 4,
-                        "name": "Monthly subscription",
-                        "description": "Monthly subscription",
-                        "interval": "month",
-                        "interval_frequency": 1,
-                        "price": 2200,
-                        "currency_code": "USD",
-                        "status": "active",
-                        "created_at": "2024-07-10T01:35:07.000000Z",
-                        "updated_at": "2024-07-10T01:35:07.000000Z",
-                        "deleted_at": null
-                    }
-                }
-            ]
-        }
-    ],
-    "plans": [
-        {
-            "id": 3,
-            "paddle_id": "free",
-            "name": "Free Trial",
-            "type": "subscription",
-            "description": "Try it out for free.",
-            "benefits": {
-                "includes": [
-                    "Limited Development",
-                    "1 Story"
-                ],
-                "excludes": [
-                    "No Assessment Reports"
-                ]
-            },
-            "created_at": "2024-07-10T01:30:40.000000Z",
-            "updated_at": "2024-07-10T01:30:40.000000Z",
-            "prices": []
-        },
-        {
-            "id": 4,
-            "paddle_id": "pro_01j2796zwtbtyp4x1gphtjen2z",
-            "name": "Premium Membership",
-            "type": "subscription",
-            "description": "Everything you need to develop your stories.",
-            "benefits": {
-                "includes": [
-                    "Unlimited Development",
-                    " 4 Stories per month",
-                    "1 Assessment Report \/ month"
-                ],
-                "excludes": []
-            },
-            "created_at": "2024-07-10T01:34:20.000000Z",
-            "updated_at": "2024-07-10T01:34:20.000000Z",
-            "prices": [
-                {
-                    "id": 4,
-                    "paddle_id": "pri_01j2798w4jks9xccmxcg95ktkf",
-                    "product_id": 4,
-                    "name": "Monthly subscription",
-                    "description": "Monthly subscription",
-                    "price": 2200,
-                    "currency_code": "USD",
-                    "status": "active",
-                    "created_at": "2024-07-10T01:35:07.000000Z",
-                    "updated_at": "2024-07-10T01:35:07.000000Z"
-                },
-                {
-                    "id": 5,
-                    "paddle_id": "pri_01j279ekkjrrrwftj2td0s60pj",
-                    "product_id": 4,
-                    "name": "Annual Subscription",
-                    "description": "Annual subscription",
-                    "price": 21100,
-                    "currency_code": "USD",
-                    "status": "active",
-                    "created_at": "2024-07-10T01:35:18.000000Z",
-                    "updated_at": "2024-07-10T01:35:18.000000Z"
-                }
-            ]
-        },
-        {
-            "id": 1,
-            "paddle_id": "pro_01j279fckenjrqm5a7yee72xrx",
-            "name": "Pro Membership",
-            "type": "subscription",
-            "description": "For professional writing volume",
-            "benefits": {
-                "includes": [
-                    "Unlimited Development",
-                    "Unlimited Stories",
-                    "120 Assessment Reports"
-                ],
-                "excludes": []
-            },
-            "created_at": "2024-07-10T01:08:23.000000Z",
-            "updated_at": "2024-07-10T01:08:23.000000Z",
-            "prices": [
-                {
-                    "id": 1,
-                    "paddle_id": "pri_01j279g5csyzyvj5f9dzw66tjz",
-                    "product_id": 1,
-                    "name": "Monthly subscription",
-                    "description": "Monthly subscription.",
-                    "price": 5500,
-                    "currency_code": "USD",
-                    "status": "active",
-                    "created_at": "2024-07-10T01:23:31.000000Z",
-                    "updated_at": "2024-07-10T01:23:31.000000Z"
-                },
-                {
-                    "id": 2,
-                    "paddle_id": "pri_01j279gtpyx9h8zretv3a3jd8s",
-                    "product_id": 1,
-                    "name": "Annual subscription",
-                    "description": "Annual subscription",
-                    "price": 52800,
-                    "currency_code": "USD",
-                    "status": "active",
-                    "created_at": "2024-07-10T01:24:00.000000Z",
-                    "updated_at": "2024-07-10T01:24:00.000000Z"
-                }
-            ]
-        }
-    ]
-}
--->
-
 <template>
-<div v-if="!isLoading" class="flex flex-col gap-10">
-<!-- Current Subscription -->
+    <div v-if="!isLoading" class="flex flex-col gap-10">
+        <!-- Available Reports -->
+        <div class="flex flex-col gap-4">
+            <div class="w-full flex flex-col gap-1 p-4 text-stone-800 border border-solid border-stone-300 rounded-lg">
+                <div class="w-full flex flex-row justify-between text-stone-900">
+                    <div class="font-semibold">
+                        Report Credits Available
+                    </div>
+                    <div class="font-bold">
+                        {{ subscriptionData?.available_report_count }}
+                    </div>
+                </div>
+                <div class="w-full text-sm">
+                    Used to create various report types for your stories and characters.
+                </div>
+            </div>
+        </div>
         <div class="flex flex-col gap-4">
             <h2 class="font-bold text-lg">Current Subscription</h2>
             <SubscriptionCard
                 v-if="currentSubscription"
                 :plan="currentSubscription"
                 :is-current-subscription="true"
-                :current-price-id="subscriptionData.price_id"
-                :next-billed-at="subscriptionData.next_billed_at"
+                :current-price-id="subscriptionData?.price_id"
+                :next-billed-at="subscriptionData?.next_billed_at"
+                :ends-at="subscriptionData?.ends_at"
+                :transition-to-product-price="getTransitionToProductPrice"
                 card-type="current"
                 @switch-interval="handleIntervalSwitch"
+                @cancel-transition="handleCancelSubscriptionChange"
             />
         </div>
         <div v-if="!isFreePlan && (showChangeMembership === false)">
@@ -206,6 +46,7 @@ getSubscriptions() returns the following:
             <h2 class="font-bold text-lg">Available Plans</h2>
             <interval-switcher
                 v-model="selectedInterval"
+                :initial-interval="isFreePlan ? 'month' : 'year'"
             />
 
             <SubscriptionCard
@@ -220,7 +61,7 @@ getSubscriptions() returns the following:
             />
         </div>
 
-        <div v-if="!isFreePlan" class="w-full text-center">
+        <div v-if="!isFreePlan && !subscriptionData?.ends_at" class="w-full text-center">
             <button
                 class="text-stone-600 hover:text-stone-900"
                 @click="cancelCurrentSubscription"
@@ -235,14 +76,16 @@ getSubscriptions() returns the following:
         >
             <h2 class="font-bold text-lg">Invoices</h2>
             <div class="w-full">
-                <div v-for="invoice in invoices" :key="invoice.id" class="w-full flex flex-row justify-between p-2 border-b border-stone-200">
+                <div v-for="invoice in invoices" :key="invoice.id"
+                     class="w-full flex flex-row justify-between p-2 border-b border-stone-200">
                     <div>
-                        {{ formatDate(invoice.billed_at) }} <span class="text-stone-500">for ${{ invoice.total / 100 }} ({{invoice.currency}})</span>
+                        {{ formatDate(invoice.billed_at) }} <span class="text-stone-500">for ${{ invoice.total / 100 }} ({{ invoice.currency }})</span>
                     </div>
                     <div
                         @click="loadInvoiceLinkInNewTab(invoice.paddle_id)"
                         class="cursor-pointer text-stone-500 hover:text-stone-900"
-                    >View</div>
+                    >View
+                    </div>
                 </div>
             </div>
         </div>
@@ -254,49 +97,62 @@ getSubscriptions() returns the following:
         <p class="error">{{ error }}</p>
     </div>
     <!-- Confirmation Modal -->
-    <div v-if="showConfirmationModal && currentSubscription?.name" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg max-w-md w-full">
-            <h2 class="text-xl font-bold mb-4">Confirm Subscription Change</h2>
-            <div class="w-full flex flex-col rounded bg-stone-100 p-4">
-                <div class="flex flex-row justify-between items-center text-xs">
-                    <div class="uppercase text-xs font-semibold text-stone-500">Current Plan</div>
-                    <div class="text-right font-bold">
-                        ${{ currentSubscriptionPrice / 100 }} per {{ currentSubscriptionInterval }}
+    <div v-if="showConfirmationModal && currentSubscription?.name"
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="flex flex-col gap-8 bg-white p-6 md:p-8 rounded-lg max-w-md md:max-w-lg w-full">
+            <div class="flex flex-row justify-between w-full items-center">
+                <h2 class="text-stone-800 text-xl select-none">Confirm Subscription Change</h2>
+                <button @click="closeSubscriptionChangeModel" class="p-1 text-stone-500 hover:text-stone-900">
+                    <xmark-icon/>
+                </button>
+            </div>
+            <div class="flex flex-col gap-2 w-full select-none">
+                <div class="w-full flex flex-col rounded bg-stone-100 p-4">
+                    <div class="flex flex-row justify-between items-center text-xs">
+                        <div class="uppercase text-xs font-semibold text-stone-500">Current Plan</div>
+                        <div class="text-right font-bold">
+                            ${{ currentSubscriptionPrice / 100 }} per {{ currentSubscriptionInterval }}
+                        </div>
+                    </div>
+                    <h3 class="font-semibold">{{ currentSubscription?.name }}</h3>
+                    <div class="text-sm">
+                        {{ currentSubscription.description }}
                     </div>
                 </div>
-                <h3 class="font-semibold">{{ currentSubscription?.name }}</h3>
-                <div class="text-sm">
-                    {{ currentSubscription.description }}
-                </div>
-            </div>
-            <div class="w-full text-sm font-semibold py-4 text-center text-stone-700">
-                Switching to
-            </div>
 
-            <div class="w-full flex flex-col rounded bg-stone-100 p-4">
-                <div class="flex flex-row justify-between items-center text-xs">
-                    <div class="uppercase text-xs font-semibold text-stone-500">New Plan</div>
-                    <div class="text-right font-bold">
-                        ${{ newSubscriptionPrice / 100 }} per {{ newSubscriptionInterval }}
+                <div class="w-full text-sm text-center text-stone-500">
+                    Switching to
+                </div>
+
+                <div class="w-full flex flex-col rounded bg-blue-100 p-4">
+                    <div class="flex flex-row justify-between items-center text-xs">
+                        <div class="uppercase text-xs font-semibold text-blue-500">New Plan</div>
+                        <div class="text-right font-bold">
+                            ${{ newSubscriptionPrice / 100 }} per {{ newSubscriptionInterval }}
+                        </div>
+                    </div>
+                    <h3 class="font-semibold">{{ newSubscriptionName }}</h3>
+                    <div class="text-sm">
+                        {{ newSubscriptionDescription }}
                     </div>
                 </div>
-                <h3 class="font-semibold">{{ newSubscriptionName }}</h3>
-                <div class="text-sm">
-                    {{ newSubscriptionDescription }}
-                </div>
             </div>
 
-            <div class="w-full h-px my-4 bg-stone-300"/>
 
-            <div class="w-full flex flex-col gap-1.5">
-                <div class="w-full text-right text-sm">
-                    <strong>Change Effective:</strong> {{ formatDate(subscriptionData.next_billed_at) }}
+            <div class="w-full flex flex-col">
+                <div class="flex flex-row justify-between items-center w-full text-right text-sm">
+                    <div class="text-stone-500">
+                        Change Effective on
+                    </div>
+                    <div class="font-bold text-stone-900">
+                        {{ getEffectiveChangeDate() }}
+                    </div>
                 </div>
+                <div class="w-full h-px mt-2 mb-4 bg-stone-300"/>
+                <button @click="confirmSubscriptionChange"
+                        class="w-full py-2 bg-blue-600 hover:bg-stone-900 text-white rounded">Confirm Change
+                </button>
 
-                <div class="flex justify-end gap-4">
-                    <button @click="cancelSubscriptionChange" class="px-4 py-2 border border-solid border-stone-200 rounded text-stone-500 hover:bg-stone-200 hover:text-stone-900">Cancel</button>
-                    <button @click="confirmSubscriptionChange" class="px-4 py-2 bg-blue-500 hover:bg-stone-900 text-white rounded">Confirm Change</button>
-                </div>
             </div>
         </div>
     </div>
@@ -304,12 +160,21 @@ getSubscriptions() returns the following:
 
 <script lang="ts" setup>
 import {computed, ref, onMounted, PropType} from 'vue';
-import { getSubscriptions, changeSubscription, cancelSubscription, getInvoices, getInvoiceLink, createCustomer } from '@/utils/endpoints';
+import {
+    getSubscriptions,
+    changeSubscription,
+    cancelSubscription,
+    getInvoices,
+    getInvoiceLink,
+    createCustomer,
+    cancelSubscriptionChange
+} from '@/utils/endpoints';
 import User from "@/types/user.js";
 import CheckIcon from "@/components/icons/CheckIcon.vue";
 import SubscriptionCard from "@/components/cards/SubscriptionCard.vue";
 import IntervalSwitcher from "@/components/ui/IntervalSwitcher.vue";
 import {formatDate} from "@/utils/formatDate";
+import XmarkIcon from "@/components/icons/XmarkIcon.vue";
 
 const props = {
     user: {
@@ -347,8 +212,35 @@ const fetchSubscriptions = async () => {
 };
 
 const currentSubscription = computed(() => {
-    if (!subscriptionData.value) return null;
+    if (!subscriptionData.value) {
+        return plans.value.find(plan => plan.paddle_id === 'free');
+    }
+    ;
     return plans.value.find(plan => plan.paddle_id === subscriptionData.value.product_id);
+});
+
+const getTransitionToProductPrice = computed(() => {
+    if (!subscriptionData.value || !subscriptionData.value.new_product_price_id) {
+        console.log('yeah, this is null')
+        return null;
+    }
+
+    const newProductPrice = plans.value
+        .flatMap(plan => plan.prices)
+        .find(price => price.paddle_id === subscriptionData.value.new_product_price_id);
+
+    const newProductPlan = plans.value.find(plan => plan.prices.some(price => price.paddle_id === subscriptionData.value.new_product_price_id));
+
+    if (!newProductPrice) {
+        console.log('nope, couldnt find the newProducePrice');
+        return null;
+    }
+
+    return {
+        name: newProductPlan.name,
+        interval: newProductPrice.interval,
+        transitionAt: subscriptionData.value.downgrade_at
+    };
 });
 
 const availablePlans = computed(() =>
@@ -370,6 +262,8 @@ const handlePlanSelection = async (productPricePaddleId: string) => {
     );
     const selectedPrice = selectedPlan.prices.find(price => price.paddle_id === productPricePaddleId);
 
+    setCurrentPriceAndInterval();
+
     newSubscriptionName.value = selectedPlan.name;
     newSubscriptionDescription.value = selectedPlan.description;
     newSubscriptionPrice.value = selectedPrice.price;
@@ -381,42 +275,77 @@ const handlePlanSelection = async (productPricePaddleId: string) => {
 const handleIntervalSwitch = async (productPricePaddleId: string) => {
     pendingProductPricePaddleId.value = productPricePaddleId;
     const newPrice = currentSubscription.value.prices.find(price => price.paddle_id === productPricePaddleId);
-    const currentPrice = currentSubscription.value.prices.find(price => price.paddle_id === subscriptionData.value.price_id);
-    const currentName = currentSubscription.value.name;
-    const currentDescription = currentSubscription.value.description;
-
-    currentSubscriptionPrice.value = currentPrice.price;
-    currentSubscriptionInterval.value = currentPrice.interval;
-    newSubscriptionName.value = currentName;
-    newSubscriptionDescription.value = currentDescription;
+    setCurrentPriceAndInterval();
+    newSubscriptionName.value = currentSubscription.value.name;
+    newSubscriptionDescription.value = currentSubscription.value.description;
     newSubscriptionPrice.value = newPrice.price;
     newSubscriptionInterval.value = newPrice.interval;
 
     showConfirmationModal.value = true;
 };
 
-const cancelSubscriptionChange = () => {
+const setCurrentPriceAndInterval = () => {
+    const currentPrice = currentSubscription.value.prices?.find(price => price.paddle_id === subscriptionData.value.price_id);
+    if (!currentPrice) {
+        currentSubscriptionPrice.value = 0;
+        currentSubscriptionInterval.value = '';
+        return;
+    }
+    currentSubscriptionPrice.value = currentPrice.price;
+    currentSubscriptionInterval.value = currentPrice.interval;
+};
+
+const getEffectiveChangeDate = () => {
+    const today = new Date();
+    const nextBilledAt = subscriptionData?.value?.next_billed_at;
+
+    return nextBilledAt ? formatDate(nextBilledAt) : formatDate(today);
+};
+
+const closeSubscriptionChangeModel = () => {
     showConfirmationModal.value = false;
     pendingProductPricePaddleId.value = null;
     newSubscription.value = null;
 };
 
 const confirmSubscriptionChange = async () => {
+    if (isLoading.value) return;
     try {
-        if (subscriptionData.value.subscription_id) {
+        isLoading.value = true;
+        if (subscriptionData.value?.subscription_id) {
             await changeSubscription(subscriptionData.value.subscription_id, pendingProductPricePaddleId.value);
         } else {
             await createNewSubscription(pendingProductPricePaddleId.value);
         }
         await fetchSubscriptions(); // Refresh the subscription data
+        showConfirmationModal.value = true;
         showConfirmationModal.value = false;
+        isLoading.value = false;
     } catch (error) {
         console.error('Failed to change subscription:', error);
     }
 };
 
+const handleCancelSubscriptionChange = async () => {
+    if (isLoading.value) return;
+    try {
+        isLoading.value = true;
+        if (subscriptionData.value.subscription_id) {
+            await cancelSubscriptionChange(subscriptionData.value.subscription_id);
+        }
+        await fetchSubscriptions();
+        isLoading.value = false;
+    } catch (error) {
+        console.error('Failed to cancel subscription change:', error);
+    }
+};
+
 const toggleBilling = (cycle) => {
     billingCycle.value = cycle;
+};
+
+const isFreePlan = () => {
+    return currentSubscription.value?.paddle_id === 'free';
 };
 
 const isUpgrade = (plan: any) => {
@@ -429,7 +358,7 @@ const changePlan = async (plan: any) => {
         if (!price) {
             throw new Error('Selected price not found');
         }
-        const response = await changeSubscription({ product_price_paddle_id: price.paddle_id });
+        const response = await changeSubscription({product_price_paddle_id: price.paddle_id});
         currentSubscription.value = response.subscription;
         await fetchSubscriptions(); // Refresh the subscription data
     } catch (err) {
@@ -439,8 +368,9 @@ const changePlan = async (plan: any) => {
 
 const cancelCurrentSubscription = async () => {
     try {
-        const response = await cancelSubscription(currentSubscription.value.id);
+        const response = await cancelSubscription(subscriptionData.value.subscription_id);
         currentSubscription.value = response.subscription;
+        await fetchSubscriptions(); // Refresh the subscription data
     } catch (err) {
         error.value = err.response?.data?.error || 'An error occurred while cancelling the subscription';
     }
@@ -473,7 +403,7 @@ const createNewSubscription = async (productPricePaddleId) => {
         }
     }
 
-    if (props.user.paddle_id && !subscriptionData.value.subscription_id) {
+    if (props.user.paddle_id && !subscriptionData.value?.subscription_id) {
         Paddle.Checkout.open({
             items: [
                 {
@@ -485,6 +415,41 @@ const createNewSubscription = async (productPricePaddleId) => {
                 id: props.user.paddle_id,
             }
         });
+
+        window.addEventListener('paddleCheckoutClosed', function (event) {
+            isLoading.value = true;
+            fetchSubscriptions();
+        });
+        //
+        // window.addEventListener('checkout.completed', function(data) {
+        //     console.log('Checkout completed:', data);
+        //     isLoading.value = true;
+        //     fetchSubscriptions();
+        // });
+        //
+        // window.addEventListener('checkout.closed', function(data) {
+        //     console.log('Checkout closed:', data);
+        //     isLoading.value = true;
+        //     fetchSubscriptions();
+        // });
+        //
+        // window.addEventListener('checkout:closed', function(data) {
+        //     console.log('Checkout closed:', data);
+        //     isLoading.value = true;
+        //     fetchSubscriptions();
+        // });
+
+        // Paddle.eventCallback('checkout.completed', function(data) {
+        //     console.log('Checkout completed:', data);
+        //     isLoading.value = true;
+        //     fetchSubscriptions();
+        // });
+        //
+        // Paddle.eventCallback('checkout.closed', function(data) {
+        //     console.log('Checkout closed:', data);
+        //     isLoading.value = true;
+        //     fetchSubscriptions();
+        // });
     }
 };
 

@@ -1,6 +1,6 @@
 <template>
     <div class="w-full overflow-hidden bg-stone-50 rounded-xl border border-stone-200 flex-col justify-start items-start inline-flex">
-        <div class="self-stretch px-4 py-2 bg-stone-200 justify-start items-center gap-2.5 inline-flex">
+        <div class="self-stretch px-4 py-3 bg-stone-200 justify-start items-center gap-2.5 inline-flex">
             <div class="grow shrink basis-0 text-stone-700 text-base font-semibold leading-snug">
                 {{ plan.name }}
             </div>
@@ -29,7 +29,7 @@
                     <div class="text-center text-stone-900 text-2xl font-semibold leading-tight">
                         ${{ displayPrice }}
                     </div>
-                    <div class="text-center text-stone-500 text-2xs font-bold leading-tight">
+                    <div v-if="displayInterval" class="text-center text-stone-500 text-2xs font-bold leading-tight">
                         per {{ displayInterval }}
                     </div>
                 </div>
@@ -41,7 +41,10 @@
                     Select {{ displayInterval }}ly Plan
                 </button>
 
-                <div class="flex flex-col w-full text-center gap-1">
+                <div
+                    class="flex flex-col w-full text-center gap-1"
+                    v-if="!transitionToProductPrice"
+                >
                     <button
                         v-if="cardType === 'current' && hasAlternateInterval"
                         @click="switchInterval"
@@ -49,31 +52,67 @@
                     >
                         Switch to {{ alternateInterval }}ly Plan
                     </button>
-                    <div v-if="displayInterval === 'month'" class="text-xs text-stone-600">
-                        Save ${{ ((displayPrice * 12) - alternatePrice).toFixed(0) }} a year <br />with annual billing
-                    </div>
-                    <div v-if="displayInterval === 'year'" class="text-xs text-stone-600">
-                        Costs  an additional <br />${{ ((alternatePrice - (displayPrice /12))*12).toFixed(0) }} per year
+                    <div class="text-xs text-stone-600">
+                        <div v-if="cardType === 'current' && displayInterval === 'month'" class="text-xs text-stone-600">
+                            Save ${{ ((displayPrice * 12) - alternatePrice).toFixed(0) }} a year <br />with annual billing
+                        </div>
+                        <div v-if="displayInterval === 'year'" class="text-xs text-stone-600">
+                            <template v-if="cardType === 'current'">
+<!--                                <div>-->
+<!--                                    Costs an additional-->
+<!--                                </div>-->
+<!--                                <div>-->
+<!--                                    ${{ ((alternatePrice - (displayPrice /12))*12).toFixed(0) }} per year-->
+<!--                                </div>-->
+                            </template>
+                            <template v-else>
+                                <div>
+                                    Saves ${{ (otherPlanPrice * 12) - displayPrice }} a year
+                                </div>
+                                <div>
+                                    over monthly billing
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="w-full p-4 text-sm">
-            <div v-if="endsAt" class="w-full flex flex-row justify-between rounded bg-stone-200 text-stone-600 p-2">
-                <div>
-                    Membership ends on
+        <div v-if="endsAt || nextBilledAt || transitionToProductPrice" class="w-full flex flex-col text-sm text-stone-600 p-4 pt-0">
+            <div class="w-full flex flex-col gap-2 rounded bg-stone-200 p-2">
+                <div v-if="endsAt" class="w-full flex flex-row justify-between">
+                    <div>
+                        Membership ends on
+                    </div>
+                    <div>
+                        {{ formatDate(endsAt) }}
+                    </div>
                 </div>
-                <div>
-                    // format date as Aug 9, 2024
-                    {{ formatDate(endsAt) }}
+                <div v-if="transitionToProductPrice" class="w-full flex flex-col gap-1">
+                    <div class="flex flex-row justify-between w-full">
+                        <div>
+                            Transitioning to <strong>{{ transitionToProductPrice.name }}</strong> <span v-if="transitionToProductPrice.interval">with <strong>{{ transitionToProductPrice.interval }}</strong> billing on</span>
+                        </div>
+                        <div>
+                            {{ formatDate(transitionToProductPrice.transitionAt) }}
+                        </div>
+                    </div>
+                    <div class="flex w-full justify-end">
+                        <button
+                            @click="cancelTransition"
+                            class="text-stone-500 hover:text-stone-900 underline text-xs py-2 rounded font-semibold capitalize select-none"
+                        >
+                            Cancel Membership Change
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div v-if="nextBilledAt" class="w-full flex flex-row justify-between rounded bg-stone-200 text-stone-600 p-2">
-                <div>
-                    Next billed on
-                </div>
-                <div>
-                    {{ formatDate(nextBilledAt) }}
+                <div v-if="nextBilledAt && !transitionToProductPrice & !endsAt" class="w-full flex flex-row justify-between">
+                    <div>
+                        Next billed on
+                    </div>
+                    <div>
+                        {{ getNextBilledAt }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,6 +139,12 @@ interface Plan {
         includes: string[];
     };
     prices: Price[];
+}
+
+interface TransitionToProductPrice {
+    name: string;
+    interval: string;
+    transitionAt: string;
 }
 
 const props = defineProps({
@@ -140,11 +185,17 @@ const props = defineProps({
         required: true,
         validator: (value: string) => ['current', 'available'].includes(value),
     },
+    transitionToProductPrice: {
+        type: Object,
+        required: false,
+        default: null,
+    },
 });
 
 const emit = defineEmits<{
     (e: 'selectPlan', priceId: string): void;
     (e: 'changeInterval', priceId: string): void;
+    (e: 'cancelTransition'): void;
 }>();
 
 const selectionStatus = computed(() => props.isCurrentSubscription ? 'Current' : '');
@@ -185,11 +236,24 @@ const alternatePrice = computed(() => {
     return otherPrice ? (otherPrice.price / 100).toFixed(0) : null;
 });
 
+const otherPlanPrice = computed(() => {
+    const otherPrice = props.plan.prices.find(price => price.interval !== props.selectedInterval);
+    return otherPrice ? (otherPrice.price / 100).toFixed(0) : null;
+});
+
 const alternatePriceId = computed(() => {
     if(!props.isCurrentSubscription) return null;
 
     const otherPrice = props.plan.prices.find(price => price.paddle_id !== props.currentPriceId);
     return otherPrice ? otherPrice.paddle_id : null;
+});
+
+
+const getNextBilledAt = computed(() => {
+    if (props.nextBilledAt) {
+        return formatDate(props.nextBilledAt);
+    }
+    return null;
 });
 
 const selectPlan = () => {
@@ -198,5 +262,9 @@ const selectPlan = () => {
 
 const switchInterval = () => {
     emit('switchInterval', alternatePriceId.value);
+};
+
+const cancelTransition = () => {
+    emit('cancelTransition');
 };
 </script>

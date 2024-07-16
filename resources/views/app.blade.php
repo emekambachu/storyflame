@@ -56,6 +56,13 @@
         Paddle.Environment.set("sandbox");
         Paddle.Initialize({
             token: 'test_a80328e7467f6d2e32ee3131878',
+            eventCallback: function(data) {
+                if(data.name === 'checkout.closed'){
+                    // Mitch: I didn't use checkout.completed as the webhook may not have updated yet
+                    var event = new CustomEvent('paddleCheckoutClosed', { detail: data });
+                    window.dispatchEvent(event);
+                }
+            }
         });
     </script>
 </head>

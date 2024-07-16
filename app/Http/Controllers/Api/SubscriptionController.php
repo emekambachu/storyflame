@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductPrice;
+use App\Models\Subscription;
+use App\Models\SubscriptionDowngrade;
+use App\Models\SubscriptionItem;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,8 +93,6 @@ class SubscriptionController extends Controller
 
         $subscription = $user->checkout($plan);
 
-//        $subscription = $user->newSubscription('default', $plan)->create();
-
         return response()->json(['subscription' => $subscription], 201);
     }
 
@@ -101,53 +102,63 @@ class SubscriptionController extends Controller
 
         $newProductPricePaddleId = $request->input('productPricePaddleId');
 
-        $productPrice = ProductPrice::with('product')
+        $newProductPrice = ProductPrice::with('product')
             ->where('paddle_id', $newProductPricePaddleId)
             ->first();
 
-        if(!$productPrice){
+        if(!$newProductPrice){
             return response()->json(['error' => 'Product price not found'], 404);
         }
 
+        /**
+         * @var Subscription|null $subscription
+         */
         $subscription = $user->getActiveSubscription();
         if (!$subscription) {
             return response()->json(['error' => 'No active subscription found'], 404);
         }
 
-        $subscriptionItem = $user->getActiveSubscriptionItem();
-        $isSameProduct = $subscriptionItem->product_id === $productPrice->product->paddle_id;
-        $isSameProductPrice = $subscriptionItem->price_id === $newProductPricePaddleId;
-
-        // if same product and same price, return
-        if ($isSameProduct && $isSameProductPrice) {
-            return response()->json(['subscription' => $subscription->fresh()]);
-        }
-
-        // By default, prorate immediately
-        $subscription->prorateImmediately();
-
-        Log::info('Swapping subscription to new ProductPrice.paddle_id: ' . $newProductPricePaddleId);
-
-        try {
-            $subscription->swap($newProductPricePaddleId);
-            return response()->json(['subscription' => $subscription->fresh()]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update subscription: ' . $e->getMessage()], 500);
-        }
+        $result = $subscription->updateSubscription($newProductPrice);
+        return response()->json($result, $result['status']);
     }
 
-    public function destroy($id)
+    public function destroy($paddleId)
     {
         $user = Auth::user();
-        $subscription = $user->subscriptions()->findOrFail($id);
-
-        $subscription->cancel();
+        $subscription = $user->subscriptions()->where('paddle_id', $paddleId)->first();
 
         try {
-            $subscription->cancel();
+            $subscription->deleteSubscriptionDowngrades();
+
+            $subscription->cancel(false);
             return response()->json(['subscription' => $subscription->fresh()]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to cancel subscription: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function destroyDowngrade($paddleId)
+    {
+        $user = Auth::user();
+        /**
+         * @var Subscription|null $subscription
+         */
+        $subscription = Subscription::where('paddle_id', $paddleId)->first();
+
+        if(!$subscription) {
+            return response()->json(['error' => 'Subscription not found'], 404);
+        }
+
+        if($subscription->billable->id !== $user->id) {
+            return response()->json(['error' => 'You do not have permission to cancel this subscription'], 403);
+        }
+
+        try {
+            $subscription->deleteSubscriptionDowngrades();
+
+            return response()->json(['subscription' => $subscription->fresh()]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to cancel subscription change: ' . $e->getMessage()], 500);
         }
     }
 
@@ -183,7 +194,7 @@ class SubscriptionController extends Controller
             if(!$user->customer){
                 $user = $user->createAsCustomer([
                     'email' => $user->email,
-                    'name' => $user->name,
+                    'name' => $user->name ?? 'User',
                 ]);
             }
 

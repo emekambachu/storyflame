@@ -6,7 +6,8 @@ sail up -d
 composer update
 sail npm run dev
 sail artisan migrate
-hookdeck listen http://localhost:83
+sail artisan queue:work
+hookdeck listen http://localhost:<your_port>
 ```
 
 
@@ -37,7 +38,7 @@ Check usage at: https://github.com/raphaelmansuy/code2prompt
 
 Required for use with Claude Projects. Includes only the specified folders and shows tokens.
 ```bash
-code2prompt --path /path/to/project/storyflame --output /path/to/output/storyflame_app-v1.0.md --tokens --filter "app/**" /path/to/output/storyflame_codebase-v1.0.md --tokens --filter "app/**"
+code2prompt --path /path/to/project/storyflame --output /path/to/output/storyflame_app-v1.0.md --tokens --filter "app/**"
 ```
 
 **Full Project with excludes**
@@ -104,3 +105,110 @@ https://hkdk.events/<id_from_hook>
 Check Hookdeck to track requests and events:
 https://dashboard.hookdeck.com/events
 https://dashboard.hookdeck.com/requests
+
+---
+
+## Checkout Dummy Credit Card
+
+Use the following dummy credit card details for testing:
+```bash
+Card Number: 4111 1111 1111 1111
+Expiry Date: 12/30
+CVV: 123
+```
+
+---
+
+# Cron Job Setup Guide for Laravel Sail
+
+This guide provides instructions for setting up cron jobs to run Laravel Sail's scheduler on both macOS and Windows systems.
+
+## macOS Setup
+
+1. Open Terminal.
+
+2. Edit your crontab file using nano:
+   ```
+   export EDITOR=nano && crontab -e
+   ```
+
+3. Add the following line to the crontab file:
+   ```
+   * * * * * cd /path/to/your/project && ./vendor/bin/sail artisan schedule:run >> /dev/null 2>&1
+   ```
+   Replace `/path/to/your/project` with the actual path to your Laravel project.
+
+4. Save and exit nano:
+    - Press `Ctrl + X`
+    - Press `Y` to confirm saving changes
+    - Press `Enter` to confirm the file name
+
+5. Verify your crontab entry:
+   ```
+   crontab -l
+   ```
+
+6. Initiate queue worker:
+   ```
+    sail artisan queue:work
+    ```
+### Additional macOS Setup
+
+On macOS, you may need to grant Full Disk Access to cron:
+
+1. Go to System Preferences > Security & Privacy > Privacy
+2. Select "Full Disk Access" from the left sidebar
+3. Click the lock icon to make changes
+4. Click the '+' button and add `/usr/sbin/cron`
+
+## Windows Setup
+
+Windows doesn't have a built-in cron job scheduler, but you can use the Task Scheduler:
+
+1. Open Task Scheduler (search for it in the Start menu).
+
+2. Click "Create Basic Task" in the right panel.
+
+3. Name the task (e.g., "Laravel Scheduler") and click "Next".
+
+4. Select "Daily" and click "Next".
+
+5. Set the start time to any time (it will run every minute regardless) and click "Next".
+
+6. Select "Start a program" and click "Next".
+
+7. In the "Program/script" field, enter:
+   ```
+   C:\Windows\System32\wsl.exe
+   ```
+
+8. In the "Add arguments" field, enter:
+   ```
+   -e ./vendor/bin/sail artisan schedule:run
+   ```
+
+9. In the "Start in" field, enter your project path in WSL format, e.g.:
+   ```
+   /mnt/c/Users/YourUsername/path/to/your/project
+   ```
+
+10. Click "Next", then "Finish".
+
+11. Right-click the newly created task and select "Properties".
+
+12. In the "Triggers" tab, edit the daily trigger:
+    - Change "Repeat task every:" to "1 minute"
+    - Change "for a duration of:" to "Indefinitely"
+    - Click "OK" to save changes
+
+13. Start queue worker:
+    ```
+    sail artisan queue:work
+    ```
+
+## Important Notes
+
+- Ensure your system is running for the cron job to work.
+- Laravel Sail must be up (`sail up -d`) for the scheduler to function.
+- The project path in the cron job or task should match your actual Laravel project location.
+- Always test your scheduled tasks to ensure they're running correctly.

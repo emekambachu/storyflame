@@ -22,6 +22,8 @@ class ProductPrice extends Model
         'status',
         'interval',
         'interval_frequency',
+        'included_reports',
+        'included_images',
     ];
 
     public function subscriptionItems()

@@ -86,7 +86,7 @@ const api = {
     post,
     put,
     patch,
-    del,
+    delete: del,
 }
 
 export default api
