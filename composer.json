@@ -7,11 +7,13 @@
     "require": {
         "php": "^8.2",
         "intervention/image": "*",
+        "laravel/cashier-paddle": "^2.4",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "*",
         "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-permission": "^6.9",
         "spatie/laravel-schemaless-attributes": "^2.5"
     },
     "require-dev": {

@@ -122,15 +122,14 @@ import { inject, PropType } from 'vue'
 import User from '@/types/user'
 import TitleSection from '@/components/TitleSection.vue'
 import ItemsList from '@/components/ItemsList.vue'
-import MovieCard from '@/components/cards/MovieCard.vue'
 import StoryCard from '@/components/cards/StoryCard.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
 import PlusIcon from '@/components/icons/PlusIcon.vue'
 import featureFlags from '@/types/featureFlags'
 import { useQuery } from '@tanstack/vue-query'
 import { getStories } from '@/utils/endpoints'
 import { tabLayoutActiveTabInjection } from '@/types/injection'
+import ImageComponent from "@/components/ImageComponent.vue";
 
 const props = defineProps({
     user: {

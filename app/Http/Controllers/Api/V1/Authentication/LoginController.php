@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
@@ -56,11 +57,21 @@ class LoginController extends Controller
 
     public function user(Request $request): JsonResponse
     {
+        Log::info('PUBLIC FUNCTION USER CALLED');
+        Log::info('Request data: ', $request->all());
+        $user = Auth::user();
+        if ($user) {
+            return $this->successResponse('User', UserResource::make($user));
+        } else {
+            return $this->errorResponse('Unauthenticated', 401);
+        }
         return $this->successResponse('User', UserResource::make(Auth::user()));
     }
 
     private function getVerificationCode(User $user): VerificationCode
     {
+        Log::info('GET VERIFICATION CODE FUNCTION CALLED');
+        Log::info('Request data: ', $user->toArray());
         $verificationCode = $user->verificationCodes()->latest()->first();
         $now = Carbon::now();
         if ($verificationCode && $now->isBefore($verificationCode->expire_at)) {

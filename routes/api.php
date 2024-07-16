@@ -17,38 +17,71 @@ Route::group([
             Route::post('register', 'RegisterController@register');
             Route::post('login', 'LoginController@authenticate');
             Route::post('federate', 'LoginController@federate');
-            Route::middleware('auth:sanctum')->group(function () {
-                Route::get('user', 'LoginController@user');
-                Route::post('logout', 'LoginController@logout');
-            });
+            Route::get('user', 'LoginController@user');
+            Route::post('logout', 'LoginController@logout');
         });
 
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::group([
-                'prefix' => 'onboarding',
-            ], function () {
-                Route::get('/', 'OnboardingController@index');
-                Route::post('/', 'OnboardingController@store');
-                Route::get('summary', 'OnboardingController@summary');
-            });
-            Route::post('transcribe', 'TranscriptionController@transcribe');
-
-            Route::group([
-                'prefix' => 'achievements',
-            ], function () {
-                Route::resource('achievements', 'AchievementController');
-            });
-
-            Route::resource('stories', 'StoryController');
-
-            Route::group([
-                'prefix' => 'conversation',
-                'namespace' => 'Conversation',
-            ], function () {
-                Route::get('{engine}', 'ConversationEngineController@index');
-                Route::post('{engine}', 'ConversationEngineController@store');
-            });
+        Route::group([
+            'prefix' => 'onboarding',
+        ], function () {
+            Route::get('/', 'OnboardingController@index');
+            Route::post('/', 'OnboardingController@store');
+            Route::get('summary', 'OnboardingController@summary');
         });
+        Route::post('transcribe', 'TranscriptionController@transcribe');
+
+        Route::group([
+            'prefix' => 'achievements',
+        ], function () {
+            Route::resource('achievements', 'AchievementController');
+        });
+
+        Route::resource('stories', 'StoryController');
+
+        Route::group([
+            'prefix' => 'conversation',
+            'namespace' => 'Conversation',
+        ], function () {
+            Route::get('{engine}', 'ConversationEngineController@index');
+            Route::post('{engine}', 'ConversationEngineController@store');
+        });
+    });
+});
+
+Route::middleware('auth:sanctum')->group(static function () {
+    Route::prefix('v1/subscriptions')->group(function () {
+        Route::get('/', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'index'
+        ]);
+        Route::post('/', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'store'
+        ]);
+        Route::post('/customer', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'createCustomer'
+        ]);
+        Route::put('/{id}', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'update'
+        ]);
+        Route::delete('/{paddleId}', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'destroy'
+        ]);
+        Route::delete('/{paddleId}/change', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'destroyDowngrade'
+        ]);
+        Route::get('/invoices', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'invoices'
+        ]);
+        Route::get('/invoices/{id}', [
+            \App\Http\Controllers\Api\SubscriptionController::class,
+            'invoiceLink'
+        ]);
     });
 });
 
@@ -62,10 +95,22 @@ Route::fallback(function () {
 });
 
 // Categories
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::put('/categories', [CategoryController::class, 'update']);
-Route::delete('/categories', [CategoryController::class, 'destroy']);
+Route::get('/categories', [
+    CategoryController::class,
+    'index'
+]);
+Route::post('/categories', [
+    CategoryController::class,
+    'store'
+]);
+Route::put('/categories', [
+    CategoryController::class,
+    'update'
+]);
+Route::delete('/categories', [
+    CategoryController::class,
+    'destroy'
+]);
 
 include __DIR__ . '/admin/api.php';
 include __DIR__ . '/user/api.php';

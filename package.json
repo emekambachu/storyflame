@@ -29,6 +29,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@paddle/paddle-js": "^1.2.0",
         "@tanstack/vue-query": "^5.40.1",
         "@types/luxon": "^3.4.2",
         "@vueuse/core": "^10.9.0",
@@ -39,6 +40,8 @@
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^3.2.1",
         "pusher-js": "^8.4.0-rc2",
+        "three": "^0.166.1",
+        "troisjs": "^0.3.4",
         "vue": "^3.4.24",
         "vue-logger-plugin": "^2.2.3",
         "vue-mountable": "^0.1.5",

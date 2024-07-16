@@ -33,7 +33,7 @@ story_engine_system_message = (
 )
 
 next_question_prompt = (
-    "Please create a {task}. The Topics and empty Topic Data Points are (select up to two topics for next question) {topics}."
+    "Please create a {task}. Here are potential Topics and empty Topic Data Points that we want the writer to answer {topics}. Select up to two topics for next question."
     "Recent Chat History (to maintain same feel and sense of progress): {chat_history}"
     "Format Instructions: {format_instructions}"
     "Please put the formatted JSON in between <json_response></json_response> and do not include any other text."
