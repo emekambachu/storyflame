@@ -79,7 +79,10 @@ const router = createRouter({
         {
             path: '/onboard',
             name: 'onboarding',
-            beforeEnter: [checkAuth, checkNotOnboarded],
+            beforeEnter: [
+                checkAuth,
+                //checkNotOnboarded
+            ],
             component: () => import('../views/Onboarding.vue'),
         },
         {
@@ -95,6 +98,16 @@ const router = createRouter({
                         back: 'home',
                     },
                 },
+                {
+                    path: '/profile/edit',
+                    name: 'ProfileEdit',
+                    component: () => import('../views/user/profile/UserEditProfileView.vue'),
+                    meta: {
+                        transition: 'slide',
+                        back: 'home',
+                    },
+                },
+
                 {
                     path: 'stories/',
                     children: [

@@ -125,6 +125,7 @@
                                             class="block text-sm font-medium text-gray-700">
                                             Link Achievement
                                         </label>
+
                                         <select
                                             id="category"
                                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-stone-150 text-black">
@@ -303,7 +304,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, reactive, ref, computed } from 'vue'
+import { defineProps, defineEmits, reactive, ref, computed, onMounted } from 'vue'
 import store from '@/store/index.js'
 import axios from 'axios'
 
@@ -510,6 +511,10 @@ const updateDataPoint = async () => {
     });
     loading.value = false;
 }
+
+onMounted(() => {
+    console.log("ACHIEVEMENT", achievements.value);
+});
 
 </script>
 

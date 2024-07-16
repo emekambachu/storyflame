@@ -2,6 +2,9 @@
 
 namespace App\Services\Auth;
 
+use App\Http\Resources\Admin\AdminUserResource;
+use App\Http\Resources\UserResource;
+use App\Models\Role\Role;
 use App\Services\Admin\AdminService;
 use App\Services\Base\BaseService;
 use Carbon\Carbon;
@@ -17,33 +20,75 @@ class LoginService
         $this->admin = $admin;
     }
 
+//    public function loginWithToken(
+//        $request,
+//        String $webGuard,
+//        String $apiGuard,
+//        $queryBuilder
+//    ): array
+//    {
+//        $credentials = $request->only('email', 'password');
+//        if(Auth::guard('admin')->attempt($credentials)){
+//            // get Session
+//            $user = Auth::guard($webGuard)->user();
+//
+//            // Get Token
+//            $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
+//            $token = $user->createToken($request->email, [$apiGuard], $expiresAt)->plainTextToken;
+//
+//            // Last login
+//            $queryBuilder->where('email', $request->email)->update([
+//                'last_login' => Carbon::now()->format('Y-m-d h:i:s'),
+//            ]);
+//
+//            $data = [
+//                'success' => true,
+//                'user' => $user,
+//                'token' => $token,
+//            ];
+//        }else{
+//            $data = [
+//                'success' => false,
+//                'error_message' => 'Incorrect credentials',
+//            ];
+//        }
+//        return $data;
+//    }
+
     public function loginWithToken(
         $request,
-        String $webGuard,
-        String $apiGuard,
         $queryBuilder
     ): array
     {
         $credentials = $request->only('email', 'password');
-        if(Auth::guard('admin')->attempt($credentials)){
-            // get Session
-            $user = Auth::guard($webGuard)->user();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-            // Get Token
-            $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
-            $token = $user->createToken($request->email, [$apiGuard], $expiresAt)->plainTextToken;
+            $roles = Role::get()->pluck('slug')->toArray();
 
-            // Last login
-            $queryBuilder->where('email', $request->email)->update([
-                'last_login' => Carbon::now()->format('Y-m-d h:i:s'),
-            ]);
+            // Check if the user has an admin role
+            if ($user->roles->whereIn('slug', $roles)->count() > 0) {
+                // Get Token
+                $expiresAt = Carbon::now()->addHours(2); // Token will expire in 2 hours
+                $token = $user->createToken($request->email, ['*'], $expiresAt)->plainTextToken;
 
-            $data = [
-                'success' => true,
-                'user' => $user,
-                'token' => $token,
-            ];
-        }else{
+                // Last login
+                $queryBuilder->where('email', $request->email)->update([
+                    'last_login' => Carbon::now()->format('Y-m-d h:i:s'),
+                ]);
+
+                $data = [
+                    'success' => true,
+                    'user' => new AdminUserResource($user),
+                    'token' => $token,
+                ];
+            } else {
+                $data = [
+                    'success' => false,
+                    'error_message' => 'Access denied. User does not have admin privileges.',
+                ];
+            }
+        } else {
             $data = [
                 'success' => false,
                 'error_message' => 'Incorrect credentials',

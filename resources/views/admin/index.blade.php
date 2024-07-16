@@ -7,8 +7,13 @@
 </head>
 <body>
 <div id="admin-app">
-    <router-view></router-view>
+    <router-view
+        :csrf_token="{{ json_encode(csrf_token()) }}"
+    ></router-view>
 </div>
 </body>
 @vite('resources/admin-app.ts');
+<script>
+    window.authUser = @json(auth()->user(), JSON_THROW_ON_ERROR);
+</script>
 </html>

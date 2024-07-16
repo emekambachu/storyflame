@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import axios from 'axios'
 
 import AdminDataPointForm from './AdminDataPointsForm.vue';
@@ -49,7 +49,7 @@ const getDataPoints = async () => {
     });
 }
 
-onBeforeMount(() => {
+onMounted(() => {
     getDataPoints();
     store.dispatch('getData', {
         url: '/api/categories',

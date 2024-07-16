@@ -30,9 +30,17 @@
             ref="userInfo"
             class="mb-1 sticky bottom-0 flex w-full flex-col items-start gap-2"
         >
-            <h2 class="text-2xl sticky font-bold text-neutral-700">
-                {{ user.name }}
-            </h2>
+            <div class="flex justify-center mx-auto">
+                <h2 class="text-2xl sticky font-bold text-neutral-700 mr-2">
+                    {{ user.name ?? 'No name' }}
+                </h2>
+                <span class="my-auto text-sm">
+                    <router-link
+                        :to="{name: 'ProfileEdit'}">
+                       <EditIconSquare color="#fc3737" />
+                    </router-link>
+                </span>
+            </div>
             <p
                 v-if="user.profession"
                 class="text-sm font-normal text-neutral-500"
@@ -68,6 +76,7 @@ import UserIcon from '@/components/icons/UserIcon.vue'
 import { onMounted, PropType, ref } from 'vue'
 import User from '@/types/user'
 import { animate, scroll } from 'motion'
+import EditIconSquare from '@/components/icons/EditIconSquare.vue'
 
 defineProps({
     user: {

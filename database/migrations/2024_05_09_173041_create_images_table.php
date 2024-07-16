@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->string('path');
             $table->string('group')->default('default');
             $table->morphs('imageable');
+            $table->string('name')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

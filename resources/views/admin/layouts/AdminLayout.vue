@@ -47,7 +47,7 @@
                                 type="button"
                                 class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+                                <ProfileImage />
                             </button>
                             <div
                                 v-show="showUserDropDown"
@@ -56,24 +56,29 @@
                             >
                                 <div class="px-4 py-3" role="none">
                                     <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                        Neil Sims
+                                        {{ user.first_name }} {{ user.last_name }}
                                     </p>
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                        neil.sims@flowbite.com
+                                        {{ user.email }}
                                     </p>
                                 </div>
                                 <ul class="py-1" role="none">
                                     <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
-                                    </li>
-                                    <li>
                                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
                                     </li>
                                     <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                                        <a v-if="!loading" href="#" @click.prevent="logout"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                           role="menuitem">Sign out</a>
+
+                                        <a v-else
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                           role="menuitem">
+                                            <div class="flex justify-center items-center">
+                                                <div class="animate-spin rounded-full w-8 h-8 border-t-2 border-b-2 border-gray-900"></div>
+                                            </div>
+                                        </a>
+
                                     </li>
                                 </ul>
                             </div>
@@ -222,13 +227,15 @@
                 </li>
 
                 <li>
-                    <a href="#" class="flex items-center p-2 text-stone-500 rounded-lg hover:bg-gray-200 group">
+                    <router-link
+                        class="flex items-center p-2 text-stone-500 rounded-lg hover:bg-gray-200 group"
+                        :to="{ name: 'admin-llm-prompts' }">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M7.17143 4.97858H2.17143C1.79255 4.97858 1.42919 5.12909 1.16128 5.397C0.893369 5.6649 0.742859 6.02827 0.742859 6.40715V17.8357C0.742859 18.2146 0.893369 18.578 1.16128 18.8459C1.42919 19.1138 1.79255 19.2643 2.17143 19.2643H15.0286C15.4075 19.2643 15.7708 19.1138 16.0387 18.8459C16.3066 18.578 16.4571 18.2146 16.4571 17.8357V12.1214M0.742859 8.55001H10.0286" stroke="#77716D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M4.31427 15.6929L6.45713 13.55L4.31427 11.4071M8.59998 15.6929H10.7428M10.5657 5.64143C10.0657 5.55428 10.0657 4.83428 10.5657 4.74714C11.4538 4.59288 12.2758 4.17758 12.9269 3.55422C13.578 2.93086 14.0287 2.12768 14.2214 1.24714L14.25 1.10857C14.36 0.612856 15.0643 0.60857 15.1786 1.10428L15.2143 1.26571C15.4143 2.14235 15.8689 2.9403 16.5212 3.55924C17.1734 4.17817 17.9941 4.59047 18.88 4.74428C19.3828 4.83143 19.3828 5.55571 18.88 5.64428C17.9941 5.7981 17.1734 6.2104 16.5212 6.82933C15.8689 7.44827 15.4143 8.24622 15.2143 9.12286L15.1771 9.28286C15.0643 9.77714 14.36 9.77428 14.2514 9.27857L14.2214 9.14286C14.0287 8.26231 13.578 7.45914 12.9269 6.83578C12.2758 6.21242 11.4538 5.79712 10.5657 5.64286V5.64143Z" stroke="#77716D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">LLM Prompts</span>
-                    </a>
+                    </router-link>
                 </li>
 
                 <li>
@@ -239,6 +246,7 @@
                         <span class="flex-1 ms-3 whitespace-nowrap">LLM Calls</span>
                     </a>
                 </li>
+
             </ul>
         </div>
     </aside>
@@ -251,7 +259,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue'
+import axios from 'axios';
+import router from '@/router'
+import baseService from '@/utils/base-service'
+import ProfileImage from '@/components/images/ProfileImage.vue'
+
+declare global {
+    interface Window {
+        authUser: any;
+    }
+}
+
+const user = ref(window.authUser);
+const loading = ref(false);
+const token = computed(() => baseService.getTokenFromLocalStorage());
+
+const logout = async () => {
+    loading.value = true;
+    try {
+        const response = await axios.post('/api/admin/logout',{
+            headers: {
+                'Authorization': 'Bearer ' + token.value
+            },
+        });
+        if(response.data.success){
+            localStorage.removeItem('story-flame-admin');
+            console.log("USER DELETED");
+        }
+
+        // Redirect to the login page
+        router.push({ name: 'admin-login' });
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Logout failed:', error.response?.data.message);
+        } else {
+            console.error('Logout failed:', error);
+        }
+    }
+    loading.value = false;
+};
+
+onMounted(() => {
+    console.log("AUTH USER", user.value);
+});
 
 const showUserDropDown = ref(false);
 const toggleShowSideBar = () => {

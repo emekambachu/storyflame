@@ -7,7 +7,6 @@ import routeService from '@/utils/route-service'
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-
         {
             path: '/admin/login',
             name: 'admin-login',
@@ -24,6 +23,7 @@ const router = createRouter({
                     '/admin/login',
                 )
             },
+            //props: route => ({ auth_user: route.params.auth_user }),
             children: [
                 {
                     path: 'achievements',
@@ -39,6 +39,11 @@ const router = createRouter({
                     path: 'summaries',
                     name: 'admin-summaries',
                     component: () => import('../views/admin/pages/summaries/AdminSummaries.vue'),
+                },
+                {
+                    path: 'llm-prompts',
+                    name: 'admin-llm-prompts',
+                    component: () => import('../views/admin/pages/llm-prompts/AdminLlmPromptsView.vue'),
                 },
             ],
         },
