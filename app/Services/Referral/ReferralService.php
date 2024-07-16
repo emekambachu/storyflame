@@ -2,6 +2,7 @@
 
 namespace App\Services\Referral;
 
+use App\Models\Discount\DiscountTally;
 use App\Models\Product\UserProduct;
 use App\Models\ProductPrice;
 use App\Models\Referral\ReferralType;
@@ -106,9 +107,6 @@ class ReferralService
             'referral_type_id' => $referredByType->id,
         ]);
 
-//        $referralType = $referredByType->name;
-//        $receiverUser = $this->user()->find($userId);
-
         if ($referredByType->slug === 'beta-testers') {
             $this->applyBetaTesterReferral($referredById, $userId);
         } elseif ($referredByType->slug === 'affiliate-program') {
@@ -116,45 +114,75 @@ class ReferralService
         } elseif ($referredByType->slug === 'internal-team-affiliate-program') {
             $this->applyInternalTeamAffiliateProgram($referredById, $userId);
         } elseif ($referredByType->slug === 'standard-affiliate-link') {
-            $this->applyStandardAffiliate($referredById, $userId);
+            $this->applyStandardAffiliate($userId);
         }
     }
 
     private function applyBetaTesterReferral($referrerId, $receiverId): void
     {
-        $currentDate = now();
-        $firstDeadline = Carbon::createFromDate(2024, 8, 15);
+        $currentDate = Carbon::now();
+        $augustFifteenth = Carbon::createFromDate($currentDate->year, 8, 15);
 
-        $discount = 5;
-        $discountDuration = 1;
-
-        if ($currentDate <= $firstDeadline) {
+        if ($currentDate <= $augustFifteenth) {
             $discount = 10;
-        }
+            $discountDuration = 1;
 
-        UserDiscount::create([
-            'referrer_id' => $referrerId,
-            'recipient_id' => $receiverId,
-            'amount' => $discount,
-            'type' => 'percentage',
-            'percentage' => $discount,
-            'discount_ends_at' => $currentDate->addMonths($discountDuration),
-        ]);
+            // Apply discount to the referrer
+            DiscountTally::create([
+                'user_id' => $referrerId,
+                'recipient_id' => $receiverId,
+                'amount' => $discount,
+                'type' => 'percentage',
+                'percentage' => $discount,
+                'discount_ends_at' => $currentDate->addMonths($discountDuration),
+            ]);
+
+            // Apply discount to the receiver
+            DiscountTally::create([
+                'user_id' => $receiverId,
+                'recipient_id' => $referrerId,
+                'amount' => $discount,
+                'type' => 'percentage',
+                'percentage' => $discount,
+                'discount_ends_at' => $currentDate->addMonths($discountDuration),
+            ]);
+
+        } else {
+            $discount = 5;
+
+            UserDiscount::create([
+                'referrer_id' => $referrerId,
+                'recipient_id' => $receiverId,
+                'amount' => $discount,
+                'type' => 'percentage',
+                'percentage' => $discount,
+                'discount_ends_at' => null,
+            ]);
+        }
     }
 
     private function applyAffiliateProgram($referrerId, $receiverId): void
     {
-        $currentDate = now();
-        $augustFifteenth = $currentDate->copy()->setDate($currentDate->year, 8, 15);
-        $septemberFifteenth = $currentDate->copy()->setDate($currentDate->year, 9, 15);
+        $currentDate = Carbon::now();
+        $julyEleventh = Carbon::createFromDate($currentDate->year, 7, 11);
+        $augustFifteenth = Carbon::createFromDate($currentDate->year, 8, 15);
+        $septemberFifteenth = Carbon::createFromDate($currentDate->year, 9, 15);
 
-        if ($currentDate >= $augustFifteenth && $currentDate <= $septemberFifteenth) {
+        if ($currentDate >= $julyEleventh && $currentDate <= $augustFifteenth) {
             $this->userReferral()
                 ->where('referrer_id', $referrerId)
                 ->where('receiver_id', $receiverId)
                 ->update([
                     'commission_percentage' => 5,
-                    'commission_duration' => 1,
+                    'commission_duration' => null,
+                ]);
+        } elseif ($currentDate > $augustFifteenth && $currentDate <= $septemberFifteenth) {
+            $this->userReferral()
+                ->where('referrer_id', $referrerId)
+                ->where('receiver_id', $receiverId)
+                ->update([
+                    'commission_percentage' => 5,
+                    'commission_duration' => 12,
                 ]);
         } else {
             $this->userReferral()
@@ -169,17 +197,26 @@ class ReferralService
 
     private function applyInternalTeamAffiliateProgram($referrerId, $receiverId): void
     {
-        $currentDate = now();
-        $augustFifteenth = $currentDate->copy()->setDate($currentDate->year, 8, 15);
-        $septemberFifteenth = $currentDate->copy()->setDate($currentDate->year, 9, 15);
+        $currentDate = Carbon::now();
+        $julyEleventh = Carbon::createFromDate($currentDate->year, 7, 11);
+        $augustFifteenth = Carbon::createFromDate($currentDate->year, 8, 15);
+        $septemberFifteenth = Carbon::createFromDate($currentDate->year, 9, 15);
 
-        if ($currentDate >= $augustFifteenth && $currentDate <= $septemberFifteenth) {
+        if ($currentDate >= $julyEleventh && $currentDate <= $augustFifteenth) {
             $this->userReferral()
                 ->where('referrer_id', $referrerId)
                 ->where('receiver_id', $receiverId)
                 ->update([
                     'commission_percentage' => 7,
-                    'commission_duration' => 1,
+                    'commission_duration' => null,
+                ]);
+        } elseif ($currentDate > $augustFifteenth && $currentDate <= $septemberFifteenth) {
+            $this->userReferral()
+                ->where('referrer_id', $referrerId)
+                ->where('receiver_id', $receiverId)
+                ->update([
+                    'commission_percentage' => 7,
+                    'commission_duration' => 12,
                 ]);
         } else {
             $this->userReferral()
@@ -192,10 +229,17 @@ class ReferralService
         }
     }
 
-    private function applyStandardAffiliate($receiverUser): void
+    private function applyStandardAffiliate($receiverId): void
     {
-        $receiverUser->update([
-            'first_purchase_discount' => 10,
+        $discount = 10;
+
+        UserDiscount::create([
+            'recipient_id' => $receiverId,
+            'amount' => $discount,
+            'type' => 'percentage',
+            'percentage' => $discount,
+            'discount_ends_at' => null,
+            'max_usage' => 1,
         ]);
     }
 

@@ -44,14 +44,9 @@ class User extends Authenticatable implements ModelWithId
         'last_login',
         'referred_by', // the person who referred you
         'referral_code', // your referral code
-        'referral_type_id',
         'is_verified',
         'last_login',
         'paddle_id',
-        'trial_ends_at',
-    ];
-
-    protected $dates = [
         'trial_ends_at',
     ];
 
