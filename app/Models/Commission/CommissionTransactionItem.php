@@ -3,6 +3,7 @@
 namespace App\Models\Commission;
 
 use App\Models\Referral\ReferralReward;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ class CommissionTransactionItem extends Model
         'transaction_id',
         'transaction_earnings',
         'commission_amount',
-        'commission_paid_id',
+        'commission_payout_id',
     ];
 
     public function referrer(): BelongsTo
@@ -28,5 +29,15 @@ class CommissionTransactionItem extends Model
     public function referral_reward(): BelongsTo
     {
         return $this->belongsTo(ReferralReward::class, 'referral_reward_id', 'id');
+    }
+
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+
+    public function commission_payout(): BelongsTo
+    {
+        return $this->belongsTo(CommissionPayout::class, 'commission_payout_id', 'id');
     }
 }

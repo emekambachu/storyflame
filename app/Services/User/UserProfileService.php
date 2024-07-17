@@ -25,6 +25,8 @@ class UserProfileService
         $inputs = $request->all();
         $user = $this->user()->find(Auth::id());
 
+        $inputs['name'] = $inputs['first_name'].' '.$inputs['last_name'];
+
         $user->update($inputs);
 
         return [

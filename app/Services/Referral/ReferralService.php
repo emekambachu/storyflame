@@ -102,12 +102,6 @@ class ReferralService
             return;
         }
 
-        $this->userReferral()->create([
-            'referrer_id' => $referredById,
-            'receiver_id' => $userId,
-            'referral_type_id' => $referredByType->id,
-        ]);
-
         if ($referredByType->slug === 'beta-testers') {
             $this->applyBetaTesterReferral($referredById, $userId);
         } elseif ($referredByType->slug === 'affiliate-program') {
@@ -132,7 +126,7 @@ class ReferralService
         }
         $this->referralReward()->create([
              'referrer_id' => $referrerId,
-             'receiver_id' => $receiverId,
+             'recipient_id' => $receiverId,
              'reward_type' => 'discount',
              'reward_percentage' => $discount,
              'reward_starts_at' => $currentDate,
@@ -157,7 +151,7 @@ class ReferralService
 
         $this->referralReward()->create([
             'referrer_id' => $referrerId,
-            'receiver_id' => $receiverId,
+            'recipient_id' => $receiverId,
             'reward_type' => 'commission',
             'reward_percentage' => $commission,
             'reward_duration' => $duration,
@@ -183,7 +177,7 @@ class ReferralService
 
         $this->referralReward()->create([
             'referrer_id' => $referrerId,
-            'receiver_id' => $receiverId,
+            'recipient_id' => $receiverId,
             'reward_type' => 'commission',
             'reward_percentage' => $commission,
             'reward_duration' => $duration,
@@ -198,7 +192,7 @@ class ReferralService
 
         $this->referralReward()->create([
             'referrer_id' => $referrerId,
-            'receiver_id' => $receiverId,
+            'recipient_id' => $receiverId,
             'reward_type' => 'discount',
             'reward_percentage' => $discount,
             'reward_starts_at' => $currentDate,

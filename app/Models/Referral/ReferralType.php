@@ -15,7 +15,11 @@ class ReferralType extends Model
         'slug',
         'priority',
         'is_active',
-        'description'
+        'description',
+        'starts_at',
+        'ends_at',
+        'commission_percent',
+        'discount_percent',
     ];
 
     public function referrers(): BelongsToMany

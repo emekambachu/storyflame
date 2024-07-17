@@ -16,8 +16,6 @@ class UserResource extends JsonResource
             'paddle_id' => $this->paddle_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'full_name' => $this->first_name .' '. $this->last_name,
-            'paddle_id' => $this->paddle_id,
             'name' => $this->name,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
@@ -28,7 +26,6 @@ class UserResource extends JsonResource
             'completed_achievements' => $this->userAchievements->where('completed', true)->count(),
             'progress_achievements' => $this->userAchievements->where('completed', false)->count(),
             'next_achievements' => 0,
-            'email_verified_at' => $this->email_verified_at,
             'referred_by_code' => NULL,
 
             'bio' => $this->getSummary('bio')?->summary,

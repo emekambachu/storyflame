@@ -12,7 +12,7 @@ class ReferralReward extends Model
     use HasFactory;
     protected $fillable = [
         'referrer_id',
-        'receiver_id',
+        'recipient_id',
         'referral_type_id',
         'reward_type',
         'reward_amount',
@@ -29,6 +29,6 @@ class ReferralReward extends Model
 
     public function receiver(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'receiver_id', 'id');
+        return $this->belongsTo(User::class, 'recipient_id', 'id');
     }
 }
