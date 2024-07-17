@@ -1,5 +1,6 @@
 <template>
-    <div class="bg-white px-4 h-full">
+    <!-- class="bg-white px-4 h-full" -->
+    <div class="h-full min-h-dvh w-full">
         <router-view />
     </div>
 </template>

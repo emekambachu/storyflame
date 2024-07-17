@@ -100,7 +100,6 @@
 import ItemsList from '@/components/ItemsList.vue'
 import TitleSection from '@/components/TitleSection.vue'
 import TitleWithLink from '@/components/TitleWithLink.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
 import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
 
 const props = defineProps({
