@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamp('ends_at')->nullable();
             $table->float('commission_percent')->nullable();
             $table->float('discount_percent')->nullable();
+            $table->integer('month_duration')->nullable();
         });
     }
 
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->dropColumn('ends_at');
             $table->dropColumn('commission_percent');
             $table->dropColumn('discount_percent');
+            $table->dropColumn('month_duration');
         });
     }
 };

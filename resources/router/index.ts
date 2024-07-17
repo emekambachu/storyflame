@@ -31,11 +31,6 @@ const checkAuth = (
     const logger = useLogger()
     const auth = useAuthStore()
 
-    // Ignore authentication check for /register/v2
-    if (to.path === '/auth/register/v2') {
-        return next()
-    }
-
     if (!auth.isLoggedIn) {
         logger.info('User is not logged in')
         return next({ name: 'login' })
