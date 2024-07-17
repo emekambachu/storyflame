@@ -1,4 +1,5 @@
 import {
+    useRoute,
     createRouter,
     createWebHistory,
     NavigationGuardNext,
@@ -6,6 +7,7 @@ import {
 } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLogger } from 'vue-logger-plugin'
+import {routes} from "vue-router/vue-router-auto-routes";
 
 // const checkAuth = (
 //     to: RouteLocationNormalized,
@@ -50,7 +52,10 @@ const checkGuest = (
     const auth = useAuthStore()
     if (auth.isLoggedIn) {
         logger.info('User is already logged in')
-        return next({ name: 'onboarding' })
+        return next({
+            name: 'onboarding',
+            query: { ...to.query }
+        })
     }
     return next()
 }
@@ -83,13 +88,25 @@ const checkOnboarded = (
     return next({ name: 'onboarding' })
 }
 
+const preserveQueryParams = (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+) => {
+    if (Object.keys(to.query).length === 0 && Object.keys(from.query).length > 0) {
+        next({ ...to, query: { ...from.query } })
+    } else {
+        next()
+    }
+}
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: '/',
             name: 'home',
-            component: () => import('../views/HomeView.vue'),
+            component: () => import('../views/MarketCompView.vue'),
         },
         {
             path: '/whisper',
@@ -271,6 +288,17 @@ const router = createRouter({
                                         },
                                     ],
                                 },
+                                {
+                                    path: 'market-comp/',
+                                    children: [
+                                        {
+                                            path: ':market-comp',
+                                            name: 'market-comp',
+                                            component: () =>
+                                                import('../views/MarketCompView.vue'),
+                                        },
+                                    ],
+                                },
                             ],
                         },
                     ],
@@ -298,7 +326,9 @@ const router = createRouter({
         },
         {
             path: '/auth',
-            redirect: '/auth/login',
+            redirect: to => {
+                return { path: '/auth/login', query: to.query }
+            },
             component: () => import('../views/AuthView.vue'),
             //beforeEnter: checkGuest,
             children: [
@@ -306,12 +336,14 @@ const router = createRouter({
                     path: 'login',
                     name: 'login',
                     component: () => import('../views/LoginView.vue'),
+                    props: route => ({ query: route.query})
                 },
                 {
                     path: 'register',
                     name: 'register',
                     component: () => import('../views/RegisterView.vue'),
-                },
+                    props: route => ({ query: route.query})
+                }
             ],
         },
         {
@@ -335,6 +367,8 @@ const router = createRouter({
 
     ],
 })
+
+router.beforeEach(preserveQueryParams)
 
 router.beforeEach((to, from, next) => {
 

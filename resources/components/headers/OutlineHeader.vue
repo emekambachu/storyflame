@@ -5,7 +5,7 @@
         :genres="[outline?.story, outline?.type]"
         :achievements="outline?.achievements"
         :title="outline.title"
-        background="https://picsum.photos/1920/1080"
+        :background="outline?.image?.path"
     />
 </template>
 <script lang="ts" setup>

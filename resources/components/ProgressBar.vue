@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-zinc-200 rounded-lg w-full h-2 relative">
+  <div class="bg-stone-200 rounded-lg w-full h-1.5 relative">
     <div
       :style="[`width: ${percent}%`]"
       class="absolute h-full left-0 top-0 bg-red-600 rounded-lg"

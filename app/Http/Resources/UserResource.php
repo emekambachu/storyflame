@@ -28,6 +28,8 @@ class UserResource extends JsonResource
             'completed_achievements' => $this->userAchievements->where('completed', true)->count(),
             'progress_achievements' => $this->userAchievements->where('completed', false)->count(),
             'next_achievements' => 0,
+            'email_verified_at' => $this->email_verified_at,
+            'referred_by_code' => NULL,
 
             'bio' => $this->getSummary('bio')?->summary,
             'writing_goals' => $this->getSummary('writing_goals')?->summary,

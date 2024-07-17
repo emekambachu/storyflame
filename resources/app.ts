@@ -30,36 +30,56 @@ const app = createApp(App)
     .use(modalPlugin)
     .use(VueMountable());
 
+app.config.errorHandler = (err, vm, info) => {
+    console.error('Global error:', err);
+    console.error('Vue component where error occurred:', vm);
+    console.error('Vue info:', info);
+    // You could also log this to an error tracking service
+};
+
 axios.interceptors.response.use(
-    (response) => {
-        return response
-    },
+    (response) => response,
     (error) => {
         if (isAxiosError(error)) {
-            console.log('🚔 interceptor', error.response?.status)
-            if (
-                error.response?.status === 419 ||
-                error.response?.status === 401
-            ) {
-                if (error.response.status === 419) {
-                    console.log('Session expired')
+            console.log('🚔 interceptor', error.response?.status);
+            const authStore = useAuthStore();
+
+            switch (error.response?.status) {
+                case 419:
+                    console.log('CSRF token mismatch');
+                    break;
+                case 401:
+                    console.log('Unauthorized');
+                    break;
+                case 403:
+                    console.log('Forbidden');
+                    break;
+                case 404:
+                    console.log('Not found');
+                    break;
+                case 500:
+                    console.log('Server error');
+                    break;
+                default:
+                    if (!error.response) {
+                        console.log('Network error');
+                    } else {
+                        console.log('An error occurred');
+                    }
+            }
+
+            if (error.response?.status === 419 || error.response?.status === 401) {
+                if (authStore.isLoggedIn) {
+                    authStore.logout().then(() => {
+                        router.push({ name: 'login', query: route.query });
+                    });
+                } else {
+                    router.push({ name: 'login', query: route.query});
                 }
-
-                // comment temporarily to enable me create a new register route
-                // const authStore = useAuthStore()
-                // // invalidate the user right now
-                // if (authStore.isLoggedIn) {
-                //     authStore.logout().then((r) => {
-                //         void router.push({ name: 'login' })
-                //     })
-                // }
-                // authStore.user = null
-                // void router.push({ name: 'login' })
-
             }
         }
-        return Promise.reject(error)
+        return Promise.reject(error);
     }
-)
+);
 
 app.mount('body');
