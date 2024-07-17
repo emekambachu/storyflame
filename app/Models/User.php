@@ -38,6 +38,8 @@ class User extends Authenticatable implements ModelWithId
         'email',
         'password',
         'attributes',
+        'referral_code',
+        'referred_by_code',
         'paddle_id',
         'trial_ends_at',
         'last_login'
@@ -56,6 +58,33 @@ class User extends Authenticatable implements ModelWithId
         'password',
         'remember_token',
     ];
+
+    public function createUniqueReferralCode(): string
+    {
+        $referralCode = substr(md5($this->email), 0, 8);
+        $referralCodeExists = User::where('referral_code', $referralCode)->exists();
+        if ($referralCodeExists) {
+            return $this->createUniqueReferralCode();
+        }
+        return $referralCode;
+    }
+
+    /**
+     * @param string $referralCode
+     * @return User|null
+     */
+    public static function findByReferralCode(string $referralCode): ?User
+    {
+        return User::where('referral_code', $referralCode)->first();
+    }
+
+    public function verifyEmail(): void
+    {
+        if ($this->email_verified_at === null) {
+            $this->email_verified_at = now();
+            $this->save();
+        }
+    }
 
     protected static function boot()
     {

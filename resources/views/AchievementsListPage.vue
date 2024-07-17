@@ -84,7 +84,6 @@ import ListOption from '@/components/ListOption.vue'
 import ListWrapper from '@/components/ListWrapper.vue'
 
 import ListsHeroSection from '@/components/ListsHeroSection.vue'
-import AchievementCard from '@/components/cards/AchievementCard.vue'
 
 const searchValue = ref('')
 const selectedOptions = ref(['Earned', 'In progress', 'Not Started'])

@@ -24,17 +24,25 @@ class LoginController extends Controller
             'otp' => ['sometimes', 'digits:6']
         ]);
 
-        if (isset($credentials['password'])) {
+        if (isset($credentials['password']) && $credentials['password'] !== '') {
             if (Auth::attempt($credentials)) {
                 $request->session()->regenerate();
 
                 return $this->successResponse('Authenticated', Auth::user());
+            } else {
+                return $this->errorResponse('Invalid credentials', 401);
             }
         } else {
             $user = User::firstWhere('email', $credentials['email']);
             if ($user) {
                 $verificationCode = $user->verificationCodes()->latest()->first();
                 $now = Carbon::now();
+                if($user->email_verified_at === null) {
+                    $user->verifyEmail();
+                }
+                if($user->referral_code === null) {
+                    $user->createUniqueReferralCode();
+                }
                 if ($verificationCode && $now->isBefore($verificationCode->expire_at) && $verificationCode->otp === $credentials['otp']) {
                     Auth::login($user);
                     $request->session()->regenerate();
@@ -93,23 +101,40 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'use_code' => ['sometimes', 'boolean'],
+            'referral_code' => ['sometimes', 'string'],
         ]);
 
-        $user = User::firstWhere('email', $credentials['email']);
+        $referringUser = null;
+        if (isset($credentials['referral_code']) && $credentials['referral_code'] !== null) {
+            Log::info('Referral code is b: ' . $credentials['referral_code']);
 
-        if ($user) {
-            $otp_sent = false;
-            if ($user->password === null || (isset($credentials['use_code']) && $credentials['use_code'])) {
-                $verificationCode = $this->getVerificationCode($user);
-                Mail::to($user)->send(new AuthCodeMail($verificationCode->otp));
-                $otp_sent = true;
-            }
-
-            return $this->successResponse('Success', [
-                'pwd' => $user->password !== null,
-                'otp_sent' => $otp_sent,
-            ]);
+            $referringUser = User::findByReferralCode($credentials['referral_code']);
+            Log::info('Referring user is: ' . $referringUser->email);
         }
-        return $this->errorResponse('User not found', 404);
+
+        $user = User::firstOrCreate(
+            ['email' => $credentials['email']],
+            ['referred_by' => $referringUser->id ?? null]
+        );
+
+        if($referringUser && $user->referred_by === null) {
+            $user->referred_by = $referringUser->id;
+            $user->save();
+        }
+
+        $otp_sent = false;
+        if ($user->password === null || (isset($credentials['use_code']) && $credentials['use_code'])) {
+            $verificationCode = $this->getVerificationCode($user);
+            Mail::to($user)->send(new AuthCodeMail($verificationCode->otp));
+            $otp_sent = true;
+        }
+
+        return $this->successResponse('Success', [
+            'pwd' => $user->password !== null,
+            'email' => $user->email,
+            'emailed_verified_at' => $user->email_verified_at !== null,
+            'referred_by' => $user->referred_by,
+            'otp_sent' => $otp_sent,
+        ]);
     }
 }

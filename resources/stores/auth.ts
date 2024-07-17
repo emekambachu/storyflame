@@ -12,13 +12,16 @@ export const useAuthStore = defineStore(
     () => {
         const isLoggedIn = computed(() => !!user.value)
 
-        const federate = async (email: string) => {
+        const federate = async (email: string, referral_code?: string) => {
             const { data } = await axios.post<
                 SuccessResponse<{
                     pwd: boolean
                     otp_sent: boolean
+                    email: string
+                    email_verified_at: string | null
+                    referred_by: string | null
                 }>
-            >('/api/v1/auth/federate', { email })
+            >('/api/v1/auth/federate', { email, referral_code })
             return data
         }
 
@@ -26,6 +29,7 @@ export const useAuthStore = defineStore(
             email: string
             password: string
             otp: string
+            referral_code?: string
         }) => {
             await axios.get('/sanctum/csrf-cookie')
             const { data } = await axios.post<SuccessResponse<User>>(
@@ -58,7 +62,12 @@ export const useAuthStore = defineStore(
             return data
         }
         const getUser = async () => {
+            // if getAuthenticatedUser returns 401, then return null
             const response = await getAuthenticatedUser()
+            if (!response.data) {
+                user.value = null
+                return null
+            }
             user.value = response.data
             return response.data
         }

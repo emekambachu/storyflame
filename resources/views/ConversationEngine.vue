@@ -4,24 +4,27 @@
     >
         <div class="flex flex-col items-center w-full">
             <slot name="header">
-                <a
-                    class="mb-8"
-                    href="/"
-                >
-                    <img
-                        alt="logo"
-                        class="w-[393px]"
-                        src="@/assets/logo.svg"
-                    />
-                </a>
+                <!--                <a-->
+                <!--                    class="mb-8"-->
+                <!--                    href="/"-->
+                <!--                >-->
+                <!--                    <img-->
+                <!--                        alt="logo"-->
+                <!--                        class="w-32"-->
+                <!--                        src="@/assets/logo.svg"-->
+                <!--                    />-->
+                <!--                </a>-->
                 <aside class="flex w-full flex-col">
-                    <!--            <h2 class="mb-2 text-base font-normal text-neutral-950 opacity-60">-->
-                    <!--                {{ question?.title }}-->
-                    <!--            </h2>-->
-                    <div class="mb-14 flex items-center">
+                    <h2
+                        v-if="props.title"
+                        class="mb-2 text-base font-semibold text-stone-800"
+                    >
+                        {{ props.title }}
+                    </h2>
+                    <div class="mb-14 flex w-full justify-center">
                         <progress-bar
                             :percent="Math.min(progress, 100)"
-                            class="w-full"
+                            class="w-full max-w-56"
                         />
                     </div>
                 </aside>
@@ -136,14 +139,14 @@
     </main>
 </template>
 <script lang="ts" setup>
-import { inject, onMounted, ref } from 'vue'
-import { uaInjectKey } from '@/types/inject'
+import {inject, onMounted, ref} from 'vue'
+import {uaInjectKey} from '@/types/inject'
 import useModal from '@/composables/useModal'
 import StaggeredTextAnimation from '@/components/StaggeredTextAnimation.vue'
 import VoiceButton from '@/components/VoiceButton.vue'
 import ListOption from '@/components/ListOption.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
-import { ChatMessage } from '@/types/chatMessage'
+import {ChatMessage} from '@/types/chatMessage'
 import api from '@/utils/api'
 import axios from 'axios'
 
@@ -158,6 +161,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    title: {
+        type: String,
+        required: false
+    },
 })
 
 const testInput = ref('')
@@ -166,7 +173,7 @@ const showTooltip = ref(true)
 const selectedOptions = ref<string[]>([])
 
 const ua = inject(uaInjectKey)
-const { show } = useModal()
+const {show} = useModal()
 
 // watch(
 //     () => props.message,
@@ -219,7 +226,7 @@ function extractData(answer: string | string[] | Blob) {
     console.log(answer)
     const formData = new FormData()
     console.log('identifier', _identifier.value)
-    formData.append('identifier', ''+_identifier.value)
+    formData.append('identifier', '' + _identifier.value)
     console.log(_identifier.value)
     if (Array.isArray(answer)) {
         selectedOptions.value.forEach((option) => {

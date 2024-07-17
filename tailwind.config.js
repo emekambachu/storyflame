@@ -26,6 +26,9 @@ export default {
                 '2m': '22px',
                 '2xs': '11px',
             },
+            backgroundImage: {
+                'stone-light-gradient': 'linear-gradient(214deg, rgba(119, 113, 109, 0) 46.03%, rgba(119, 113, 109, 0.1) 100.03%), linear-gradient(180deg, #f5f5f4 0%, #e7e5e4 100%)',
+            },
         },
     },
     plugins: [],

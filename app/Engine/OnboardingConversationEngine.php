@@ -63,8 +63,8 @@ class OnboardingConversationEngine extends ConversationEngine
         return [
             'intro' => [
                 [
-                    'question' => 'What is your name?',
-                    'title' => 'Hello, welcome to {app_name}!',
+                    'question' => "What's your name?",
+                    'title' => "Hi! I'm StoryFlame.",
                     'data_points' => [
                         'name'
                     ]
@@ -72,8 +72,8 @@ class OnboardingConversationEngine extends ConversationEngine
             ],
             'big-picture' => [
                 [
-                    'question' => 'Tell us about yourself as a writer.',
-                    'title' => 'Nice to meet up, {extracted.name}!'
+                    'question' => 'Tell me a little about yourself as a writer.',
+                    'title' => 'Nice to meet you, {extracted.name}.'
                 ],
             ],
         ];

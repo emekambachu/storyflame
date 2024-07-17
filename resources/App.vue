@@ -1,6 +1,7 @@
 <template>
     <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
-    <main class="bg-white min-h-dvh flex flex-col w-full max-w-prose mx-auto">
+    <!-- max-w-prose -->
+    <main class="mx-auto flex min-h-dvh w-full flex-col bg-white">
         <router-view v-slot="{ Component, route }">
             <transition
                 :mode="transition.mode"
@@ -14,7 +15,7 @@
                 />
             </transition>
         </router-view>
-<!--        <mock-popup />-->
+        <!--        <mock-popup />-->
     </main>
     <!-- <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer> -->
 </template>
