@@ -1,16 +1,16 @@
 <template>
     <default-element-header
-        :tags="theme?.tags"
-        :genres="theme?.genres"
-        :background="theme.image?.path"
-        :achievements="theme?.achievements"
+        :tags="data?.tags"
+        :genres="data?.genres"
+        :background="data.image?.path"
+        :achievements="data?.achievements"
     >
         <template #title>
-            <h1 class="line-clamp-1 font-inter text-xl">{{ theme.name }}</h1>
+            <h1 class="line-clamp-1 font-inter text-xl">{{ data.title }}</h1>
         </template>
         <template #detail>
-            <h1 class="line-clamp-1 font-inter text-sm text-stone-300">
-                {{ theme.name }}
+            <h1 class="line-clamp-3 font-inter text-sm text-stone-300">
+                {{ data.description }}
             </h1>
         </template>
     </default-element-header>
@@ -22,7 +22,7 @@ import DefaultElementHeader from '@/components/headers/DefaultElementHeader.vue'
 // import { Theme } from '@/types/theme'
 
 defineProps({
-    theme: {
+    data: {
         type: Object,
         required: true,
     },

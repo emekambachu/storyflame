@@ -56,16 +56,16 @@
 <script lang="ts" setup>
 import TabLayout from '@/components/TabLayout.vue'
 import TabLayoutView from '@/components/ui/TabLayoutView.vue'
+import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
+import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
+
+import ThemeHeader from '@/components/headers/ThemeHeader.vue'
+import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 
 import ThemeOverviewTab from '@/components/theme/ThemeOverviewTab.vue'
 import DevelopTab from '@/components/DevelopTab.vue'
 import ThemeProgressionTab from '@/components/theme/ThemeProgressionTab.vue'
 import ThemeReferencesTab from '@/components/theme/ThemeReferencesTab.vue'
-
-import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
-import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
-import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
-import ThemeHeader from '@/components/headers/ThemeHeader.vue'
 
 const theme = {
     name: 'Power',

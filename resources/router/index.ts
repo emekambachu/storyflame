@@ -69,7 +69,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: () => import('../views/HomeView.vue'),
+            component: () => import('../views/MarketCompView.vue'),
         },
         {
             path: '/whisper',
@@ -248,6 +248,17 @@ const router = createRouter({
                                                 import(
                                                     '../views/TargetAudienceView.vue'
                                                 ),
+                                        },
+                                    ],
+                                },
+                                {
+                                    path: 'market-comp/',
+                                    children: [
+                                        {
+                                            path: ':market-comp',
+                                            name: 'market-comp',
+                                            component: () =>
+                                                import('../views/MarketCompView.vue'),
                                         },
                                     ],
                                 },
