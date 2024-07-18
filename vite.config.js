@@ -11,7 +11,7 @@ export default defineConfig({
                 'resources/app.ts',
                 'resources/admin-app.ts',
             ],
-            refresh: false,
+            refresh: true,
         }),
         vue({
             template: {
@@ -39,13 +39,24 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
+    css: {
+        postcss: {
+            plugins: [
+                require('tailwindcss'),
+                require('autoprefixer'),
+            ],
+        },
+    },
     build: {
         rollupOptions: {
             output: {
-                manualChunks: {
-                    // 'vue-components': ['./components/**/*.vue'],
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor';
+                    }
                 },
             },
         },
+        chunkSizeWarningLimit: 1600,
     },
 })
