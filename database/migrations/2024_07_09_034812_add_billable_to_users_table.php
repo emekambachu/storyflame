@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('billable_type')->nullable()->after('billable_id');
             $table->unsignedBigInteger('billable_id')->nullable()->after('email_verified_at');
+            $table->string('billable_type')->nullable()->after('billable_id');
         });
     }
 
