@@ -62,14 +62,20 @@ export const useAuthStore = defineStore(
             return data
         }
         const getUser = async () => {
-            // if getAuthenticatedUser returns 401, then return null
-            const response = await getAuthenticatedUser()
-            if (!response.data) {
+            try {
+                const response = await getAuthenticatedUser()
+                if (response && response.data) {
+                    user.value = response.data
+                    return response.data
+                } else {
+                    user.value = null
+                    return null
+                }
+            } catch (error) {
+                console.error('Error fetching user:', error)
                 user.value = null
                 return null
             }
-            user.value = response.data
-            return response.data
         }
 
         const updateUser = (data: User) => {

@@ -13,8 +13,8 @@ export async function getAuthenticatedUser() {
         console.log('API Response:', response.data); // Log the API response
         return response;
     } catch (error) {
-        console.error('API Error:', error); // Log any errors
-        throw error; // Rethrow the error to be handled by the query function
+        console.error('Error fetching authenticated user:', error)
+        return { data: null, error: error };
     }
 }
 
