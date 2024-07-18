@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('llm_prompt_versions', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->text('slug');
+            $table->string('name');
+            $table->string('slug');
             $table->longText('prompt_value');
-            $table->unsignedBigInteger('llm_prompt_id')->nullable();
-            $table->foreign('llm_prompt_id')->references('id')->on('llm_prompts')->onDelete('cascade');
-            $table->unsignedBigInteger('updated_by_user_id')->nullable();
+            $table->foreignId('llm_prompt_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
-            $table->engine = 'InnoDB';
+            $table->softDeletes();
         });
     }
 
