@@ -5,6 +5,7 @@
         "dev": "vite",
         "build": "npx vue-tsc --build --force && vite build",
         "build:prod": "npx vue-tsc --build --force && vite build --mode production",
+        "build:prod-no-check": "vite build --mode production",
         "type-check": "vue-tsc --build --force",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
         "format": "prettier --write resources/"

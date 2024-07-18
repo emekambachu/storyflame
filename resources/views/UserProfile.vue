@@ -27,13 +27,6 @@
                     </p>
 
                     <div class="flex items-center justify-between gap-3">
-<!--                        <achievement-summary-card-->
-<!--                            v-for="(card, cardID) in data.achievements_summary"-->
-<!--                            :key="cardID"-->
-<!--                            :item="card"-->
-<!--                            card-class="flex flex-col gap-2 p-2 rounded-lg bg-neutral-800 w-full max-w-28"-->
-<!--                            value-class="text-sm text-pure-white font-bold"-->
-<!--                        />-->
                     </div>
                 </div>
                 <template #sticky>
@@ -45,7 +38,7 @@
                 one-line
             >
                 <template #profile>
-                    <profile-tab :user="user" />
+                    <profile-tab v-if="user" :user="user" />
                 </template>
                 <template #stories>
                     <title-section class="!gap-6 py-6">
@@ -80,16 +73,11 @@
                             </title-with-link>
                         </template>
                         <div class="px-4 gap-6 flex flex-col">
-<!--                            <achievement-completed-card-->
-<!--                                v-for="(achievement, achievementID) in user.achievements"-->
-<!--                                :key="achievementID"-->
-<!--                                :card="achievement"-->
-<!--                            />-->
                         </div>
                     </title-section>
                 </template>
                 <template #membership>
-                    <user-profile-subscription-tab :user="user" />
+                    <user-profile-subscription-tab v-if="user" :user="user" />
                 </template>
             </tab-layout-view>
         </tab-layout>
@@ -99,12 +87,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import ProfileTab from '@/components/profile/ProfileTab.vue'
-import ProfileStoriesTab from '@/components/profile/ProfileStoriesTab.vue'
-import ProfileAchievementsTab from '@/components/profile/ProfileAchievementsTab.vue'
 import TabLayout from '@/components/TabLayout.vue'
-import UserProfileHeader from '@/components/headers/UserProfileHeader.vue'
 import { useUser } from '@/composables/query/user'
-import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
 import TabLayoutView from '@/components/ui/TabLayoutView.vue'
@@ -114,12 +98,10 @@ import TitleSection from '@/components/TitleSection.vue'
 import HorizontalList from '@/components/ui/HorizontalList.vue'
 import RecentStoryCard from '@/components/cards/RecentStoryCard.vue'
 import NewStoryCard from '@/components/cards/NewStoryCard.vue'
-import AchievementCompletedCard from '@/components/cards/AchievementCompletedCard.vue'
-import AchievementSummaryCard from '@/components/cards/AchievementSummaryCard.vue'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
 import { useAuthStore } from '@/stores/auth'
 
-const { data: user } = useUser()
+const { data: user, isLoading, isError } = useUser()
 const authStore = useAuthStore()
 
 const tabs = [
