@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel
 
 from processing.models.DynamicModel import DynamicModel
 from processing.parsing.xml_tag_parser import XMLOutputParser
