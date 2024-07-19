@@ -150,6 +150,7 @@ const credentials = ref({
     password: '',
     otp: '',
     referred_by_code: '',
+    use_code: true,
 })
 const config = ref<Config | null>(null);
 const router = useRouter()
