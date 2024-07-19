@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->unsignedBigInteger('current_prompt_version_id')->nullable();
-            $table->unsignedBigInteger('updated_by_user_id')->nullable();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('current_prompt_version_id')->nullable()->constrained('llm_prompt_versions')->onDelete('set null');
             $table->timestamps();
+            $table->softDeletes();
             $table->engine = 'InnoDB';
-
-//            $table->foreign('current_prompt_version_id')->references('id')->on('llm_prompt_versions')->onDelete('set null');
-//            $table->foreign('updated_by_user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
@@ -30,10 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('llm_prompt_versions', function (Blueprint $table) {
-            $table->dropForeign(['llm_prompt_id']);
-        });
-
         Schema::dropIfExists('llm_prompts');
     }
 };

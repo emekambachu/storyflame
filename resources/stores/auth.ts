@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import axios from 'axios'
 import { SuccessResponse } from '../types/responses'
 import { getAuthenticatedUser } from '@/utils/endpoints'
+import { useUser } from '@/composables/query/user'
 
 const user = ref<User | null>(null)
 
@@ -12,7 +13,7 @@ export const useAuthStore = defineStore(
     () => {
         const isLoggedIn = computed(() => !!user.value)
 
-        const federate = async (email: string, referral_code?: string) => {
+        const federate = async (email: string, referral_code?: string, use_code?: boolean) => {
             const { data } = await axios.post<
                 SuccessResponse<{
                     pwd: boolean
@@ -21,7 +22,7 @@ export const useAuthStore = defineStore(
                     email_verified_at: string | null
                     referred_by: string | null
                 }>
-            >('/api/v1/auth/federate', { email, referral_code })
+            >('/api/v1/auth/federate', { email, referral_code, use_code })
             return data
         }
 
@@ -62,14 +63,20 @@ export const useAuthStore = defineStore(
             return data
         }
         const getUser = async () => {
-            // if getAuthenticatedUser returns 401, then return null
-            const response = await getAuthenticatedUser()
-            if (!response.data) {
+            try {
+                const response = await getAuthenticatedUser()
+                if (response && response.data) {
+                    user.value = response.data
+                    return response.data
+                } else {
+                    user.value = null
+                    return null
+                }
+            } catch (error) {
+                console.error('Error fetching user:', error)
                 user.value = null
                 return null
             }
-            user.value = response.data
-            return response.data
         }
 
         const updateUser = (data: User) => {

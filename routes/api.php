@@ -20,7 +20,9 @@ Route::group([
             Route::post('register', 'RegisterController@register');
             Route::post('login', [LoginController::class, 'authenticate']);
             Route::post('federate', 'LoginController@federate');
-            Route::get('user', 'LoginController@user');
+            Route::get('user', [
+                \App\Http\Controllers\Api\V1\Authentication\LoginController::class, 'user'
+            ]);
             Route::post('logout', 'LoginController@logout');
         });
 

@@ -11,6 +11,8 @@
             </p>
         </title-section>
 
+        <pre>{{user}}</pre>
+
         <!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
         <!--            <items-list-->
         <!--                v-slot="{ item }"-->
@@ -26,39 +28,36 @@
         <!--            </items-list>-->
         <!--        </title-section>-->
 
-<!--        <title-section-->
-<!--            v-if="user.data?.media?.length"-->
-<!--            title="Inspired by"-->
-<!--        >-->
-<!--            <items-list-->
-<!--                v-slot="{ item }"-->
-<!--                :items="user.data?.media"-->
-<!--            >-->
-<!--                <image-component-->
-<!--                    :src="item?.path"-->
-<!--                    class="h-40 w-[108px] rounded-lg"-->
-<!--                />-->
-<!--            </items-list>-->
-<!--        </title-section>-->
+        <title-section
+            v-if="user.media?.length"
+            title="Inspired by"
+        >
+            <items-list
+                v-slot="{ item }"
+                :items="user.media"
+            >
+<!--                <movie-card :media="item" />-->
+            </items-list>
+        </title-section>
 
-<!--        <title-section-->
-<!--            v-if="-->
-<!--                user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS-->
-<!--            "-->
-<!--            title="Favorite characters"-->
-<!--        >-->
-<!--            <items-list-->
-<!--                v-slot="{ item }"-->
-<!--                :items="user.data?.characters"-->
-<!--            >-->
-<!--                <p-->
-<!--                    class="text-slate-600 whitespace-nowrap text-xs font-normal px-3 py-2 rounded-full"-->
-<!--                    style="background-color: rgba(96, 159, 255, 0.1)"-->
-<!--                >-->
-<!--                    {{ item }}-->
-<!--                </p>-->
-<!--            </items-list>-->
-<!--        </title-section>-->
+        <title-section
+            v-if="
+                user.data?.characters?.length && featureFlags.PROFILE_CHARACTERS
+            "
+            title="Favorite characters"
+        >
+            <items-list
+                v-slot="{ item }"
+                :items="user.data?.characters"
+            >
+                <p
+                    class="text-slate-600 whitespace-nowrap text-xs font-normal px-3 py-2 rounded-full"
+                    style="background-color: rgba(96, 159, 255, 0.1)"
+                >
+                    {{ item }}
+                </p>
+            </items-list>
+        </title-section>
 
         <title-section>
             <template #title>
@@ -99,7 +98,23 @@
             </router-link>
         </title-section>
 
-
+        <title-section>
+            <template #title>
+                <title-with-link
+                    title="Your Achievements"
+                />
+            </template>
+            <items-list
+                v-slot="{ item }"
+                :items="user?.achievements.filter((item) => item.progress)"
+                class="gap-8"
+            >
+<!--                <achievement-card-->
+<!--                    :item="item"-->
+<!--                    class="h-full"-->
+<!--                />-->
+            </items-list>
+        </title-section>
     </div>
 </template>
 
@@ -131,6 +146,4 @@ const { data: stories } = useQuery({
         return data.data
     },
 })
-
-const activeTab = inject<string>(tabLayoutActiveTabInjection)
 </script>

@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
+
 abstract class Controller
 {
-    public function successResponse($message, $data = null)
+    /**
+     * @param $message
+     * @param $data
+     * @return JsonResponse
+     */
+    public function successResponse($message, $data = null): JsonResponse
     {
         return response()->json([
             'message' => $message,
@@ -13,12 +20,22 @@ abstract class Controller
         ]);
     }
 
-    public function errorResponse($message, $code, $type = 'error', $details = null)
+    /**
+     * @param $message
+     * @param $code
+     * @param $type
+     * @param $details
+     * @param $errors
+     * @return JsonResponse
+     */
+    public function errorResponse($message, $code, $type = 'error', $details = null, $errors = null): JsonResponse
     {
         return response()->json([
             'message' => $message,
             'details' => $details,
             'type' => $type,
+            'errors' => $errors,
+            'data' => null,
         ], $code);
     }
 }

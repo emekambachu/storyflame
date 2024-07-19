@@ -101,7 +101,7 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'use_code' => ['sometimes', 'boolean'],
-            'referral_code' => ['sometimes', 'string'],
+            'referral_code' => ['sometimes', 'nullable', 'string'],
         ]);
 
         $referringUser = null;

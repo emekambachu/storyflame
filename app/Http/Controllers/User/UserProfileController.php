@@ -7,6 +7,7 @@ use App\Http\Requests\User\Profile\UserProfileUpdateAvatarRequest;
 use App\Http\Requests\User\Profile\UserProfileUpdateBioRequest;
 use App\Http\Requests\User\Profile\UserProfileUpdateEmailRequest;
 use App\Http\Requests\User\Profile\UserProfileUpdatePasswordRequest;
+use App\Http\Resources\UserResource;
 use App\Services\Base\BaseService;
 use App\Services\User\UserProfileService;
 use Illuminate\Http\JsonResponse;
@@ -82,7 +83,8 @@ class UserProfileController extends Controller
             $data = $this->user->user()->find(Auth::user());
             return response()->json([
                 'status' => 'success',
-                'user' => $data
+                'user' => $data,
+                'user_resource' => UserResource::make($data)
             ]);
         }catch(\Exception $e){
             return BaseService::tryCatchException($e);

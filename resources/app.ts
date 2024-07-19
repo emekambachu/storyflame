@@ -1,15 +1,15 @@
-import { createApp, provide } from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router';
+import router from '@/router';
 import axios, { isAxiosError } from 'axios';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
-import { useAuthStore } from './stores/auth';
 import '@/assets/app.css';
 import { createLogger } from 'vue-logger-plugin'
 import modalPlugin from '@/plugins/modalPlugin'
 import { VueMountable } from 'vue-mountable'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import { handleAuthError } from "@/utils/authHelpers";
 
 // Sentry SDK
 // import * as Sentry from "@sentry/vue";
@@ -45,11 +45,33 @@ app.config.errorHandler = (err, vm, info) => {
 };
 
 axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response) => {
+        console.log('Response:', {
+            url: response.config.url,
+            method: response.config.method,
+            status: response.status,
+            data: response.data,
+            headers: response.headers,
+        });
+        return response;
+    },
+    async (error) => {
         if (isAxiosError(error)) {
-            console.log('🚔 interceptor', error.response?.status);
-            const authStore = useAuthStore();
+            const route = router.currentRoute.value; // Use router's current route
+
+            console.log('🚔 interceptor Request:', {
+                url: error.config.url,
+                method: error.config.method,
+                headers: error.config.headers,
+                data: error.config.data,
+            });
+
+            // Log error response details
+            console.log('Error Response:', {
+                status: error.response?.status,
+                data: error.response?.data,
+                headers: error.response?.headers,
+            });
 
             switch (error.response?.status) {
                 case 419:
@@ -76,14 +98,11 @@ axios.interceptors.response.use(
             }
 
             if (error.response?.status === 419 || error.response?.status === 401) {
-                if (authStore.isLoggedIn) {
-                    authStore.logout().then(() => {
-                        router.push({ name: 'login', query: route.query });
-                    });
-                } else {
-                    router.push({ name: 'login', query: route.query});
-                }
+                await handleAuthError(router, route);
             }
+        } else {
+            // Log non-Axios errors
+            console.log('Non-Axios Error:', error);
         }
         return Promise.reject(error);
     }
