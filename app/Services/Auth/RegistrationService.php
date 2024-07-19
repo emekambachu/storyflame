@@ -129,9 +129,8 @@ class RegistrationService
 
         DB::beginTransaction();
         try {
-            if(!$user->is_verified){
+            if(empty($user->email_verified_at)) {
                 $user->email_verified_at = now()->format('Y-m-d H:i:s');
-                $user->is_verified = true;
                 $user->referred_by = !empty($inputs['referred_by_code']) ? $this->getReferrerId($inputs['referred_by_code']) : null;
                 $user->referral_code = $this->referral->generateUniqueReferralCode();
 
