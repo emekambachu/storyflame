@@ -21,7 +21,7 @@ export const useAuthStore = defineStore(
                     email_verified_at: string | null
                     referred_by: string | null
                 }>
-            >('/api/v1/auth/federate', { email, referral_code })
+            >('/api/v1/auth/federate', { email, referral_code, use_code })
             return data
         }
 
