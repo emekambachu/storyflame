@@ -34,7 +34,7 @@
                 </template>
             </header-animated>
             <tab-layout-view
-                class="w-full bg-white pb-6"
+                class="w-full bg-white pb-6 px-2 md:px-4"
                 one-line
             >
                 <template #profile>

@@ -1,7 +1,7 @@
 <template>
     <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
     <!-- max-w-prose -->
-    <main class="mx-auto flex min-h-dvh w-full flex-col bg-white">
+    <main class="mx-auto flex items-center justify-center min-h-dvh w-full flex-col bg-gray-100">
         <router-view v-slot="{ Component, route }">
             <transition
                 :mode="transition.mode"
@@ -11,7 +11,7 @@
                 <component
                     :is="Component"
                     :key="route.fullPath"
-                    class="bg-white"
+                    class="bg-white max-w-screen-md"
                 />
             </transition>
         </router-view>
