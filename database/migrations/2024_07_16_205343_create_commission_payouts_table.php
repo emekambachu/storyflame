@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('commission_inventory_latest_date');
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

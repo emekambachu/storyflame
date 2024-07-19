@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('referral_types', function (Blueprint $table) {
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->float('commission_percent')->nullable();
-            $table->float('discount_percent')->nullable();
-            $table->integer('month_duration')->nullable();
+            $table->float('commission_percent')->nullable()->after('description');
+            $table->float('discount_percent')->nullable()->after('commission_percent');
+            $table->integer('month_duration')->nullable()->after('discount_percent');
+            $table->timestamp('starts_at')->nullable()->after('month_duration');
+            $table->timestamp('ends_at')->nullable()->after('starts_at');
         });
     }
 
@@ -26,11 +26,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('referral_types', function (Blueprint $table) {
-            $table->dropColumn('starts_at');
-            $table->dropColumn('ends_at');
             $table->dropColumn('commission_percent');
             $table->dropColumn('discount_percent');
             $table->dropColumn('month_duration');
+            $table->dropColumn('starts_at');
+            $table->dropColumn('ends_at');
         });
     }
 };

@@ -15,16 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->unsignedBigInteger('current_prompt_version_id')->nullable();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
-            $table->engine = 'InnoDB';
-
-            $table->foreign('updated_by')->references('id')->on('users');
-            if(Schema::hasTable('llm_prompt_versions')) {
-                $table->foreign('current_prompt_version_id')->references('id')->on('llm_prompt_versions');
-            }
         });
     }
 

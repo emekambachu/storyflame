@@ -17,8 +17,8 @@ return new class extends Migration
                 $table->dropColumn('discount_percent');
             }
 
-            $table->float('referrer_discount_percent')->nullable();
-            $table->float('recipient_discount_percent')->nullable();
+            $table->float('referrer_discount_percent')->nullable()->after('commission_percent');
+            $table->float('recipient_discount_percent')->nullable()->after('referrer_discount_percent');
         });
     }
 
@@ -28,7 +28,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('referral_types', function (Blueprint $table) {
-            //
+            $table->dropColumn('referrer_discount_percent');
+            $table->dropColumn('recipient_discount_percent');
         });
     }
 };

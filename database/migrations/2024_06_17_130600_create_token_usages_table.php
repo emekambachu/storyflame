@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string('model');
             $table->unsignedSmallInteger('input_tokens')->default(0);
             $table->unsignedSmallInteger('output_tokens')->default(0);
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
