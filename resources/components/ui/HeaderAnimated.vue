@@ -54,35 +54,35 @@ provide('scrollHeight', scrollHeight)
 
 onMounted(() => {
     if (!props.noAnimation) {
-        if (!header.value || !headerContent.value || !headerContentHidden.value || !headerWrapper.value)
-            return
-
-        const fullHeight = headerWrapper.value.clientHeight
-
-        scroll(
-            animate(header.value, {
-                translateY: [
-                    '0',
-                    `${collapseHeaderHeight - fullHeight}px`,
-                ],
-                easing: 'linear',
-            }),
-            {
-                offset: ['start start', `${scrollHeight.value}px`],
-            }
-        )
-        scroll(
-            animate(headerContent.value, {
-                height: [
-                    `${fullHeight}px`,
-                    `${collapseHeaderHeight}px`,
-                ],
-                easing: 'linear',
-            }),
-            {
-                offset: ['start start', `${scrollHeight.value}px`],
-            }
-        )
+        // if (!header.value || !headerContent.value || !headerContentHidden.value || !headerWrapper.value)
+        //     return
+        //
+        // const fullHeight = headerWrapper.value.clientHeight
+        //
+        // scroll(
+        //     animate(header.value, {
+        //         translateY: [
+        //             '0',
+        //             `${collapseHeaderHeight - fullHeight}px`,
+        //         ],
+        //         easing: 'linear',
+        //     }),
+        //     {
+        //         offset: ['start start', `${scrollHeight.value}px`],
+        //     }
+        // )
+        // scroll(
+        //     animate(headerContent.value, {
+        //         height: [
+        //             `${fullHeight}px`,
+        //             `${collapseHeaderHeight}px`,
+        //         ],
+        //         easing: 'linear',
+        //     }),
+        //     {
+        //         offset: ['start start', `${scrollHeight.value}px`],
+        //     }
+        // )
     }
 })
 </script>

@@ -22,11 +22,11 @@
         </nav>
         <main class="w-full flex flex-col mx-auto items-center justify-start min-h-dvh ">
             <router-view v-slot="{ Component, route }">
-                <transition
-                    :mode="transition.mode"
-                    :name="transition.name"
-                    @after-leave="setTransition('none')"
-                >
+<!--                <transition-->
+<!--                    :mode="transition.mode"-->
+<!--                    :name="transition.name"-->
+<!--                    @after-leave="setTransition('none')"-->
+<!--                >-->
                     <component
                         :is="Component"
                         :key="route.fullPath"
@@ -35,7 +35,7 @@
                             useFullWidth ? 'w-full' : 'max-w-screen-md'
                         ]"
                     />
-                </transition>
+<!--                </transition>-->
             </router-view>
         </main>
     </div>
