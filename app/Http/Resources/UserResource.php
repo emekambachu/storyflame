@@ -13,7 +13,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'paddle_id' => $this->paddle_id,
+            'customer_id' => $this->paddle_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'name' => $this->name,
@@ -22,13 +22,12 @@ class UserResource extends JsonResource
             'progress_achievements' => $this->userAchievements->where('completed', false)->count(),
             'next_achievements' => 0,
             'email_verified_at' => $this->email_verified_at,
-            'referred_by_code' => NULL,
+            'referred_by' => $this->referred_by,
 
             'bio' => $this->getSummary('bio')?->summary,
             'writing_goals' => $this->getSummary('writing_goals')?->summary,
 
             'avatar' => !empty($this->avatar) ? config('app.url') . $this->avatar_path . $this->avatar : null,
-            'password' => $this->password,
 
             'achievements' => AchievementResource::collection($this->achievements ?? []),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,

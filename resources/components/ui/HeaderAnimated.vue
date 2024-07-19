@@ -3,20 +3,22 @@
         ref="header"
         class="sticky top-0 z-10 flex w-full flex-col bg-white"
     >
-        <div class="relative">
+        <div class="relative" ref="headerWrapper">
             <div
                 v-if="!noAnimation"
                 ref="headerContentHidden"
                 class="opacity-0"
-            ></div>
+            >
+                <slot name="header" />
+            </div>
             <div
                 ref="headerContent"
                 :class="{
-                    'absolute bottom-0': !noAnimation,
+                    'absolute top-0 left-0 right-0': !noAnimation,
                 }"
-                class="h-full w-full overflow-hidden"
+                class="w-full overflow-hidden"
             >
-                <slot />
+                <slot name="header" />
             </div>
         </div>
         <slot name="sticky" />
@@ -24,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, provide, ref } from 'vue'
+import { inject, onMounted, provide, ref, computed } from 'vue'
 import { animate, scroll } from 'motion'
 
 const props = defineProps({
@@ -35,49 +37,50 @@ const props = defineProps({
 })
 
 const header = ref<HTMLDivElement | null>(null)
+const headerWrapper = ref<HTMLDivElement | null>(null)
 const headerContent = ref<HTMLDivElement | null>(null)
 const headerContentHidden = ref<HTMLDivElement | null>(null)
 
-const headerHeight = inject('headerHeight') as number
-const collapseHeaderHeight = inject('collapseHeaderHeight') as number
-const scrollHeight = +headerHeight - +collapseHeaderHeight
+const headerHeight = inject('headerHeight', 0)
+const collapseHeaderHeight = inject('collapseHeaderHeight', 0)
+const scrollHeight = computed(() => {
+    if (headerWrapper.value && headerContent.value) {
+        return headerWrapper.value.clientHeight - collapseHeaderHeight
+    }
+    return 0
+})
+
 provide('scrollHeight', scrollHeight)
 
 onMounted(() => {
     if (!props.noAnimation) {
-        if (!header.value || !headerContent.value || !headerContentHidden.value)
+        if (!header.value || !headerContent.value || !headerContentHidden.value || !headerWrapper.value)
             return
-        headerContentHidden.value?.style.setProperty(
-            'height',
-            `${headerHeight}px`
-        )
 
-        const outerHeight = header.value?.getBoundingClientRect()
-        console.log(outerHeight)
+        const fullHeight = headerWrapper.value.clientHeight
 
         scroll(
             animate(header.value, {
                 translateY: [
                     '0',
-                    `${+collapseHeaderHeight - +headerHeight}px`,
+                    `${collapseHeaderHeight - fullHeight}px`,
                 ],
                 easing: 'linear',
             }),
             {
-                // offset: ['start start', `${+props.headerHeight / 2}px`],
-                offset: ['start start', `${scrollHeight}px`],
+                offset: ['start start', `${scrollHeight.value}px`],
             }
         )
         scroll(
             animate(headerContent.value, {
                 height: [
-                    `${headerHeight}px`,
+                    `${fullHeight}px`,
                     `${collapseHeaderHeight}px`,
                 ],
                 easing: 'linear',
             }),
             {
-                offset: ['start start', `${scrollHeight}px`],
+                offset: ['start start', `${scrollHeight.value}px`],
             }
         )
     }

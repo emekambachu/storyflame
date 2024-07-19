@@ -9,17 +9,20 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import {onMounted, onUnmounted} from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import ConversationEngine from '@/views/ConversationEngine.vue'
 import useModal from '@/composables/useModal'
 import { getOnboardingSummary } from '@/utils/endpoints'
 import SplitViewLayout from "@/layouts/splitViewLayout.vue";
+import { useLayoutControl } from "@/utils/useLayoutControl";
 
 const router = useRouter()
 const auth = useAuthStore()
 const modal = useModal()
+
+const { setNavVisibility, setFullWidth } = useLayoutControl()
 
 function onFinish() {
     // const modalId = modal.show('full-screen-loader', {})
@@ -34,5 +37,12 @@ onMounted(() => {
     if (!auth.user) {
         router.push({ name: 'register' })
     }
+    setNavVisibility(false);
+    setFullWidth(true);
+})
+
+onUnmounted(() => {
+    setNavVisibility(true);
+    setFullWidth(false);
 })
 </script>

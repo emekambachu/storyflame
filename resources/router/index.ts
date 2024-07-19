@@ -111,8 +111,9 @@ const router = createRouter({
                     name: 'profile',
                     component: () => import('../views/UserProfile.vue'),
                     meta: {
-                        transition: 'slide',
+                        transition: 'none',
                         back: 'home',
+                        title: 'Profile'
                     },
                 },
                 {
@@ -120,8 +121,9 @@ const router = createRouter({
                     name: 'ProfileEdit',
                     component: () => import('../views/user/profile/UserEditProfileView.vue'),
                     meta: {
-                        transition: 'slide',
+                        transition: 'none',
                         back: 'home',
+                        title: 'Edit Profile'
                     },
                 },
 
@@ -133,6 +135,7 @@ const router = createRouter({
                             name: 'stories',
                             meta: {
                                 transition: 'slide',
+                                title: 'Stories'
                             },
                             component: () =>
                                 import('../views/StoriesListPage.vue'),
@@ -142,6 +145,7 @@ const router = createRouter({
                             name: 'new-story',
                             meta: {
                                 transition: 'slide',
+                                title: 'New Story'
                             },
                             beforeEnter: checkAuth,
                             component: () => import('../views/NewStory.vue'),
@@ -157,6 +161,7 @@ const router = createRouter({
                                         import('../views/StoryView.vue'),
                                     meta: {
                                         transition: 'slide',
+                                        title: 'Story'
                                     },
                                 },
                                 {
@@ -165,7 +170,8 @@ const router = createRouter({
                                     component: () => import('../views/story/StoryDevelopment.vue'),
                                     meta: {
                                         transition: 'slide',
-                                        back: 'story'
+                                        back: 'story',
+                                        title: 'Story Development'
                                     },
                                 },
                                 {
@@ -180,6 +186,7 @@ const router = createRouter({
                                                 ),
                                             meta: {
                                                 transition: 'slide',
+                                                title: 'Characters',
                                             },
                                         },
                                         {
@@ -191,6 +198,7 @@ const router = createRouter({
                                                 ),
                                             meta: {
                                                 transition: 'slide',
+                                                title: 'Character',
                                             },
                                         },
                                     ],
@@ -216,6 +224,10 @@ const router = createRouter({
                                         {
                                             path: ':sequence',
                                             name: 'sequence',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Sequence',
+                                            },
                                             component: () =>
                                                 import(
                                                     '../views/SequenceView.vue'
@@ -229,6 +241,10 @@ const router = createRouter({
                                         {
                                             path: ':plot',
                                             name: 'plot',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Plot',
+                                            },
                                             component: () =>
                                                 import('../views/PlotView.vue'),
                                         },
@@ -240,6 +256,10 @@ const router = createRouter({
                                         {
                                             path: '',
                                             name: 'themes',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Themes',
+                                            },
                                             component: () =>
                                                 import(
                                                     '../views/ThemesListPage.vue'
@@ -248,6 +268,10 @@ const router = createRouter({
                                         {
                                             path: ':theme',
                                             name: 'theme',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Theme',
+                                            },
                                             component: () =>
                                                 import(
                                                     '../views/ThemeView.vue'
@@ -261,6 +285,10 @@ const router = createRouter({
                                         {
                                             path: ':id',
                                             name: 'audience',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Audience',
+                                            },
                                             component: () =>
                                                 import(
                                                     '../views/TargetAudienceView.vue'
@@ -274,6 +302,10 @@ const router = createRouter({
                                         {
                                             path: ':market-comp',
                                             name: 'market-comp',
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Market Comp',
+                                            },
                                             component: () =>
                                                 import('../views/MarketCompView.vue'),
                                         },
@@ -288,6 +320,10 @@ const router = createRouter({
         {
             path: '/outline/:id',
             name: 'outline',
+            meta: {
+                transition: 'slide',
+                title: 'Outline',
+            },
             // beforeEnter: checkAuth,
             component: () =>
                 import('../views/OutlineView.vue'),
@@ -295,12 +331,20 @@ const router = createRouter({
         {
             path: '/achievement/:id',
             name: 'achievement',
+            meta: {
+                transition: 'slide',
+                title: 'Achievement',
+            },
             // beforeEnter: checkAuth,
             component: () => import('../views/AchievementView.vue'),
         },
         {
             path: '/achievements',
             name: 'achievements',
+            meta: {
+                transition: 'slide',
+                title: 'Achievements',
+            },
             // beforeEnter: checkAuth,
             component: () => import('../views/AchievementsListPage.vue'),
         },
@@ -315,12 +359,20 @@ const router = createRouter({
                 {
                     path: 'login',
                     name: 'login',
+                    meta: {
+                        transition: 'none',
+                        title: 'Login'
+                    },
                     component: () => import('../views/LoginView.vue'),
                     props: route => ({ query: route.query})
                 },
                 {
                     path: 'register',
                     name: 'register',
+                    meta: {
+                        transition: 'none',
+                        title: 'Register'
+                    },
                     component: () => import('../views/RegisterView.vue'),
                     props: route => ({ query: route.query})
                 }
@@ -329,6 +381,10 @@ const router = createRouter({
         {
             path: '/dashboard',
             name: 'dashboard',
+            meta: {
+                transition: 'none',
+                title: 'Dashboard'
+            },
             component: () => import('../views/HomeView.vue'),
         },
 

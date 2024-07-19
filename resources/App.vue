@@ -1,27 +1,49 @@
 <template>
-    <!-- <nav class="bg-white shadow-lg text-slate-500 p-4">nav</nav> -->
-    <!-- max-w-prose -->
-    <main class="mx-auto flex items-center justify-center min-h-dvh w-full flex-col bg-gray-100">
-        <router-view v-slot="{ Component, route }">
-            <transition
-                :mode="transition.mode"
-                :name="transition.name"
-                @after-leave="setTransition('default')"
-            >
-                <component
-                    :is="Component"
-                    :key="route.fullPath"
-                    class="bg-white max-w-screen-md"
-                />
-            </transition>
-        </router-view>
-        <!--        <mock-popup />-->
-    </main>
+    <div class="w-full flex flex-col gap-3 bg-gray-100">
+        <nav
+            v-if="showNav"
+            class="w-full flex flex-row h-14 items-center px-2 lg:px-4 text-2xs text-stone-500 justify-between bg-stone-50 border-b border-solid border-stone-200 z-20"
+            style="position:sticky; top: 0;"
+        >
+            <div>
+<!--                Click on the logo-icon should take the user to "/" -->
+                <router-link :to="{ name: 'home' }">
+                    <logo-icon class="w-8 h-8" />
+                </router-link>
+            </div>
+            <div class="">
+                {{ $route.meta.title }}
+            </div>
+            <div>
+                <router-link :to="{ name: 'profile' }" class="flex h-8 w-8 shrink-0 rounded-full bg-stone-200">
+                    <UserAvatar />
+                </router-link>
+            </div>
+        </nav>
+        <main class="w-full flex flex-col mx-auto items-center justify-start min-h-dvh ">
+            <router-view v-slot="{ Component, route }">
+                <transition
+                    :mode="transition.mode"
+                    :name="transition.name"
+                    @after-leave="setTransition('none')"
+                >
+                    <component
+                        :is="Component"
+                        :key="route.fullPath"
+                        :class="[
+                            'bg-white',
+                            useFullWidth ? 'w-full' : 'max-w-screen-md'
+                        ]"
+                    />
+                </transition>
+            </router-view>
+        </main>
+    </div>
     <!-- <footer class="bg-white shadow-lg text-slate-500 p-4">footer</footer> -->
 </template>
 
 <script lang="ts" setup>
-import { onMounted, provide, reactive, watch } from 'vue'
+import { onMounted, provide, reactive, watch, ref } from 'vue'
 import { uaInjectKey } from '@/types/inject'
 import { useAuthStore } from '@/stores/auth'
 import { useEcho } from '@/types/useEcho'
@@ -30,6 +52,9 @@ import AchievementPopup from '@/components/modals/AchievementPopup.vue'
 import { usePagesStore } from '@/stores/pages'
 import { useRouter } from 'vue-router'
 import MockPopup from '@/components/MockPopup.vue'
+import LogoIcon from '@/components/icons/LogoIcon.vue'
+import UserAvatar from "@/components/UserAvatar.vue";
+
 
 const authStore = useAuthStore()
 const { echo } = useEcho()
@@ -37,6 +62,12 @@ const { show } = useModal()
 const { transition, setTransition } = usePagesStore()
 
 const router = useRouter()
+
+const showNav = ref(true)
+const useFullWidth = ref(false)
+
+provide('showNav', showNav)
+provide('useFullWidth', useFullWidth)
 
 router.beforeEach((to, from, next) => {
     if (from.name === undefined && from.path === '/') setTransition('none')

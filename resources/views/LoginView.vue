@@ -134,11 +134,12 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 import splitViewLayout from '@/layouts/splitViewLayout.vue'
 import CrossedEye from '@/components/icons/CrossedEye.vue'
+import { useLayoutControl} from "@/utils/useLayoutControl";
 
 const props = defineProps<{
     query?: Record<string, string>
@@ -156,6 +157,8 @@ const config = ref<Config | null>(null);
 const router = useRouter()
 const route = useRoute()
 const queryParams = computed(() => props.query || route.query)
+const { setNavVisibility, setFullWidth } = useLayoutControl()
+
 
 const formTitle = computed(() => {
     // Ensure config.value is not undefined or null before accessing otp_sent
@@ -224,6 +227,14 @@ onMounted(() => {
     //     localStorage.setItem('referralCode', credentials.value.referral_code)
     // }
     console.log('Referral Code:', credentials.value.referred_by_code)
+
+    setNavVisibility(false);
+    setFullWidth(true);
+})
+
+onUnmounted(() => {
+    setNavVisibility(true);
+    setFullWidth(false);
 })
 </script>
 
