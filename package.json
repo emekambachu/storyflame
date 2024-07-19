@@ -32,7 +32,9 @@
         "vue-tsc": "^2.0.26"
     },
     "dependencies": {
+        "@babel/parser": "^7.24.8",
         "@paddle/paddle-js": "^1.2.0",
+        "@sentry/vue": "^7.40.0",
         "@tanstack/vue-query": "^5.40.1",
         "@types/luxon": "^3.4.2",
         "@vueuse/core": "^10.9.0",

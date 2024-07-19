@@ -7,12 +7,13 @@ use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasSchemalessAttributes;
 use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithId;
+use App\Models\Referral\ReferralType;
 use App\Models\Role\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,7 +43,13 @@ class User extends Authenticatable implements ModelWithId
         'referred_by_code',
         'paddle_id',
         'trial_ends_at',
-        'last_login'
+        'last_login',
+        'referred_by', // the person who referred you
+        'referral_code', // your referral code
+        'is_verified',
+        'last_login',
+        'paddle_id',
+        'trial_ends_at',
     ];
 
     protected $dates = [
@@ -123,9 +130,48 @@ class User extends Authenticatable implements ModelWithId
         ];
     }
 
-    public function avatar(): HasOne
+    public function avatar(): BelongsTo
     {
-        return $this->hasOne(Image::class, 'imageable_id', 'id');
+        return $this->belongsTo(Image::class, 'id', 'imageable_id');
+    }
+
+    public function referred_by(): BelongsTo
+    {
+        return $this->belongsTo(__CLASS__, 'referred_by', 'id');
+    }
+
+    public function user_products()
+    {
+        return $this->belongsToMany(Product::class, 'user_products', 'user_id', 'product_id')
+            ->withPivot([
+                'status',
+                'trial_ends_at',
+                'ends_at',
+            ])
+            ->withTimestamps();
+    }
+
+    public function referral_types(){
+        return $this->belongsToMany(ReferralType::class, 'user_referral_types', 'user_id', 'referral_type_id')
+            ->withPivot([
+                'start_date',
+                'end_date',
+                'is_active',
+            ])
+            ->withTimestamps();
+    }
+
+    public function user_referrals()
+    {
+        return $this->belongsToMany(__CLASS__, 'user_referrals', 'referrer_id', 'receiver_id')
+            ->withPivot([
+                'recipient_discount_amount',
+                'referrer_discount_amount',
+                'referrer_commission_amount',
+                'discount_ends_at',
+                'commission_ends_at',
+            ])
+            ->withTimestamps();
     }
 
     public function roles(): BelongsToMany

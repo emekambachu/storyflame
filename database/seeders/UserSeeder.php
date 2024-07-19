@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'first_name' => 'Mitch',
-                'last_name' => 'Lucas',
+                'last_name' => 'Lusas',
                 'email' => 'mitch@hiddenplanetproductions.com',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now()->format('Y-m-d H:i:s'),

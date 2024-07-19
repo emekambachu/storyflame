@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('llm_prompts', function (Blueprint $table) {
-            $table->foreignId('current_prompt_version_id')->nullable()->constrained('llm_prompt_versions')->onDelete('set null')->after('slug');
+            if(!Schema::hasColumn('llm_prompts', 'current_prompt_version_id')) {
+                $table->foreignId('current_prompt_version_id')->nullable()->constrained('llm_prompt_versions')->onDelete('set null');
+            }
         });
     }
 

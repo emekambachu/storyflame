@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Profile\UserProfileUpdateAvatarRequest;
 use App\Http\Requests\User\Profile\UserProfileUpdateBioRequest;
+use App\Http\Requests\User\Profile\UserProfileUpdateEmailRequest;
 use App\Http\Requests\User\Profile\UserProfileUpdatePasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Base\BaseService;
@@ -25,6 +26,28 @@ class UserProfileController extends Controller
     {
         try {
             $data = $this->user->updateUserBio($request);
+            return response()->json($data);
+
+        } catch(\Exception $e){
+            return BaseService::tryCatchException($e);
+        }
+    }
+
+    public function updateEmail(UserProfileUpdateEmailRequest $request): JsonResponse
+    {
+        try {
+            $data = $this->user->updateUserEmail($request);
+            return response()->json($data);
+
+        } catch(\Exception $e){
+            return BaseService::tryCatchException($e);
+        }
+    }
+
+    public function submitEmailToken(Request $request): JsonResponse
+    {
+        try {
+            $data = $this->user->confirmEmailTokenFromUser($request);
             return response()->json($data);
 
         } catch(\Exception $e){

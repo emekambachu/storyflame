@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Authentication\LoginController;
 use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Membership\ReferralTypeController;
+use App\Http\Controllers\User\Auth\UserRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -15,7 +18,7 @@ Route::group([
             'namespace' => 'Authentication',
         ], function () {
             Route::post('register', 'RegisterController@register');
-            Route::post('login', 'LoginController@authenticate');
+            Route::post('login', [LoginController::class, 'authenticate']);
             Route::post('federate', 'LoginController@federate');
             Route::get('user', [
                 \App\Http\Controllers\Api\V1\Authentication\LoginController::class, 'user'
@@ -85,6 +88,19 @@ Route::middleware('auth:sanctum')->group(static function () {
             'invoiceLink'
         ]);
     });
+
+    Route::middleware('auth:sanctum')->group(static function () {
+        Route::prefix('v1/subscriptions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'index']);
+            Route::post('/', [\App\Http\Controllers\Api\SubscriptionController::class, 'store']);
+            Route::post('/customer', [\App\Http\Controllers\Api\SubscriptionController::class, 'createCustomer']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'destroy']);
+            Route::get('/invoices', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoices']);
+            Route::get('/invoices/{id}', [\App\Http\Controllers\Api\SubscriptionController::class, 'invoiceLink']);
+        });
+    });
+
 });
 
 # fallback route
@@ -113,6 +129,12 @@ Route::delete('/categories', [
     CategoryController::class,
     'destroy'
 ]);
+
+Route::get('/referral-types', [ReferralTypeController::class, 'index']);
+
+Route::post('/sign-on', [UserRegistrationController::class, 'signOn']);
+Route::post('/sign-on/verify', [UserRegistrationController::class, 'verify']);
+
 
 include __DIR__ . '/admin/api.php';
 include __DIR__ . '/user/api.php';

@@ -146,7 +146,7 @@ const emittedPrompt = (event) => {
                                 <p class="text-black">{{ version.updated_at }}</p>
                             </td>
                             <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                                <div class="flex">
+                                <div class="flex" v-if="version.id !== prompt.current_prompt_version_id">
                                     <a href="" @click.prevent="makeCurrentVersion(version.id)">
                                         <UpdateIcon
                                             :width="'18px'"
@@ -157,6 +157,10 @@ const emittedPrompt = (event) => {
                                     </a>
                                     <small>Make Current</small>
                                 </div>
+                                <div class="flex" v-else>
+                                    <small>Current Version</small>
+                                </div>
+
                             </td>
                         </tr>
                         </tbody>

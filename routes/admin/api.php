@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Achievement\AdminAchievementController;
+use App\Http\Controllers\Admin\AdminReferralTypeController;
 use App\Http\Controllers\Admin\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DataPoint\AdminDataPointController;
 use App\Http\Controllers\Admin\LlmPrompt\AdminLlmPromptController;
@@ -49,11 +50,15 @@ Route::middleware('auth:sanctum')->group(static function (){
     Route::get('/admin/llm-prompts', [AdminLlmPromptController::class, 'index']);
     Route::post('/admin/llm-prompts/store', [AdminLlmPromptController::class, 'store']);
     Route::post('/admin/llm-prompts/version/{slug}', [AdminLlmPromptController::class, 'version']);
-
     Route::post('/admin/llm-prompts/version/{id}/current', [AdminLlmPromptController::class, 'currentVersion']);
-
     Route::post('/admin/llm-prompts/{slug}/update', [AdminLlmPromptController::class, 'update']);
     Route::delete('/admin/llm-prompts/{slug}/delete', [AdminLlmPromptController::class, 'destroy']);
+
+    // Referral Types
+    Route::get('/admin/referral-types', [AdminReferralTypeController::class, 'index']);
+    Route::post('/admin/referral-types/store', [AdminReferralTypeController::class, 'store']);
+    Route::post('/admin/referral-types/{slug}/update', [AdminReferralTypeController::class, 'update']);
+    Route::delete('/admin/referral-types/{slug}/delete', [AdminReferralTypeController::class, 'destroy']);
 
     // Logout
     Route::post('/admin/logout', [AdminLoginController::class, 'logout']);

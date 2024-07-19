@@ -11,6 +11,13 @@ import { VueMountable } from 'vue-mountable'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { handleAuthError } from "@/utils/authHelpers";
 
+// Sentry SDK
+// import * as Sentry from "@sentry/vue";
+// Sentry.init({
+//     dsn: import.meta.env.VITE_SENTRY_DSN_PUBLIC,
+// });
+
+
 // Enable CSRF token
 axios.defaults.withCredentials = true
 axios.defaults.withXSRFToken = true

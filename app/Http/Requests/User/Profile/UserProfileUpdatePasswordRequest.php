@@ -21,18 +21,17 @@ class UserProfileUpdatePasswordRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'current_password' => 'nullable|string',
-            'new_password' => 'required|string|min:8|confirmed',
+            'new_password' => 'required|string|min:8',
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
-            'new_password.confirmed' => 'Passwords do not match',
             'new_password.min' => 'Password must be at least 8 characters',
         ];
     }

@@ -142,16 +142,16 @@ class BaseService
     }
 
     public static function sendEmailGeneral(
-        Array $data, String $emailContent, String $subject, $mailTo, $mailToName, Array $recipients = null): void
+        Array $data, String $emailContent, String $subject, $mailTo, $mailToName = null, Array $recipients = null): void
     {
         Mail::send($emailContent, $data, static function ($message) use (
             $data, $subject, $mailTo, $mailToName, $recipients) {
-            $message->from(config('app.mail_from'), config('app.name'));
+            $message->from(config('mail.from.address'), config('app.name'));
             $message->to($mailTo, $mailToName);
             if(is_array($recipients) && count($recipients) > 0){
                 $message->cc($recipients);
             }
-            $message->replyTo(config('app.mail_from'), config('app.name'));
+            $message->replyTo(config('mail.from.address'), config('app.name'));
             $message->subject($subject);
         });
     }

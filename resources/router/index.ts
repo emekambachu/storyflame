@@ -9,6 +9,20 @@ import { useAuthStore } from '@/stores/auth'
 import { useLogger } from 'vue-logger-plugin'
 import {routes} from "vue-router/vue-router-auto-routes";
 
+// const checkAuth = (
+//     to: RouteLocationNormalized,
+//     from: RouteLocationNormalized,
+//     next: NavigationGuardNext
+// ) => {
+//     const logger = useLogger()
+//     const auth = useAuthStore()
+//     if (!auth.isLoggedIn) {
+//         logger.info('User is not logged in')
+//         return next({ name: 'login' })
+//     }
+//     return next()
+// }
+
 const checkAuth = (
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
@@ -16,6 +30,7 @@ const checkAuth = (
 ) => {
     const logger = useLogger()
     const auth = useAuthStore()
+
     if (!auth.isLoggedIn) {
         logger.info('User is not logged in')
         return next({ name: 'login' })
@@ -348,7 +363,7 @@ const router = createRouter({
                 return { path: '/auth/login', query: to.query }
             },
             component: () => import('../views/AuthView.vue'),
-            beforeEnter: checkGuest,
+            //beforeEnter: checkGuest,
             children: [
                 {
                     path: 'login',
@@ -387,12 +402,26 @@ const router = createRouter({
             name: 'not-found',
             redirect: { name: 'home' },
         },
+
+        // New registration route
+        {
+            path: '/sign-on',
+            name: 'sign-on',
+            component: () => import('../views/user/auth/UserSignOnView.vue'),
+        },
+
     ],
 })
 
 router.beforeEach(preserveQueryParams)
 
 router.beforeEach((to, from, next) => {
+
+    // for debugging routes
+    // console.log('Navigating to:', to.path)
+    // console.log('From:', from.path)
+    // console.log('Auth status:', useAuthStore().isLoggedIn)
+
     // scroll to top on route change
     window.scrollTo({
         top: 0,
