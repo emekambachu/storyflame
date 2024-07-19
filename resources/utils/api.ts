@@ -7,38 +7,41 @@ function submit<T>(
     url: string,
     data: AxiosRequestConfig | null = null
 ): Promise<ApiSuccessResponse<T>> {
-    const mockStore = useMockStore()
+    const mockStore = useMockStore();
+
     if (mockStore.isActive(method, url)) {
-        const response = mockStore.getMockResponse(method, url)
-        console.log('mock response', response)
+        const response = mockStore.getMockResponse(method, url);
+        console.log('mock response', response);
         return Promise.resolve({
             response: {
                 data: response,
             } as any,
             data: response,
             error: null,
-        })
+        });
     }
-    console.log('real request', data)
+
+    console.log('real request', data);
+
     return axios<SuccessResponse<T>>({
         method,
         url,
-        ...data,
+        ...(data || {}),
     })
         .then((response) => {
             return {
                 response,
                 data: response.data.data,
                 error: null,
-            }
+            };
         })
         .catch((error) => {
             return Promise.reject({
                 response: error.response,
                 data: null,
-                error: error.response.data,
-            })
-        })
+                error: error.response?.data || error.message,
+            });
+        });
 }
 
 function get<T>(

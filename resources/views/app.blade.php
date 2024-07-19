@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>
-        {{ config('app.name', 'Laravel') }}
+        {{ config('app.name', 'StoryFlame (not set in env)') }}
     </title>
     @if (config('app.env') === 'production')
         <!-- Hotjar Tracking Code for StoryFlame -->
@@ -65,6 +65,11 @@
             }
         });
     </script>
+    @vite([
+    'resources/assets/app.css',
+    'resources/app.ts',
+    'resources/admin-app.ts'
+    ])
 </head>
 <body>
 @vite('resources/app.ts')
