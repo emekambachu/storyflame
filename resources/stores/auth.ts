@@ -12,7 +12,7 @@ export const useAuthStore = defineStore(
     () => {
         const isLoggedIn = computed(() => !!user.value)
 
-        const federate = async (email: string, referral_code?: string) => {
+        const federate = async (email: string, referral_code?: string, use_code?: boolean) => {
             const { data } = await axios.post<
                 SuccessResponse<{
                     pwd: boolean

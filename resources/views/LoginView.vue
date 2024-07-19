@@ -190,7 +190,7 @@ function signIn() {
 
 function federate() {
     console.log('Trying federate')
-    auth.federate(credentials.value.email, credentials.value.referred_by_code).then((res) => {
+    auth.federate(credentials.value.email, credentials.value.referred_by_code, true).then((res) => {
         config.value = res.data
         isLoading.value = false
     }).catch(() => {
