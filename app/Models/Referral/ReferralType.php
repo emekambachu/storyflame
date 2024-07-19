@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ReferralType extends Model
 {
@@ -16,10 +17,9 @@ class ReferralType extends Model
         'priority',
         'is_active',
         'description',
-        'starts_at',
-        'ends_at',
         'commission_percent',
-        'discount_percent',
+        'referrer_discount_percent',
+        'recipient_discount_percent',
     ];
 
     public function referrers(): BelongsToMany
@@ -30,6 +30,11 @@ class ReferralType extends Model
     public function recipients(): BelongsToMany
     {
         return $this->BelongsToMany(User::class, 'user_referrals', 'recipient_id', 'user_id');
+    }
+
+    public function dateRanges(): HasMany
+    {
+        return $this->hasMany(ReferralTypeDateRange::class, 'referral_type_id','id');
     }
 
 }

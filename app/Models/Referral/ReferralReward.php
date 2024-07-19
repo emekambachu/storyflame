@@ -14,11 +14,6 @@ class ReferralReward extends Model
         'referrer_id',
         'recipient_id',
         'referral_type_id',
-        'reward_type',
-        'reward_amount',
-        'reward_percentage',
-        'reward_starts_at',
-        'reward_ends_at',
         'is_active',
     ];
 

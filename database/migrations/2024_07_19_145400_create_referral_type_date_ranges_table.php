@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_referral_types', function (Blueprint $table) {
+        Schema::create('referral_type_date_ranges', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('referral_type_id')->nullable();
-            $table->timestamp('start_date')->nullable();
-            $table->timestamp('end_date')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+            $table->integer('month_duration')->nullable();
             $table->timestamps();
+
+            $table->foreign('referral_type_id')->references('id')->on('referral_types')->onDelete('cascade');
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_referral_types');
+        Schema::dropIfExists('referral_type_date_ranges');
     }
 };

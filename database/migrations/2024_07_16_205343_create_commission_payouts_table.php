@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('commission_payouts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('referrer_id');
+            $table->unsignedBigInteger('referrer_id')->nullable();
             $table->integer('number_of_transactions');
             $table->decimal('amount', 10, 2);
             $table->timestamp('commission_inventory_earliest_date');

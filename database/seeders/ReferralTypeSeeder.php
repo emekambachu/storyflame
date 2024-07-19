@@ -61,7 +61,45 @@ class ReferralTypeSeeder extends Seeder
         ];
 
         foreach ($referralTypes as $referralType) {
-            ReferralType::create($referralType);
+            $type = ReferralType::create($referralType);
+
+            if($type->slug === 'beta-testers') {
+                $type->dateRanges()->create([
+                    'starts_at' => '2024-08-15',
+                ]);
+                $type->dateRanges()->create([
+                    'ends_at' => '2024-08-15',
+                ]);
+            }
+
+            if($type->slug === 'affiliate-program') {
+                $type->dateRanges()->create([
+                    'starts_at' => '2024-07-11',
+                    'ends_at' => '2024-08-15',
+                ]);
+                $type->dateRanges()->create([
+                    'starts_at' => '2024-08-15',
+                    'ends_at' => '2024-09-15',
+                ]);
+                $type->dateRanges()->create([
+                    'ends_at' => '2024-09-15',
+                ]);
+            }
+
+            if($type->slug === 'internal-team-affiliate-program') {
+                $type->dateRanges()->create([
+                    'starts_at' => '2024-07-11',
+                    'ends_at' => '2024-08-15',
+                ]);
+                $type->dateRanges()->create([
+                    'starts_at' => '2024-08-15',
+                    'ends_at' => '2024-09-15',
+                ]);
+                $type->dateRanges()->create([
+                    'ends_at' => '2024-09-15',
+                ]);
+            }
+
         }
     }
 }

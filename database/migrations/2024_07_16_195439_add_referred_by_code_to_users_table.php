@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('referral_code')->nullable()->after('email');
-            $table->foreignId('referred_by')->nullable()->after('referral_code')->constrained('users');
+            if (!Schema::hasColumn('users', 'referral_code')) {
+                $table->string('referral_code')->nullable()->after('email');
+            }
+
+            if (!Schema::hasColumn('users', 'referred_by')) {
+                $table->foreignId('referred_by')->nullable()->after('referral_code')->constrained('users');
+            }
         });
     }
 
@@ -23,6 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['referred_by']);
             $table->dropColumn('referral_code');
             $table->dropColumn('referred_by');
         });
