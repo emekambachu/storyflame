@@ -190,7 +190,6 @@ import { useUser } from '@/composables/query/user'
 
 const showDiscuss = ref(true)
 
-const { data: user } = useUser()
 const { data: stories } = useStories()
 
 const createNew = [

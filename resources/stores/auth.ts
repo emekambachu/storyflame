@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import axios from 'axios'
 import { SuccessResponse } from '../types/responses'
 import { getAuthenticatedUser } from '@/utils/endpoints'
+import { useUser } from '@/composables/query/user'
 
 const user = ref<User | null>(null)
 

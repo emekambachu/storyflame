@@ -53,23 +53,18 @@
     @endif
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script type="text/javascript">
-        Paddle.Environment.set("sandbox");
+        Paddle.Environment.set('sandbox')
         Paddle.Initialize({
             token: 'test_a80328e7467f6d2e32ee3131878',
             eventCallback: function(data) {
-                if(data.name === 'checkout.closed'){
+                if (data.name === 'checkout.closed') {
                     // Mitch: I didn't use checkout.completed as the webhook may not have updated yet
-                    var event = new CustomEvent('paddleCheckoutClosed', { detail: data });
-                    window.dispatchEvent(event);
+                    var event = new CustomEvent('paddleCheckoutClosed', { detail: data })
+                    window.dispatchEvent(event)
                 }
-            }
-        });
+            },
+        })
     </script>
-    @vite([
-    'resources/assets/app.css',
-    'resources/app.ts',
-    'resources/admin-app.ts'
-    ])
 </head>
 <body>
 @vite('resources/app.ts')

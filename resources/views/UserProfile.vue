@@ -19,7 +19,7 @@
         </header-animated>
 
         <main class="relative w-full bg-white pb-6 px-2 md:px-4 z-1">
-            <component :is="activeTabComponent" :user="user" />
+            <component v-if="user" :is="activeTabComponent" :user="user" />
         </main>
     </div>
 </template>

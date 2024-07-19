@@ -11,6 +11,8 @@
             </p>
         </title-section>
 
+        <pre>{{user}}</pre>
+
         <!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
         <!--            <items-list-->
         <!--                v-slot="{ item }"-->
@@ -27,14 +29,14 @@
         <!--        </title-section>-->
 
         <title-section
-            v-if="user.data?.media?.length"
+            v-if="user.media?.length"
             title="Inspired by"
         >
             <items-list
                 v-slot="{ item }"
-                :items="user.data?.media"
+                :items="user.media"
             >
-                <movie-card :media="item" />
+<!--                <movie-card :media="item" />-->
             </items-list>
         </title-section>
 
@@ -100,7 +102,6 @@
             <template #title>
                 <title-with-link
                     title="Your Achievements"
-                    @see-all="activeTab = 'achievements'"
                 />
             </template>
             <items-list
@@ -108,10 +109,10 @@
                 :items="user?.achievements.filter((item) => item.progress)"
                 class="gap-8"
             >
-                <achievement-card
-                    :item="item"
-                    class="h-full"
-                />
+<!--                <achievement-card-->
+<!--                    :item="item"-->
+<!--                    class="h-full"-->
+<!--                />-->
             </items-list>
         </title-section>
     </div>
@@ -145,6 +146,4 @@ const { data: stories } = useQuery({
         return data.data
     },
 })
-
-const activeTab = inject<string>(tabLayoutActiveTabInjection)
 </script>

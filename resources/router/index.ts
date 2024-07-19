@@ -89,11 +89,6 @@ const router = createRouter({
             component: () => import('../views/HomeView.vue'),
         },
         {
-            path: '/whisper',
-            name: 'whisper',
-            component: () => import('../views/WhisperView.vue'),
-        },
-        {
             path: '/onboard',
             name: 'onboarding',
             beforeEnter: [
@@ -126,7 +121,6 @@ const router = createRouter({
                         title: 'Edit Profile'
                     },
                 },
-
                 {
                     path: 'stories/',
                     children: [
