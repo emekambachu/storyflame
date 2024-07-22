@@ -48,7 +48,9 @@ Route::group([
                 'prefix' => 'conversation',
                 'namespace' => 'Conversation',
             ], function () {
-                Route::get('{engine}', 'ConversationEngineController@index');
+                Route::get('{engine}', [
+                \App\Http\Controllers\Api\V1\Conversation\ConversationEngineController::class, 'index'
+            ]);
                 Route::post('{engine}', 'ConversationEngineController@store');
                 Route::post('{engine}/finish', 'ConversationEngineController@finish');
             });
@@ -57,6 +59,37 @@ Route::group([
 });
 
 Route::middleware('auth:sanctum')->group(static function () {
+
+    // Images and ImageTypes
+    Route::get('image-types', [
+        \App\Http\Controllers\Api\V1\ImageTypeController::class,
+        'index'
+    ]);
+    Route::get('image-types/{slug}', [
+        \App\Http\Controllers\Api\V1\ImageTypeController::class,
+        'show'
+    ]);
+
+    // add previx for v1/images
+    Route::prefix('v1/images')->group(function () {
+        Route::get('{model}/{id}/', [
+            \App\Http\Controllers\Api\V1\ImageController::class, 'getImages'
+        ]);
+        Route::get('{model}/{id}/types', [
+            \App\Http\Controllers\Api\V1\ImageController::class, 'getImageTypes'
+        ]);
+        Route::post('{model}/{id}/{imageTypeSlug}', [
+            \App\Http\Controllers\Api\V1\ImageController::class, 'store'
+        ]);
+        Route::post('{model}/{id}/{imageTypeSlug}/generate', [
+            \App\Http\Controllers\Api\V1\ImageController::class, 'generate'
+        ]);
+        Route::get('{model}/{id}/{imageTypeSlug}/requirements', [
+            \App\Http\Controllers\Api\V1\ImageController::class, 'getRequirements'
+        ]);
+    });
+
+
     Route::prefix('v1/subscriptions')->group(function () {
         Route::get('/', [
             \App\Http\Controllers\Api\SubscriptionController::class,

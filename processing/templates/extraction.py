@@ -278,7 +278,7 @@ category_extraction_template = (
 
     "#CurrentContext: {current_context}"
     "#CategoryCriteria: {category_criteria}"
-    "#OutputInstructions: Please provide a rating for each element, and return in a JSON format inside "
-    "<json_response></json_response> XML tags.  The JSON should be in {category_format_instructions} format.  Only include the <json_response> content, no other context is "
-    "needed. JSON output should be a valid JSON object."
+    "#OutputInstructions: Please provide a rating for each element, and return in a minified JSON format inside "
+    "<json_response></json_response> XML tags.  The minified JSON should be in {category_format_instructions} format.  Only include the <json_response> content, no other context is "
+    "needed. JSON output should be a valid minified JSON object."
 )

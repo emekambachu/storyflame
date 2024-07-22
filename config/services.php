@@ -34,5 +34,15 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'leonardo' => [
+        'api_key' => env('LEONARDO_API_KEY'),
+        'webhook_token' => env('LEONARDO_WEBHOOK_TOKEN'),
+        'prompt_settings' => [
+            'alchemy' => false,
+            'modelId' => 'b24e16ff-06e3-43eb-8d33-4416c2d75876',
+            'num_images' => 1,
+            'public' => false,
+        ]
+    ],
 
 ];

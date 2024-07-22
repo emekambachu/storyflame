@@ -8,7 +8,7 @@ export const handleAuthError = async (router: Router, route: RouteLocationNormal
     const query = route.query || {}; // Provide a default empty object if query is undefined
 
     if (authStore.isLoggedIn) {
-        await authStore.logout();
+        authStore.user = null;
         router.push({ name: 'login', query });
     } else {
         router.push({ name: 'login', query });

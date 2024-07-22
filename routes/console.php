@@ -14,6 +14,12 @@ Schedule::job(new FinishIdleSessionsJob)
     ->everyMinute()
     ->name('finish_idle_sessions');
 
+//TODO: Switch this to everyHour() when we're ready to go live
 Schedule::job(new ProcessSubscriptionDowngrades)
     ->everyMinute()
     ->name('process_subscription_downgrades');
+
+//TODO: Switch this to everyHour() when we're ready to go live
+Schedule::job(new \App\Jobs\ExpireRecords())
+    ->everyMinute()
+    ->name('expire_records');

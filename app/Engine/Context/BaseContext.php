@@ -40,12 +40,21 @@ abstract class BaseContext implements ContextInterface
         protected ?EngineConfig $config = null
     )
     {
-        if (!$this->model) {
-            if ($c = $this->getContextClass()) {
-                $this->model = $c::create([
-                    'user_id' => auth()->id(),
-                ]);
-            }
+        $this->initializeModel();
+        $this->initializeSessionChat();
+    }
+
+    protected function initializeModel(): void
+    {
+        if (!$this->model && ($class = $this->getContextClass())) {
+            $this->model = $class::create(['user_id' => auth()->id()]);
+        }
+    }
+
+    protected function initializeSessionChat(): void
+    {
+        if(!$this->model) {
+            throw new Exception('Model is not set');
         }
         $this->sessionChat = Chat\SessionChat::where('target_id', $this->getModel()->id)
             ->where('target_type', get_class($this->getModel()))
@@ -61,29 +70,23 @@ abstract class BaseContext implements ContextInterface
 
     public function getChat(): Chat
     {
-        // TODO: change this to latest session chat
-        if (!($model = $this->getModel())) throw new Exception('Model is not set');
-
-        if ($model->exists) {
-            if ($this->getModel()->chats()->count() === 0) {
-                $chat = Chat::create([
-                    'type' => 'conversation',
-                    'sender_id' => auth()->id(),
-                ]);
-                $this->getModel()->chats()->save($chat);
-            }
-            return $this->getModel()->chats()->first();
-        } else {
-            if (session()->has('temp_chat_id')) {
-                return Chat::find(session()->get('temp_chat_id'));
-            }
-            $tempChat = Chat::create([
-                'type' => 'temp',
+        if($this->model->exists){
+            return $this->model->chats()->firstOrCreate([
+                'type' => 'conversation',
                 'sender_id' => auth()->id(),
             ]);
-            session()->put('temp_chat_id', $tempChat->id);
-            return $tempChat;
         }
+
+        if(session()->has('temp_chat_id')){
+            return Chat::find(session()->get('temp_chat_id'));
+        }
+
+        $tempChat = Chat::create([
+            'type' => 'temp',
+            'sender_id' => auth()->id(),
+        ]);
+        session()->put('temp_chat_id', $tempChat->id);
+        return $tempChat;
     }
 
 
@@ -160,14 +163,18 @@ abstract class BaseContext implements ContextInterface
         $session = $this->getSessionChat();
         $chatMessage->content = $this->replaceTemplate($chatMessage->content);
         $chatMessage->extra_attributes->put('title', $this->replaceTemplate($chatMessage->extra_attributes->get('title', '')));
-        if ($chatMessage->extra_attributes->has('data_points') && count($messageDps = $chatMessage->extra_attributes->get('data_points')) > 0) {
-            $dps = $session->extra_attributes->get('data_points', []);
-            foreach ($messageDps as $dp) {
-                $dps[$dp] = ($dps[$dp] ?? 0) + 1;
+
+        if ($chatMessage->extra_attributes->has('data_points')
+            && count($messageDps = $chatMessage->extra_attributes->get('data_points')) > 0
+        ) {
+            $dataPoints = $session->extra_attributes->get('data_points', []);
+            foreach ($messageDps as $dataPoint) {
+                $dataPoints[$dataPoint] = ($dataPoints[$dataPoint] ?? 0) + 1;
             }
-            $session->extra_attributes->put('data_points', $dps);
+            $session->extra_attributes->put('data_points', $dataPoints);
             $session->save();
         }
+
         $chatMessage->chat_id = $session->chat_id;
         $chatMessage = $session->chat->chatMessages()->save($chatMessage);
         $session->chatMessages()->attach($chatMessage->id);
@@ -229,6 +236,7 @@ abstract class BaseContext implements ContextInterface
 
     public function addElement(string $elementType, array $elementData): ?ModelWithComparableNames
     {
+        Log::info('Adding element', [$elementType, $elementData]);
         $model = match ($elementType) {
             'Story' => $this->stories()?->create($elementData),
             'Character' => $this->characters()?->create($elementData),
@@ -237,13 +245,17 @@ abstract class BaseContext implements ContextInterface
             'Theme' => $this->themes()->create($elementData),
             'Setting' => $this->settings()->create($elementData),
             default => null
-        } ?? null;
+        };
+
+        Log::info('Element added', [$model]);
         if ($model) {
             $this->getSessionChat()->sessionElements()->create([
                 'action' => 'create',
                 'element_type' => get_class($model),
                 'element_id' => $model->id,
             ]);
+        } else {
+            Log::error('Element not added', [$elementType, $elementData]);
         }
 
         return $model;
@@ -267,6 +279,7 @@ abstract class BaseContext implements ContextInterface
         $count = 0;
         $target = $this->getModel();
         $user = auth()->user();
+
         foreach ($data as $key => $value) {
             // get the DataPoint by slug
             $dataPoint = DataPoint::firstWhere('slug', $key);
@@ -310,8 +323,247 @@ abstract class BaseContext implements ContextInterface
                 $this->onDataPointSaved($key, $value);
             }
         }
+
         return $count;
     }
+
+    public function getPreviousQuestion($includingSystem = false): ?ChatMessage
+    {
+        if (!$this->getModel()?->exists) return null;
+
+        $question = $this->getSessionChat()->chatMessages()->fromAssistant();
+        if (!$includingSystem) {
+            $question = $question->notSystem();
+        }
+        return $question->latest()->first();
+    }
+
+    private function getInitialAchievement(): Achievement
+    {
+        return Achievement::firstWhere('slug', $this->config::INITIAL_ACHIEVEMENT_SLUG);
+    }
+
+    public function getCurrentAchievement(): ?Achievement
+    {
+        if (!$this->model?->exists) return null;
+
+        $latestUserAchievement = $this->getSessionChat()->userAchievements()->latest()->first();
+
+        if (!$latestUserAchievement) {
+            Log::debug('Session dont have achievement attached, adding initial achievement');
+            $latestUserAchievement = UserAchievement::create([
+                'user_id' => auth()->id(),
+                'achievement_id' => $this->getInitialAchievement()->id,
+                'target_id' => $this->getModel()->id,
+                'target_type' => get_class($this->getModel()),
+                'progress' => 0,
+            ]);
+            $this->getSessionChat()->userAchievements()->attach($latestUserAchievement);
+        }
+
+        return $latestUserAchievement?->achievement;
+    }
+
+    private function userAchievements()
+    {
+        return UserAchievement::where('user_id', auth()->id())
+            ->where('target_id', $this->getModel()->id)
+            ->where('target_type', get_class($this->getModel()));
+    }
+
+    public function isCurrentAchievementFinished(): Achievement|bool
+    {
+        $target = $this->getModel();
+        if (!$target){
+            throw new Exception('No model to get achievements for');
+        }
+
+        $currentAchievement = $this->getCurrentAchievement();
+        if (!$currentAchievement) {
+            Log::debug('No current achievement');
+            return false;
+        }
+
+        return $this->userAchievements()
+            ->where('target_id', $target)
+            ->where('target_type', get_class($target))
+            ->where('achievement_id', $currentAchievement->id)
+            ->where('progress', 100)
+            ->first()?->achievement
+            ?? (
+            (
+            $currentAchievement->dataPoints()
+                ->whereNotIn('slug', array_keys($this->getAskedDataPoints()))
+                ->whereNotIn('data_points.id',
+                    UserDataPoint::where('user_id', auth()->id())
+                        ->where('target_id', $target->id)
+                        ->where('target_type', get_class($target))
+                        ->pluck('data_point_id')
+                )
+                ->count()
+            ) === 0 ? $currentAchievement : false
+            );
+    }
+
+    public function getNextAchievement(): ?Achievement
+    {
+        if ($this->config::ALLOW_ACHIEVEMENT_SWITCH === false) {
+            return null;
+        }
+
+        return DataPoint::orderBy('development_order', 'asc')
+            ->where('category', $this->config::ELEMENT_NAME)
+            ->orderBy('impact_score', 'desc')
+            ->whereNotIn(
+                'achievement_id',
+                $this->userAchievements()
+                    ->where('progress', 100)
+                    ->pluck('achievement_id')
+            )
+            ->first()
+            ?->achievement;
+    }
+
+    public function createFirstQuestion(): ?ChatMessage
+    {
+        if (!empty($this->config::PREDEFINED_QUESTIONS)) {
+            $firstQuestion = $this->config::PREDEFINED_QUESTIONS[array_key_first($this->config::PREDEFINED_QUESTIONS)];
+            return ChatMessage::makeAiMessage(
+                'text',
+                $firstQuestion['question'],
+                $firstQuestion['title'],
+                $firstQuestion['data_points'] ?? []
+            );
+        }
+        return null;
+    }
+
+    public function getGroupedDataPoints(array $except_topics = [], array $except_data_points = []): array
+    {
+        return Achievement::whereCategory($this->config::ELEMENT_NAME)
+            ->whereNotIn('slug', $except_topics)
+            ->with(['dataPoints'])
+            ->get()
+            ->map
+            ->toProcessingArray($except_data_points)
+            ->toArray();
+    }
+
+    public function getElementName(): string
+    {
+        return $this->config::ELEMENT_NAME;
+    }
+
+    public function getNextPredefinedQuestion(ChatMessage $question): ?ChatMessage
+    {
+        $predefinedQuestions = $this->config::PREDEFINED_QUESTIONS;
+        $askedQuestions = $this->getSessionChat()->chatMessages()->notSystem()->fromAssistant()->get();
+        foreach ($predefinedQuestions as $predefinedQuestion) {
+            if (!$askedQuestions->contains('content', $predefinedQuestion['question'])) {
+                return ChatMessage::makeAiMessage(
+                    'text',
+                    $predefinedQuestion['question'],
+                    $predefinedQuestion['title'],
+                    $predefinedQuestion['data_points'] ?? []
+                );
+            }
+        }
+        return null;
+    }
+
+    public function canSwitchEngine(): bool
+    {
+        return $this->config::ALLOW_ENGINE_SWITCH;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->getModel()?->id ?? 'new';
+    }
+
+    protected abstract function getCurrentData(): array;
+
+    protected abstract function getContextName(): string;
+
+    protected abstract function getContextGoal(): string;
+
+    public function getCurrentContext(string|null $question = null, string|null $answer = null): array
+    {
+        $context = [
+            'processing_type' => 'live',
+            'conversation_mode' => 'development',
+            'focus' => [
+                'type' => $this->getElementName(),
+                'name' => $this->getContextName(),
+                'current_data' => $this->getCurrentData(),
+            ],
+            'goal' => $this->getContextGoal(),
+        ];
+        if ($question) {
+            $context['question_asked'] = $question;
+        }
+        if ($answer) {
+            $context['writer_response'] = $answer;
+        }
+        return $context;
+    }
+
+    public function getEndpointKey(): string
+    {
+        return $this->config::ENDPOINT_KEY;
+    }
+
+
+    public function stories(): ?HasMany
+    {
+        return null;
+    }
+
+    public function sequences(): ?HasMany
+    {
+        return null;
+    }
+
+    public function themes(): ?HasMany
+    {
+        return null;
+    }
+
+    public function settings(): ?HasMany
+    {
+        return null;
+    }
+
+    public function characters(): ?HasMany
+    {
+        return null;
+    }
+
+    public function plots(): ?HasMany
+    {
+        return null;
+    }
+
+    public function getProgress(): int
+    {
+        $achievement = $this->getCurrentAchievement();
+        $model = $this->model;
+        if (!$model || !$achievement || !$model->id) return 0;
+
+        $dataPoints = $achievement->dataPoints()->whereNotIn('slug', array_keys($this->getAskedDataPoints()))->get();
+        $dataPointsCount = $dataPoints->count();
+
+        $userDataPointsCount = UserDataPoint::where('user_id', auth()->id())
+            ->whereIn('data_point_id', $dataPoints->pluck('id'))
+            ->where('is_latest', true)
+            ->where('target_id', $model->id)
+            ->where('target_type', get_class($model))
+            ->count();
+
+        return $dataPointsCount > 0 ? ($userDataPointsCount / $dataPointsCount) * 100 : 0;
+    }
+
+
 
     private function getSimilarElement(string $type, array $elementData): ?Model
     {
@@ -392,214 +644,5 @@ abstract class BaseContext implements ContextInterface
             }
         }
         return $otherModels;
-    }
-
-    public function getLastQuestion($includingSystem = false): ?ChatMessage
-    {
-        if (!$this->getModel()?->exists) return null;
-        $q = $this->getSessionChat()->chatMessages()->fromAssistant();
-        if (!$includingSystem) {
-            $q = $q->notSystem();
-        }
-        return $q->latest()->first();
-    }
-
-    private function getInitialAchievement(): Achievement
-    {
-        return Achievement::firstWhere('slug', $this->config::INITIAL_ACHIEVEMENT_SLUG);
-    }
-
-    public function getCurrentAchievement(): ?Achievement
-    {
-        if (!$this->model?->exists) return null;
-        $latestUa = $this->getSessionChat()->userAchievements()->latest()->first();
-        if (!$latestUa) {
-            Log::debug('Session dont have achievement attached, adding initial achievement');
-            $latestUa = UserAchievement::create([
-                'user_id' => auth()->id(),
-                'achievement_id' => $this->getInitialAchievement()->id,
-                'target_id' => $this->getModel()->id,
-                'target_type' => get_class($this->getModel()),
-                'progress' => 0,
-            ]);
-            $this->getSessionChat()->userAchievements()->attach($latestUa);
-        }
-        return $latestUa?->achievement;
-    }
-
-    private function userAchievements()
-    {
-        return UserAchievement::where('user_id', auth()->id())
-            ->where('target_id', $this->getModel()->id)
-            ->where('target_type', get_class($this->getModel()));
-    }
-
-    public function isCurrentAchievementFinished(): Achievement|bool
-    {
-        $target = $this->getModel();
-        if (!$target)
-            throw new Exception('No model to get achievements for');
-        $currentAchievement = $this->getCurrentAchievement();
-        if (!$currentAchievement) {
-            Log::debug('No current achievement');
-            return false;
-        }
-        return $this->userAchievements()
-            ->where('target_id', $target)
-            ->where('target_type', get_class($target))
-            ->where('achievement_id', $currentAchievement->id)
-            ->where('progress', 100)
-            ->first()?->achievement
-            ?? (
-            (
-            $currentAchievement->dataPoints()
-                ->whereNotIn('slug', array_keys($this->getAskedDataPoints()))
-                ->whereNotIn('data_points.id',
-                    UserDataPoint::where('user_id', auth()->id())
-                        ->where('target_id', $target->id)
-                        ->where('target_type', get_class($target))
-                        ->pluck('data_point_id')
-                )
-                ->count()
-            ) === 0 ? $currentAchievement : false
-            );
-    }
-
-    public function getNextAchievement(): ?Achievement
-    {
-        if ($this->config::ALLOW_ACHIEVEMENT_SWITCH === false) {
-            return null;
-        }
-        return DataPoint::orderBy('development_order', 'asc')
-            ->where('category', $this->config::ELEMENT_NAME)
-            ->orderBy('impact_score', 'desc')
-            ->whereNotIn(
-                'achievement_id',
-                $this->userAchievements()
-                    ->where('progress', 100)
-                    ->pluck('achievement_id')
-            )
-            ->first()
-            ?->achievement;
-    }
-
-    public function createFirstQuestion(): ?ChatMessage
-    {
-        if (!empty($this->config::PREDEFINED_QUESTIONS)) {
-            $firstQuestion = $this->config::PREDEFINED_QUESTIONS[array_key_first($this->config::PREDEFINED_QUESTIONS)];
-            return ChatMessage::makeAiMessage(
-                'text',
-                $firstQuestion['question'],
-                $firstQuestion['title'],
-                $firstQuestion['data_points'] ?? []
-            );
-        }
-        return null;
-    }
-
-    public function getGroupedDataPoints(array $except_topics = [], array $except_data_points = []): array
-    {
-        return Achievement::whereCategory($this->config::ELEMENT_NAME)
-            ->whereNotIn('slug', $except_topics)
-            ->with(['dataPoints'])
-            ->get()
-            ->map
-            ->toProcessingArray($except_data_points)
-            ->toArray();
-    }
-
-    public function getElementName(): string
-    {
-        return $this->config::ELEMENT_NAME;
-    }
-
-    public function getNextPredefinedQuestion(ChatMessage $question): ?ChatMessage
-    {
-        $predefinedQuestions = $this->config::PREDEFINED_QUESTIONS;
-        $askedQuestions = $this->getSessionChat()->chatMessages()->notSystem()->fromAssistant()->get();
-        foreach ($predefinedQuestions as $predefinedQuestion) {
-            if (!$askedQuestions->contains('content', $predefinedQuestion['question'])) {
-                return ChatMessage::makeAiMessage(
-                    'text',
-                    $predefinedQuestion['question'],
-                    $predefinedQuestion['title'],
-                    $predefinedQuestion['data_points'] ?? []
-                );
-            }
-        }
-        return null;
-    }
-
-    public function canSwitchEngine(): bool
-    {
-        return $this->config::ALLOW_ENGINE_SWITCH;
-    }
-
-    public function getIdentifier()
-    {
-        return $this->getModel()?->id ?? 'new';
-    }
-
-    protected abstract function getCurrentData(): array;
-
-    protected abstract function getContextName(): string;
-
-    protected abstract function getContextGoal(): string;
-
-    public function getCurrentContext(string|null $question = null, string|null $answer = null): array
-    {
-        $c = [
-            'processing_type' => 'live',
-            'conversation_mode' => 'development',
-            'focus' => [
-                'type' => $this->getElementName(),
-                'name' => $this->getContextName(),
-                'current_data' => $this->getCurrentData(),
-            ],
-            'goal' => $this->getContextGoal(),
-        ];
-        if ($question) {
-            $c['question_asked'] = $question;
-        }
-        if ($answer) {
-            $c['writer_response'] = $answer;
-        }
-        return $c;
-    }
-
-    public function getEndpointKey(): string
-    {
-        return $this->config::ENDPOINT_KEY;
-    }
-
-
-    public function stories(): ?HasMany
-    {
-        return null;
-    }
-
-    public function sequences(): ?HasMany
-    {
-        return null;
-    }
-
-    public function themes(): ?HasMany
-    {
-        return null;
-    }
-
-    public function settings(): ?HasMany
-    {
-        return null;
-    }
-
-    public function characters(): ?HasMany
-    {
-        return null;
-    }
-
-    public function plots(): ?HasMany
-    {
-        return null;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\HasImageTypes;
 use App\Models\Concerns\HasAchievements;
 use App\Models\Concerns\HasAliases;
 use App\Models\Concerns\HasDataPoints;
@@ -24,7 +25,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy(StoryObserver::class)]
 class Story extends Model implements ModelWithComparableNames, ModelWIthRelatedChats, ModelWithId
 {
-    use SoftDeletes, HasFactory, HasRelatedChats, HasSchemalessAttributes, HasAchievements, HasImages, HasAliases, HasDataPoints, HasSummaries;
+    use SoftDeletes,
+        HasFactory,
+        HasRelatedChats,
+        HasSchemalessAttributes,
+        HasAchievements,
+        HasImages,
+        HasImageTypes,
+        HasAliases,
+        HasDataPoints,
+        HasSummaries;
 
     protected $fillable = [
         'name',

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image as InterventionImage;
 
 
@@ -20,8 +21,11 @@ class Image extends Model
         'group',
         'imageable_id',
         'imageable_type',
-        'prompt',
-        'name'
+        'image_type_id',
+        'generation_service_name',
+        'generation_id',
+        'generation_settings',
+        'token_cost'
     ];
 
     protected static function boot()
@@ -36,6 +40,31 @@ class Image extends Model
 ////                $image->createImageFiles();
 //            });
 //        });
+        static::creating(function ($image) {
+            DB::transaction(function () use ($image) {
+                $image->save();
+                if($image->path !== null){
+                    $image->createImageFiles();
+                }
+            });
+        });
+
+        static::updating(function ($image) {
+            if ($image->isDirty('path') && $image->path !== null) {
+                DB::transaction(function () use ($image) {
+                    $image->files()->delete();
+                    $image->createImageFiles();
+                });
+            }
+        });
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function imageType(): HasMany
+    {
+        return $this->hasMany(ImageType::class);
     }
 
     /**
@@ -54,7 +83,7 @@ class Image extends Model
         return $this->hasMany(ImageFile::class);
     }
 
-    protected function createImageFiles()
+    public function createImageFiles()
     {
         $sizes = config('image.sizes');
         $originalPath = $this->path;
@@ -80,5 +109,10 @@ class Image extends Model
         $image->save(storage_path('app/' . $newPath), $settings['quality']);
 
         return $newPath;
+    }
+
+    public function getUrlAttribute()
+    {
+        return Storage::url($this->path);
     }
 }

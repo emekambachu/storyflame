@@ -232,9 +232,33 @@ class User extends Authenticatable implements ModelWithId
         );
     }
 
+    /**
+     * @return BelongsToMany
+     */
+    public function achievements(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot([
+                'progress',
+            ])
+            ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany
+     */
     public function userAchievements(): HasMany
     {
         return $this->hasMany(UserAchievement::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function aiImageSlots(): HasMany
+    {
+        return $this->hasMany(AIImageSlot::class);
     }
 
     public function activeSubscriptions()

@@ -26,6 +26,7 @@
                             :percent="Math.min(progress, 100)"
                             class="w-full max-w-56"
                         />
+<!--                        TODO: Need to limit the amount of words a user can type to 1,000 words -->
                     </div>
                 </aside>
             </slot>
