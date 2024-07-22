@@ -2,10 +2,12 @@
 
 namespace App\Services\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\PersonalAccessToken;
+use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -163,6 +165,21 @@ class BaseService
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[random_int(0, $charactersLength - 1)];
         }
+        return $randomString;
+    }
+
+    public static function uniqueRandomCharacters($model, String $key, int $length, string $characters, string $staticChar = ''): string
+    {
+        $charactersLength = strlen($characters);
+        $randomString = $staticChar;
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+
+        if($model::where($key, $randomString)->exists()){
+            return static::uniqueRandomCharacters($model, $key, $length, $characters, $staticChar);
+        }
+
         return $randomString;
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Facades\Image as InterventionImage;
+//use Intervention\Image\Facades\Image as InterventionImage;
 
 
 class Image extends Model
@@ -18,23 +18,24 @@ class Image extends Model
     protected $fillable = [
         'path',
         'group',
+        'token_cost',
         'imageable_id',
         'imageable_type',
         'prompt',
         'name'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($image) {
-            DB::transaction(function () use ($image) {
-                $image->save();
-                $image->createImageFiles();
-            });
-        });
-    }
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        static::creating(function ($image) {
+//            DB::transaction(function () use ($image) {
+//                $image->save();
+//                $image->createImageFiles();
+//            });
+//        });
+//    }
 
     /**
      * @return MorphTo

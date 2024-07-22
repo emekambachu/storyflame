@@ -47,12 +47,21 @@ class AchievementService
         DB::beginTransaction();
         try {
             $inputs = $request->all();
-            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-            $inputs['icon_path'] = '/'.$this->imagePath.'/';
-            $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
-            $inputs['admin_id'] = Auth::id();
+//            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
+//            $inputs['icon_path'] = '/'.$this->imagePath.'/';
+            $inputs['item_id'] = BaseService::uniqueRandomCharacters($this->achievement(), 'item_id', 8, '0123456789ABCDEFGH');
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $achievement = $this->achievement()->create($inputs);
+
+            if(!empty($inputs['icon'])){
+                $achievement->icon()->create([
+                    'path' => $inputs['icon'],
+                    'name' => $inputs['name'],
+                    'imageable_id' => $achievement->id,
+                    'imageable_type' => get_class($achievement),
+                ]);
+            }
 
             if(!empty($inputs['categories'])){
                 foreach ($inputs['categories'] as $categoryId){
@@ -98,13 +107,29 @@ class AchievementService
         try {
             $inputs = $request->all();
 
-            if($request->hasFile('icon')){
-                $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-            }
+//            if($request->hasFile('icon')){
+//                $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
+//            }
 
-            $inputs['admin_id'] = Auth::id();
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $achievement->update($inputs);
+
+            if($request->hasFile('icon')){
+                if($achievement->icon && !empty($achievement->icon->name)){
+                    CrudService::deleteFile($achievement->icon->name, $this->imagePath);
+                    $achievement->icon()->update([
+                        'name' => $inputs['icon'],
+                    ]);
+                }else{
+                    $achievement->icon()->create([
+                        'path' => '/'.$this->imagePath.'/',
+                        'name' => $inputs['icon'],
+                        'imageable_id' => $achievement->id,
+                        'imageable_type' => get_class($achievement),
+                    ]);
+                }
+            }
 
             if(!empty($inputs['categories'])){
 
@@ -189,8 +214,8 @@ class AchievementService
             }
 
             // Delete the icon
-            if (!empty($achievement->icon)) {
-                CrudService::deleteFile($achievement->icon, $this->imagePath);
+            if ($achievement->icon && !empty($achievement->icon->name)) {
+                CrudService::deleteFile($achievement->icon->name, $this->imagePath);
             }
 
             // Detach the categories

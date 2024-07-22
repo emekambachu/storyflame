@@ -5,9 +5,11 @@ namespace Database\Seeders;
 use App\Models\Achievement;
 use App\Models\Admin\Admin;
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AchievementSeeder extends Seeder
@@ -52,8 +54,7 @@ class AchievementSeeder extends Seeder
                 'icon' => $rowData['Final Icon Image'] . '.png',
                 'icon_path' => '/uploads/achievements/icons/',
                 'publish_at' => now()->format('Y-m-d H:i:s'),
-                'admin_id' => Admin::first()->id,
-                'user_id' => User::factory()->create()->id,
+                'user_id' => User::where('email', 'mitch@hiddenplanetproductions.com')->first()->id,
             ];
         }
 
@@ -67,13 +68,34 @@ class AchievementSeeder extends Seeder
                 throw new \RuntimeException('Image not found: ' . $row['icon']);
             }
 
-            $category = Category::firstOrCreate(
-                ['name' => $row['category']],
-                ['slug' => Str::slug($row['category'], '_')]
-            );
-            unset($row['category']);
-            $achievement = Achievement::create($row);
-            $achievement->categories()->attach($category->id);
+
+            try {
+                $category = Category::firstOrCreate(
+                    ['name' => $row['category']],
+                    ['slug' => Str::slug($row['category'], '_')]
+                );
+
+                $path = $row['icon_path'];
+                $icon = $row['icon'];
+
+                unset($row['category'], $row['icon_path'], $row['icon']);
+
+                $achievement = Achievement::create($row);
+                $achievement->categories()->attach($category->id);
+
+                $achievement->icon()->create([
+                    'path' => $path,
+                    'name' => $icon,
+                    'group' => 'default',
+                    'imageable_id' => $achievement->id,
+                    'imageable_type' => Achievement::class,
+                    'token_cost' => 0,
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Error creating icon: ' . $e->getMessage());
+                dd('Error creating icon: ' . $e->getMessage());
+            }
 
             // Add 2 categories to each achievement
 //            AchievementCategory::create([

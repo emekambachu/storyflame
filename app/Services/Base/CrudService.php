@@ -17,11 +17,13 @@ class CrudService
         if($file = $request->file($imageName)) {
             $extension = $file->getClientOriginalExtension();
             $name = time() . $file->getClientOriginalName();
+
             // create path to directory
             if (!File::exists($path)){
                 File::makeDirectory($path, 0777, true, true);
             }
 
+            // Instantiate intervention image manager
             $imageManager = new ImageManager(new Driver());
             $image = $imageManager->read($request->file($imageName));
 

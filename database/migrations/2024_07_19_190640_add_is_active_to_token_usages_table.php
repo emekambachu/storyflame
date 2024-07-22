@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('token_usages', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('output_tokens');
+            if(!Schema::hasColumn('token_usages', 'is_active')) {
+                $table->boolean('is_active')->default(true);
+            }
         });
     }
 

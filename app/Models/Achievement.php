@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
@@ -27,13 +28,18 @@ class Achievement extends Model
         'icon_path',
         'icon',
         'item_id',
-        'admin_id',
+        'user_id',
         'publish_at',
     ];
 
-    public function admin(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function icon(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function dataPoints(): BelongsToMany

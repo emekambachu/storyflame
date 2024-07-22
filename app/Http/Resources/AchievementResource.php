@@ -13,7 +13,7 @@ class AchievementResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'icon' => '/images/achievements/' . $this->icon,
+            'icon' => $this->icon && !empty($this->icon->name) ? $this->icon->path.$this->icon->name : null,
             'title' => $this->name,
             'description' => $this->subtitle,
             'progress' => $this->pivot->progress,
