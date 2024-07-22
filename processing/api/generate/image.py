@@ -17,18 +17,20 @@ class ImageRequest(BaseModel):
 @router.post("/image")
 async def generate_image(request: ImageRequest):
     prompt = ChatPromptTemplate.from_template(
-        template="Create an image for {name} that is {description}. Use the following data to generate the image: {data_points}. Put the generated image inside <image></image> tags."
+        template="Create a descriptive prompt for an artist or AI image generator.  The purpose of this descriptive prompt is to create an image for {name} that is {description}. Use the following data to generate the image: {data_points}. Put the descriptive image designs instructions inside <imagePrompt></imagePrompt> tags."
     )
     model = DynamicModel.default_generation()
-    xml_parser = XMLOutputParser.from_tag("image")
+    xml_parser = XMLOutputParser.from_tag("imagePrompt")
 
     chain = prompt | model | xml_parser
-    image = chain.invoke({
+    imagePrompt = chain.invoke({
         "name": request.name,
+        "purpose": request.purpose,
+        "example": request.example,
         "description": request.description,
         "data_points": request.data_points
     })
     print(image)
     return {
-        "image": image
+        "imagePrompt": imagePrompt
     }
