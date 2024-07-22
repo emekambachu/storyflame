@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Concerns\HasAchievements;
 use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasSchemalessAttributes;
 use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithId;
 use App\Models\Referral\ReferralType;
 use App\Models\Role\Role;
+use App\Models\StoryElements\Character;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,7 +26,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements ModelWithId
 {
-    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints, HasSummaries, Billable;
+    use HasFactory, Notifiable, HasApiTokens, HasSchemalessAttributes, HasDataPoints, HasSummaries, Billable, HasAchievements;
 
     /**
      * The attributes that are mass assignable.
@@ -228,16 +230,6 @@ class User extends Authenticatable implements ModelWithId
             'favorite',
             'user_favorites',
         );
-    }
-
-    public function achievements(): BelongsToMany
-    {
-        return $this
-            ->belongsToMany(Achievement::class, 'user_achievements')
-            ->withPivot([
-                'progress',
-            ])
-            ->withTimestamps();
     }
 
     public function userAchievements(): HasMany

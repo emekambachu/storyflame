@@ -28,12 +28,14 @@ class Image extends Model
     {
         parent::boot();
 
-        static::creating(function ($image) {
-            DB::transaction(function () use ($image) {
-                $image->save();
-                $image->createImageFiles();
-            });
-        });
+        // TODO: fix this
+        // NOTE: Careful with this, it can cause exceptions without proper error handling
+//        static::creating(function ($image) {
+//            DB::transaction(function () use ($image) {
+//                $image->save();
+////                $image->createImageFiles();
+//            });
+//        });
     }
 
     /**
@@ -72,7 +74,7 @@ class Image extends Model
             return $path; // Return the original path for the 'original' size
         }
 
-        $image = InterventionImage::make(storage_path('app/' . $path));
+        $image = \Intervention\Image\Image::make(storage_path('app/' . $path));
         $image->fit($settings['width'], $settings['height']);
         $newPath = 'images/' . pathinfo($path, PATHINFO_FILENAME) . '_' . $settings['width'] . 'x' . $settings['height'] . '.' . pathinfo($path, PATHINFO_EXTENSION);
         $image->save(storage_path('app/' . $newPath), $settings['quality']);

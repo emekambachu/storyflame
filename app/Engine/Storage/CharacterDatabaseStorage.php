@@ -2,9 +2,9 @@
 
 namespace App\Engine\Storage;
 
-use App\Models\Character;
 use App\Models\Chat;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 
 class CharacterDatabaseStorage extends DatabaseStorage
 {

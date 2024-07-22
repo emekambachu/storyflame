@@ -3,9 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Achievement;
-use App\Models\Character;
 use App\Models\DataPoint;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
+use App\Models\StoryElements\StorySequence;
+use App\Models\StoryElements\StoryTheme;
+use App\Models\Summary\Summary;
 use App\Models\User;
 use App\Models\UserAchievement;
 use App\Models\UserDataPoint;
@@ -41,11 +44,11 @@ class StoriesSeeder extends Seeder
 
     public function run(): void
     {
-        $user = User::factory()->createOne([
-            'name' => 'Mocked User',
-            'email' => 'mock@example.com',
-            'password' => bcrypt('password'),
-        ]);
+//        $user = User::factory()->createOne([
+//            'name' => 'Mocked User',
+//            'password' => bcrypt('password'),
+//        ]);
+        $user = User::find(3);
 
         $storyAchievements = Achievement::whereCategory('Story')
             ->get();
@@ -55,8 +58,10 @@ class StoriesSeeder extends Seeder
         Story::factory(1, [
             'user_id' => $user->id,
         ])
-            ->hasImages(1)
+//            ->hasImages(1)
             ->hasCharacters(5)
+            ->hasSequences(5)
+            ->hasThemes(5)
             ->create()
             ->each(function (Story $story) use ($characterAchievements, $storyAchievements) {
                 $storyAchievements->each(function (Achievement $achievement) use ($story) {
@@ -72,6 +77,48 @@ class StoriesSeeder extends Seeder
                         );
                     });
                 });
+
+                Summary::whereCategory(['Story', 'Story (aka episode, novel)'])->get()
+                    ->each(function (Summary $summary) use ($story) {
+                        $story->summaries()->create([
+                            'summary_id' => $summary->id,
+                            'summary' => 'Mocked ' . $summary->name,
+                            'user_id' => $story->user_id,
+                        ]);
+                    });
+
+                Summary::whereCategory('Character')->get()
+                    ->each(function (Summary $summary) use ($story) {
+                        $story->characters->each(function (Character $character) use ($summary) {
+                            $character->summaries()->create([
+                                'summary_id' => $summary->id,
+                                'summary' => 'Mocked ' . $summary->name,
+                                'user_id' => $character->story->user_id,
+                            ]);
+                        });
+                    });
+
+                Summary::whereCategory('Sequence')->get()
+                    ->each(function (Summary $summary) use ($story) {
+                        $story->sequences->each(function (StorySequence $sequence) use ($summary) {
+                            $sequence->summaries()->create([
+                                'summary_id' => $summary->id,
+                                'summary' => 'Mocked ' . $summary->name,
+                                'user_id' => $sequence->story->user_id,
+                            ]);
+                        });
+                    });
+
+                Summary::whereCategory('Theme')->get()
+                    ->each(function (Summary $summary) use ($story) {
+                        $story->themes->each(function (StoryTheme $theme) use ($summary) {
+                            $theme->summaries()->create([
+                                'summary_id' => $summary->id,
+                                'summary' => 'Mocked ' . $summary->name,
+                                'user_id' => $theme->story->user_id,
+                            ]);
+                        });
+                    });
             });
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\StoryEngineConfig;
-use App\Models\Character;
 use App\Models\Story;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -32,11 +31,6 @@ class StoryContext extends BaseContext implements ContextInterface
         return $this->model;
     }
 
-    public function stories(): ?HasMany
-    {
-        return $this->getModel()->user->stories();
-    }
-
     public function characters(): ?HasMany
     {
         return $this->getModel()->characters();
@@ -44,12 +38,22 @@ class StoryContext extends BaseContext implements ContextInterface
 
     public function plots(): ?HasMany
     {
-        return null;
+        return $this->getModel()->plots();
     }
 
     public function sequences(): ?HasMany
     {
-        return null;
+        return $this->getModel()->sequences();
+    }
+
+    public function themes(): ?HasMany
+    {
+        return $this->getModel()->themes();
+    }
+
+    public function settings(): ?HasMany
+    {
+        return $this->getModel()->settings();
     }
 
     protected function getCurrentData(): array

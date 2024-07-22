@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasCategories
 {
-    public function scopeWhereCategory(Builder $query, string $name): void
+    public function scopeWhereCategory(Builder $query, string|array $nameOrNames): void
     {
-        $query->whereHas('categories', function ($query) use ($name) {
-            $query->where('name', $name);
+        $query->whereHas('categories', function ($query) use ($nameOrNames) {
+            if (is_array($nameOrNames)) {
+                $query->whereIn('name', $nameOrNames);
+            } else {
+                $query->where('name', $nameOrNames);
+            }
         });
     }
 }

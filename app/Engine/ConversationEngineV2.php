@@ -8,10 +8,10 @@ use App\Engine\Processing\BaseProcessing;
 use App\Engine\Processing\LocalPythonProcessing;
 use App\Engine\Processing\MockProcessing;
 use App\Models\Achievement;
-use App\Models\Character;
 use App\Models\ChatMessage;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 use App\Models\User;
 use App\Models\UserDataPoint;
 use Illuminate\Support\Collection;
@@ -156,6 +156,11 @@ final class ConversationEngineV2
         return $this->context->getModel() ?? null;
     }
 
+    public function finish()
+    {
+        $this->context->saveMessage(ChatMessage::makeSystemMessage('finish'));
+    }
+
     /**
      * @param Collection<ModelWithComparableNames> $elements
      * @return ChatMessage
@@ -192,6 +197,7 @@ final class ConversationEngineV2
      */
     private function processBasicAnswer(ChatMessage $question, ChatMessage $answer): ChatMessage
     {
+        // TODO: switch this to background processing
         $extractCategories = $this->processing->extractCategories(
             $question->content,
             $answer->content,

@@ -1,12 +1,24 @@
 import { Image } from '@/types/image'
+import { StorySummaryKeys } from '@/types/summaries'
+import { ElementProgress, StoryElementKey } from '@/types/elements'
 
 export type Story = {
     id: string
     name: string
     description: string
+    image: Image | null
     type: string
-    image: Image|null
     format: string
+
+    summaries: Record<StorySummaryKeys, string>
+    elements: Record<StoryElementKey, ElementProgress>
+
+    achievements: {
+        completed: Array<any>,
+        in_progress: Array<any>,
+        up_next: Array<any>,
+    }
+
     genres: Array<string>
     percent: number
     goals: Array<string>

@@ -3,7 +3,7 @@
         <slot name="title">
             <h4
                 v-if="title"
-                :class="titleClass"
+                :class="titleClasses"
             >
                 {{ title }}
             </h4>
@@ -13,14 +13,33 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
     title: {
         type: String,
         default: () => undefined,
     },
     titleClass: {
         type: String,
-        default: 'text-sm text-neutral-700 font-bold px-4',
+        default: ()=>undefined,
     },
+    variant: {
+        type: String,
+        default: 'default',
+    }
+})
+
+const titleClasses = computed(() => {
+    if (props.titleClass) {
+        return props.titleClass
+    }
+
+    switch (props.variant) {
+        case 'muted':
+            return 'text-sm font-semibold text-neutral-300'
+        default:
+            return 'text-sm text-neutral-700 font-bold px-4'
+    }
 })
 </script>

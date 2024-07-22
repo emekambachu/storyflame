@@ -3,7 +3,10 @@
         ref="header"
         class="sticky top-0 z-10 flex w-full flex-col bg-white"
     >
-        <div class="relative" ref="headerWrapper">
+        <div
+            ref="headerWrapper"
+            class="relative"
+        >
             <div
                 v-if="!noAnimation"
                 ref="headerContentHidden"
@@ -14,7 +17,7 @@
             <div
                 ref="headerContent"
                 :class="{
-                    'absolute top-0 left-0 right-0': !noAnimation,
+                    'absolute left-0 right-0 top-0': !noAnimation,
                 }"
                 class="w-full overflow-hidden"
             >
@@ -26,8 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, provide, ref, computed } from 'vue'
-import { animate, scroll } from 'motion'
+import { computed, inject, onMounted, provide, ref } from 'vue'
 
 const props = defineProps({
     noAnimation: {
@@ -53,37 +55,37 @@ const scrollHeight = computed(() => {
 provide('scrollHeight', scrollHeight)
 
 onMounted(() => {
-    if (!props.noAnimation) {
-        // if (!header.value || !headerContent.value || !headerContentHidden.value || !headerWrapper.value)
-        //     return
-        //
-        // const fullHeight = headerWrapper.value.clientHeight
-        //
-        // scroll(
-        //     animate(header.value, {
-        //         translateY: [
-        //             '0',
-        //             `${collapseHeaderHeight - fullHeight}px`,
-        //         ],
-        //         easing: 'linear',
-        //     }),
-        //     {
-        //         offset: ['start start', `${scrollHeight.value}px`],
-        //     }
-        // )
-        // scroll(
-        //     animate(headerContent.value, {
-        //         height: [
-        //             `${fullHeight}px`,
-        //             `${collapseHeaderHeight}px`,
-        //         ],
-        //         easing: 'linear',
-        //     }),
-        //     {
-        //         offset: ['start start', `${scrollHeight.value}px`],
-        //     }
-        // )
-    }
+    // if (!props.noAnimation) {
+    //     if (!header.value || !headerContent.value || !headerContentHidden.value || !headerWrapper.value)
+    //         return
+    //
+    //     const fullHeight = headerWrapper.value.clientHeight
+    //
+    //     scroll(
+    //         animate(header.value, {
+    //             translateY: [
+    //                 '0',
+    //                 `${collapseHeaderHeight - fullHeight}px`,
+    //             ],
+    //             easing: 'linear',
+    //         }),
+    //         {
+    //             offset: ['start start', `${scrollHeight.value}px`],
+    //         }
+    //     )
+    //     scroll(
+    //         animate(headerContent.value, {
+    //             height: [
+    //                 `${fullHeight}px`,
+    //                 `${collapseHeaderHeight}px`,
+    //             ],
+    //             easing: 'linear',
+    //         }),
+    //         {
+    //             offset: ['start start', `${scrollHeight.value}px`],
+    //         }
+    //     )
+    // }
 })
 </script>
 

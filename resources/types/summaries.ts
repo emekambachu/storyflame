@@ -1,0 +1,12 @@
+export type StorySummaryKeys =
+    | 'logline'
+    | 'goals'
+    | 'promise'
+    | 'arc_setup'
+    | 'arc_inciting_incident'
+    | 'arc_trials_and_complications'
+    | 'arc_midpoint_twist'
+    | 'arc_crisis_point'
+    | 'arc_climax'
+    | 'arc_resolution'
+    | 'arc_hook'

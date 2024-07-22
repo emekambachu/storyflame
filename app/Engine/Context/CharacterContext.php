@@ -3,7 +3,7 @@
 namespace App\Engine\Context;
 
 use App\Engine\Config\CharacterEngineConfig;
-use App\Models\Character;
+use App\Models\StoryElements\Character;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CharacterContext extends BaseContext implements ContextInterface

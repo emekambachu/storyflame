@@ -1,6 +1,5 @@
 <template>
-    <div
-        class="flex w-full items-start gap-4 rounded-lg p-4"
+    <router-link
         :style="`
             background: linear-gradient(
                     0deg,
@@ -8,6 +7,11 @@
                     ${hexToRgba(card.color)} 100%
                 ),
                 #fff;`"
+        :to="{
+            name: 'story-develop-achievement',
+            params: { achievement: card.id },
+        }"
+        class="flex w-full items-start gap-4 rounded-lg p-4"
     >
         <div class="flex w-full flex-col items-start gap-1">
             <h5 class="text-base font-semibold text-gray-800">
@@ -15,8 +19,8 @@
             </h5>
             <p
                 v-if="card?.subtitle || card?.story"
-                class="flex items-center gap-1 text-xs font-semibold"
                 :style="`color: ${card?.color};`"
+                class="flex items-center gap-1 text-xs font-semibold"
             >
                 {{ card?.subtitle }}
 
@@ -29,27 +33,28 @@
         </div>
 
         <achievement-progress-circle
-            :percent="card.percent"
             :color="card.color"
-            :time="card?.time"
             :icon="card?.icon?.path"
+            :percent="card.percent"
+            :time="(card?.time / 60).toFixed(0) + ' min'"
         />
-    </div>
+    </router-link>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import PointIcon from '@/components/icons/PointIcon.vue'
 import AchievementProgressCircle from '@/components/AchievementProgressCircle.vue'
 import { hexToRgba } from '@/utils/colorUtils'
+import { PropType } from 'vue'
+import { Achievement } from '@/types/achievement'
 
 const props = defineProps({
     card: {
-        type: Object,
+        type: Object as PropType<Achievement>,
         required: true,
     },
     showStoryName: { type: Boolean, default: true },
 })
-
 </script>
 
 <style scoped></style>

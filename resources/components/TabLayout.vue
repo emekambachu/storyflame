@@ -1,10 +1,10 @@
 <template>
     <div
         ref="comp"
-        class="flex w-full grow flex-col items-center"
         :style="{
-        minHeight: `calc(100dvh + ${headerHeight - collapseHeaderHeight}px)`,
+            minHeight: `calc(100dvh + ${headerHeight - collapseHeaderHeight}px)`,
         }"
+        class="flex w-full grow flex-col items-stretch"
     >
         <slot />
     </div>

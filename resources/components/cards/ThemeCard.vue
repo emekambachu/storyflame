@@ -5,21 +5,21 @@
         <div class="flex items-center w-full justify-between">
             <div class="flex flex-col items-start gap-0.5">
                 <span class="text-stone-500 text-[8px] font-bold uppercase">
-                    {{ card?.type }}
+                    {{ element?.type }}
                 </span>
                 <h6 class="font-bold text-sm text-stone-800">
-                    {{ card?.title }}
+                    {{ element?.title }}
                 </h6>
             </div>
 
-            <flame-icon :progress="card.progress" />
+            <flame-icon :progress="element.progress" />
         </div>
 
         <p
-            v-if="card.description"
+            v-if="element.description"
             class="text-stone-600 text-sm font-normal"
         >
-            {{ card.description }}
+            {{ element.description }}
         </p>
     </div>
 </template>
@@ -28,7 +28,7 @@
 import FlameIcon from '@/components/FlameInProgressCircle.vue'
 
 const props = defineProps({
-    card: {
+    element: {
         type: Object,
         required: true,
     },

@@ -10,10 +10,10 @@
             ]"
             tabs-content-class="w-full flex flex-col gap-2 bg-slate-100"
         >
-            <header-animated no-animation>
-                <home-header />
+            <home-header />
+            <div class="sticky top-10 bg-white z-10">
                 <tab-layout-tabs />
-            </header-animated>
+            </div>
             <tab-layout-view
                 class="w-full bg-white pb-6"
                 one-line
@@ -31,7 +31,7 @@
                                 </h4>
                             </title-with-link>
                         </template>
-                        <horizontal-list :items="data?.stories">
+                        <horizontal-list :items="stories">
                             <template #item="{ item }">
                                 <recent-story-card :story="item" />
                             </template>
@@ -146,10 +146,10 @@
                     </title-section>
                 </template>
                 <template #transcripts>
-                    <home-statistic-component
-                        :statistic="data.statistic"
-                        class="!py-6"
-                    />
+<!--                    <home-statistic-component-->
+<!--                        :statistic="data.statistic"-->
+<!--                        class="!py-6"-->
+<!--                    />-->
                 </template>
             </tab-layout-view>
         </tab-layout>
@@ -173,7 +173,6 @@ import SequencesWithPlus from '@/components/icons/SequencesWithPlus.vue'
 import TabLayout from '@/components/TabLayout.vue'
 import TabLayoutTabs from '@/components/ui/TabLayoutTabs.vue'
 import TabLayoutView from '@/components/ui/TabLayoutView.vue'
-import HeaderAnimated from '@/components/ui/HeaderAnimated.vue'
 
 import AchievementInProgressCard from '@/components/cards/AchievementInProgressCard.vue'
 import HomeStatisticComponent from '@/components/HomeStatisticComponent.vue'
@@ -191,6 +190,7 @@ import { useUser } from '@/composables/query/user'
 const showDiscuss = ref(true)
 
 const { data: stories } = useStories()
+const { data: user} = useUser()
 
 const createNew = [
     { icon: SeriesIcon, title: 'Series' },

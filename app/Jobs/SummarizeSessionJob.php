@@ -2,12 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Models\Character;
 use App\Models\Chat\SessionChat;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 use App\Models\Summary\Summary;
 use App\Models\User;
-use App\Models\UserAchievement;
 use App\Models\UserSummary;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

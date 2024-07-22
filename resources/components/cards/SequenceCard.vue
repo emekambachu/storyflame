@@ -5,38 +5,38 @@
                 <span
                     class="flex h-full items-center justify-center rounded bg-stone-400 px-2 py-0.5 text-[10px] leading-[160%] text-white"
                 >
-                    {{ card.number > 9 ? '' : '0' + card.number }}
+                    {{ element.number > 9 ? '' : '0' + element.number }}
                 </span>
 
                 <div class="flex flex-col">
                     <span
-                        v-if="card?.type"
+                        v-if="element?.type"
                         class="text-[8px] font-bold uppercase text-stone-500"
                     >
-                        {{ card.type }}
+                        {{ element.type }}
                     </span>
                     <h5 class="text-sm font-bold text-stone-800">
-                        {{ card.title }}
+                        {{ element.title }}
                     </h5>
                 </div>
             </div>
 
             <flame-icon
-                :progress="card.progress"
+                :progress="element.progress"
                 class="!h-8 !w-8"
                 flameClass="w-6 h-6"
             />
         </div>
         <template v-if="expanded">
             <p
-                v-if="card?.description"
+                v-if="element?.description"
                 class="text-sm text-stone-700"
             >
-                {{ card.description }}
+                {{ element.description }}
             </p>
-            <template v-if="card.paragraphs?.length">
+            <template v-if="element.paragraphs?.length">
                 <p
-                    v-for="(paragraph, paragraphID) in card.paragraphs"
+                    v-for="(paragraph, paragraphID) in element.paragraphs"
                     :key="paragraphID"
                     class="text-sm text-stone-700"
                 >
@@ -51,7 +51,7 @@
 import FlameIcon from '@/components/FlameInProgressCircle.vue'
 
 const props = defineProps({
-    card: {
+    element: {
         type: Object,
         required: true,
     },

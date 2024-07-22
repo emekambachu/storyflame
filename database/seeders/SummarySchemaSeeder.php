@@ -37,7 +37,7 @@ class SummarySchemaSeeder extends Seeder
                 'summary_id' => $rowData['SummaryID'],
                 'schemaable_type' => $rowData['Morphable Type'],
                 'schemaable_id' => $rowData['Morphable ID'],
-                'is_required' => $rowData['Required'] === 'TRUE',
+                'is_required' => $rowData['Required DataPoint'] === 'TRUE',
             ];
         }
 
@@ -52,9 +52,10 @@ class SummarySchemaSeeder extends Seeder
                 continue;
             }
 
-            $summary = Summary::firstWhere('item_id', $row['summary_id']);
-            if (!$summary->exists()) {
-                throw new \Exception('Summary not found for ID: ' . $row['summary_id']);
+            $summary = Summary::where('item_id', $row['summary_id'])->first();
+            if (!$summary || !$summary->exists()) {
+                dump('Summary not found for ID: ' . $row['summary_id']);
+                continue;
             }
 
             if ($row['schemaable_type'] === 'DataPoint')

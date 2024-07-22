@@ -4,39 +4,40 @@
             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white"
         >
             <svg
-                width="40"
                 height="40"
                 viewBox="0 0 40 40"
+                width="40"
             >
                 <!-- Adjusted circle radius to 18 to make diameter 36 pixels -->
                 <circle
+                    v-if="percent > 0"
                     cx="20"
                     cy="20"
-                    r="18"
                     fill="none"
+                    r="18"
                     stroke="#d9d9d9"
                     stroke-width="4"
                 />
 
                 <circle
+                    v-if="percent > 0"
+                    :stroke="color"
+                    :style="circleStyle"
                     cx="20"
                     cy="20"
-                    r="18"
                     fill="none"
-                    :stroke="color"
-                    stroke-width="4"
+                    r="18"
                     stroke-linecap="round"
-                    :style="circleStyle"
+                    stroke-width="4"
                 />
 
                 <!-- Image positioned to be centered within the larger circle -->
                 <image
                     v-if="icon"
                     :href="icon"
-                    x="11.5"
-                    y="9.5"
-                    height="20"
-                    width="17"
+                    :width="percent > 0 ? 17 : 30"
+                    :x="percent > 0 ? 11.5 : 5"
+                    :y="percent > 0 ? 9.5 : 3.5"
                     preserveAspectRatio="xMidYMid meet"
                 />
             </svg>
@@ -44,15 +45,15 @@
 
         <span
             v-if="time"
-            class="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-semibold"
             :style="`color: ${color}`"
+            class="whitespace-nowrap rounded-full bg-white px-1.5 py-0.5 text-[10px] font-semibold"
         >
             {{ time }}
         </span>
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue'
 
 const props = defineProps({

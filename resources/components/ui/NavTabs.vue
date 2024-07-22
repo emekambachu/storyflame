@@ -1,16 +1,16 @@
 <template>
-    <div class="w-full overflow-x-auto py-4 px-3 bg-white">
+    <div class="w-full overflow-x-auto bg-white px-3 py-4">
         <div class="flex gap-2">
             <button
                 v-for="tab in tabs"
                 :key="tab.key"
-                @click="$emit('update:modelValue', tab.key)"
                 :class="[
-          'px-3 py-2 rounded-lg text-base',
-          modelValue === tab.key
-            ? 'bg-stone-800 text-stone-50'
-            : 'bg-stone-100 text-stone-500'
-        ]"
+                    'rounded-lg px-3 py-2 text-base',
+                    modelValue === tab.key
+                        ? 'bg-stone-800 text-stone-50'
+                        : 'bg-stone-100 text-stone-500',
+                ]"
+                @click="$emit('update:modelValue', tab.key)"
             >
                 {{ tab.title }}
             </button>
@@ -22,12 +22,12 @@
 defineProps({
     tabs: {
         type: Array,
-        required: true
+        required: true,
     },
     modelValue: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 })
 
 defineEmits(['update:modelValue'])

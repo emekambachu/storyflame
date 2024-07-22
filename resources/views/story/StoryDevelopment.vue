@@ -21,7 +21,9 @@
                             },
                         ]"
                     />
-                    <v-button class="shrink-0">Finish</v-button>
+                    <v-button class="shrink-0" @click="api.post(`/api/v1/conversation/stories/finish`, {
+                        identifier: storyId,
+                    })">Finish</v-button>
                 </header>
             </template>
         </conversation-engine>
@@ -37,6 +39,8 @@ import StaggeredTextAnimation from '@/components/StaggeredTextAnimation.vue'
 import PageNavigationLayout from '@/components/PageNavigationLayout.vue'
 import { useRoute } from 'vue-router'
 import { useStories, useStory } from '@/composables/query/story'
+import axios from 'axios'
+import api from '@/utils/api'
 
 const route = useRoute()
 const storyId = computed(() => +route.params.story)

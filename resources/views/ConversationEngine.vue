@@ -161,6 +161,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    achievement: {
+        type: Number,
+        default: null,
+    },
     title: {
         type: String,
         required: false
@@ -225,9 +229,11 @@ type ConversationData = {
 function extractData(answer: string | string[] | Blob) {
     console.log(answer)
     const formData = new FormData()
-    console.log('identifier', _identifier.value)
     formData.append('identifier', '' + _identifier.value)
-    console.log(_identifier.value)
+    if (props.achievement) {
+        formData.append('achievement_id', '' + props.achievement)
+    }
+
     if (Array.isArray(answer)) {
         selectedOptions.value.forEach((option) => {
             formData.append('options[]', option)
@@ -245,7 +251,6 @@ function extractData(answer: string | string[] | Blob) {
     testInput.value = ''
     selectedOptions.value = []
 
-    console.log(formData)
     // return
     loading.value = true
     api.post<ConversationData>(props.endpoint, formData)
@@ -267,6 +272,7 @@ onMounted(() => {
     api.get<ConversationData>(props.endpoint, {
         params: {
             identifier: _identifier.value ?? null,
+            achievement_id: props.achievement ?? null,
         },
     })
         .then((response) => {

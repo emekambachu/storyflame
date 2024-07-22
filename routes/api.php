@@ -26,29 +26,32 @@ Route::group([
             Route::post('logout', 'LoginController@logout');
         });
 
-        Route::group([
-            'prefix' => 'onboarding',
-        ], function () {
-            Route::get('/', 'OnboardingController@index');
-            Route::post('/', 'OnboardingController@store');
-            Route::get('summary', 'OnboardingController@summary');
-        });
-        Route::post('transcribe', 'TranscriptionController@transcribe');
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::group([
+                'prefix' => 'onboarding',
+            ], function () {
+                Route::get('/', 'OnboardingController@index');
+                Route::post('/', 'OnboardingController@store');
+                Route::get('summary', 'OnboardingController@summary');
+            });
+            Route::post('transcribe', 'TranscriptionController@transcribe');
 
-        Route::group([
-            'prefix' => 'achievements',
-        ], function () {
-            Route::resource('achievements', 'AchievementController');
-        });
+            Route::group([
+                'prefix' => 'achievements',
+            ], function () {
+                Route::resource('achievements', 'AchievementController');
+            });
 
-        Route::resource('stories', 'StoryController');
+            Route::resource('stories', 'StoryController');
 
-        Route::group([
-            'prefix' => 'conversation',
-            'namespace' => 'Conversation',
-        ], function () {
-            Route::get('{engine}', 'ConversationEngineController@index');
-            Route::post('{engine}', 'ConversationEngineController@store');
+            Route::group([
+                'prefix' => 'conversation',
+                'namespace' => 'Conversation',
+            ], function () {
+                Route::get('{engine}', 'ConversationEngineController@index');
+                Route::post('{engine}', 'ConversationEngineController@store');
+                Route::post('{engine}/finish', 'ConversationEngineController@finish');
+            });
         });
     });
 });

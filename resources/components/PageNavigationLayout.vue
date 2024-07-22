@@ -1,24 +1,25 @@
 <template>
-    <div class="flex grow flex-col bg-white">
-        <header
-            :class="[
-                fixed ? 'fixed w-full' : 'sticky',
-                {
-                    'bg-white bg-opacity-75 backdrop-blur': !transparent,
-                },
-            ]"
-            class="-top-[1px] z-[15] pt-12"
-        >
-            <button
-                class="flex items-center px-4 text-lg capitalize"
-                @click="goBack"
-            >
-                <chevron-icon class="h-4" />
-                <template v-if="!noBackText">
-                    {{ backRouteTitle }}
-                </template>
-            </button>
-        </header>
+    <div class="flex grow flex-col">
+<!--        <header-->
+<!--            :class="[-->
+<!--                fixed ? 'fixed w-full' : 'sticky',-->
+<!--                {-->
+<!--                    'bg-white bg-opacity-75 backdrop-blur': !transparent,-->
+<!--                },-->
+<!--            ]"-->
+<!--            class="-top-[1px] z-[15] pt-12"-->
+<!--        >-->
+<!--            here-->
+<!--&lt;!&ndash;            <button&ndash;&gt;-->
+<!--&lt;!&ndash;                class="flex items-center px-4 text-lg capitalize"&ndash;&gt;-->
+<!--&lt;!&ndash;                @click="goBack"&ndash;&gt;-->
+<!--&lt;!&ndash;            >&ndash;&gt;-->
+<!--&lt;!&ndash;                <chevron-icon class="h-4" />&ndash;&gt;-->
+<!--&lt;!&ndash;                <template v-if="!noBackText">&ndash;&gt;-->
+<!--&lt;!&ndash;                    {{ backRouteTitle }}&ndash;&gt;-->
+<!--&lt;!&ndash;                </template>&ndash;&gt;-->
+<!--&lt;!&ndash;            </button>&ndash;&gt;-->
+<!--        </header>-->
         <slot />
     </div>
 </template>

@@ -8,6 +8,7 @@ class UserDataPointObserver
 {
     public function created(UserDataPoint $userDataPoint): void
     {
+        // set all other user data points with the same data point id to is_latest = false
         UserDataPoint::where('user_id', $userDataPoint->user_id)
             ->where('data_point_id', $userDataPoint->data_point_id)
             ->where('target_type', $userDataPoint->target_type)

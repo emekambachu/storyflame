@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Observers\UserAchievementObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,5 +46,20 @@ class UserAchievement extends Model
     public function userDataPoints(): HasMany
     {
         return $this->hasMany(UserDataPoint::class);
+    }
+
+    public function scopeCompleted(Builder $query): Builder
+    {
+        return $query->whereNotNull('completed_at');
+    }
+
+    public function scopeInProgress(Builder $query): Builder
+    {
+        return $query->whereNull('completed_at')->where('progress', '>', 0);
+    }
+
+    public function scopeUpNext(Builder $query): Builder
+    {
+        return $query->whereNull('completed_at')->where('progress', 0);
     }
 }

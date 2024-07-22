@@ -52,7 +52,7 @@ class UserContext extends BaseContext implements ContextInterface
     {
         $model = $this->getModel();
         switch ($key) {
-            case 'writer_name':
+            case 'writer_writer_name':
                 $model->name = $value;
                 break;
             default:

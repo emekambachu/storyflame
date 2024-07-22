@@ -207,11 +207,11 @@ class StoryConversationEngineTest extends TestCase
                         [
                             'data_points' => [
                                 [
-                                    'data_point_id' => 'writer_name',
+                                    'data_point_id' => 'writer_writer_name',
                                     'data_point_value' => 'John Doe'
                                 ],
                                 [
-                                    'data_point_id' => 'origin_story',
+                                    'data_point_id' => 'writer_origin_story',
                                     'data_point_value' => 'Galactic war between aliens and humans'
                                 ]
                             ]

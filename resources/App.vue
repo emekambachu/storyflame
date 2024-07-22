@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-col gap-3 bg-gray-100">
+    <div class="w-full flex flex-col gap-3 bg-gray-100 min-h-dvh">
         <nav
             v-if="showNav"
             class="w-full flex flex-row h-14 items-center px-2 lg:px-4 text-2xs text-stone-500 justify-between bg-stone-50 border-b border-solid border-stone-200 z-20"
@@ -20,7 +20,7 @@
                 </router-link>
             </div>
         </nav>
-        <main class="w-full flex flex-col mx-auto items-center justify-start min-h-dvh ">
+        <main class="w-full flex flex-col mx-auto items-center justify-start grow">
             <router-view v-slot="{ Component, route }">
 <!--                <transition-->
 <!--                    :mode="transition.mode"-->
@@ -31,7 +31,6 @@
                         :is="Component"
                         :key="route.fullPath"
                         :class="[
-                            'bg-white',
                             useFullWidth ? 'w-full' : 'max-w-screen-md'
                         ]"
                     />

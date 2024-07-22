@@ -24,14 +24,19 @@ class UserResource extends JsonResource
 
             'completed_achievements' => $this->userAchievements->where('completed', true)->count(),
             'progress_achievements' => $this->userAchievements->where('completed', false)->count(),
+            'achievements' => [
+                'completed' => UserAchievementResource::collection($this->achievements()->completed()->get()),
+                'in_progress' => UserAchievementResource::collection($this->achievements()->inProgress()->get()),
+                'up_next' => [],
+            ],
             'next_achievements' => 0,
 
-            'bio' => $this->getSummary('bio')?->summary,
-            'writing_goals' => $this->getSummary('writing_goals')?->summary,
+            'bio' => $this->summary('user_user_bio_bio'),
+            'writing_goals' => $this->summary('user_user_goals_writing_goals'),
 
             'avatar' => !empty($this->avatar) ? config('app.url') . $this->avatar_path . $this->avatar : null,
 
-            'achievements' => AchievementResource::collection($this->achievements ?? []),
+//            'achievements' => UserAchievementResource::collection($this->userAchievements ?? []),
             'onboarded' => $this->extra_attributes['onboarded'] ?? false,
             'data' => $this->when($this->extra_attributes['onboarded'] ?? false, [
                 'media' => MediaResource::collection($this->favoriteMovies),
