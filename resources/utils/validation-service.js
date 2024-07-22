@@ -1,7 +1,6 @@
 const validationService = {
 
     validateEmail(email){
-
         if(email === undefined || email === null || email === ''){
             return false;
         }
@@ -27,9 +26,9 @@ const validationService = {
         if(char !== "" && char !== null){
             if(min !== null && max !== null){
                 return char.length >= min && char.length <= max;
-            }else if(min !== null){
+            } else if(min !== null){
                 return char.length >= min;
-            }else if(max !== null){
+            } else if(max !== null){
                 return char.length <= max;
             }
         }
@@ -38,12 +37,10 @@ const validationService = {
     validateFileType(file, allowedExtensions = []) {
         const fileName = file.name;
         const fileExtension = fileName.split('.').pop().toLowerCase();
-
         return allowedExtensions.includes(fileExtension);
     },
 
     validateFileSize(file, maxSize) {
-        // Validate Image
         return file.size <= maxSize;
     },
 
@@ -70,7 +67,11 @@ const validationService = {
         }
 
         if(deleteAll === true && Object.keys(errors).length > 0) {
-            errors = {};
+            for (const error in errors) {
+                if (Object.hasOwnProperty.call(errors, error)) {
+                    delete errors[error];
+                }
+            }
         }
     },
 
