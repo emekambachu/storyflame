@@ -35,4 +35,14 @@ return [
         'gif',
     ],
     'max_file_size' => 3 * 1024,
+    'leonardo_settings' => [
+        'api_key' => env('LEONARDO_API_KEY'),
+        'callback_api_key' => env('LEONARDO_API_CALLBACK_API_KEY'),
+        'prompt_settings' => [
+            'alchemy' => false,
+            'modelId' => 'b24e16ff-06e3-43eb-8d33-4416c2d75876',
+            'num_images' => 1,
+            'public' => false,
+        ]
+    ],
 ];

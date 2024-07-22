@@ -21,7 +21,7 @@ class OnboardingController extends Controller
     {
         $user = auth()->user();
         return $this->successResponse('success', [
-            'question' => ChatMessageResource::make($onboardingService->getLastQuestion($user)),
+            'question' => ChatMessageResource::make($onboardingService->getPreviousQuestion($user)),
             'questions_count' => $onboardingService->getQuestionCount(),
             'progress' => $onboardingService->getProgress($user)
         ]);

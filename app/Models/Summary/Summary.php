@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\Summary;
 
 use App\Models\Category;
@@ -12,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Summary extends Model
 {
@@ -29,16 +29,26 @@ class Summary extends Model
         'admin_id',
     ];
 
-    public function dataPoints(): BelongsToMany
+    public function dataPoints(): MorphToMany
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             DataPoint::class,
-            DataPointSummary::class,
+            'schemaable',
+            'summary_schemas',
             'summary_id',
-            'data_point_id',
-        )
-            ->using(DataPointSummary::class)
-            ->withTimestamps();
+            'schemaable_id'
+        )->withTimestamps();
+    }
+
+    public function linkedSummaries(): MorphToMany
+    {
+        return $this->morphedByMany(
+            Summary::class,
+            'schemaable',
+            'summary_schemas',
+            'summary_id',
+            'schemaable_id'
+        )->withTimestamps();
     }
 
     public function categories(): BelongsToMany
@@ -47,22 +57,8 @@ class Summary extends Model
             Category::class,
             SummaryCategory::class,
             'summary_id',
-            'category_id',
-        )
-            ->using(SummaryCategory::class)
-            ->withTimestamps();
-    }
-
-    public function summaries(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            __CLASS__,
-            SummaryLink::class,
-            'summary_id',
-            'linked_summary_id',
-        )
-            ->using(SummaryLink::class)
-            ->withTimestamps();
+            'category_id'
+        )->withTimestamps();
     }
 
     public function schemas(): HasMany
@@ -70,9 +66,6 @@ class Summary extends Model
         return $this->hasMany(SummarySchema::class);
     }
 
-    /**
-     * @return BelongsToMany
-     */
     public function developmentReports(): BelongsToMany
     {
         return $this->belongsToMany(DevelopmentReport::class, 'development_report_summaries')

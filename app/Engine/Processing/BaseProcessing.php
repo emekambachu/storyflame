@@ -24,6 +24,7 @@ abstract class BaseProcessing implements ProcessingInterface
             }
             return;
         }
+
         TokenUsage::create([
             'key' => $key,
             'user_id' => auth()->id(),

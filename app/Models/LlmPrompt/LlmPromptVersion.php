@@ -6,16 +6,18 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LlmPromptVersion extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'llm_prompt_id',
         'name',
         'slug',
         'prompt_value',
-        'updated_by_user_id',
+        'updated_by',
     ];
 
     public function llm_prompt(): BelongsTo
@@ -25,6 +27,6 @@ class LlmPromptVersion extends Model
 
     public function updated_by(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by_user_id', 'id');
+        return $this->belongsTo(User::class, 'updated_by', 'id');
     }
 }

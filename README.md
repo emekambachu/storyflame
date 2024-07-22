@@ -41,6 +41,11 @@ Required for use with Claude Projects. Includes only the specified folders and s
 code2prompt --path /path/to/project/storyflame --output /path/to/output/storyflame_app-v1.0.md --tokens --filter "app/**"
 ```
 
+Mitch's code2prompt for StoryFlame Laravel app
+```bash
+code2prompt --path /Users/mitch/Documents/Code/storyflame --output /Users/mitch/Desktop/storyflame_app-v1.2.md --tokens --filter "app/**"
+```
+
 **Full Project with excludes**
 
 Includes all core project files and shows tokens.
