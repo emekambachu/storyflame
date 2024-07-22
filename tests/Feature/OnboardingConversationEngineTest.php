@@ -18,6 +18,7 @@ class OnboardingConversationEngineTest extends TestCase
 {
     #[Test]
     #[Group("onboarding")]
+    // sail artisan test --group onboarding
     public function test_fast_onboarding_scenario()
     {
         Notification::fake();
@@ -40,19 +41,47 @@ class OnboardingConversationEngineTest extends TestCase
                         'user_not_understand' => false,
                         'user_dont_know' => false,
                     ])
-                    ->addResponse('extractData', [
-                        'elements' => [
+                    ->addResponse('extractCategories', [
+                        'categories' => [
                             'Writer' => [
                                 [
                                     'name' => 'John Doe',
                                 ]
                             ],
+                            'Story' => [
+                                [
+                                    'name' => 'Test',
+                                    'setting' => 'Galactic war between aliens and humans'
+                                ]
+                            ],
                         ]
                     ])
+                    ->addResponse('extractData',
+                        [
+                            [
+                                'data_points' => [
+                                    [
+                                        'data_point_id' => 'writer_writer_name',
+                                        'data_point_value' => 'John Doe'
+                                    ],
+                                    [
+                                        'data_point_id' => 'writer_origin_story',
+                                        'data_point_value' => 'Galactic war between aliens and humans'
+                                    ]
+                                ]
+                            ]
+                        ])
                     ->addResponse('extractData', [
-                        'elements' => [
-                            'Writer' => [
-                                $extractionData
+                        [
+                            'data_points' => [
+                                [
+                                    'data_point_id' => 'writer_writer_name',
+                                    'data_point_value' => 'John Doe'
+                                ],
+                                [
+                                    'data_point_id' => 'writer_origin_story',
+                                    'data_point_value' => 'Galactic war between aliens and humans'
+                                ]
                             ]
                         ]
                     ])

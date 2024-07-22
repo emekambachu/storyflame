@@ -26,9 +26,15 @@ class LoginController extends Controller
 
         if (isset($credentials['password']) && $credentials['password'] !== '') {
             if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
+                // Generate API token
+                /* @var User $user */
+                $user = Auth::user();
+                $token = $user->createToken('API Token')->plainTextToken;
 
-                return $this->successResponse('Authenticated', Auth::user());
+                return $this->successResponse('Authenticated', [
+                    'user' => $user,
+                    'token' => $token
+                ]);
             } else {
                 return $this->errorResponse('Invalid credentials', 401);
             }
@@ -37,16 +43,22 @@ class LoginController extends Controller
             if ($user) {
                 $verificationCode = $user->verificationCodes()->latest()->first();
                 $now = Carbon::now();
-                if($user->email_verified_at === null) {
+                if ($user->email_verified_at === null) {
                     $user->verifyEmail();
                 }
-                if($user->referral_code === null) {
+                if ($user->referral_code === null) {
                     $user->createUniqueReferralCode();
                 }
                 if ($verificationCode && $now->isBefore($verificationCode->expire_at) && $verificationCode->otp === $credentials['otp']) {
-                    Auth::login($user);
-                    $request->session()->regenerate();
-                    return $this->successResponse('Authenticated', Auth::user());
+                    Auth::login($user); // For session-based authentication (not recommended for APIs)
+
+                    // Generate API token
+                    $token = $user->createToken('API Token')->plainTextToken;
+
+                    return $this->successResponse('Authenticated', [
+                        'user' => $user,
+                        'token' => $token
+                    ]);
                 }
             }
         }

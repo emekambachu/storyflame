@@ -24,7 +24,7 @@ storyflame_brand_voice_prompt = (
 )
 
 onboarding_engine_system_message = (
-    "You are a Story Consultant helping a Storyteller develop their story via a conversation, which will be used "
+    "You are a Story Consultant helping a Storyteller develop their online writing profile, which will be used "
     "to extract information about their writing background, interests, preferences, and current stories."
 )
 
@@ -61,6 +61,10 @@ story_engine_prompt = (
     "# Topics to ask next: {topics}"
     "# Important instructions: message field should never include any questions."
     "{format_instructions}"
+)
+
+writer_question_task = (
+    "question to help the writer develop their story and characters. This could also be a statement like 'Please tell us more about...' "
 )
 
 basic_question_task = (

@@ -36,7 +36,7 @@ class StoryController extends Controller
 
         return $this->successResponse('success', [
             'question' => ChatMessageResource::make(
-                $this->creatingService->getLastQuestion(auth()->user())
+                $this->creatingService->getPreviousQuestion(auth()->user())
             ),
             'progress' => $this->creatingService->getProgress(auth()->user())
         ]);
