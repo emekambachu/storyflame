@@ -1,8 +1,8 @@
 <template>
     <main
-        class="relative flex h-full grow flex-col items-center justify-between px-4 pb-10 pt-8 text-center"
+        class="relative flex h-full w-full grow flex-col items-center justify-between px-4 pb-10 pt-8 text-center"
     >
-        <div class="flex flex-col items-center w-full">
+        <div class="flex w-full flex-col items-center">
             <slot name="header">
                 <!--                <a-->
                 <!--                    class="mb-8"-->
@@ -26,7 +26,6 @@
                             :percent="Math.min(progress, 100)"
                             class="w-full max-w-56"
                         />
-<!--                        TODO: Need to limit the amount of words a user can type to 1,000 words -->
                     </div>
                 </aside>
             </slot>
@@ -75,14 +74,20 @@
                 </div>
             </template>
             <template v-else>
-                <div class="my-6 flex w-full grow flex-col items-start gap-4">
+                <div class="my-6 flex w-full !border-0 grow flex-col items-start gap-4">
                     <textarea
                         v-if="question?.type === 'text'"
-                        v-model="testInput"
-                        class="mx-auto my-auto w-full rounded-full !border-0 bg-white text-center text-2xl font-normal text-black !outline-0 ring-0"
+                        :class="[
+                            showLimit
+                            ? 'ring-1 ring-red-600 shadow-xl'
+                            : '',
+                        ]"
+                        :value="testInput"
+                        class="mx-auto my-auto w-full rounded-full bg-white text-center text-2xl font-normal !outline-0 text-black ring-0"
                         enterkeyhint="done"
                         inputmode="text"
                         placeholder="Enter your answer"
+                        @input="onInput"
                         @keydown.enter="extractData(testInput)"
                     />
                     <template v-else>
@@ -140,16 +145,15 @@
     </main>
 </template>
 <script lang="ts" setup>
-import {inject, onMounted, ref} from 'vue'
-import {uaInjectKey} from '@/types/inject'
+import { inject, onMounted, ref } from 'vue'
+import { uaInjectKey } from '@/types/inject'
 import useModal from '@/composables/useModal'
 import StaggeredTextAnimation from '@/components/StaggeredTextAnimation.vue'
 import VoiceButton from '@/components/VoiceButton.vue'
 import ListOption from '@/components/ListOption.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
-import {ChatMessage} from '@/types/chatMessage'
+import { ChatMessage } from '@/types/chatMessage'
 import api from '@/utils/api'
-import axios from 'axios'
 
 const emit = defineEmits(['extract', 'finish'])
 
@@ -168,17 +172,31 @@ const props = defineProps({
     },
     title: {
         type: String,
-        required: false
+        required: false,
     },
 })
 
 const testInput = ref('')
 const isSpeakingMode = ref(true)
 const showTooltip = ref(true)
+const showLimit = ref(false)
 const selectedOptions = ref<string[]>([])
 
 const ua = inject(uaInjectKey)
-const {show} = useModal()
+const { show } = useModal()
+
+function onInput(event: InputEvent) {
+    // check if less then 1000 words
+    if (
+        (event.target as HTMLTextAreaElement).value.trim().split(/\s+/).length >
+        1
+    ) {
+        showLimit.value = true
+    } else {
+        testInput.value = (event.target as HTMLTextAreaElement).value
+        showLimit.value = false
+    }
+}
 
 // watch(
 //     () => props.message,
@@ -223,7 +241,7 @@ function setMessage(message: ChatMessage) {
 type ConversationData = {
     identifier: string
     question: ChatMessage
-    progress: number,
+    progress: number
     data: any
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex grow flex-col">
+    <div class="flex grow flex-col w-full">
 <!--        <header-->
 <!--            :class="[-->
 <!--                fixed ? 'fixed w-full' : 'sticky',-->
