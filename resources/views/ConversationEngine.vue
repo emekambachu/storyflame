@@ -189,7 +189,7 @@ function onInput(event: InputEvent) {
     // check if less then 1000 words
     if (
         (event.target as HTMLTextAreaElement).value.trim().split(/\s+/).length >
-        1
+        1000
     ) {
         showLimit.value = true
     } else {
