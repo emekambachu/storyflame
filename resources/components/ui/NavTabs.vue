@@ -10,7 +10,7 @@
                         ? 'bg-stone-800 text-stone-50'
                         : 'bg-stone-100 text-stone-500',
                 ]"
-                @click="$emit('update:modelValue', tab.key)"
+                @click="setActiveTab(tab.key)"
             >
                 {{ tab.title }}
             </button>
@@ -19,16 +19,23 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-    tabs: {
-        type: Array,
-        required: true,
-    },
-    modelValue: {
-        type: String,
-        required: true,
-    },
-})
+import { defineProps, defineEmits } from 'vue'
 
-defineEmits(['update:modelValue'])
+interface Tab {
+    title: string
+    key: string
+}
+
+const props = defineProps<{
+    tabs: Tab[]
+    modelValue: string
+}>()
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+}>()
+
+const setActiveTab = (tabKey: string) => {
+    emit('update:modelValue', tabKey)
+}
 </script>

@@ -104,16 +104,16 @@
             <template #title>
                 <title-with-link title="Your Achievements" />
             </template>
-            <items-list
-                v-slot="{ item }"
-                :items="user?.achievements.filter((item) => item.progress)"
-                class="gap-8"
-            >
-                <!--                <achievement-card-->
-                <!--                    :item="item"-->
-                <!--                    class="h-full"-->
-                <!--                />-->
-            </items-list>
+<!--            <items-list-->
+<!--                v-slot="{ item }"-->
+<!--                :items="user?.achievements.filter((item) => item.progress)"-->
+<!--                class="gap-8"-->
+<!--            >-->
+<!--                &lt;!&ndash;                <achievement-card&ndash;&gt;-->
+<!--                &lt;!&ndash;                    :item="item"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    class="h-full"&ndash;&gt;-->
+<!--                &lt;!&ndash;                />&ndash;&gt;-->
+<!--            </items-list>-->
         </title-section>
     </div>
 </template>

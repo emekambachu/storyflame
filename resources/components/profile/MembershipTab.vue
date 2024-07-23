@@ -1,3 +1,4 @@
+<!-- Membership Tab: file location is resources/components/profile/MembershipTab.vue -->
 <template>
     <div v-if="!isLoading" class="flex flex-col gap-10">
         <!-- Available Reports -->

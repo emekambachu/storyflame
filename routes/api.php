@@ -58,6 +58,12 @@ Route::group([
     });
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/free-trial/remaining-interactions', [\App\Http\Controllers\FreeTrialController::class, 'getRemainingInteractions']);
+    Route::post('/free-trial/track-interaction', [\App\Http\Controllers\FreeTrialController::class, 'trackInteraction']);
+    Route::post('/free-trial/track-image-generation', [\App\Http\Controllers\FreeTrialController::class, 'trackImageGeneration']);
+});
+
 Route::middleware('auth:sanctum')->group(static function () {
 
     // Images and ImageTypes
