@@ -90,6 +90,9 @@ class AchievementSeeder extends Seeder
                 $path = $row['icon_path'];
                 $icon = $row['icon'];
 
+                // Store the icon filename in a separate variable
+                $iconFilename = $row['icon'];
+
                 unset($row['category'], $row['icon_path'], $row['icon']);
 
                 $achievement = Achievement::create($row);
@@ -97,8 +100,8 @@ class AchievementSeeder extends Seeder
 
                 Storage::disk('public')->putFileAs(
                     'uploads/achievements/icons',
-                    public_path('images/achievements/' . $row['icon']),
-                    $row['icon']
+                    public_path('images/achievements/' . $iconFilename), // Use the stored icon filename
+                    $iconFilename // Use the stored icon filename
                 );
 
                 $achievement->icon()->create([

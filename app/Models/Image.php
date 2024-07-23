@@ -101,16 +101,29 @@ class Image extends Model
         }
     }
 
+    // previous code, not sure this is working
+    // using the wrong intervention image version/instance
+//    protected function resizeImage($path, $settings)
+//    {
+//        if ($settings['width'] === 0 && $settings['height'] === 0) {
+//            return $path; // Return the original path for the 'original' size
+//        }
+//
+//        $image = \Intervention\Image\Image::make(storage_path('app/' . $path));
+//        $image->fit($settings['width'], $settings['height']);
+//        $newPath = 'images/' . pathinfo($path, PATHINFO_FILENAME) . '_' . $settings['width'] . 'x' . $settings['height'] . '.' . pathinfo($path, PATHINFO_EXTENSION);
+//        $image->save(storage_path('app/' . $newPath), $settings['quality']);
+//
+//        return $newPath;
+//    }
+
+
+    // using new version of intervention image
     protected function resizeImage($path, $settings): string
     {
         if ($settings['width'] === 0 && $settings['height'] === 0) {
             return $path;
         }
-
-//        $image = \Intervention\Image\Image::make(storage_path('app/' . $path));
-//        $image->fit($settings['width'], $settings['height']);
-//        $newPath = 'images/' . pathinfo($path, PATHINFO_FILENAME) . '_' . $settings['width'] . 'x' . $settings['height'] . '.' . pathinfo($path, PATHINFO_EXTENSION);
-//        $image->save(storage_path('app/' . $newPath), $settings['quality']);
 
         try {
             // updated to use intervention version 3
