@@ -32,36 +32,36 @@ class Image extends Model
         'token_cost'
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        // TODO: fix this
-        // NOTE: Careful with this, it can cause exceptions without proper error handling
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        // TODO: fix this
+//        // NOTE: Careful with this, it can cause exceptions without proper error handling
+////        static::creating(function ($image) {
+////            DB::transaction(function () use ($image) {
+////                $image->save();
+//////                $image->createImageFiles();
+////            });
+////        });
 //        static::creating(function ($image) {
 //            DB::transaction(function () use ($image) {
-//                $image->save();
-////                $image->createImageFiles();
+//                //$image->save();
+//                if($image->path !== null){
+//                    $image->createImageFiles();
+//                }
 //            });
 //        });
-        static::creating(function ($image) {
-            DB::transaction(function () use ($image) {
-                $image->save();
-                if($image->path !== null){
-                    $image->createImageFiles();
-                }
-            });
-        });
-
-        static::updating(function ($image) {
-            if ($image->isDirty('path') && $image->path !== null) {
-                DB::transaction(function () use ($image) {
-                    $image->files()->delete();
-                    $image->createImageFiles();
-                });
-            }
-        });
-    }
+//
+//        static::updating(function ($image) {
+//            if ($image->isDirty('path') && $image->path !== null) {
+//                DB::transaction(function () use ($image) {
+//                    $image->files()->delete();
+//                    $image->createImageFiles();
+//                });
+//            }
+//        });
+//    }
 
     /**
      * @return HasMany
