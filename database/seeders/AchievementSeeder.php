@@ -44,7 +44,6 @@ class AchievementSeeder extends Seeder
             $data[] = [
                 'name' => $rowData['Achievement Title'],
                 'estimated_seconds' => $rowData['Est. Seconds to Complete'],
-//              'item_id' => $rowData['Achievement ID'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
