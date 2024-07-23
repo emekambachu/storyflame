@@ -11,11 +11,13 @@ use App\Models\Concerns\ModelWithId;
 use App\Models\Referral\ReferralType;
 use App\Models\Role\Role;
 use App\Models\StoryElements\Character;
+use App\Services\FreeTrialService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Paddle\Billable;
 use Laravel\Paddle\Cashier;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Subscription;
 
 class User extends Authenticatable implements ModelWithId
 {
@@ -261,18 +264,31 @@ class User extends Authenticatable implements ModelWithId
         return $this->hasMany(AIImageSlot::class);
     }
 
-    public function activeSubscriptions()
+//    public function subscriptions(): HasMany
+//    {
+//        return $this->hasMany(
+//            Subscription::class,
+//            'billable_id',
+//            'id'
+//        )->orderBy('created_at', 'desc');
+//    }
+
+    public function subscriptions(): MorphMany
+    {
+        return $this->morphMany(Subscription::class, 'billable')->orderBy('created_at', 'desc');
+    }
+
+    public function activeSubscriptions(): MorphMany
     {
         return $this->subscriptions()
-            ->with('items.product', 'items.productPrice')
             ->where('status', 'active')
             ->whereNotNull('next_billed_at')
             ->where(function ($query) {
                 $query->whereNull('ends_at')
                     ->orWhere('ends_at', '>', now());
             })
-            ->orderBy('next_billed_at', 'desc')
-            ->get();
+            ->with('items.product', 'items.productPrice')
+            ->orderBy('next_billed_at', 'desc');
     }
 
     /**
@@ -282,6 +298,8 @@ class User extends Authenticatable implements ModelWithId
      */
     public function getActiveSubscription(): ?Subscription
     {
+        /* var Subscription $subscription */
+        Log::info('Active subscriptions: ' . $this->activeSubscriptions()->count() .' for user id: ' . $this->id);
         return $this->activeSubscriptions()->first();
     }
 
@@ -336,6 +354,28 @@ class User extends Authenticatable implements ModelWithId
             'ends_at' => $subscription->ends_at,
             'available_report_count' => $this->getAvailableDevelopmentReports()->count(),
         ];
+    }
+
+    public function checkForFreeTrial(): void
+    {
+        if ($this->trial_ends_at && $this->trial_ends_at->isPast()) {
+            $this->trial_ends_at = null;
+            $this->save();
+        }
+    }
+
+    public function startTrial(): void
+    {
+        //if no free trial exists, create one
+        if($this->freeTrialInteraction()->count() === 0) {
+            $freeTrialService = app(FreeTrialService::class);
+            $freeTrialService->initializeFreeTrial($this);
+        }
+    }
+
+    public function freeTrialInteraction()
+    {
+        return $this->hasOne(FreeTrialInteraction::class);
     }
 
 //    public function createSubscription($name, $plan)

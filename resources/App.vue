@@ -1,5 +1,6 @@
 <template>
     <div class="w-full flex flex-col gap-3 bg-gray-100 min-h-dvh">
+        <free-trial-bannner show-banner="true" />
         <nav
             v-if="showNav"
             class="w-full flex flex-row h-14 items-center px-2 lg:px-4 text-2xs text-stone-500 justify-between bg-stone-50 border-b border-solid border-stone-200 z-20"
@@ -53,6 +54,7 @@ import { useRouter } from 'vue-router'
 import MockPopup from '@/components/MockPopup.vue'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
 import UserAvatar from "@/components/UserAvatar.vue";
+import FreeTrialBannner from "@/components/banners/FreeTrialBannner.vue";
 
 
 const authStore = useAuthStore()

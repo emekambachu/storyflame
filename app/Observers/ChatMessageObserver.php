@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Chat\SessionChat;
 use App\Models\ChatMessage;
+use App\Models\User;
+use App\Services\FreeTrialService;
 use Illuminate\Support\Facades\Log;
 
 class ChatMessageObserver
@@ -25,6 +27,10 @@ class ChatMessageObserver
                     }
                 );
             }
+        }
+        if($chatMessage->is_user){
+            $freeTrialService = new FreeTrialService();
+            $freeTrialService->trackInteraction($chatMessage->user);
         }
     }
 

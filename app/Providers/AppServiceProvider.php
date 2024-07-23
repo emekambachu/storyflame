@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Customer;
+use App\Models\SubscriptionItem;
 use App\Models\Transaction;
 use App\Events\UserRegistrationEvent;
 use App\Listeners\RegistrationEmailListener;
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Cashier::useCustomerModel(Customer::class);
         Cashier::useSubscriptionModel(Subscription::class);
         Cashier::useTransactionModel(Transaction::class);
+        Cashier::useSubscriptionItemModel(SubscriptionItem::class);
 
         Event::listen(
             UserRegistrationEvent::class,

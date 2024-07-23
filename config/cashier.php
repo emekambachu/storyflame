@@ -53,6 +53,10 @@ return [
 
     'customer_model' => App\Models\User::class,
 
+    'subscription_model' => App\Models\Subscription::class,
+
+    'subscription_item_model' => App\Models\SubscriptionItem::class,
+
     /*
     |--------------------------------------------------------------------------
     | Currency Locale

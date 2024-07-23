@@ -5,13 +5,16 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Laravel\Paddle\Cashier;
 use Laravel\Paddle\Concerns\Prorates;
 use Laravel\Paddle\Payment;
+use Laravel\Paddle\Subscription as PaddleSubscription;
 
-class Subscription extends \Laravel\Paddle\Subscription
+
+class Subscription extends PaddleSubscription
 {
     use HasFactory, Prorates;
 
@@ -31,6 +34,12 @@ class Subscription extends \Laravel\Paddle\Subscription
         'ends_at' => 'datetime',
         'next_billed_at' => 'datetime'
     ];
+
+    public function billable(): MorphTo
+    {
+        // Define the inverse of the polymorphic relationship
+        return $this->morphTo();
+    }
 
     /**
      * Get the subscription items for the subscription.
