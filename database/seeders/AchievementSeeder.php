@@ -54,7 +54,7 @@ class AchievementSeeder extends Seeder
                 'color' => $rowData['icon color'],
                 'dev_order' => $rowData['Dev Order'],
                 'total_impact' => $rowData['Total Impact'],
-                'icon' => $rowData['Final Icon Image'] . '.png',
+                'icon' => $rowData['icon name'] . '.png',
                 'icon_path' => '/uploads/achievements/icons/',
                 'publish_at' => now()->format('Y-m-d H:i:s'),
                 'user_id' => User::where('email', 'mitch@hiddenplanetproductions.com')->first()->id,
