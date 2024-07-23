@@ -39,6 +39,7 @@ class LoginController extends Controller
                 return $this->errorResponse('Invalid credentials', 401);
             }
         } else {
+            /* @var User|null $user */
             $user = User::firstWhere('email', $credentials['email']);
             if ($user) {
                 $verificationCode = $user->verificationCodes()->latest()->first();
@@ -51,6 +52,7 @@ class LoginController extends Controller
                 }
                 if ($verificationCode && $now->isBefore($verificationCode->expire_at) && $verificationCode->otp === $credentials['otp']) {
                     Auth::login($user); // For session-based authentication (not recommended for APIs)
+                    $user->startTrial();
 
                     // Generate API token
                     $token = $user->createToken('API Token')->plainTextToken;

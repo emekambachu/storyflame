@@ -36,12 +36,21 @@ class Image extends Model
     {
         parent::boot();
 
-        static::created(function ($image) {
-            if ($image->path !== null) {
-                DB::transaction(function () use ($image) {
+        // TODO: fix this
+        // NOTE: Careful with this, it can cause exceptions without proper error handling
+//        static::creating(function ($image) {
+//            DB::transaction(function () use ($image) {
+//                $image->save();
+////                $image->createImageFiles();
+//            });
+//        });
+        static::creating(function ($image) {
+            DB::transaction(function () use ($image) {
+                $image->save();
+                if($image->path !== null){
                     $image->createImageFiles();
-                });
-            }
+                }
+            });
         });
 
         static::updating(function ($image) {
@@ -97,6 +106,11 @@ class Image extends Model
         if ($settings['width'] === 0 && $settings['height'] === 0) {
             return $path;
         }
+
+//        $image = \Intervention\Image\Image::make(storage_path('app/' . $path));
+//        $image->fit($settings['width'], $settings['height']);
+//        $newPath = 'images/' . pathinfo($path, PATHINFO_FILENAME) . '_' . $settings['width'] . 'x' . $settings['height'] . '.' . pathinfo($path, PATHINFO_EXTENSION);
+//        $image->save(storage_path('app/' . $newPath), $settings['quality']);
 
         try {
             // updated to use intervention version 3

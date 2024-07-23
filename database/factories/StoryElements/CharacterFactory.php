@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\StoryElements;
 
-use App\Models\Character;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 

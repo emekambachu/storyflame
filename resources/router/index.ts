@@ -1,5 +1,5 @@
+// File: router/index.ts
 import {
-    useRoute,
     createRouter,
     createWebHistory,
     NavigationGuardNext,
@@ -7,7 +7,6 @@ import {
 } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLogger } from 'vue-logger-plugin'
-import {routes} from "vue-router/vue-router-auto-routes";
 
 // const checkAuth = (
 //     to: RouteLocationNormalized,
@@ -49,7 +48,7 @@ const checkGuest = (
         logger.info('User is already logged in')
         return next({
             name: 'onboarding',
-            query: { ...to.query }
+            query: { ...to.query },
         })
     }
     return next()
@@ -88,7 +87,10 @@ const preserveQueryParams = (
     from: RouteLocationNormalized,
     next: NavigationGuardNext
 ) => {
-    if (Object.keys(to.query).length === 0 && Object.keys(from.query).length > 0) {
+    if (
+        Object.keys(to.query).length === 0 &&
+        Object.keys(from.query).length > 0
+    ) {
         next({ ...to, query: { ...from.query } })
     } else {
         next()
@@ -106,10 +108,7 @@ const router = createRouter({
         {
             path: '/onboard',
             name: 'onboarding',
-            beforeEnter: [
-                checkAuth,
-                //checkNotOnboarded
-            ],
+            beforeEnter: [checkAuth],
             component: () => import('../views/Onboarding.vue'),
         },
         {
@@ -123,28 +122,30 @@ const router = createRouter({
                     meta: {
                         transition: 'none',
                         back: 'home',
-                        title: 'Profile'
+                        title: 'Profile',
                     },
+                    props: route => ({ tab: route.query.tab }),
                 },
                 {
                     path: '/profile/edit',
                     name: 'ProfileEdit',
-                    component: () => import('../views/user/profile/UserEditProfileView.vue'),
+                    component: () =>
+                        import('../views/user/profile/UserEditProfileView.vue'),
                     meta: {
                         transition: 'none',
                         back: 'home',
-                        title: 'Edit Profile'
+                        title: 'Edit Profile',
                     },
                 },
                 {
-                    path: 'stories/',
+                    path: 'stories',
                     children: [
                         {
                             path: '',
                             name: 'stories',
                             meta: {
                                 transition: 'slide',
-                                title: 'Stories'
+                                title: 'Stories',
                             },
                             component: () =>
                                 import('../views/StoriesListPage.vue'),
@@ -154,45 +155,62 @@ const router = createRouter({
                             name: 'new-story',
                             meta: {
                                 transition: 'slide',
-                                title: 'New Story'
+                                title: 'New Story',
                             },
                             beforeEnter: checkAuth,
                             component: () => import('../views/NewStory.vue'),
                         },
                         {
-                            path: ':story/',
+                            path: ':story',
                             children: [
                                 {
                                     path: '',
                                     name: 'story',
-                                    // beforeEnter: checkAuth,
                                     component: () =>
                                         import('../views/StoryView.vue'),
                                     meta: {
                                         transition: 'slide',
-                                        title: 'Story'
+                                        title: 'Story',
                                     },
                                 },
                                 {
-                                    path: 'develop/',
-                                    name: 'story-develop',
-                                    component: () => import('../views/story/StoryDevelopment.vue'),
-                                    meta: {
-                                        transition: 'slide',
-                                        back: 'story',
-                                        title: 'Story Development'
-                                    },
+                                    path: 'develop',
+                                    children: [
+                                        {
+                                            path: '',
+                                            name: 'story-develop',
+                                            component: () =>
+                                                import('../views/story/StoryDevelopment.vue'),
+                                            meta: {
+                                                transition: 'slide',
+                                                back: 'story',
+                                                title: 'Story Development',
+                                            },
+                                        },
+                                        {
+                                            path: 'achievements/:achievement',
+                                            name: 'story-develop-achievement',
+                                            component: () =>
+                                                import('../views/story/AchievementDevelopment.vue'),
+                                            meta: {
+                                                transition: 'slide',
+                                                title: 'Achievement',
+                                            },
+                                            props: {
+                                                endpoint: 'stories',
+                                                element: 'story',
+                                            }
+                                        }
+                                    ],
                                 },
                                 {
-                                    path: 'characters/',
+                                    path: 'characters',
                                     children: [
                                         {
                                             path: '',
                                             name: 'characters',
                                             component: () =>
-                                                import(
-                                                    '../views/CharacterListPage.vue'
-                                                ),
+                                                import('../views/CharacterListPage.vue'),
                                             meta: {
                                                 transition: 'slide',
                                                 title: 'Characters',
@@ -202,9 +220,7 @@ const router = createRouter({
                                             path: ':character',
                                             name: 'character',
                                             component: () =>
-                                                import(
-                                                    '../views/CharacterView.vue'
-                                                ),
+                                                import('../views/CharacterView.vue'),
                                             meta: {
                                                 transition: 'slide',
                                                 title: 'Character',
@@ -214,22 +230,13 @@ const router = createRouter({
                                 },
                                 {
                                     path: 'outline/:id',
-                            name: 'outline',
-                            // beforeEnter: checkAuth,
-                            component: () =>
-                                import('../views/OutlineView.vue'),
-                        },
-                        {
-                            path: 'sequences/',
+                                    name: 'outline',
+                                    component: () =>
+                                        import('../views/OutlineView.vue'),
+                                },
+                                {
+                                    path: 'sequences',
                                     children: [
-                                        // {
-                                        //     path: '',
-                                        //     name: 'sequences',
-                                        //     component: () =>
-                                        //         import(
-                                        //             '../views/SequencesListPage.vue'
-                                        //         ),
-                                        // },
                                         {
                                             path: ':sequence',
                                             name: 'sequence',
@@ -238,14 +245,12 @@ const router = createRouter({
                                                 title: 'Sequence',
                                             },
                                             component: () =>
-                                                import(
-                                                    '../views/SequenceView.vue'
-                                                ),
+                                                import('../views/SequenceView.vue'),
                                         },
                                     ],
                                 },
                                 {
-                                    path: 'plots/',
+                                    path: 'plots',
                                     children: [
                                         {
                                             path: ':plot',
@@ -260,7 +265,7 @@ const router = createRouter({
                                     ],
                                 },
                                 {
-                                    path: 'themes/',
+                                    path: 'themes',
                                     children: [
                                         {
                                             path: '',
@@ -270,9 +275,7 @@ const router = createRouter({
                                                 title: 'Themes',
                                             },
                                             component: () =>
-                                                import(
-                                                    '../views/ThemesListPage.vue'
-                                                ),
+                                                import('../views/ThemesListPage.vue'),
                                         },
                                         {
                                             path: ':theme',
@@ -282,14 +285,12 @@ const router = createRouter({
                                                 title: 'Theme',
                                             },
                                             component: () =>
-                                                import(
-                                                    '../views/ThemeView.vue'
-                                                ),
+                                                import('../views/ThemeView.vue'),
                                         },
                                     ],
                                 },
                                 {
-                                    path: 'audiences/',
+                                    path: 'audiences',
                                     children: [
                                         {
                                             path: ':id',
@@ -299,14 +300,12 @@ const router = createRouter({
                                                 title: 'Audience',
                                             },
                                             component: () =>
-                                                import(
-                                                    '../views/TargetAudienceView.vue'
-                                                ),
+                                                import('../views/TargetAudienceView.vue'),
                                         },
                                     ],
                                 },
                                 {
-                                    path: 'market-comp/',
+                                    path: 'market-comp',
                                     children: [
                                         {
                                             path: ':market-comp',
@@ -334,8 +333,7 @@ const router = createRouter({
                 title: 'Outline',
             },
             // beforeEnter: checkAuth,
-            component: () =>
-                import('../views/OutlineView.vue'),
+            component: () => import('../views/OutlineView.vue'),
         },
         {
             path: '/achievement/:id',
@@ -344,7 +342,6 @@ const router = createRouter({
                 transition: 'slide',
                 title: 'Achievement',
             },
-            // beforeEnter: checkAuth,
             component: () => import('../views/AchievementView.vue'),
         },
         {
@@ -359,8 +356,8 @@ const router = createRouter({
         },
         {
             path: '/auth',
-            redirect: to => {
-                return { path: '/auth/login', query: to.query }
+            redirect: (to) => {
+                return {path: '/auth/login', query: to.query}
             },
             component: () => import('../views/AuthView.vue'),
             //beforeEnter: checkGuest,
@@ -370,21 +367,21 @@ const router = createRouter({
                     name: 'login',
                     meta: {
                         transition: 'none',
-                        title: 'Login'
+                        title: 'Login',
                     },
                     component: () => import('../views/LoginView.vue'),
-                    props: route => ({ query: route.query})
+                    props: (route) => ({ query: route.query }),
                 },
                 {
                     path: 'register',
                     name: 'register',
                     meta: {
                         transition: 'none',
-                        title: 'Register'
+                        title: 'Register',
                     },
                     component: () => import('../views/RegisterView.vue'),
-                    props: route => ({ query: route.query})
-                }
+                    props: (route) => ({query: route.query}),
+                },
             ],
         },
         {
@@ -392,37 +389,26 @@ const router = createRouter({
             name: 'dashboard',
             meta: {
                 transition: 'none',
-                title: 'Dashboard'
+                title: 'Dashboard',
             },
             component: () => import('../views/HomeView.vue'),
         },
-
         {
-            path: '/:pathMatch(.*)*',
+            path: '/:pathMatch(.)',
             name: 'not-found',
-            redirect: { name: 'home' },
+            redirect: {name: 'home'},
         },
-
-        // New registration route
         {
             path: '/sign-on',
             name: 'sign-on',
             component: () => import('../views/user/auth/UserSignOnView.vue'),
         },
-
     ],
 })
 
 router.beforeEach(preserveQueryParams)
 
 router.beforeEach((to, from, next) => {
-
-    // for debugging routes
-    // console.log('Navigating to:', to.path)
-    // console.log('From:', from.path)
-    // console.log('Auth status:', useAuthStore().isLoggedIn)
-
-    // scroll to top on route change
     window.scrollTo({
         top: 0,
         behavior: 'smooth',

@@ -16,4 +16,9 @@ trait HasSummaries
     {
         return $this->summaries()->whereSummaryKey($key)->first() ?? null;
     }
+
+    public function summary(string $key): ?string
+    {
+        return $this->getSummary($key)?->summary;
+    }
 }

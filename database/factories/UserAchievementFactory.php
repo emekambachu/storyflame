@@ -21,7 +21,7 @@ class UserAchievementFactory extends Factory
             'target_type' => 'App\Models\Story',
             'target_id' => Story::factory(),
             'progress' => $this->faker->numberBetween(0, 100),
-            'completed_at' => Carbon::now(),
+            'completed_at' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

@@ -7,7 +7,7 @@
             class="text-center text-xs font-bold"
             :class="titleColorClass"
         >
-            {{ item.name }}
+            {{ title }}
         </h6>
 
         <div class="flex w-full items-center justify-between">
@@ -28,14 +28,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, PropType } from 'vue'
 import FlameIcon from '@/components/icons/FlameIcon.vue'
+import { ElementProgress } from '@/types/elements'
 
 const props = defineProps({
     item: {
-        type: Object,
+        type: Object as PropType<ElementProgress>,
         required: true,
     },
+    title: {
+        type: String,
+        default: () => undefined,
+    }
 })
 
 const titleColorClass = computed(() => {

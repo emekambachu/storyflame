@@ -5,7 +5,7 @@
         class="relative mt-auto flex h-full flex-col justify-end bg-cover bg-center bg-no-repeat px-4 py-[76px] pb-5 text-white"
     >
         <div
-            class="animate-move sticky top-6 mb-2 flex w-full items-center justify-between"
+            class="animate-move top-6 mb-2 flex w-full items-center justify-between"
         >
             <div>
                 <div
@@ -29,11 +29,11 @@
                 </slot>
             </div>
 
-            <flame-icon
-                v-if="progress"
-                :progress="progress"
-                class="animate-show !w-8 w-full rounded-full bg-white"
-            />
+<!--            <flame-icon-->
+<!--                v-if="progress"-->
+<!--                :progress="progress"-->
+<!--                class="animate-show !w-8 w-full rounded-full bg-white"-->
+<!--            />-->
         </div>
         <div
             v-if="genres.length"
@@ -160,63 +160,63 @@ const backgroundStyle = computed(() => {
 })
 
 onMounted(() => {
-    const hideElements = container.value?.querySelectorAll('.animate-hide')
-    const showElements = container.value?.querySelectorAll('.animate-show')
-    const moveElements = container.value?.querySelectorAll('.animate-move')
-
-    if (hideElements) {
-        scroll(
-            animate(hideElements, {
-                opacity: [1, 0],
-            }),
-            {
-                offset: ['start start', `${scrollHeight / 2}px`],
-            }
-        )
-        hideElements.forEach((element) => {
-            const height = element.clientHeight
-            scroll(
-                animate(element, {
-                    height: [`${height}px`, '0'],
-                }),
-                {
-                    offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
-                }
-            )
-        })
-    }
-
-    if (showElements) {
-        scroll(
-            animate(showElements, {
-                opacity: [0, 1],
-            }),
-            {
-                offset: ['start start', `${scrollHeight / 2}px`],
-            }
-        )
-        showElements.forEach((element) => {
-            scroll(
-                animate(element, {
-                    opacity: [0, 1],
-                }),
-                {
-                    offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
-                }
-            )
-        })
-    }
-
-    if (moveElements) {
-        scroll(
-            animate(moveElements, {
-                paddingLeft: ['0', '2rem'],
-            }),
-            {
-                offset: ['start start', `${scrollHeight / 4}px`],
-            }
-        )
-    }
+    // const hideElements = container.value?.querySelectorAll('.animate-hide')
+    // const showElements = container.value?.querySelectorAll('.animate-show')
+    // const moveElements = container.value?.querySelectorAll('.animate-move')
+    //
+    // if (hideElements) {
+    //     scroll(
+    //         animate(hideElements, {
+    //             opacity: [1, 0],
+    //         }),
+    //         {
+    //             offset: ['start start', `${scrollHeight / 2}px`],
+    //         }
+    //     )
+    //     hideElements.forEach((element) => {
+    //         const height = element.clientHeight
+    //         scroll(
+    //             animate(element, {
+    //                 height: [`${height}px`, '0'],
+    //             }),
+    //             {
+    //                 offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
+    //             }
+    //         )
+    //     })
+    // }
+    //
+    // if (showElements) {
+    //     scroll(
+    //         animate(showElements, {
+    //             opacity: [0, 1],
+    //         }),
+    //         {
+    //             offset: ['start start', `${scrollHeight / 2}px`],
+    //         }
+    //     )
+    //     showElements.forEach((element) => {
+    //         scroll(
+    //             animate(element, {
+    //                 opacity: [0, 1],
+    //             }),
+    //             {
+    //                 offset: [`${scrollHeight / 2}px`, `${scrollHeight}px`],
+    //             }
+    //         )
+    //     })
+    // }
+    //
+    // if (moveElements) {
+    //     scroll(
+    //         animate(moveElements, {
+    //             paddingLeft: ['0', '2rem'],
+    //         }),
+    //         {
+    //             offset: ['start start', `${scrollHeight / 4}px`],
+    //         }
+    //     )
+    // }
 })
 const completedAchievements = computed(() => {
     if (props?.achievements) {

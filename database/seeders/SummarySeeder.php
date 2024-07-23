@@ -30,6 +30,10 @@ class SummarySeeder extends Seeder
                 continue;
             }
 
+            if ($row[1] === '-') {
+                continue;
+            }
+
             $rowData = [];
             // replace column index with column name
             foreach ($row as $key => $value) {
@@ -38,16 +42,16 @@ class SummarySeeder extends Seeder
 
             $data[] = [
                 'name' => $rowData['Name'],
-                'slug' => Str::slug($rowData['Name'], '_'),
-                //'item_id' => $rowData['Summary ID'],
-                'location' => $rowData['Page'] . ' - ' . $rowData['Component'],
+                'slug' => Str::slug("{$rowData['Narrative Element']} {$rowData['Section / Component']} {$rowData['Name']}", '_'),
+                //'item_id' => $rowData['New Summary ID'],
+                'location' => $rowData['Combined Name'],
                 'length' => $rowData['Length'],
                 'purpose' => $rowData['Purpose'],
                 'creation_prompt' => $rowData['Creation Prompt'] ?? '-',
                 'example_summary' => $rowData['Example'],
                 'published_at' => now()->format('Y-m-d H:i:s'),
 
-                'category' => $rowData['Category'],
+                'category' => $rowData['Narrative Element'],
                 'user_id' => User::where('email', 'mitch@hiddenplanetproductions.com')->first()->id,
             ];
         }

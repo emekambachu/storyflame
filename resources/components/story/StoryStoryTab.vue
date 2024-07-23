@@ -10,7 +10,40 @@
             </template>
 
             <story-tab-section-card
-                v-for="(section, sectionID) in story.story_info"
+                v-for="(section, sectionID) in [
+                    {
+                        title: 'Setup',
+                        description: story.summaries.arc_setup,
+                    },
+                    {
+                        title: 'Inciting Incident',
+                        description: story.summaries.arc_inciting_incident,
+                    },
+                    {
+                        title: 'Trials and Complications',
+                        description: story.summaries.arc_trials_and_complications,
+                    },
+                    {
+                        title: 'The Midpoint Twist',
+                        description: story.summaries.arc_midpoint_twist,
+                    },
+                    {
+                        title: 'The Crisis Point',
+                        description: story.summaries.arc_crisis_point,
+                    },
+                    {
+                        title: 'The Climax',
+                        description: story.summaries.arc_climax,
+                    },
+                    {
+                        title: 'The Resolution',
+                        description: story.summaries.arc_resolution,
+                    },
+                    {
+                        title: 'The Hook',
+                        description: story.summaries.arc_hook,
+                    }
+                ]"
                 :key="sectionID"
                 :title="section.title"
                 :description="section.description"
@@ -32,7 +65,7 @@ import { Story } from '@/types/story'
 
 const props = defineProps({
     story: {
-        type: Object,
+        type: Object as PropType<Story>,
         required: true,
     },
 })

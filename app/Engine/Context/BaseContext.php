@@ -4,18 +4,19 @@ namespace App\Engine\Context;
 
 use App\Engine\Config\EngineConfig;
 use App\Models\Achievement;
-use App\Models\Character;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Concerns\ModelWIthRelatedChats;
 use App\Models\DataPoint;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 use App\Models\User;
 use App\Models\UserAchievement;
 use App\Models\UserDataPoint;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -35,7 +36,7 @@ abstract class BaseContext implements ContextInterface
      * @param Model|null $model
      */
     public function __construct(
-        protected ?Model $model = null,
+        protected ?Model        $model = null,
         protected ?EngineConfig $config = null
     )
     {
@@ -177,7 +178,8 @@ abstract class BaseContext implements ContextInterface
         $chatMessage->chat_id = $session->chat_id;
         $chatMessage = $session->chat->chatMessages()->save($chatMessage);
         $session->chatMessages()->attach($chatMessage->id);
-
+        $session->last_message_at = $chatMessage->created_at;
+        $session->save();
         return $chatMessage;
     }
 
@@ -239,7 +241,9 @@ abstract class BaseContext implements ContextInterface
             'Story' => $this->stories()?->create($elementData),
             'Character' => $this->characters()?->create($elementData),
             'Plot' => $this->plots()?->create($elementData),
-//            'Sequence' => $this->sequences()->create($elementData),
+            'Sequence' => $this->sequences()->create($elementData),
+            'Theme' => $this->themes()->create($elementData),
+            'Setting' => $this->settings()->create($elementData),
             default => null
         };
 
@@ -262,6 +266,12 @@ abstract class BaseContext implements ContextInterface
         // override this method to add custom logic
     }
 
+    /**
+     * Save extracted data to the database
+     * @param ChatMessage $answer
+     * @param array $data
+     * @return int
+     */
     public function saveExtractedData(ChatMessage $answer, array $data): int
     {
         unset($data['usage']);
@@ -271,8 +281,12 @@ abstract class BaseContext implements ContextInterface
         $user = auth()->user();
 
         foreach ($data as $key => $value) {
+            // get the DataPoint by slug
             $dataPoint = DataPoint::firstWhere('slug', $key);
+
+            // in case LLM hallucinates and sends a non-existing data point
             if ($dataPoint?->exists()) {
+                // get the UserAchievement by user, achievement and target
                 $achievement = UserAchievement::firstOrCreate([
                     'user_id' => $user->id,
                     'achievement_id' => $dataPoint->achievements()->firstOrFail()->id,
@@ -281,7 +295,9 @@ abstract class BaseContext implements ContextInterface
                 ], [
                     'progress' => 0,
                 ]);
-                $dataPoint = UserDataPoint::firstOrCreate([
+
+                // firstOrCreate doesn't work with json array well
+                $userDataPoint = UserDataPoint::where([
                     'user_id' => $user->id,
                     'data_point_id' => $dataPoint->id,
                     'target_type' => get_class($target),
@@ -289,10 +305,21 @@ abstract class BaseContext implements ContextInterface
                     'data' => json_encode($value),
                     'user_achievement_id' => $achievement->id,
                     'is_latest' => true,
-                ]);
-                if ($dataPoint->wasRecentlyCreated)
+                ])->first();
+                if (!$userDataPoint)
+                    $userDataPoint = UserDataPoint::create([
+                        'user_id' => $user->id,
+                        'data_point_id' => $dataPoint->id,
+                        'target_type' => get_class($target),
+                        'target_id' => $target->id,
+                        'data' => $value,
+                        'user_achievement_id' => $achievement->id,
+                        'is_latest' => true,
+                    ]);
+
+                if ($userDataPoint->wasRecentlyCreated)
                     $count++;
-                $dataPoint->chatMessages()->attach($answer->id);
+                $userDataPoint->chatMessages()->attach($answer->id);
                 $this->onDataPointSaved($key, $value);
             }
         }
@@ -484,6 +511,37 @@ abstract class BaseContext implements ContextInterface
     public function getEndpointKey(): string
     {
         return $this->config::ENDPOINT_KEY;
+    }
+
+
+    public function stories(): ?HasMany
+    {
+        return null;
+    }
+
+    public function sequences(): ?HasMany
+    {
+        return null;
+    }
+
+    public function themes(): ?HasMany
+    {
+        return null;
+    }
+
+    public function settings(): ?HasMany
+    {
+        return null;
+    }
+
+    public function characters(): ?HasMany
+    {
+        return null;
+    }
+
+    public function plots(): ?HasMany
+    {
+        return null;
     }
 
     public function getProgress(): int

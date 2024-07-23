@@ -33,14 +33,12 @@
                     },
                 ]"
                 class="!gap-0"
-                collapse-header-height="120"
-                header-height="340"
             >
+                <story-header
+                    v-if="story"
+                    :story="story"
+                />
                 <header-animated>
-                    <story-header
-                        v-if="testStory"
-                        :story="testStory"
-                    />
                     <template #sticky>
                         <tab-layout-tabs
                             menu-btn-class="w-full text-base text-stone-500 bg-stone-100 px-3 py-2 rounded-lg border-none"
@@ -50,10 +48,18 @@
                         />
                     </template>
                 </header-animated>
-                <tab-layout-view>
+                <tab-layout-view v-if="story">
                     <template #develop>
                         <develop-tab
-                            :data="testStory"
+                            :continue-achievements="
+                                story.achievements.in_progress
+                            "
+                            :discrepancies="testStory.discrepancies"
+                            :progress="story?.elements"
+                            :progress-description="
+                                testStory.progress_description
+                            "
+                            :up-next-achievements="story.achievements.up_next"
                             startSmthNew
                         />
                     </template>
@@ -61,13 +67,13 @@
                         <story-progress-tab :story="testStory" />
                     </template>
                     <template #arcs>
-                        <story-story-tab :story="testStory" />
+                        <story-story-tab :story="story" />
                     </template>
                     <template #elements>
-                        <story-elements-tab :story="testStory" />
+                        <story-elements-tab :story="story" />
                     </template>
                     <template #references>
-                        <story-marketing-tab :story="testStory" />
+                        <story-marketing-tab :story="story" />
                     </template>
                 </tab-layout-view>
             </tab-layout>

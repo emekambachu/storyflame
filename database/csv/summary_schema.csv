@@ -1,130 +1,520 @@
-SummaryID,Morphable Type,Morphable ID,Summary,Data Point,Required
-1,DataPoint,12,"Story (aka episode, novel) - Logline",Story - Primary Obstacle,
-1,DataPoint,19,"Story (aka episode, novel) - Logline",Story - Key Characters,
-1,DataPoint,20,"Story (aka episode, novel) - Logline",Story - Key Relationships,
-1,DataPoint,22,"Story (aka episode, novel) - Logline",Story - Impact on Plot and Theme,
-1,DataPoint,41,"Story (aka episode, novel) - Logline",Plot - Thematic Cohesion,
-1,DataPoint,44,"Story (aka episode, novel) - Logline",Plot - Status Quo,
-1,DataPoint,83,"Story (aka episode, novel) - Logline",Story - Exploring,
-1,DataPoint,86,"Story (aka episode, novel) - Logline",Story - Premise,TRUE
-1,DataPoint,88,"Story (aka episode, novel) - Logline",Story - Setup,
-1,DataPoint,89,"Story (aka episode, novel) - Logline",Story - Inciting Incident,
-1,DataPoint,101,"Story (aka episode, novel) - Logline",Story - Unique Elements,
-2,Achievement,-,Achievement - Impact One-Liner,,TRUE
-3,Achievement,-,Achievement - [Per Category] Impact Summary,,TRUE
-33,DataPoint,86,Arc - Setup,Story - Premise,
-33,DataPoint,88,Arc - Setup,Story - Setup,
-5,,,Clarify - Title,,
-6,,,Clarify - Discrepancy,,
+SummaryID,Morphable Type,Morphable ID,Required DataPoint,Summary (only for Google Sheets),Data Point (only for Google Sheets)
+144,DataPoint,12,,Story - Header - Story Logline,Story - Primary Obstacle
+144,DataPoint,19,,Story - Header - Story Logline,Story - Key Characters
+144,DataPoint,20,,Story - Header - Story Logline,Story - Key Relationships
+144,DataPoint,22,,Story - Header - Story Logline,Story - Impact on Plot and Theme
+144,DataPoint,41,,Story - Header - Story Logline,Plot - Thematic Cohesion
+144,DataPoint,44,,Story - Header - Story Logline,Plot - Status Quo
+144,DataPoint,83,,Story - Header - Story Logline,Story - Exploring
+144,DataPoint,86,TRUE,Story - Header - Story Logline,Story - Premise
+144,DataPoint,88,,Story - Header - Story Logline,Story - Setup
+144,DataPoint,89,,Story - Header - Story Logline,Story - Inciting Incident
+144,DataPoint,101,,Story - Header - Story Logline,Story - Unique Elements
+1,Achievement,-,TRUE,Achievement - Achievement Card - Impact One-Liner,
+2,Achievement,-,TRUE,Achievement - Achievement Card - [Per Category] Impact Summary,
+63,,,,Clarify - Clarify Card - Title,
+64,,,,Clarify - Clarify Card - Discrepancy,
+168,DataPoint,130,,User - User Bio - Bio,Writer - Origin Story
+168,DataPoint,131,,User - User Bio - Bio,Writer - Storytelling Strengths
+168,DataPoint,132,,User - User Bio - Bio,Writer - Unique Perspective
+168,DataPoint,133,,User - User Bio - Bio,Writer - Writing Motivation
+168,DataPoint,134,,User - User Bio - Bio,Writer - Desired Impact
+168,DataPoint,140,,User - User Bio - Bio,Writer - Distinctive Voice
+168,DataPoint,146,,User - User Bio - Bio,Writer - Themes
+169,DataPoint,134,,User - User Goals - Writing Goals,Writer - Desired Impact
+169,DataPoint,135,,User - User Goals - Writing Goals,Writer - Long-Term Aspirations
+169,DataPoint,136,,User - User Goals - Writing Goals,Writer - Short-Term Objectives
+169,DataPoint,137,,User - User Goals - Writing Goals,Writer - Target Audience
+169,DataPoint,144,,User - User Goals - Writing Goals,Writer - Formats
+16,DataPoint,1,,Character - Character Card - Character Card Summary,Character - Ethnicity
+16,DataPoint,2,,Character - Character Card - Character Card Summary,Character - Physical Description
+16,DataPoint,3,,Character - Character Card - Character Card Summary,Character - Personality Trait
+16,DataPoint,7,,Character - Character Card - Character Card Summary,Character - Age
+16,DataPoint,8,,Character - Character Card - Character Card Summary,Character - Gender
+16,DataPoint,9,,Character - Character Card - Character Card Summary,Character - Character Name
+16,DataPoint,10,,Character - Character Card - Character Card Summary,Character - Occupation
+16,DataPoint,29,,Character - Character Card - Character Card Summary,Character - Emotional Wound
+16,DataPoint,30,,Character - Character Card - Character Card Summary,Character - Ghost
+16,DataPoint,51,,Character - Character Card - Character Card Summary,Character - Core Beliefs
+16,DataPoint,52,,Character - Character Card - Character Card Summary,Character - Fears
+16,DataPoint,53,,Character - Character Card - Character Card Summary,Character - Flaws
+16,DataPoint,54,,Character - Character Card - Character Card Summary,Character - Quirks
+16,DataPoint,55,,Character - Character Card - Character Card Summary,Character - Strengths
+16,DataPoint,56,,Character - Character Card - Character Card Summary,Character - Talents/Skills
+91,DataPoint,42,,Plot - Plot Card - Plot Card Title,Plot - Introduction of Central Conflict
+91,DataPoint,43,,Plot - Plot Card - Plot Card Title,Plot - Protagonist's Initial Goal
+91,DataPoint,44,,Plot - Plot Card - Plot Card Title,Plot - Status Quo
+91,DataPoint,45,,Plot - Plot Card - Plot Card Title,Plot - Introduction of Key Allies and Adversaries
+91,DataPoint,105,,Plot - Plot Card - Plot Card Title,Plot - Establishing Stakes
+92,DataPoint,12,,Plot - Plot Card - Plot Card Summary,Story - Primary Obstacle
+92,DataPoint,34,,Plot - Plot Card - Plot Card Summary,Story - Key Visuals
+92,DataPoint,35,,Plot - Plot Card - Plot Card Summary,Story - Protagonist's Choices
+92,DataPoint,36,,Plot - Plot Card - Plot Card Summary,Story - Emotional Beats
+92,DataPoint,38,,Plot - Plot Card - Plot Card Summary,Plot - Tying Up Loose Ends
+92,DataPoint,39,,Plot - Plot Card - Plot Card Summary,Plot - Plot Type
+92,DataPoint,40,,Plot - Plot Card - Plot Card Summary,Story - Pacing and Rhythm
+92,DataPoint,41,,Plot - Plot Card - Plot Card Summary,Plot - Thematic Cohesion
+92,DataPoint,42,,Plot - Plot Card - Plot Card Summary,Plot - Introduction of Central Conflict
+92,DataPoint,43,,Plot - Plot Card - Plot Card Summary,Plot - Protagonist's Initial Goal
+92,DataPoint,44,,Plot - Plot Card - Plot Card Summary,Plot - Status Quo
+92,DataPoint,45,,Plot - Plot Card - Plot Card Summary,Plot - Introduction of Key Allies and Adversaries
+128,DataPoint,99,,Setting - Setting Card - Setting Card Title,Story - Magic/Technology System
+128,DataPoint,100,,Setting - Setting Card - Setting Card Title,Story - Story Setting
+128,DataPoint,101,,Setting - Setting Card - Setting Card Title,Story - Unique Elements
+129,DataPoint,99,,Setting - Setting Card - Setting Card Summary,Story - Magic/Technology System
+129,DataPoint,100,,Setting - Setting Card - Setting Card Summary,Story - Story Setting
+129,DataPoint,101,,Setting - Setting Card - Setting Card Summary,Story - Unique Elements
+125,DataPoint,4,,"Series - Header, Series Card - Series Logline",Character - Backstory
+125,DataPoint,6,,"Series - Header, Series Card - Series Logline",Character - Internal Goal
+125,DataPoint,7,,"Series - Header, Series Card - Series Logline",Character - Age
+125,DataPoint,12,,"Series - Header, Series Card - Series Logline",Story - Primary Obstacle
+125,DataPoint,14,,"Series - Header, Series Card - Series Logline",Story - Sides of the Conflict
+125,DataPoint,19,,"Series - Header, Series Card - Series Logline",Story - Key Characters
+125,DataPoint,20,,"Series - Header, Series Card - Series Logline",Story - Key Relationships
+125,DataPoint,21,,"Series - Header, Series Card - Series Logline",Story - Supporting Characters
+125,DataPoint,22,,"Series - Header, Series Card - Series Logline",Story - Impact on Plot and Theme
+125,DataPoint,44,,"Series - Header, Series Card - Series Logline",Plot - Status Quo
+125,DataPoint,88,,"Series - Header, Series Card - Series Logline",Story - Setup
+110,DataPoint,14,,"Season - Header, Season Card - Season Logline",Story - Sides of the Conflict
+110,DataPoint,88,,"Season - Header, Season Card - Season Logline",Story - Setup
+110,DataPoint,89,,"Season - Header, Season Card - Season Logline",Story - Inciting Incident
+110,DataPoint,90,,"Season - Header, Season Card - Season Logline",Story - Trials and Complications
+110,DataPoint,91,,"Season - Header, Season Card - Season Logline",Story - Midpoint Twist
+110,DataPoint,92,,"Season - Header, Season Card - Season Logline",Story - Crisis Point
+110,DataPoint,93,,"Season - Header, Season Card - Season Logline",Story - Climax
+110,DataPoint,94,,"Season - Header, Season Card - Season Logline",Story - Resolution
+110,DataPoint,95,,"Season - Header, Season Card - Season Logline",Story - Transformation
+159,DataPoint,118,,Theme - Theme Card - Theme Card Title,Story - Central Theme
+160,DataPoint,118,,Theme - Theme Card - Theme Card Summary,Story - Central Theme
+113,DataPoint,75,,"Sequence - Header, Sequence Card - Sequence Type",Sequence - Protagonist
+114,DataPoint,80,,"Sequence - Header, Sequence Card - Sequence Action-based Title",Sequence - Sequence Title
+115,DataPoint,75,,"Sequence - Header, Sequence Card - Sequence Purpose",Sequence - Protagonist
+115,DataPoint,76,,"Sequence - Header, Sequence Card - Sequence Purpose",Sequence - Sequence Goal
+115,DataPoint,77,,"Sequence - Header, Sequence Card - Sequence Purpose",Sequence - Sequence Placement
+115,DataPoint,78,,"Sequence - Header, Sequence Card - Sequence Purpose",Sequence - Sequence Purpose Statement
+115,DataPoint,79,,"Sequence - Header, Sequence Card - Sequence Purpose",Sequence - Sequence Synopsis
+116,DataPoint,71,,"Sequence - Header, Sequence Card - Card Summary Audience Reaction",Sequence - Emotional Catharsis
+103,DataPoint,23,,Progress - Report Section - Story Goal Effectiveness,Story - Emotional Impact
+103,DataPoint,24,,Progress - Report Section - Story Goal Effectiveness,Story - Intellectual Impact
+103,DataPoint,25,,Progress - Report Section - Story Goal Effectiveness,Story - Thematic Resonance
+103,DataPoint,41,,Progress - Report Section - Story Goal Effectiveness,Plot - Thematic Cohesion
+103,DataPoint,42,,Progress - Report Section - Story Goal Effectiveness,Plot - Introduction of Central Conflict
+103,DataPoint,86,,Progress - Report Section - Story Goal Effectiveness,Story - Premise
+103,DataPoint,87,,Progress - Report Section - Story Goal Effectiveness,Story - Title
+103,DataPoint,88,,Progress - Report Section - Story Goal Effectiveness,Story - Setup
+103,DataPoint,89,,Progress - Report Section - Story Goal Effectiveness,Story - Inciting Incident
+103,DataPoint,90,,Progress - Report Section - Story Goal Effectiveness,Story - Trials and Complications
+103,DataPoint,91,,Progress - Report Section - Story Goal Effectiveness,Story - Midpoint Twist
+103,DataPoint,92,,Progress - Report Section - Story Goal Effectiveness,Story - Crisis Point
+103,DataPoint,93,,Progress - Report Section - Story Goal Effectiveness,Story - Climax
+103,DataPoint,94,,Progress - Report Section - Story Goal Effectiveness,Story - Resolution
+103,DataPoint,95,,Progress - Report Section - Story Goal Effectiveness,Story - Transformation
+104,DataPoint,115,,Progress - Report Section - Target Audience Effectiveness,Story - Comparable Titles
+104,DataPoint,116,,Progress - Report Section - Target Audience Effectiveness,Story - Demographics
+104,DataPoint,117,,Progress - Report Section - Target Audience Effectiveness,Story - Psychographics
+104,DataPoint,137,,Progress - Report Section - Target Audience Effectiveness,Writer - Target Audience
+105,DataPoint,23,,Progress - Report Section - Market Comp Effectiveness,Story - Emotional Impact
+105,DataPoint,24,,Progress - Report Section - Market Comp Effectiveness,Story - Intellectual Impact
+105,DataPoint,25,,Progress - Report Section - Market Comp Effectiveness,Story - Thematic Resonance
+105,DataPoint,83,,Progress - Report Section - Market Comp Effectiveness,Story - Exploring
+105,DataPoint,84,,Progress - Report Section - Market Comp Effectiveness,Story - Format
+105,DataPoint,85,,Progress - Report Section - Market Comp Effectiveness,Story - Genre
+105,DataPoint,86,,Progress - Report Section - Market Comp Effectiveness,Story - Premise
+105,DataPoint,87,,Progress - Report Section - Market Comp Effectiveness,Story - Title
+105,DataPoint,115,,Progress - Report Section - Market Comp Effectiveness,Story - Comparable Titles
+105,DataPoint,116,,Progress - Report Section - Market Comp Effectiveness,Story - Demographics
+105,DataPoint,117,,Progress - Report Section - Market Comp Effectiveness,Story - Psychographics
+7,DataPoint,86,,Story - Arc - Setup,Story - Premise
+7,DataPoint,88,,Story - Arc - Setup,Story - Setup
 ,,,,,
-7,DataPoint,130,User - Bio,Writer - Origin Story,
-7,DataPoint,131,User - Bio,Writer - Storytelling Strengths,
-7,DataPoint,132,User - Bio,Writer - Unique Perspective,
-7,DataPoint,133,User - Bio,Writer - Writing Motivation,
-7,DataPoint,134,User - Bio,Writer - Desired Impact,
-7,DataPoint,140,User - Bio,Writer - Distinctive Voice,
-7,DataPoint,146,User - Bio,Writer - Themes,
-8,DataPoint,134,User - Writing Goals,Writer - Desired Impact,
-8,DataPoint,135,User - Writing Goals,Writer - Long-Term Aspirations,
-8,DataPoint,136,User - Writing Goals,Writer - Short-Term Objectives,
-8,DataPoint,137,User - Writing Goals,Writer - Target Audience,
-8,DataPoint,144,User - Writing Goals,Writer - Formats,
-9,DataPoint,1,Character - Character Card Summary,Character - Ethnicity,
-9,DataPoint,2,Character - Character Card Summary,Character - Physical Description,
-9,DataPoint,3,Character - Character Card Summary,Character - Personality Trait,
-9,DataPoint,7,Character - Character Card Summary,Character - Age,
-9,DataPoint,8,Character - Character Card Summary,Character - Gender,
-9,DataPoint,9,Character - Character Card Summary,Character - Name,
-9,DataPoint,10,Character - Character Card Summary,Character - Occupation,
-9,DataPoint,29,Character - Character Card Summary,Character - Emotional Wound,
-9,DataPoint,30,Character - Character Card Summary,Character - Ghost,
-9,DataPoint,51,Character - Character Card Summary,Character - Core Beliefs,
-9,DataPoint,52,Character - Character Card Summary,Character - Fears,
-9,DataPoint,53,Character - Character Card Summary,Character - Flaws,
-9,DataPoint,54,Character - Character Card Summary,Character - Quirks,
-9,DataPoint,55,Character - Character Card Summary,Character - Strengths,
-9,DataPoint,56,Character - Character Card Summary,Character - Talents/Skills,
-10,DataPoint,42,Plot - Plot Card Title,Plot - Introduction of Central Conflict,
-10,DataPoint,43,Plot - Plot Card Title,Plot - Protagonist's Initial Goal,
-10,DataPoint,44,Plot - Plot Card Title,Plot - Status Quo,
-10,DataPoint,45,Plot - Plot Card Title,Plot - Introduction of Key Allies and Adversaries,
-10,DataPoint,105,Plot - Plot Card Title,Plot - Establishing Stakes,
-11,DataPoint,12,Plot - Plot Card Summary,Story - Primary Obstacle,
-11,DataPoint,34,Plot - Plot Card Summary,Story - Key Visuals,
-11,DataPoint,35,Plot - Plot Card Summary,Story - Protagonist's Choices,
-11,DataPoint,36,Plot - Plot Card Summary,Story - Emotional Beats,
-11,DataPoint,38,Plot - Plot Card Summary,Plot - Tying Up Loose Ends,
-11,DataPoint,39,Plot - Plot Card Summary,Plot - Plot Type,
-11,DataPoint,40,Plot - Plot Card Summary,Story - Pacing and Rhythm,
-11,DataPoint,41,Plot - Plot Card Summary,Plot - Thematic Cohesion,
-11,DataPoint,42,Plot - Plot Card Summary,Plot - Introduction of Central Conflict,
-11,DataPoint,43,Plot - Plot Card Summary,Plot - Protagonist's Initial Goal,
-11,DataPoint,44,Plot - Plot Card Summary,Plot - Status Quo,
-11,DataPoint,45,Plot - Plot Card Summary,Plot - Introduction of Key Allies and Adversaries,
-12,DataPoint,99,Setting - Setting Card Title,Story - Magic/Technology System,
-12,DataPoint,100,Setting - Setting Card Title,Story - Setting,
-12,DataPoint,101,Setting - Setting Card Title,Story - Unique Elements,
-13,DataPoint,99,Setting - Setting Card Summary,Story - Magic/Technology System,
-13,DataPoint,100,Setting - Setting Card Summary,Story - Setting,
-13,DataPoint,101,Setting - Setting Card Summary,Story - Unique Elements,
-14,DataPoint,4,Series - Series Logline,Character - Backstory,
-14,DataPoint,6,Series - Series Logline,Character - Internal Goal,
-14,DataPoint,7,Series - Series Logline,Character - Age,
-14,DataPoint,12,Series - Series Logline,Story - Primary Obstacle,
-14,DataPoint,14,Series - Series Logline,Story - Sides of the Conflict,
-14,DataPoint,19,Series - Series Logline,Story - Key Characters,
-14,DataPoint,20,Series - Series Logline,Story - Key Relationships,
-14,DataPoint,21,Series - Series Logline,Story - Supporting Characters,
-14,DataPoint,22,Series - Series Logline,Story - Impact on Plot and Theme,
-14,DataPoint,44,Series - Series Logline,Plot - Status Quo,
-14,DataPoint,88,Series - Series Logline,Story - Setup,
-15,DataPoint,14,Season - Season Logline,Story - Sides of the Conflict,
-15,DataPoint,88,Season - Season Logline,Story - Setup,
-15,DataPoint,89,Season - Season Logline,Story - Inciting Incident,
-15,DataPoint,90,Season - Season Logline,Story - Trials and Complications,
-15,DataPoint,91,Season - Season Logline,Story - Midpoint Twist,
-15,DataPoint,92,Season - Season Logline,Story - Crisis Point,
-15,DataPoint,93,Season - Season Logline,Story - Climax,
-15,DataPoint,94,Season - Season Logline,Story - Resolution,
-15,DataPoint,95,Season - Season Logline,Story - Transformation,
-16,DataPoint,118,Theme - Theme Card Title,Story - Central Theme,
-17,DataPoint,118,Theme - Theme Card Summary,Story - Central Theme,
-18,DataPoint,75,Sequence - Sequence Type,Sequence - Protagonist,
-19,DataPoint,80,Sequence - Sequence Action-based Title,Sequence - Sequence Title,
-20,DataPoint,75,Sequence - Sequence Purpose,Sequence - Protagonist,
-20,DataPoint,76,Sequence - Sequence Purpose,Sequence - Sequence Goal,
-20,DataPoint,77,Sequence - Sequence Purpose,Sequence - Sequence Placement,
-20,DataPoint,78,Sequence - Sequence Purpose,Sequence - Sequence Purpose Statement,
-20,DataPoint,79,Sequence - Sequence Purpose,Sequence - Sequence Synopsis,
-21,DataPoint,71,Sequence - Card Summary Audience Reaction,Sequence - Emotional Catharsis,
-22,,,,,
-23,DataPoint,23,Progress - Story Goal Effectiveness,Story - Emotional Impact,
-23,DataPoint,24,Progress - Story Goal Effectiveness,Story - Intellectual Impact,
-23,DataPoint,25,Progress - Story Goal Effectiveness,Story - Thematic Resonance,
-23,DataPoint,41,Progress - Story Goal Effectiveness,Plot - Thematic Cohesion,
-23,DataPoint,42,Progress - Story Goal Effectiveness,Plot - Introduction of Central Conflict,
-23,DataPoint,86,Progress - Story Goal Effectiveness,Story - Premise,
-23,DataPoint,87,Progress - Story Goal Effectiveness,Story - Title,
-23,DataPoint,88,Progress - Story Goal Effectiveness,Story - Setup,
-23,DataPoint,89,Progress - Story Goal Effectiveness,Story - Inciting Incident,
-23,DataPoint,90,Progress - Story Goal Effectiveness,Story - Trials and Complications,
-23,DataPoint,91,Progress - Story Goal Effectiveness,Story - Midpoint Twist,
-23,DataPoint,92,Progress - Story Goal Effectiveness,Story - Crisis Point,
-23,DataPoint,93,Progress - Story Goal Effectiveness,Story - Climax,
-23,DataPoint,94,Progress - Story Goal Effectiveness,Story - Resolution,
-23,DataPoint,95,Progress - Story Goal Effectiveness,Story - Transformation,
-24,DataPoint,115,Progress - Target Audience Effectiveness,Story - Comparable Titles,
-24,DataPoint,116,Progress - Target Audience Effectiveness,Story - Demographics,
-24,DataPoint,117,Progress - Target Audience Effectiveness,Story - Psychographics,
-24,DataPoint,137,Progress - Target Audience Effectiveness,Writer - Target Audience,
-25,DataPoint,23,Progress - Market Comp Effectiveness,Story - Emotional Impact,
-25,DataPoint,24,Progress - Market Comp Effectiveness,Story - Intellectual Impact,
-25,DataPoint,25,Progress - Market Comp Effectiveness,Story - Thematic Resonance,
-25,DataPoint,83,Progress - Market Comp Effectiveness,Story - Exploring,
-25,DataPoint,84,Progress - Market Comp Effectiveness,Story - Format,
-25,DataPoint,85,Progress - Market Comp Effectiveness,Story - Genre,
-25,DataPoint,86,Progress - Market Comp Effectiveness,Story - Premise,
-25,DataPoint,87,Progress - Market Comp Effectiveness,Story - Title,
-25,DataPoint,115,Progress - Market Comp Effectiveness,Story - Comparable Titles,
-25,DataPoint,116,Progress - Market Comp Effectiveness,Story - Demographics,
-25,DataPoint,117,Progress - Market Comp Effectiveness,Story - Psychographics,
+18,DataPoint,317,TRUE,Character - Character Arc - Setup,Character - Character Starting Point
+18,DataPoint,57,,Character - Character Arc - Setup,Character - Narrative Purpose
+18,DataPoint,58,,Character - Character Arc - Setup,Character - Relationship to Main Characters
+19,DataPoint,318,TRUE,Character - Character Arc - Inciting Incident,Character - Character Inciting Incident
+20,DataPoint,320,TRUE,Character - Character Arc - Trials and Complications,Character - Character Challenges
+20,DataPoint,51,,Character - Character Arc - Trials and Complications,Character - Core Beliefs
+20,DataPoint,52,,Character - Character Arc - Trials and Complications,Character - Fears
+20,DataPoint,53,,Character - Character Arc - Trials and Complications,Character - Flaws
+20,DataPoint,54,,Character - Character Arc - Trials and Complications,Character - Quirks
+20,DataPoint,55,,Character - Character Arc - Trials and Complications,Character - Strengths
+20,DataPoint,56,,Character - Character Arc - Trials and Complications,Character - Talents/Skills
+21,DataPoint,322,TRUE,Character - Character Arc - The Midpoint Twist,Character - Character Revelations
+21,DataPoint,112,,Character - Character Arc - The Midpoint Twist,Character - Critical Character Discovery
+22,DataPoint,323,TRUE,Character - Character Arc - The Crisis Point,Character - Character Low Point
+22,DataPoint,29,,Character - Character Arc - The Crisis Point,Character - Emotional Wound
+22,DataPoint,52,,Character - Character Arc - The Crisis Point,Character - Fears
+22,DataPoint,53,,Character - Character Arc - The Crisis Point,Character - Flaws
+23,DataPoint,324,TRUE,Character - Character Arc - The Climax,Character - Character Climax
+23,DataPoint,17,,Character - Character Arc - The Climax,Character - Making Decisions
+23,DataPoint,18,,Character - Character Arc - The Climax,Character - Willing to Sacrifice
+23,DataPoint,55,,Character - Character Arc - The Climax,Character - Strengths
+23,DataPoint,56,,Character - Character Arc - The Climax,Character - Talents/Skills
+24,DataPoint,325,TRUE,Character - Character Arc - The Resolution,Character - Character Resolution
+24,DataPoint,16,,Character - Character Arc - The Resolution,Character - Helping Others
+24,DataPoint,112,,Character - Character Arc - The Resolution,Character - Critical Character Discovery
+25,DataPoint,327,TRUE,Character - Episode Impact - Character Arc in Relation to Series Arc,Character - Character Pivotal Impact
+25,DataPoint,326,,Character - Episode Impact - Character Arc in Relation to Series Arc,Character - Character Thematic Resonance
+26,DataPoint,328,,Character - Episode Impact - Character Arc Areas of Growth,Character - Series Starting Point
+26,DataPoint,27,,Character - Episode Impact - Character Arc Areas of Growth,Character - At their worst
+26,DataPoint,30,,Character - Episode Impact - Character Arc Areas of Growth,Character - Ghost
+26,DataPoint,52,,Character - Episode Impact - Character Arc Areas of Growth,Character - Fears
+26,DataPoint,53,,Character - Episode Impact - Character Arc Areas of Growth,Character - Flaws
+26,DataPoint,56,,Character - Episode Impact - Character Arc Areas of Growth,Character - Talents/Skills
+26,DataPoint,153,,Character - Episode Impact - Character Arc Areas of Growth,Character - Core Values Demonstrated Moments
+26,DataPoint,175,,Character - Episode Impact - Character Arc Areas of Growth,Character - Formative Failure
+26,DataPoint,180,,Character - Episode Impact - Character Arc Areas of Growth,Character - Fear of
+26,DataPoint,181,,Character - Episode Impact - Character Arc Areas of Growth,Character - Dark Secret
+26,DataPoint,197,,Character - Episode Impact - Character Arc Areas of Growth,Character - Self-Sacrifice Moment
+26,DataPoint,331,TRUE,Character - Episode Impact - Character Arc Areas of Growth,Character - Series Challenges
+27,DataPoint,324,TRUE,Character - Episode Impact - Character Arc Key Choices Made,Character - Character Climax
+28,DataPoint,328,TRUE,Character - Series Arc - Setup,Character - Series Starting Point
+28,DataPoint,6,,Character - Series Arc - Setup,Character - Internal Goal
+28,DataPoint,52,,Character - Series Arc - Setup,Character - Fears
+28,DataPoint,53,,Character - Series Arc - Setup,Character - Flaws
+29,DataPoint,329,TRUE,Character - Series Arc - Inciting Incident,Character - Series Inciting Incident
+30,DataPoint,331,TRUE,Character - Series Arc - Trials and Complications,Character - Series Challenges
+30,DataPoint,52,,Character - Series Arc - Trials and Complications,Character - Fears
+30,DataPoint,53,,Character - Series Arc - Trials and Complications,Character - Flaws
+30,DataPoint,321,,Character - Series Arc - Trials and Complications,Character - Character Relationships
+31,DataPoint,333,TRUE,Character - Series Arc - The Midpoint Twist,Character - Series Revelations
+31,DataPoint,160,,Character - Series Arc - The Midpoint Twist,Character - Relationship Conflict List
+32,DataPoint,334,TRUE,Character - Series Arc - The Crisis Point,Character - Series Low Point
+32,DataPoint,29,,Character - Series Arc - The Crisis Point,Character - Emotional Wound
+32,DataPoint,30,,Character - Series Arc - The Crisis Point,Character - Ghost
+32,DataPoint,52,,Character - Series Arc - The Crisis Point,Character - Fears
+33,DataPoint,335,TRUE,Character - Series Arc - The Climax,Character - Series Climax
+33,DataPoint,18,,Character - Series Arc - The Climax,Character - Willing to Sacrifice
+33,DataPoint,197,,Character - Series Arc - The Climax,Character - Self-Sacrifice Moment
+33,DataPoint,164,,Character - Series Arc - The Climax,Character - Revelation Moment
+34,DataPoint,336,TRUE,Character - Series Arc - The Resolution,Character - Series Resolution
+34,DataPoint,112,,Character - Series Arc - The Resolution,Character - Critical Character Discovery
+34,DataPoint,325,,Character - Series Arc - The Resolution,Character - Character Resolution
+34,DataPoint,51,,Character - Series Arc - The Resolution,Character - Core Beliefs
+35,DataPoint,324,TRUE,Character - Episode Impact - Favorite Moment Item,Character - Character Climax
+35,DataPoint,325,,Character - Episode Impact - Favorite Moment Item,Character - Character Resolution
+36,DataPoint,335,TRUE,Character - Series Arc - Favorite Moment Item,Character - Series Climax
+36,DataPoint,336,,Character - Series Arc - Favorite Moment Item,Character - Series Resolution
+,,,,,
+37,DataPoint,1,,Character -  - Early Life,Character - Ethnicity
+37,DataPoint,152,,Character -  - Early Life,Character - Childhood Trauma Items
+37,DataPoint,4,TRUE,Character -  - Early Life,Character - Backstory
+37,DataPoint,29,,Character -  - Early Life,Character - Emotional Wound
+37,DataPoint,30,,Character -  - Early Life,Character - Ghost
+37,DataPoint,152,,Character -  - Early Life,Character - Childhood Trauma Items
+38,DataPoint,152,TRUE,Character -  - Family Dynamics,Character - Childhood Trauma Items
+38,DataPoint,180,,Character -  - Family Dynamics,Character - Fear of
+39,DataPoint,56,TRUE,Character -  - Education and Training,Character - Talents/Skills
+40,DataPoint,29,TRUE,Character -  - Traumatic Events,Character - Emotional Wound
+40,DataPoint,152,,Character -  - Traumatic Events,Character - Childhood Trauma Items
+40,DataPoint,175,,Character -  - Traumatic Events,Character - Formative Failure
+40,DataPoint,217,,Character -  - Traumatic Events,Character - Lowest Moment
+41,DataPoint,3,,Character -  - Reputation,Character - Personality Trait
+41,DataPoint,57,TRUE,Character -  - Reputation,Character - Narrative Purpose
+41,DataPoint,58,,Character -  - Reputation,Character - Relationship to Main Characters
+42,DataPoint,56,TRUE,Character -  - Key Life Accomplishments,Character - Talents/Skills
+42,DataPoint,319,,Character -  - Key Life Accomplishments,Character - Character Goal
+,,,,,
+17,DataPoint,51,TRUE,Character -  - Key Motivation and Personality,Character - Core Beliefs
+17,DataPoint,52,,Character -  - Key Motivation and Personality,Character - Fears
+17,DataPoint,53,,Character -  - Key Motivation and Personality,Character - Flaws
+17,DataPoint,54,,Character -  - Key Motivation and Personality,Character - Quirks
+17,DataPoint,159,,Character -  - Key Motivation and Personality,Character - Primary Motivation
+43,DataPoint,5,TRUE,Character -  - Character Goal Item,Character - External Goal
+43,DataPoint,6,,Character -  - Character Goal Item,Character - Internal Goal
+44,DataPoint,2,TRUE,Character -  - Introduction to the Audience,Character - Physical Description
+44,DataPoint,3,,Character -  - Introduction to the Audience,Character - Personality Trait
+45,DataPoint,55,TRUE,Character -  - Personality Positive Item,Character - Strengths
+45,DataPoint,56,,Character -  - Personality Positive Item,Character - Talents/Skills
+46,DataPoint,27,TRUE,Character -  - Personality Negative Item,Character - At their worst
+46,DataPoint,53,,Character -  - Personality Negative Item,Character - Flaws
+47,DataPoint,51,TRUE,Character -  - Character Core Motivations,Character - Core Beliefs
+47,DataPoint,52,,Character -  - Character Core Motivations,Character - Fears
+48,DataPoint,15,TRUE,Character -  - Character Decision Making Item,Character - Handling Conflict
+48,DataPoint,16,,Character -  - Character Decision Making Item,Character - Helping Others
+48,DataPoint,17,,Character -  - Character Decision Making Item,Character - Making Decisions
+49,DataPoint,54,TRUE,Character -  - Character Growth Potential Item,Character - Quirks
+49,DataPoint,228,,Character -  - Character Growth Potential Item,Character - Unfinished Business
+50,DataPoint,52,TRUE,Character -  - Character Emotional Landscape Item,Character - Fears
+50,DataPoint,216,,Character -  - Character Emotional Landscape Item,Character - Mask
+51,DataPoint,122,TRUE,Character -  - Archetypes Item,Character - Defining quote
+51,DataPoint,196,,Character -  - Archetypes Item,Character - Betrayal
+,,,,,
+52,DataPoint,141,TRUE,Character -  - Historical Figures Item,Writer - Influential Stories
+52,DataPoint,142,,Character -  - Historical Figures Item,Writer - Inspiring Creators
+53,DataPoint,139,TRUE,Character -  - Fictional References Item,Writer - Compared to Influences
+53,DataPoint,140,,Character -  - Fictional References Item,Writer - Distinctive Voice
+54,DataPoint,160,TRUE,Character -  - Relationship in Episode Item,Character - Relationship Conflict List
+54,DataPoint,58,,Character -  - Relationship in Episode Item,Character - Relationship to Main Characters
+54,DataPoint,112,,Character -  - Relationship in Episode Item,Character - Critical Character Discovery
+55,DataPoint,3,TRUE,Character -  - Perceived by Others Item,Character - Personality Trait
+55,DataPoint,216,,Character -  - Perceived by Others Item,Character - Mask
+56,DataPoint,55,TRUE,Character -  - Appeals to Others Item,Character - Strengths
+56,DataPoint,56,,Character -  - Appeals to Others Item,Character - Talents/Skills
+57,DataPoint,27,TRUE,Character -  - Repels Characters Item,Character - At their worst
+57,DataPoint,53,,Character -  - Repels Characters Item,Character - Flaws
+58,DataPoint,58,TRUE,Character -  - Relationships Item,Character - Relationship to Main Characters
+58,DataPoint,160,,Character -  - Relationships Item,Character - Relationship Conflict List
+59,DataPoint,16,TRUE,Character -  - In Friendship,Character - Helping Others
+59,DataPoint,18,,Character -  - In Friendship,Character - Willing to Sacrifice
+60,DataPoint,18,TRUE,Character -  - Community,Character - Willing to Sacrifice
+60,DataPoint,132,,Character -  - Community,Writer - Unique Perspective
+61,DataPoint,57,TRUE,Character -  - Outside,Character - Narrative Purpose
+61,DataPoint,58,,Character -  - Outside,Character - Relationship to Main Characters
+62,DataPoint,123,TRUE,Character -  - Speech Patterns Item,Character - Dialogue Traits
+62,DataPoint,126,,Character -  - Speech Patterns Item,Character - Would never say
+,,,,,
+65,DataPoint,251,TRUE,Market Comp - - - Favorite Aspect Title,Market Comp - Favorite Comp Element
+66,DataPoint,251,TRUE,Market Comp - - - Favorite Aspect Description,Market Comp - Favorite Comp Element
+67,DataPoint,256,TRUE,Market Comp - - - Top Similarity Item,Market Comp - Comp Similarity to Story
+67,DataPoint,258,,Market Comp - - - Top Similarity Item,Market Comp - Comp Influence on Story
+68,DataPoint,257,TRUE,Market Comp - - - Top Difference Item,Market Comp - Comp Difference from Story
+69,DataPoint,252,TRUE,Market Comp - - - Key Moment Title,Market Comp - Comp Plot Highlights
+69,DataPoint,253,,Market Comp - - - Key Moment Title,Market Comp - Comp Key Characters
+69,DataPoint,254,,Market Comp - - - Key Moment Title,Market Comp - Comp Central Themes
+70,DataPoint,252,TRUE,Market Comp - - - Key Moment Description,Market Comp - Comp Plot Highlights
+70,DataPoint,253,,Market Comp - - - Key Moment Description,Market Comp - Comp Key Characters
+70,DataPoint,254,,Market Comp - - - Key Moment Description,Market Comp - Comp Central Themes
+,,,,,
+71,DataPoint,248,,Market Comp - Comparison - General Description,Market Comp - Comp Title
+71,DataPoint,249,,Market Comp - Comparison - General Description,Market Comp - Comp Medium
+71,DataPoint,250,TRUE,Market Comp - Comparison - General Description,Market Comp - Comp Genre
+71,DataPoint,255,,Market Comp - Comparison - General Description,Market Comp - Comp Tone and Style
+72,DataPoint,252,TRUE,Market Comp - Comparison - Plot Arc,Market Comp - Comp Plot Highlights
+72,DataPoint,254,,Market Comp - Comparison - Plot Arc,Market Comp - Comp Central Themes
+73,DataPoint,256,TRUE,Market Comp - Comparison - Plot Compared,Market Comp - Comp Similarity to Story
+,,,,,
+74,DataPoint,252,,Market Comp - Comparison - Plot Compared - Similarities,Market Comp - Comp Plot Highlights
+74,DataPoint,256,TRUE,Market Comp - Comparison - Plot Compared - Similarities,Market Comp - Comp Similarity to Story
+75,DataPoint,252,,Market Comp - Comparison - Plot Compared - Differences,Market Comp - Comp Plot Highlights
+75,DataPoint,257,TRUE,Market Comp - Comparison - Plot Compared - Differences,Market Comp - Comp Difference from Story
+,,,,,
+76,DataPoint,76,TRUE,Market Comp - Comparison - Characters - Key Character Item,Sequence - Sequence Goal
+76,DataPoint,253,,Market Comp - Comparison - Characters - Key Character Item,Market Comp - Comp Key Characters
+77,DataPoint,252,,Market Comp - Comparison - Characters - Character Arcs,Market Comp - Comp Plot Highlights
+77,DataPoint,253,TRUE,Market Comp - Comparison - Characters - Character Arcs,Market Comp - Comp Key Characters
+78,DataPoint,256,TRUE,Market Comp - Comparison - Characters - Characters Compared,Market Comp - Comp Similarity to Story
+79,DataPoint,252,,Market Comp - Comparison - Characters - Characters Compared - Similarities,Market Comp - Comp Plot Highlights
+79,DataPoint,256,TRUE,Market Comp - Comparison - Characters - Characters Compared - Similarities,Market Comp - Comp Similarity to Story
+80,DataPoint,252,,Market Comp - Comparison - Characters - Characters Compared - Differences,Market Comp - Comp Plot Highlights
+80,DataPoint,257,TRUE,Market Comp - Comparison - Characters - Characters Compared - Differences,Market Comp - Comp Difference from Story
+81,DataPoint,254,TRUE,Market Comp - Comparison - Themes - Central Themes,Market Comp - Comp Central Themes
+82,DataPoint,254,,Market Comp - Comparison - Themes - Symbols & Motifs Item,Market Comp - Comp Central Themes
+82,DataPoint,255,TRUE,Market Comp - Comparison - Themes - Symbols & Motifs Item,Market Comp - Comp Tone and Style
+83,DataPoint,254,,Market Comp - Comparison - Themes - Themes Compared,Market Comp - Comp Central Themes
+83,DataPoint,256,TRUE,Market Comp - Comparison - Themes - Themes Compared,Market Comp - Comp Similarity to Story
+84,DataPoint,254,,Market Comp - Comparison - Themes - Themes Compared - Similarities,Market Comp - Comp Central Themes
+84,DataPoint,256,TRUE,Market Comp - Comparison - Themes - Themes Compared - Similarities,Market Comp - Comp Similarity to Story
+85,DataPoint,254,,Market Comp - Comparison - Themes - Themes Compared - Differences,Market Comp - Comp Central Themes
+85,DataPoint,257,TRUE,Market Comp - Comparison - Themes - Themes Compared - Differences,Market Comp - Comp Difference from Story
+86,DataPoint,250,TRUE,Market Comp - Comparison - World - World Details,Market Comp - Comp Genre
+86,DataPoint,255,,Market Comp - Comparison - World - World Details,Market Comp - Comp Tone and Style
+87,DataPoint,255,TRUE,Market Comp - Comparison - World - Tone and Style,Market Comp - Comp Tone and Style
+88,DataPoint,256,TRUE,Market Comp - Comparison - World - World Compared,Market Comp - Comp Similarity to Story
+89,DataPoint,252,,Market Comp - Comparison - World - World Compared - Similarities,Market Comp - Comp Plot Highlights
+89,DataPoint,256,TRUE,Market Comp - Comparison - World - World Compared - Similarities,Market Comp - Comp Similarity to Story
+90,DataPoint,252,,Market Comp - Comparison - World - World Compared - Differences,Market Comp - Comp Plot Highlights
+90,DataPoint,257,TRUE,Market Comp - Comparison - World - World Compared - Differences,Market Comp - Comp Difference from Story
+,,,,,
+93,DataPoint,44,TRUE,Plot -  - Setup,Plot - Status Quo
+93,DataPoint,43,,Plot -  - Setup,Plot - Protagonist's Initial Goal
+93,DataPoint,6,,Plot -  - Setup,Character - Internal Goal
+94,DataPoint,42,TRUE,Plot -  - Inciting Incident,Plot - Introduction of Central Conflict
+95,DataPoint,12,TRUE,Plot -  - Trials and Complications,Story - Primary Obstacle
+95,DataPoint,12,,Plot -  - Trials and Complications,Story - Primary Obstacle
+95,DataPoint,34,,Plot -  - Trials and Complications,Story - Key Visuals
+95,DataPoint,35,,Plot -  - Trials and Complications,Story - Protagonist's Choices
+96,DataPoint,47,TRUE,Plot -  - The Midpoint Twist,Plot - Midpoint
+96,DataPoint,32,,Plot -  - The Midpoint Twist,Plot - Emotional Resonance
+97,DataPoint,46,TRUE,Plot -  - The Crisis Point,Plot - Dark Night of the Soul
+97,DataPoint,29,,Plot -  - The Crisis Point,Character - Emotional Wound
+97,DataPoint,52,,Plot -  - The Crisis Point,Character - Fears
+97,DataPoint,53,,Plot -  - The Crisis Point,Character - Flaws
+98,DataPoint,163,TRUE,Plot -  - The Climax,Plot - Climax
+98,DataPoint,17,,Plot -  - The Climax,Character - Making Decisions
+98,DataPoint,18,,Plot -  - The Climax,Character - Willing to Sacrifice
+98,DataPoint,55,,Plot -  - The Climax,Character - Strengths
+98,DataPoint,56,,Plot -  - The Climax,Character - Talents/Skills
+99,DataPoint,37,TRUE,Plot -  - The Resolution,Plot - Establishing the New Normal
+99,DataPoint,48,,Plot -  - The Resolution,Plot - Character Resolution
+99,DataPoint,50,,Plot -  - The Resolution,Plot - Thematic Resolution
+100,DataPoint,100,TRUE,Plot - - - Plot Main Protagonist Purpose,Story - Story Setting
+101,DataPoint,43,TRUE,Plot - - - Plot Main Protagonist Goal,Plot - Protagonist's Initial Goal
+101,DataPoint,6,,Plot - - - Plot Main Protagonist Goal,Character - Internal Goal
+102,DataPoint,42,TRUE,Plot - - - Plot Exploration,Plot - Introduction of Central Conflict
+102,DataPoint,12,,Plot - - - Plot Exploration,Story - Primary Obstacle
+102,DataPoint,13,,Plot - - - Plot Exploration,Story - Stakes
+102,DataPoint,14,,Plot - - - Plot Exploration,Story - Sides of the Conflict
+,,,,,
+111,DataPoint,295,,Season - Season Goal - Season Goal Summary,Season - The Season World Before
+111,DataPoint,238,TRUE,Season - Season Goal - Season Goal Summary,Season - Season Theme
+111,DataPoint,241,,Season - Season Goal - Season Goal Summary,Season - Season Number
+111,DataPoint,242,,Season - Season Goal - Season Goal Summary,Season - Season Title
+111,DataPoint,296,,Season - Season Goal - Season Goal Summary,Season - Season Setup
+111,DataPoint,297,,Season - Season Goal - Season Goal Summary,Season - Season Inciting Incident
+112,DataPoint,295,,Season - Season Goal - Season Audience Promise,Season - The Season World Before
+112,DataPoint,238,TRUE,Season - Season Goal - Season Audience Promise,Season - Season Theme
+112,DataPoint,298,,Season - Season Goal - Season Audience Promise,Season - Escalating Tensions
+112,DataPoint,299,,Season - Season Goal - Season Audience Promise,Season - Character Developments
+112,DataPoint,300,,Season - Season Goal - Season Audience Promise,Season - Midpoint Turn
+112,DataPoint,301,,Season - Season Goal - Season Audience Promise,Season - Turning Point
+112,DataPoint,302,,Season - Season Goal - Season Audience Promise,Season - Season Climax
+,,,,,
+171,DataPoint,295,TRUE,Series - - - Setup,Season - The Season World Before
+171,DataPoint,304,,Series - - - Setup,Season - The Season World After
+172,DataPoint,297,TRUE,Series - - - Inciting Incident,Season - Season Inciting Incident
+180,DataPoint,295,TRUE,Season - - - Setup,Season - The Season World Before
+181,DataPoint,297,TRUE,Season - - - Inciting Incident,Season - Season Inciting Incident
+182,DataPoint,298,TRUE,Season - - - Trials and Complications,Season - Escalating Tensions
+182,DataPoint,299,,Season - - - Trials and Complications,Season - Character Developments
+183,DataPoint,300,TRUE,Season - - - Midpoint Twist,Season - Midpoint Turn
+184,DataPoint,301,TRUE,Season - - - Crisis Point,Season - Turning Point
+185,DataPoint,302,TRUE,Season - - - Climax,Season - Season Climax
+186,DataPoint,303,,Season - - - Resolution,Season - Character Resolutions
+186,DataPoint,304,TRUE,Season - - - Resolution,Season - The Season World After
+187,DataPoint,302,,Season - - - Hook,Season - Season Climax
+187,DataPoint,298,TRUE,Season - - - Hook,Season - Escalating Tensions
+188,DataPoint,302,TRUE,Season - Moment Card - Highlighted Moment,Season - Season Climax
+,,,,,
+8,DataPoint,89,TRUE,Story - Arc - Inciting Incident,Story - Inciting Incident
+9,DataPoint,90,TRUE,Story - Arc - Trials and Complications,Story - Trials and Complications
+9,DataPoint,96,,Story - Arc - Trials and Complications,Story - Key Discoveries and Reversals
+9,DataPoint,97,,Story - Arc - Trials and Complications,Story - Mounting Obstacles and Challenges
+10,DataPoint,91,TRUE,Story - Arc - Midpoint Twist,Story - Midpoint Twist
+11,DataPoint,92,TRUE,Story - Arc - Crisis Point,Story - Crisis Point
+11,DataPoint,13,,Story - Arc - Crisis Point,Story - Stakes
+12,DataPoint,93,TRUE,Story - Arc - Climax,Story - Climax
+12,DataPoint,35,,Story - Arc - Climax,Story - Protagonist's Choices
+12,DataPoint,36,,Story - Arc - Climax,Story - Emotional Beats
+13,DataPoint,94,TRUE,Story - Arc - Resolution,Story - Resolution
+13,DataPoint,95,,Story - Arc - Resolution,Story - Transformation
+14,DataPoint,86,,Story - Arc - Hook,Story - Premise
+14,DataPoint,178,TRUE,Story - Arc - Hook,Story - Narrative Hook
+,,,,,
+147,DataPoint,265,TRUE,Target Audience - Audience Likes - Major Likes,Target Audience - Major Likes
+149,DataPoint,259,TRUE,"Target Audience - Header, Target Audience Card - Target Audience Card Summary",Target Audience - Age Range
+149,DataPoint,260,,"Target Audience - Header, Target Audience Card - Target Audience Card Summary",Target Audience - Gender Skew
+149,DataPoint,261,,"Target Audience - Header, Target Audience Card - Target Audience Card Summary",Target Audience - Interests and Hobbies
+149,DataPoint,262,,"Target Audience - Header, Target Audience Card - Target Audience Card Summary",Target Audience - Values and Beliefs
+148,DataPoint,266,TRUE,Target Audience - Audience Dislikes - Major Dislikes,Target Audience - Major Dislikes
+150,DataPoint,265,TRUE,Target Audience - - - Key Aspects of Appeal Item,Target Audience - Major Likes
+150,DataPoint,263,,Target Audience - - - Key Aspects of Appeal Item,Target Audience - Favorite Stories
+151,DataPoint,265,TRUE,Target Audience - - - Likes Item,Target Audience - Major Likes
+152,DataPoint,266,TRUE,Target Audience - - - Dislikes Item,Target Audience - Major Dislikes
+153,DataPoint,261,TRUE,Target Audience - - - Interests Positive,Target Audience - Interests and Hobbies
+154,DataPoint,261,TRUE,Target Audience - - - Interests Negative,Target Audience - Interests and Hobbies
+155,DataPoint,263,TRUE,Target Audience - - - Additional Insights Item,Target Audience - Favorite Stories
+155,DataPoint,264,,Target Audience - - - Additional Insights Item,Target Audience - Content Preferences
+156,DataPoint,265,,Target Audience - Reaction - Recommendation Quote,Target Audience - Major Likes
+156,DataPoint,266,,Target Audience - Reaction - Recommendation Quote,Target Audience - Major Dislikes
+157,DataPoint,261,,Target Audience - Reaction - Emotional,Target Audience - Interests and Hobbies
+157,DataPoint,262,TRUE,Target Audience - Reaction - Emotional,Target Audience - Values and Beliefs
+157,DataPoint,265,,Target Audience - Reaction - Emotional,Target Audience - Major Likes
+158,DataPoint,262,TRUE,Target Audience - Reaction - Intellectual,Target Audience - Values and Beliefs
+158,DataPoint,265,,Target Audience - Reaction - Intellectual,Target Audience - Major Likes
+,,,,,
+117,DataPoint,59,,Sequence - Arc Summary - Arc Summary,Sequence - Central Conflict
+117,DataPoint,62,,Sequence - Arc Summary - Arc Summary,Sequence - Obstructing Forces
+117,DataPoint,63,TRUE,Sequence - Arc Summary - Arc Summary,Sequence - Protagonist's Goal
+117,DataPoint,66,,Sequence - Arc Summary - Arc Summary,Sequence - Impact on Characters
+117,DataPoint,67,,Sequence - Arc Summary - Arc Summary,Sequence - Impact on Plot
+117,DataPoint,68,,Sequence - Arc Summary - Arc Summary,Sequence - Impact on the World
+118,DataPoint,63,TRUE,Sequence -  - Goal,Sequence - Protagonist's Goal
+119,DataPoint,62,TRUE,Sequence -  - Obstacle,Sequence - Obstructing Forces
+120,DataPoint,63,,Sequence -  - Major Choice,Sequence - Protagonist's Goal
+120,DataPoint,65,TRUE,Sequence -  - Major Choice,Sequence - Raising the Stakes
+121,DataPoint,71,TRUE,Sequence -  - Favorite Moment,Sequence - Emotional Catharsis
+122,DataPoint,67,TRUE,Sequence -  - Plot Impact,Sequence - Impact on Plot
+123,DataPoint,66,TRUE,Sequence -  - Character Impact,Sequence - Impact on Characters
+124,DataPoint,59,,Sequence -  - Audience Learns,Sequence - Central Conflict
+124,DataPoint,62,,Sequence -  - Audience Learns,Sequence - Obstructing Forces
+124,DataPoint,63,,Sequence -  - Audience Learns,Sequence - Protagonist's Goal
+124,DataPoint,64,TRUE,Sequence -  - Audience Learns,Sequence - Protagonist's Motivation
+124,DataPoint,65,,Sequence -  - Audience Learns,Sequence - Raising the Stakes
+124,DataPoint,68,,Sequence -  - Audience Learns,Sequence - Impact on the World
+126,DataPoint,241,,Series - Series Goal - Series Goal Summary,Season - Season Number
+126,DataPoint,242,,Series - Series Goal - Series Goal Summary,Season - Season Title
+126,DataPoint,295,,Series - Series Goal - Series Goal Summary,Season - The Season World Before
+126,DataPoint,238,TRUE,Series - Series Goal - Series Goal Summary,Season - Season Theme
+126,DataPoint,296,,Series - Series Goal - Series Goal Summary,Season - Season Setup
+126,DataPoint,297,,Series - Series Goal - Series Goal Summary,Season - Season Inciting Incident
+127,DataPoint,295,,Series - Series Goal - Series Audience Promise,Season - The Season World Before
+127,DataPoint,238,,Series - Series Goal - Series Audience Promise,Season - Season Theme
+127,DataPoint,298,,Series - Series Goal - Series Audience Promise,Season - Escalating Tensions
+127,DataPoint,299,,Series - Series Goal - Series Audience Promise,Season - Character Developments
+127,DataPoint,300,,Series - Series Goal - Series Audience Promise,Season - Midpoint Turn
+127,DataPoint,301,,Series - Series Goal - Series Audience Promise,Season - Turning Point
+127,DataPoint,302,TRUE,Series - Series Goal - Series Audience Promise,Season - Season Climax
+,,,,,
+130,DataPoint,272,TRUE,Settings - - - Key Locations Item,Settings - Key Locations & Significance
+131,DataPoint,272,TRUE,Settings - - - Key Locations Item - Significance,Settings - Key Locations & Significance
+131,DataPoint,273,,Settings - - - Key Locations Item - Significance,Settings - Key Historical Event & Significance
+132,DataPoint,269,TRUE,Settings - Details - Time,Settings - Time Period
+133,DataPoint,270,TRUE,Settings - Details - Language,Settings - Languages
+134,DataPoint,247,,Settings - Details - Geography,Settings - Setting Type
+134,DataPoint,269,,Settings - Details - Geography,Settings - Time Period
+134,DataPoint,272,,Settings - Details - Geography,Settings - Key Locations & Significance
+134,DataPoint,277,TRUE,Settings - Details - Geography,Settings - The Sights
+135,DataPoint,275,TRUE,Settings - Society - Cultural Norms,Settings - Cultural Norms & Significance
+136,DataPoint,275,TRUE,Settings - Society - Cultural Norms - Significance,Settings - Cultural Norms & Significance
+137,DataPoint,276,TRUE,Settings - Society - Social Dynamics,Settings - Social Dynamics & Significance
+138,DataPoint,276,TRUE,Settings - Society - Social Dynamics - Significance,Settings - Social Dynamics & Significance
+139,DataPoint,273,TRUE,Settings - - - Key Historical Event,Settings - Key Historical Event & Significance
+140,DataPoint,273,TRUE,Settings - - - Key Historical Event - Significance,Settings - Key Historical Event & Significance
+141,DataPoint,233,,Settings - Sensory - Visual,Setting - Setting Atmosphere
+141,DataPoint,246,,Settings - Sensory - Visual,Settings - Setting Name
+141,DataPoint,247,,Settings - Sensory - Visual,Settings - Setting Type
+141,DataPoint,272,,Settings - Sensory - Visual,Settings - Key Locations & Significance
+141,DataPoint,277,TRUE,Settings - Sensory - Visual,Settings - The Sights
+142,DataPoint,233,,Settings - Sensory - Sounds,Setting - Setting Atmosphere
+142,DataPoint,278,TRUE,Settings - Sensory - Sounds,Settings - The Sounds
+143,DataPoint,233,,Settings - Sensory - Smells,Setting - Setting Atmosphere
+143,DataPoint,279,TRUE,Settings - Sensory - Smells,Settings - The Smells
+,,,,,
+161,DataPoint,308,TRUE,Theme -  - Character Embodiments Item,Theme - Character Embodiment
+162,DataPoint,309,TRUE,Theme -  - Key Moments Item,Theme - Key Thematic Scene
+163,DataPoint,310,,Theme -  - Thematic Progression & Conflict Item,Theme - Evolving Theme
+163,DataPoint,311,TRUE,Theme -  - Thematic Progression & Conflict Item,Theme - Thematic Tension
+164,DataPoint,312,TRUE,Theme -  - Symbols & Motifs Item,Theme - Symbolic Motif
+165,DataPoint,314,TRUE,Theme -  - Fictional Item,Theme - Literary Tradition
+166,DataPoint,313,TRUE,Theme -  - Historical Item,Theme - Historical Parallel
+173,DataPoint,286,,Series - - - Trials and Complications,Series - Key Conflicts
+173,DataPoint,289,TRUE,Series - - - Trials and Complications,Series - Game-Changing Twists
+173,DataPoint,290,,Series - - - Trials and Complications,Series - Raising the Stakes
+173,DataPoint,291,,Series - - - Trials and Complications,Series - Darkest Hour
+174,DataPoint,289,TRUE,Series - - - Midpoint Twist,Series - Game-Changing Twists
+175,DataPoint,290,,Series - - - Crisis Point,Series - Raising the Stakes
+175,DataPoint,291,TRUE,Series - - - Crisis Point,Series - Darkest Hour
+176,DataPoint,292,TRUE,Series - - - Climax,Series - Climactic Confrontation
+177,DataPoint,293,TRUE,Series - - - Resolution,Series - Resolution
+178,DataPoint,286,TRUE,Series - - - Hook,Series - Key Conflicts
+179,DataPoint,289,TRUE,Series - Moment Card - Highlighted Moment,Series - Game-Changing Twists
+232,DataPoint,310,TRUE,,Theme - Evolving Theme
+305,DataPoint,307,,,Theme - Thematic Argument
+305,DataPoint,311,,,Theme - Thematic Tension
+305,DataPoint,312,,,Theme - Symbolic Motif
+306,DataPoint,311,TRUE,,Theme - Thematic Tension
+307,DataPoint,308,,,Theme - Character Embodiment
+307,DataPoint,309,,,Theme - Key Thematic Scene
+307,DataPoint,310,,,Theme - Evolving Theme
+308,DataPoint,312,TRUE,,Theme - Symbolic Motif
+309,DataPoint,311,TRUE,,Theme - Thematic Tension
+310,DataPoint,312,,,Theme - Symbolic Motif
+310,DataPoint,316,TRUE,,Theme - Contemporary Relevance
+311,DataPoint,308,,,Theme - Character Embodiment
+311,DataPoint,312,TRUE,,Theme - Symbolic Motif
+312,DataPoint,308,,,Theme - Character Embodiment
+312,DataPoint,309,,,Theme - Key Thematic Scene
+312,DataPoint,311,,,Theme - Thematic Tension
+313,DataPoint,316,TRUE,,Theme - Contemporary Relevance
+314,DataPoint,312,,,Theme - Symbolic Motif
+314,DataPoint,316,TRUE,,Theme - Contemporary Relevance
+315,DataPoint,316,TRUE,,Theme - Contemporary Relevance
+316,DataPoint,312,,,Theme - Symbolic Motif
+316,DataPoint,313,,,Theme - Historical Parallel
+,,,,,
+145,DataPoint,23,,"Story (aka episode, novel) - Story Goal - Story Goal Summary",Story - Emotional Impact
+145,DataPoint,24,,"Story (aka episode, novel) - Story Goal - Story Goal Summary",Story - Intellectual Impact
+145,DataPoint,25,TRUE,"Story (aka episode, novel) - Story Goal - Story Goal Summary",Story - Thematic Resonance
+146,DataPoint,23,,"Story (aka episode, novel) - Story Goal - Story Audience Promise",Story - Emotional Impact
+146,DataPoint,24,,"Story (aka episode, novel) - Story Goal - Story Audience Promise",Story - Intellectual Impact
+146,DataPoint,25,TRUE,"Story (aka episode, novel) - Story Goal - Story Audience Promise",Story - Thematic Resonance

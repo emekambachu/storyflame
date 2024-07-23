@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Observers\UserDataPointObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,5 +54,12 @@ class UserDataPoint extends Model
     public function userAchievement(): BelongsTo
     {
         return $this->belongsTo(UserAchievement::class);
+    }
+
+    public function scopeWhereDataPointKey(Builder $query, string $key)
+    {
+        return $query->whereHas('dataPoint', function ($query) use ($key) {
+            $query->where('slug', $key);
+        });
     }
 }

@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\StoryElements;
 
 use App\Models\Concerns\HasAchievements;
 use App\Models\Concerns\HasAliases;
 use App\Models\Concerns\HasDataPoints;
 use App\Models\Concerns\HasImages;
 use App\Models\Concerns\HasRelatedChats;
+use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Concerns\ModelWithId;
 use App\Models\Concerns\ModelWIthRelatedChats;
+use App\Models\Story;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Character extends Model implements ModelWithComparableNames, ModelWIthRelatedChats, ModelWithId
 {
-    use SoftDeletes, HasFactory, HasAchievements, HasAliases, HasRelatedChats, HasDataPoints, HasImages;
+    use SoftDeletes, HasFactory, HasAchievements, HasAliases, HasRelatedChats, HasDataPoints, HasImages, HasSummaries;
 
     protected $fillable = [
         'story_id',

@@ -1,6 +1,8 @@
 <template>
     <div class="w-full">
-        <div class="flex px-4 w-full max-w-full scroll-px-4 gap-4 overflow-scroll">
+        <div
+            class="flex w-full max-w-full scroll-px-4 gap-4 overflow-scroll px-4"
+        >
             <slot
                 v-for="item in items"
                 :key="item"
@@ -19,10 +21,17 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script generic="T" lang="ts" setup>
+import { PropType } from 'vue'
+
+defineSlots<{
+    item(props: { item: T }): any
+    new: any
+}>()
+
 defineProps({
     items: {
-        type: Array,
+        type: Array as PropType<T[]>,
         default: () => [],
     },
 })

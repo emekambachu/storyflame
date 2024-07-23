@@ -1,17 +1,21 @@
 <template>
-    <div class="flex flex-col w-full gap-8">
-        <title-section v-if="user?.bio" title="About">
-            <p class="text-neutral-950 text-sm font-normal px-4">
+    <div class="flex w-full flex-col gap-8">
+        <title-section
+            v-if="user?.bio"
+            title="About"
+        >
+            <p class="px-4 text-sm font-normal text-neutral-950">
                 {{ user?.bio }}
             </p>
         </title-section>
-        <title-section v-if="user?.bio" title="Writing Goals">
-            <p class="text-neutral-950 text-sm font-normal px-4">
+        <title-section
+            v-if="user?.bio"
+            title="Writing Goals"
+        >
+            <p class="px-4 text-sm font-normal text-neutral-950">
                 {{ user?.writing_goals }}
             </p>
         </title-section>
-
-        <pre>{{user}}</pre>
 
         <!--        <title-section v-if="user.data?.writing_medium?.length" title="Writing Goals">-->
         <!--            <items-list-->
@@ -36,7 +40,7 @@
                 v-slot="{ item }"
                 :items="user.media"
             >
-<!--                <movie-card :media="item" />-->
+                <!--                <movie-card :media="item" />-->
             </items-list>
         </title-section>
 
@@ -51,7 +55,7 @@
                 :items="user.data?.characters"
             >
                 <p
-                    class="text-slate-600 whitespace-nowrap text-xs font-normal px-3 py-2 rounded-full"
+                    class="whitespace-nowrap rounded-full px-3 py-2 text-xs font-normal text-slate-600"
                     style="background-color: rgba(96, 159, 255, 0.1)"
                 >
                     {{ item }}
@@ -61,36 +65,34 @@
 
         <title-section>
             <template #title>
-                <title-with-link
-                    @see-all="activeTab = 'stories'"
-                >
+                <title-with-link @see-all="activeTab = 'stories'">
                     <h4>Your Stories</h4>
                 </title-with-link>
             </template>
             <div
                 v-if="stories?.length"
-                class="flex flex-col gap-4 w-full px-4"
+                class="flex w-full flex-col gap-4 px-4"
             >
                 <story-card
-                    v-for="(story, storyID) in stories"
+                    v-for="(story, storyID) in stories?.slice(0, 3)"
                     :key="storyID"
                     :card="story"
                 />
             </div>
             <router-link
                 :to="{ name: 'new-story' }"
-                class="px-4 w-full"
+                class="w-full px-4"
             >
-                <div class="p-1 bg-slate-200 rounded-lg w-full">
+                <div class="w-full rounded-lg bg-slate-200 p-1">
                     <div
-                        class="flex flex-col items-center gap-2 rounded-lg w-full p-4 border border-dashed border-gray-400"
+                        class="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-gray-400 p-4"
                     >
                         <div
-                            class="rounded-full w-10 h-10 shrink-0 flex items-center justify-center bg-gray-400"
+                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-400"
                         >
                             <plus-icon class="text-white" />
                         </div>
-                        <span class="text-sm text-gray-400 font-normal">
+                        <span class="text-sm font-normal text-gray-400">
                             Start building your first story
                         </span>
                     </div>
@@ -100,20 +102,18 @@
 
         <title-section>
             <template #title>
-                <title-with-link
-                    title="Your Achievements"
-                />
+                <title-with-link title="Your Achievements" />
             </template>
-            <items-list
-                v-slot="{ item }"
-                :items="user?.achievements.filter((item) => item.progress)"
-                class="gap-8"
-            >
-<!--                <achievement-card-->
-<!--                    :item="item"-->
-<!--                    class="h-full"-->
-<!--                />-->
-            </items-list>
+<!--            <items-list-->
+<!--                v-slot="{ item }"-->
+<!--                :items="user?.achievements.filter((item) => item.progress)"-->
+<!--                class="gap-8"-->
+<!--            >-->
+<!--                &lt;!&ndash;                <achievement-card&ndash;&gt;-->
+<!--                &lt;!&ndash;                    :item="item"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    class="h-full"&ndash;&gt;-->
+<!--                &lt;!&ndash;                />&ndash;&gt;-->
+<!--            </items-list>-->
         </title-section>
     </div>
 </template>
@@ -130,7 +130,6 @@ import featureFlags from '@/types/featureFlags'
 import { useQuery } from '@tanstack/vue-query'
 import { getStories } from '@/utils/endpoints'
 import { tabLayoutActiveTabInjection } from '@/types/injection'
-import ImageComponent from "@/components/ImageComponent.vue";
 
 const props = defineProps({
     user: {
@@ -138,6 +137,8 @@ const props = defineProps({
         required: true,
     },
 })
+
+const activeTab = inject(tabLayoutActiveTabInjection)
 
 const { data: stories } = useQuery({
     queryKey: ['stories'],

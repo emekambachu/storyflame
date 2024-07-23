@@ -9,8 +9,10 @@ use App\Models\Image;
 use App\Models\User;
 use App\Services\Base\BaseService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 
 class AchievementSeeder extends Seeder
 {
@@ -41,15 +43,16 @@ class AchievementSeeder extends Seeder
 
             $data[] = [
                 'name' => $rowData['Achievement Title'],
-//                'item_id' => $rowData['Achievement ID'],
+                'estimated_seconds' => $rowData['Est. Seconds to Complete'],
+//              'item_id' => $rowData['Achievement ID'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'category' => $rowData['Element'],
                 'extraction_description' => $rowData['Extraction Description'],
                 'purpose' => $rowData['Purpose'],
-                'color' => $rowData['Color'],
-                'dev_order' => $rowData['Order'],
+                'color' => $rowData['icon color'],
+                'dev_order' => $rowData['Dev Order'],
                 'total_impact' => $rowData['Total Impact'],
                 'icon' => $rowData['Final Icon Image'] . '.png',
                 'icon_path' => '/uploads/achievements/icons/',
@@ -61,11 +64,20 @@ class AchievementSeeder extends Seeder
         // close the file
         fclose($file);
 
+        Storage::disk('public')->deleteDirectory('uploads/achievements/icons');
+
         // insert the data
         foreach ($data as $row) {
             // check if image exists
             if (!file_exists(public_path('images/achievements/' . $row['icon']))) {
-                throw new \RuntimeException('Image not found: ' . $row['icon']);
+                dump('Image not found: ' . $row['icon']. ' using random image');
+                $files = File::files(public_path('images/achievements'));
+                $row['icon'] = basename($files[array_rand($files)]);
+            }
+
+            if (!$row['color'] || !str_starts_with($row['color'], '#')) {
+                dump('Invalid color: ' . $row['color']. ' using random color');
+                $row['color'] = '#' . substr(md5(rand()), 0, 6);
             }
 
 
@@ -83,6 +95,12 @@ class AchievementSeeder extends Seeder
                 $achievement = Achievement::create($row);
                 $achievement->categories()->attach($category->id);
 
+                Storage::disk('public')->putFileAs(
+                    'uploads/achievements/icons',
+                    public_path('images/achievements/' . $row['icon']),
+                    $row['icon']
+                );
+
                 $achievement->icon()->create([
                     'path' => $path,
                     'filename' => $icon,
@@ -96,19 +114,10 @@ class AchievementSeeder extends Seeder
                 dd('Error creating icon: ' . $e->getMessage());
             }
 
-            // Add 2 categories to each achievement
-//            AchievementCategory::create([
-//                'achievement_id' => $achievement->id,
-//                'category_id' => Category::inRandomOrder()->first()->id,
-//            ]);
-//            AchievementCategory::create([
-//                'achievement_id' => $achievement->id,
-//                'category_id' => Category::inRandomOrder()->first()->id,
-//            ]);
-
-//            AchievementCategory::factory(3)->create([
-//                'achievement_id' => $achievement->id,
-//                'category_id' => Category::inRandomOrder()->first()->id,
+//            $img = $achievement->images()->create([
+//                'path' => 'uploads/achievements/icons/' . $row['icon'],
+//                'group' => 'icon',
+//                'token_cost' => 0,
 //            ]);
         }
     }

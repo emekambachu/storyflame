@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\Image */
 class ImageResource extends JsonResource
@@ -22,7 +23,7 @@ class ImageResource extends JsonResource
                 : null,
             'token_cost' => $this->token_cost,
             'files' => ImageFileResource::collection($this->files),
-            'path' => $this->path,
+            'path' => Storage::url($this->path),
         ];
     }
 }

@@ -77,7 +77,8 @@ class ConversationEngineController extends Controller
     public function store(Request $request, $engine)
     {
         $validated = $request->validate([
-            'identifier' => ['required', 'string'],
+            'identifier' => ['required', 'numeric'],
+            'achievement_id' => ['nullable'],
             'message' => ['nullable', 'string'],
             'choice_options' => ['nullable', 'array'],
             'choice_options.*' => ['string'],
@@ -89,5 +90,18 @@ class ConversationEngineController extends Controller
         $engine->process($validated['message']);
 
         return $this->successConversationResponse('Message sent', $engine);
+    }
+
+    public function finish(Request $request, $engine)
+    {
+        $validated = $request->validate([
+            'identifier' => ['required', 'numeric'],
+        ]);
+
+        $engine = ConversationEngineV2::makeFromIdentifier($engine, $validated['identifier']);
+
+        $engine->finish();
+
+        return $this->successConversationResponse('Conversation finished', $engine);
     }
 }

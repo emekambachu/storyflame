@@ -23,6 +23,10 @@ interface ContextInterface
 
     public function sequences(): ?HasMany;
 
+    public function settings(): ?HasMany;
+
+    public function themes(): ?HasMany;
+
     /**
      * @param string $elementType
      * @return ModelWithComparableNames[]

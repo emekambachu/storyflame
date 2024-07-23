@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Models\Achievement\AchievementCategory;
 use App\Models\Admin\Admin;
 use App\Models\Concerns\HasCategories;
+use App\Models\Concerns\HasImages;
 use App\Models\DataPoint\DataPointAchievement;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,11 +17,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Achievement extends Model
 {
-    use SoftDeletes, HasFactory, HasCategories;
+    use SoftDeletes, HasFactory, HasCategories, HasImages;
 
     protected $fillable = [
         'slug',
         'name',
+        'estimated_seconds',
         'subtitle',
         'extraction_description',
         'example',

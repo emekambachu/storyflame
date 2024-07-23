@@ -18,4 +18,14 @@ trait HasDataPoints
             $item->dataPoint->slug => $item->data
         ])->toArray();
     }
+
+    public function getDataPoint(string $key): ?UserDataPoint
+    {
+        return $this->dataPoints()->whereDataPointKey($key)->first() ?? null;
+    }
+
+    public function dataPoint(string $key): ?string
+    {
+        return $this->getDataPoint($key)?->data;
+    }
 }

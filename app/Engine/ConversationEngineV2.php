@@ -7,9 +7,10 @@ use App\Engine\Context\BaseContext;
 use App\Engine\Processing\BaseProcessing;
 use App\Engine\Processing\LocalPythonProcessing;
 use App\Engine\Processing\MockProcessing;
-use App\Models\Character;
+use App\Models\Achievement;
 use App\Models\ChatMessage;
 use App\Models\Story;
+use App\Models\StoryElements\Character;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -81,6 +82,11 @@ final class ConversationEngineV2
     public function getIdentifier(): string
     {
         return $this->context->getIdentifier();
+    }
+
+    public function finish()
+    {
+        $this->context->saveMessage(ChatMessage::makeSystemMessage('finish'));
     }
 
     public function process(string $message): ChatMessage

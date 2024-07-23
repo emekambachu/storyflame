@@ -4,7 +4,7 @@
             name: 'story',
             params: { story: story?.id ?? 'test' },
         }"
-        class="flex shrink-0 flex-col gap-1"
+        class="flex w-24 shrink-0 flex-col gap-1"
     >
         <div class="relative h-fit w-fit">
             <image-component
@@ -15,10 +15,10 @@
             <flame-icon class="absolute bottom-1 right-1 bg-white" />
         </div>
         <h4
-            v-if="story.title"
-            class="font-fjalla text-xs text-stone-950"
+            v-if="story.name"
+            class="line-clamp-2 font-fjalla text-xs text-stone-950"
         >
-            {{ story.title }}
+            {{ story.name }}
         </h4>
         <p class="font-inter text-[8px] text-stone-800">{{ story.episode }}</p>
     </router-link>

@@ -13,6 +13,7 @@ use App\Models\Concerns\HasSummaries;
 use App\Models\Concerns\ModelWithComparableNames;
 use App\Models\Concerns\ModelWithId;
 use App\Models\Concerns\ModelWIthRelatedChats;
+use App\Models\StoryElements\Character;
 use App\Observers\StoryObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,6 +50,26 @@ class Story extends Model implements ModelWithComparableNames, ModelWIthRelatedC
     public function characters(): HasMany
     {
         return $this->hasMany(Character::class);
+    }
+
+    public function sequences(): HasMany
+    {
+        return $this->hasMany(StoryElements\StorySequence::class);
+    }
+
+    public function themes(): HasMany
+    {
+        return $this->hasMany(StoryElements\StoryTheme::class);
+    }
+
+    public function plots(): HasMany
+    {
+        return $this->hasMany(StoryElements\StoryPlot::class);
+    }
+
+    public function settings(): HasMany
+    {
+        return $this->hasMany(StoryElements\StorySetting::class);
     }
 
     public function getComparableNameAttribute(): string

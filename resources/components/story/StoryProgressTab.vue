@@ -67,8 +67,7 @@ import { Story } from '@/types/story'
 
 const props = defineProps({
     story: {
-        // type: Object as PropType<Story>,
-        type: Object,
+        type: Object as PropType<Story>,
         required: true,
     },
 })
