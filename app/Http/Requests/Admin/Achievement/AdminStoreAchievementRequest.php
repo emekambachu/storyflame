@@ -35,7 +35,7 @@ class AdminStoreAchievementRequest extends FormRequest
             'purpose' => ['required', 'string'],
             'publish_at' => ['required', 'date'],
             'categories' => ['required', 'array'],
-            'data_points' => ['required', 'array'],
+            'data_points' => ['sometimes', 'array'],
         ];
     }
 

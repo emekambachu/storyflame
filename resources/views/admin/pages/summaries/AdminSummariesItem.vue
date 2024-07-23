@@ -25,7 +25,7 @@ const emittedSummary = (event) => {
     <tr class="bg-white border-b">
         <td class="px-6 py-4 text-center">
             <p class="font-extrabold text-md text-black">{{ summary.name }}</p>
-            <p class="text-gray-400 text-md">ID: {{ summary.item_id }}</p>
+            <p class="text-gray-400 text-md">ID: {{ summary.id }}</p>
         </td>
 
         <td class="px-6 py-4 text-center">
@@ -52,7 +52,7 @@ const emittedSummary = (event) => {
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ summary.updated_at }}</p>
-            <p>{{ summary.admin }}</p>
+            <p>{{ summary.user }}</p>
         </td>
         <td class="px-6 py-4 text-center flex">
             <a href="" @click.prevent="openSlideover">

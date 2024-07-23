@@ -18,7 +18,6 @@ class AdminDataPointResource extends JsonResource
             'id' => $this->id,  // Try both id and uuid
             'name' => $this->name,
             'slug' => $this->slug,
-            'item_id' => $this->item_id,
             'type' => $this->type,
             'development_order' => $this->development_order,
             'impact_score' => $this->impact_score,
@@ -30,7 +29,7 @@ class AdminDataPointResource extends JsonResource
             'summaries' => $this->summaries && count($this->summaries) > 0 ? $this->summaries : [],
             'achievement' => $this->achievements && count($this->achievements) > 0 ? $this->achievements->first()->name : null,
 
-            'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
+            'user' => $this->user ? $this->user->first_name.' '.$this->user->last_name : null,
             'updated_at' => $this->updated_at->format('F d Y'),
 
             'progress' => $this->when(isset($this->pivot), function () {

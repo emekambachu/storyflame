@@ -52,7 +52,7 @@ class SummarySchemaSeeder extends Seeder
                 continue;
             }
 
-            $summary = Summary::firstWhere('item_id', $row['summary_id']);
+            $summary = Summary::firstWhere('id', $row['summary_id']);
             if (!$summary->exists()) {
                 throw new \Exception('Summary not found for ID: ' . $row['summary_id']);
             }
@@ -65,7 +65,7 @@ class SummarySchemaSeeder extends Seeder
 
             if (is_numeric($row['schemaable_id'])) {
                 // if schemaable_id is a number, it is an ID
-                $schemaable = $class::firstWhere('item_id', $row['schemaable_id']);
+                $schemaable = $class::firstWhere('id', $row['schemaable_id']);
                 if (!$schemaable || !$schemaable->exists())
                     throw new \Exception('Schemaable not found for ID: ' . $row['schemaable_id']);
                 $schemaable = collect([$schemaable]);

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Summary\Summary;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -38,7 +39,7 @@ class SummarySeeder extends Seeder
             $data[] = [
                 'name' => $rowData['Name'],
                 'slug' => Str::slug($rowData['Name'], '_'),
-                'item_id' => $rowData['Summary ID'],
+                //'item_id' => $rowData['Summary ID'],
                 'location' => $rowData['Page'] . ' - ' . $rowData['Component'],
                 'length' => $rowData['Length'],
                 'purpose' => $rowData['Purpose'],
@@ -47,6 +48,7 @@ class SummarySeeder extends Seeder
                 'published_at' => now()->format('Y-m-d H:i:s'),
 
                 'category' => $rowData['Category'],
+                'user_id' => User::where('email', 'mitch@hiddenplanetproductions.com')->first()->id,
             ];
         }
 

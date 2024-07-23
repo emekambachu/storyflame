@@ -25,9 +25,6 @@ class Achievement extends Model
         'example',
         'purpose',
         'color',
-        'icon_path',
-        'icon',
-        'item_id',
         'user_id',
         'publish_at',
     ];

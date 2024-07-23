@@ -479,7 +479,7 @@ const updateDataPoint = async () => {
         }
     });
 
-    await axios.post('/api/admin/data-points/'+props.datapoint.item_id+'/update', formData, {
+    await axios.post('/api/admin/data-points/'+props.datapoint.id+'/update', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',

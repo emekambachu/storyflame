@@ -26,9 +26,9 @@ class AdminUpdateDataPointRequest extends FormRequest
      */
     public function rules()
     {
-        $itemId = $this->route('item_id');
+        $id = $this->route('id');
         return [
-            'name' => ['required', 'string', Rule::unique('data_points', 'name')->ignore($itemId, 'item_id')],
+            'name' => ['required', 'string', Rule::unique('data_points', 'name')->ignore($id, 'id')],
             'type' => ['required', 'string'],
             'development_order' => ['required', 'integer'],
             'impact_score' => ['required'],

@@ -41,7 +41,7 @@ class AchievementSeeder extends Seeder
 
             $data[] = [
                 'name' => $rowData['Achievement Title'],
-                'item_id' => $rowData['Achievement ID'],
+//                'item_id' => $rowData['Achievement ID'],
                 'slug' => Str::slug($rowData['Achievement Title'], '_'),
                 'example' => $rowData['Brief Subtitle focusing on benefit to the story'],
                 'subtitle' => $rowData['Brief Subtitle focusing on benefit to the story'],
@@ -85,7 +85,7 @@ class AchievementSeeder extends Seeder
 
                 $achievement->icon()->create([
                     'path' => $path,
-                    'name' => $icon,
+                    'filename' => $icon,
                     'group' => 'default',
                     'imageable_id' => $achievement->id,
                     'imageable_type' => Achievement::class,
@@ -93,7 +93,6 @@ class AchievementSeeder extends Seeder
                 ]);
 
             } catch (\Exception $e) {
-                Log::error('Error creating icon: ' . $e->getMessage());
                 dd('Error creating icon: ' . $e->getMessage());
             }
 

@@ -12,6 +12,16 @@ class ImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'imageable_type' => $this->imageable_type,
+            'imageable_id' => $this->imageable_id,
+            'group' => $this->group,
+            'generation_service_name' => $this->generation_service_name,
+            'generation_id' => $this->generation_id,
+            'generation_settings' => $this->generation_settings
+                ? json_decode($this->generation_settings, true)
+                : null,
+            'token_cost' => $this->token_cost,
+            'files' => ImageFileResource::collection($this->files),
             'path' => $this->path,
         ];
     }

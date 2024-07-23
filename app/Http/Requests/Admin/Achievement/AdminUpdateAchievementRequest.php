@@ -26,9 +26,9 @@ class AdminUpdateAchievementRequest extends FormRequest
      */
     public function rules()
     {
-        $itemId = $this->route('item_id');
+        $id = $this->route('id');
         return [
-            'name' => ['required', 'string', Rule::unique('achievements', 'name')->ignore($itemId, 'item_id')],
+            'name' => ['required', 'string', Rule::unique('achievements', 'name')->ignore($id, 'id')],
             'subtitle' => ['required', 'string'],
             'icon'  => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'color' => ['required', 'string'],

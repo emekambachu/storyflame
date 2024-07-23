@@ -511,7 +511,7 @@ const updateSummary = async () => {
         }
     });
 
-    await axios.post('/api/admin/summaries/'+props.summary.item_id+'/update', formData, {
+    await axios.post('/api/admin/summaries/'+props.summary.id+'/update', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',

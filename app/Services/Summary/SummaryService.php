@@ -2,11 +2,7 @@
 
 namespace App\Services\Summary;
 
-use App\Http\Resources\Admin\DataPoint\AdminDataPointResource;
 use App\Http\Resources\Admin\Summary\AdminSummaryResource;
-use App\Models\DataPoint;
-use App\Models\DataPoint\DataPointAchievement;
-use App\Models\DataPoint\DataPointCategory;
 use App\Models\DataPoint\DataPointSummary;
 use App\Models\Summary\Summary;
 use App\Models\Summary\SummaryCategory;
@@ -43,8 +39,7 @@ class SummaryService
         DB::beginTransaction();
         try {
             $inputs = $request->all();
-            $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
-            $inputs['admin_id'] = Auth::id();
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $summary = $this->summary()->create($inputs);
 
@@ -93,15 +88,15 @@ class SummaryService
         }
     }
 
-    public function updateSummary($request, $item_id): array
+    public function updateSummary($request, $id): array
     {
-        $summary = $this->summary()->where('item_id', $item_id)->first();
+        $summary = $this->summary()->where('id', $id)->first();
 
         DB::beginTransaction();
         try {
             $inputs = $request->all();
 
-            $inputs['admin_id'] = Auth::id();
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $summary->update($inputs);
 
@@ -198,12 +193,12 @@ class SummaryService
         }
     }
 
-    public function deleteSummary($item_id): array
+    public function deleteSummary($id): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $summary = $this->summary()->where('item_id', $item_id)->first();
+            $summary = $this->summary()->where('id', $id)->first();
             // Check if the achievement exists
             if (!$summary) {
                 return [

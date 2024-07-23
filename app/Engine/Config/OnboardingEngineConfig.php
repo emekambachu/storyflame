@@ -22,13 +22,24 @@ class OnboardingEngineConfig extends EngineConfig
         ],
     ];
 
+    // TODO: when the onboarding answers are all filled, the backend should send something to the frontend to show the Development header with "finish onboarding" button
+    // TODO: implement the PREDEFINED_CLOSING_QUESTION into the engine
+
+    public const PREDEFINED_CLOSING_QUESTION = [
+        [
+            'question' => "What story do you want to start developing?",
+            'title' => "Great, we'll build your profile.",
+            'data_points' => []
+        ]
+    ];
+
     public const INITIAL_ACHIEVEMENT_SLUG = 'writer_identity';
 
     public const ELEMENT_NAME = 'Writer';
 
     public const ALLOW_ACHIEVEMENT_SWITCH = false;
 
-    public const ENDPOINT_KEY = 'onboarding';
+    public const ENDPOINT_KEY = 'onboarding'; // not used anymore
 
     public const SESSION_CHAT_PERSISTENT = true;
 }

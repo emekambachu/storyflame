@@ -13,7 +13,7 @@ class ImageFile extends Model
     protected $fillable = [
         'image_id',
         'path',
-        'size',
+        'type',
     ];
 
     const ORIGINAL = 'original';

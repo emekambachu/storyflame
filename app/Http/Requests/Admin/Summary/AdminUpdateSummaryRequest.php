@@ -24,9 +24,9 @@ class AdminUpdateSummaryRequest extends FormRequest
      */
     public function rules()
     {
-        $itemId = $this->route('item_id');
+        $id = $this->route('id');
         return [
-            'name' => ['required', 'string', Rule::unique('summaries', 'name')->ignore($itemId, 'item_id')],
+            'name' => ['required', 'string', Rule::unique('summaries', 'name')->ignore($id, 'id')],
             'example_summary' => ['required', 'string'],
             'location' => ['required', 'string'],
             'purpose' => ['required', 'string'],

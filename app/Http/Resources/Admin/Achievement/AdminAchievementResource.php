@@ -18,9 +18,8 @@ class AdminAchievementResource extends JsonResource
             'id' => $this->id,  // Try both id and uuid
             'name' => $this->name,
             'slug' => $this->slug,
-            'icon' => !empty($this->icon) ? config('app.url').$this->icon_path.$this->icon : null,
+            'icon' => $this->icon && !empty($this->icon->filename) ? config('app.url').$this->icon->path.$this->icon->filename : null,
             'title' => $this->name,
-            'item_id' => $this->item_id,
             'subtitle' => $this->subtitle ?? null,
             'extraction_description' => $this->extraction_description ?? null,
             'example' => $this->example ?? null,
@@ -33,7 +32,7 @@ class AdminAchievementResource extends JsonResource
             'dev_order' => $this->dev_order ?? null,
             'total_impact' => $this->total_impact ?? null,
 
-            'admin' => $this->admin ? $this->admin->first_name.' '.$this->admin->last_name : null,
+            'user' => $this->user ? $this->user->first_name.' '.$this->user->last_name : null,
             'publish_at' => $this->publish_at ?? null,
             'updated_at' => $this->updated_at->format('F d Y'),
 

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DataPoint extends Model
@@ -17,7 +18,6 @@ class DataPoint extends Model
     use SoftDeletes, HasFactory;
 
     protected $fillable = [
-        'item_id',
         'slug',
         'name',
         'development_order',
@@ -27,8 +27,13 @@ class DataPoint extends Model
         'extraction_description',
         'example',
         'purpose',
-        'admin_id',
+        'user_id',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     protected $casts = [
         'example' => 'json',
@@ -44,9 +49,7 @@ class DataPoint extends Model
         return $this->belongsToMany(
             Category::class,
             DataPointCategory::class
-        )
-            ->using(DataPointCategory::class)
-            ->withTimestamps();
+        )->withTimestamps();
     }
 
     public function achievements(): BelongsToMany
@@ -54,25 +57,20 @@ class DataPoint extends Model
         return $this->belongsToMany(
             Achievement::class,
             DataPointAchievement::class
-        )
-            ->using(DataPointAchievement::class)
-            ->withTimestamps();
+        )->withTimestamps();
     }
 
-    public function summaries(): BelongsToMany
+    public function summaries(): MorphToMany
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Summary::class,
-            DataPointSummary::class,
-        )
-            ->using(DataPointSummary::class)
-            ->withTimestamps();
+            'schemaable',
+            'summary_schemas',
+            'schemaable_id',
+            'summary_id'
+        )->withTimestamps();
     }
 
-    /**
-     * Return a formatted array for processing
-     * @return array
-     */
     public function toProcessingArray(): array
     {
         return [

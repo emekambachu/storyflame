@@ -183,6 +183,27 @@ class BaseService
         return $randomString;
     }
 
+    function generateUniqueHash($model = null, String $key = null, Int $length = null): string
+    {
+        $timestamp = microtime(true);
+        $randomString = uniqid('', true);
+        $serverInfo = $_SERVER['SERVER_ADDR'] . $_SERVER['SERVER_NAME'] . $_SERVER['SERVER_SOFTWARE'];
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+        $uniqueString = $timestamp . $randomString . $serverInfo . $userAgent;
+        $hash = hash('sha256', $uniqueString);
+
+        if($model && $key && $model::where($key, $hash)->exists()) {
+            $hash = static::generateUniqueHash($model, $key);
+        }
+
+        if($length){
+            $hash = substr($hash, 0, $length);
+        }
+
+        return $hash;
+    }
+
 
     public static function noImageUser(): string
     {

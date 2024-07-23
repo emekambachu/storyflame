@@ -35,7 +35,7 @@ const emittedAchievement = (event) => {
                 <p class="color-circle my-auto mr-2"
                    :style="{ backgroundColor: achievement.color }"></p>
                 <p class="text-gray-400 text-md">
-                    ID: {{ achievement.item_id }}
+                    ID: {{ achievement.id }}
                 </p>
             </div>
         </td>
@@ -64,7 +64,7 @@ const emittedAchievement = (event) => {
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ achievement.updated_at }}</p>
-            <p>{{ achievement.admin }}</p>
+            <p>{{ achievement.user }}</p>
         </td>
         <td class="px-6 py-4 text-center flex">
             <a href="" @click.prevent="openSlideover">

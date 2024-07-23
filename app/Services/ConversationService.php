@@ -253,8 +253,8 @@ abstract class ConversationService
         $chat = $this->getChat();
         $extracted_data = $this->getExtractedData($chat);
 
-        $question = $this->getLastQuestion($user);
-        $answer = $this->getLastAnswer($user);
+        $question = $this->getPreviousQuestion($user);
+        $answer = $this->getPreviousAnswer($user);
 
         if (!$answer)
             throw new InvalidArgumentException('User answer needs to be saved before extraction');
@@ -404,7 +404,7 @@ abstract class ConversationService
     /**
      * @throws RequestException
      */
-    public function getLastQuestion(User $user): ChatMessage
+    public function getPreviousQuestion(User $user): ChatMessage
     {
         // if user has a chat, get the last question
         // otherwise, return the initial question
@@ -433,7 +433,7 @@ abstract class ConversationService
         }
     }
 
-    public function getLastAnswer(User $user): ?ChatMessage
+    public function getPreviousAnswer(User $user): ?ChatMessage
     {
         if ($chat = $this->getUserChat($user)) {
             return $chat->chatMessages()->latest()->whereNotNull('user_id')->first();

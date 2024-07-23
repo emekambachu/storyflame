@@ -500,7 +500,7 @@ const updateAchievement = async () => {
         }
     });
 
-    await axios.post('/api/admin/achievements/'+props.achievement.item_id+'/update', formData, {
+    await axios.post('/api/admin/achievements/'+props.achievement.id+'/update', formData, {
         headers: {
             'content-type': 'multipart/form-data',
             'Accept' : 'application/json',

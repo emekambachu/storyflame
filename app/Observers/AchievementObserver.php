@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Achievement;
 use App\Notifications\AchievementUnlocked;
+use Illuminate\Support\Facades\Log;
 
 class AchievementObserver
 {
@@ -16,11 +17,17 @@ class AchievementObserver
         }
     }
 
+    public function creating(Achievement $achievement): void
+    {
+        Log::info('Achievement creating from inside AchievementObserver', $achievement->toArray());
+    }
+
     /**
      * Handle the Achievement "created" event.
      */
     public function created(Achievement $achievement): void
     {
+        Log::info('Achievement created from inside AchievementObserver');
         $this->notifyIfAchievementUnlocked($achievement);
     }
 

@@ -2,10 +2,7 @@
 
 namespace App\Services\DataPoint;
 
-use App\Http\Resources\Admin\Achievement\AdminAchievementResource;
 use App\Http\Resources\Admin\DataPoint\AdminDataPointResource;
-use App\Models\Achievement;
-use App\Models\Achievement\AchievementCategory;
 use App\Models\DataPoint;
 use App\Models\DataPoint\DataPointAchievement;
 use App\Models\DataPoint\DataPointCategory;
@@ -42,8 +39,7 @@ class DataPointService
         DB::beginTransaction();
         try {
             $inputs = $request->all();
-            $inputs['item_id'] = BaseService::randomCharacters(5, '0123456789');
-            $inputs['admin_id'] = Auth::id();
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $inputs['estimated_seconds'] = !empty($inputs['estimated_seconds']) ? $inputs['estimated_seconds'] : 0;
             $dataPoint = $this->dataPoint()->create($inputs);
@@ -93,15 +89,15 @@ class DataPointService
         }
     }
 
-    public function updateDataPoint($request, $item_id): array
+    public function updateDataPoint($request, $id): array
     {
-        $dataPoint = $this->dataPoint()->where('item_id', $item_id)->first();
+        $dataPoint = $this->dataPoint()->where('id', $id)->first();
 
         DB::beginTransaction();
         try {
             $inputs = $request->all();
 
-            $inputs['admin_id'] = Auth::id();
+            $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $inputs['estimated_seconds'] = !empty($inputs['estimated_seconds']) ? $inputs['estimated_seconds'] : 0;
 
@@ -200,12 +196,12 @@ class DataPointService
         }
     }
 
-    public function deleteDataPoint($item_id): array
+    public function deleteDataPoint($id): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $dataPoint = $this->dataPoint()->where('item_id', $item_id)->first();
+            $dataPoint = $this->dataPoint()->where('id', $id)->first();
             // Check if the achievement exists
             if (!$dataPoint) {
                 return [

@@ -63,20 +63,20 @@ class AdminSummaryController extends Controller
         }
     }
 
-    public function update(AdminUpdateSummaryRequest $request, $item_id): JsonResponse
+    public function update(AdminUpdateSummaryRequest $request, $id): JsonResponse
     {
         try {
-            $data = $this->summary->updateSummary($request, $item_id);
+            $data = $this->summary->updateSummary($request, $id);
             return response()->json($data, $data['status_code'] ?? 200);
         }catch (\Exception $e){
             return BaseService::tryCatchException($e);
         }
     }
 
-    public function delete($item_id): JsonResponse
+    public function delete($id): JsonResponse
     {
         try {
-            $data = $this->summary->deleteSummary($item_id);
+            $data = $this->summary->deleteSummary($id);
             return response()->json($data, $data['status_code'] ?? 200);
         }catch (\Exception $e){
             return BaseService::tryCatchException($e);

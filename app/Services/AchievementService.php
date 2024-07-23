@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AchievementService
@@ -47,17 +48,15 @@ class AchievementService
         DB::beginTransaction();
         try {
             $inputs = $request->all();
-//            $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-//            $inputs['icon_path'] = '/'.$this->imagePath.'/';
-            $inputs['item_id'] = BaseService::uniqueRandomCharacters($this->achievement(), 'item_id', 8, '0123456789ABCDEFGH');
             $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
+
             $achievement = $this->achievement()->create($inputs);
 
             if(!empty($inputs['icon'])){
                 $achievement->icon()->create([
-                    'path' => $inputs['icon'],
-                    'name' => $inputs['name'],
+                    'path' => '/'.$this->imagePath.'/',
+                    'filename' => CrudService::uploadAndCompressImage($request, $this->imagePath, 'icon'),
                     'imageable_id' => $achievement->id,
                     'imageable_type' => get_class($achievement),
                 ]);
@@ -99,18 +98,13 @@ class AchievementService
         }
     }
 
-    public function updateAchievement($request, $item_id): array
+    public function updateAchievement($request, $id): array
     {
-        $achievement = $this->achievement()->where('item_id', $item_id)->first();
+        $achievement = $this->achievement()->where('id', $id)->first();
 
         DB::beginTransaction();
         try {
             $inputs = $request->all();
-
-//            if($request->hasFile('icon')){
-//                $inputs['icon'] = CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon');
-//            }
-
             $inputs['user_id'] = Auth::id();
             $inputs['slug'] = Str::slug($inputs['name']).BaseService::randomCharacters(10, '0123456789ABCDEFGH');
             $achievement->update($inputs);
@@ -119,12 +113,12 @@ class AchievementService
                 if($achievement->icon && !empty($achievement->icon->name)){
                     CrudService::deleteFile($achievement->icon->name, $this->imagePath);
                     $achievement->icon()->update([
-                        'name' => $inputs['icon'],
+                        'name' => CrudService::uploadAndCompressImage($request, $this->imagePath,'icon'),
                     ]);
                 }else{
                     $achievement->icon()->create([
                         'path' => '/'.$this->imagePath.'/',
-                        'name' => $inputs['icon'],
+                        'name' => CrudService::uploadAndCompressImage($request, $this->imagePath, null, null, 'icon'),
                         'imageable_id' => $achievement->id,
                         'imageable_type' => get_class($achievement),
                     ]);
@@ -199,12 +193,12 @@ class AchievementService
         }
     }
 
-    public function deleteAchievement($item_id): array
+    public function deleteAchievement($id): array
     {
         // Start a transaction
         DB::beginTransaction();
         try {
-            $achievement = $this->achievement()->where('item_id', $item_id)->first();
+            $achievement = $this->achievement()->where('id', $id)->first();
             // Check if the achievement exists
             if (!$achievement) {
                 return [

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Webhook;
 use App\Models\Product;
 use App\Models\ProductPrice;
+use App\Models\Subscription;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,10 +22,9 @@ use Laravel\Paddle\Events\TransactionUpdated;
 use Laravel\Paddle\Events\WebhookHandled;
 use Laravel\Paddle\Events\WebhookReceived;
 use Laravel\Paddle\Http\Middleware\VerifyWebhookSignature;
-use App\Models\Subscription;
 use Symfony\Component\HttpFoundation\Response;
 
-class WebhookController extends Controller
+class PaddleWebhookController extends Controller
 {
     /**
      * Create a new WebhookController instance.
@@ -143,8 +143,8 @@ class WebhookController extends Controller
             'billed_at' => Carbon::parse($data['billed_at'], 'UTC'),
         ]);
 
-//        $transaction->createUserDevelopmentReports();
         $this->handleProratedReports($transaction, $data);
+        $transaction->handleProratedAIImageSlots($transaction, $data);
 
         TransactionCompleted::dispatch($billable, $transaction, $payload);
     }
@@ -175,6 +175,38 @@ class WebhookController extends Controller
         ]);
 
         TransactionUpdated::dispatch($transaction->billable, $transaction, $payload);
+    }
+
+    protected function handleProratedAIImageSlots(Transaction $transaction, array $data)
+    {
+        Log::info('Processing prorated AI image slots for transaction: ' . $transaction->paddle_id);
+
+        $items = collect($data['items']);
+        $newItem = $items->firstWhere('quantity', 1);
+        $oldItem = $items->firstWhere('quantity', -1);
+
+        if (!$newItem || !$oldItem) {
+            Log::info('No new or old item found. Creating AI image slots without proration.');
+            $transaction->createAIImageSlots($newItem['price']['custom_data']['included_images'] ?? 0);
+            return;
+        }
+
+        $oldTransaction = $transaction->subscription->transactions()
+            ->where('billed_at', '<', $transaction->billed_at)
+            ->latest('billed_at')
+            ->first();
+
+        if (!$oldTransaction) {
+            Log::info('No old transaction found. Creating AI image slots without proration.');
+            $transaction->createAIImageSlots($newItem['price']['custom_data']['included_images'] ?? 0);
+            return;
+        }
+
+        $newImageSlotsCount = $newItem['price']['custom_data']['included_images'] ?? 0;
+        $oldImageSlotsCount = $oldItem['price']['custom_data']['included_images'] ?? 0;
+        $prorationRate = $oldItem['proration']['rate'];
+
+        $transaction->prorateAIImageSlots($oldImageSlotsCount, $newImageSlotsCount, $prorationRate, $oldTransaction);
     }
 
     protected function handleProratedReports(Transaction $transaction, array $data)

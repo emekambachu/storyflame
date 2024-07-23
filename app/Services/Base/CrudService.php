@@ -3,6 +3,8 @@
 namespace App\Services\Base;
 
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\EncodedImage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -12,7 +14,14 @@ use Intervention\Image\Drivers\Gd\Driver;
 class CrudService
 {
 
-    public static function uploadAndCompressImage($request, $path, $width, $height, String $imageName): ?string
+    public static function uploadAndCompressImage(
+        $request,
+        string $path,
+        string $imageName,
+        $width = null,
+        $height = null,
+        $quality = 60
+        ): ?string
     {
         if($file = $request->file($imageName)) {
             $extension = $file->getClientOriginalExtension();
@@ -33,16 +42,9 @@ class CrudService
                 $image->scale($width, $height);
             }
 
-            // get an extension of image
-            if($extension === 'png'){
-                $image->toPng(80);
-            }else if($extension === 'jpeg' || $extension === 'jpg'){
-                $image->toJpeg(80);
-            }
-
+            $image->encode(new AutoEncoder(quality: $quality));
             $image->save($path.'/'.$name);
 
-            // Return full image upload path
             return $name;
         }
         return null;

@@ -25,7 +25,7 @@ const emittedDataPoint = (event) => {
     <tr class="bg-white border-b">
         <td class="px-6 py-4 text-center">
             <p class="font-extrabold text-md text-black">{{ datapoint.name }}</p>
-            <p class="text-gray-400 text-md">ID: {{ datapoint.item_id }}</p>
+            <p class="text-gray-400 text-md">ID: {{ datapoint.id }}</p>
         </td>
 
         <td class="px-6 py-4 text-center">
@@ -55,7 +55,7 @@ const emittedDataPoint = (event) => {
         </td>
         <td class="px-6 py-4 text-center">
             <p class="text-black">{{ datapoint.updated_at }}</p>
-            <p>{{ datapoint.admin }}</p>
+            <p>{{ datapoint.user }}</p>
         </td>
         <td class="px-6 py-4 text-center flex">
             <a href="" @click.prevent="openSlideover">

@@ -7,6 +7,7 @@ import { getAuthenticatedUser } from '@/utils/endpoints'
 import { useUser } from '@/composables/query/user'
 
 const user = ref<User | null>(null)
+const authToken = ref<string | null>(null)
 
 export const useAuthStore = defineStore(
     'auth',
@@ -37,11 +38,12 @@ export const useAuthStore = defineStore(
                 '/api/v1/auth/login',
                 credentials
             )
-            user.value = data.data
+            user.value = data.data.user
+            authToken.value = data.data.token
             return data
         }
 
-        const register = async (credentials: {
+        const register = async (credentialØØs: {
             name: string
             email: string
             password: string

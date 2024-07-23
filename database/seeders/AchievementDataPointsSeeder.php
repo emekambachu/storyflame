@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Achievement;
 use App\Models\Category;
 use App\Models\DataPoint;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -40,7 +41,7 @@ class AchievementDataPointsSeeder extends Seeder
 //                $example = '"' . $example . '"';
 
             $data[] = [
-                'item_id' => $rowData['DataPointID'],
+                //'item_id' => $rowData['DataPointID'],
                 'slug' => Str::slug($rowData['Data Point'], '_'),
                 'achievement' => $rowData['Achievement Title'],
                 'category' => $rowData['Category'],
@@ -52,6 +53,7 @@ class AchievementDataPointsSeeder extends Seeder
                 'purpose' => $rowData['Definition/Purpose'],
                 'impact_score' => $rowData['Impact Score'],
                 'estimated_seconds' => $rowData['Seconds'],
+                'user_id' => User::where('email', 'mitch@hiddenplanetproductions.com')->first()->id,
             ];
         }
 

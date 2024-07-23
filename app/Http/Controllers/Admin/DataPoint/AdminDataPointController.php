@@ -60,20 +60,20 @@ class AdminDataPointController extends Controller
         }
     }
 
-    public function update(AdminUpdateDataPointRequest $request, $item_id): JsonResponse
+    public function update(AdminUpdateDataPointRequest $request, $id): JsonResponse
     {
         try {
-            $data = $this->dataPoint->updateDataPoint($request, $item_id);
+            $data = $this->dataPoint->updateDataPoint($request, $id);
             return response()->json($data, $data['status_code'] ?? 200);
         }catch (\Exception $e){
             return BaseService::tryCatchException($e);
         }
     }
 
-    public function delete($item_id): JsonResponse
+    public function delete($id): JsonResponse
     {
         try {
-            $data = $this->dataPoint->deleteDataPoint($item_id);
+            $data = $this->dataPoint->deleteDataPoint($id);
             return response()->json($data, $data['status_code'] ?? 200);
         }catch (\Exception $e){
             return BaseService::tryCatchException($e);
