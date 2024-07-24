@@ -145,24 +145,8 @@ class User extends Authenticatable implements ModelWithId
         return $this->belongsTo(__CLASS__, 'referred_by', 'id');
     }
 
-    public function user_products()
-    {
-        return $this->belongsToMany(Product::class, 'user_products', 'user_id', 'product_id')
-            ->withPivot([
-                'status',
-                'trial_ends_at',
-                'ends_at',
-            ])
-            ->withTimestamps();
-    }
-
     public function referral_types(){
         return $this->belongsToMany(ReferralType::class, 'user_referral_types', 'user_id', 'referral_type_id')
-            ->withPivot([
-                'start_date',
-                'end_date',
-                'is_active',
-            ])
             ->withTimestamps();
     }
 

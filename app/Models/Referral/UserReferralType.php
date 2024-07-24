@@ -13,9 +13,9 @@ class UserReferralType extends Model
     protected $fillable = [
         'user_id',
         'referral_type_id',
-        'start_date',
-        'end_date',
-        'is_active',
+//        'start_date',
+//        'end_date',
+//        'is_active',
     ];
 
     public function user(): BelongsTo

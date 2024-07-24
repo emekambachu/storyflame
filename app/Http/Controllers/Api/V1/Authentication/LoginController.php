@@ -7,6 +7,8 @@ use App\Http\Resources\UserResource;
 use App\Mail\AuthCodeMail;
 use App\Models\User;
 use App\Models\VerificationCode;
+use App\Services\Referral\ReferralService;
+use App\Services\User\UserProfileService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +18,14 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
+    protected ReferralService $referral;
+    protected UserProfileService $user;
+    public function __construct(ReferralService $referral, UserProfileService $user)
+    {
+        $this->referral = $referral;
+        $this->user = $user;
+    }
+
     public function authenticate(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -47,9 +57,20 @@ class LoginController extends Controller
                 if ($user->email_verified_at === null) {
                     $user->verifyEmail();
                 }
+
                 if ($user->referral_code === null) {
                     $user->createUniqueReferralCode();
+                    if(!empty($credentials['referred_by_code'])){ {
+                        $referredByUser = $this->user->user()->where('referral_code', $credentials['referred_by_code'])->first();
+                        if(!$referredByUser){
+                            return $this->errorResponse('Invalid referral code', 401);
+                        }
+                        $user->referred_by = $referredByUser->id;
+                        $user->save();
+                        $this->referral->addReferrerToReceiver($referredByUser->id, $user->id);
+                    }
                 }
+
                 if ($verificationCode && $now->isBefore($verificationCode->expire_at) && $verificationCode->otp === $credentials['otp']) {
                     Auth::login($user); // For session-based authentication (not recommended for APIs)
                     $user->startTrial();
